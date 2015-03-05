@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.yoda.poll.model.PollDetail" table="poll_detail">
+		<comment />
+		<id name="pollDetailId" type="java.lang.Long" unsaved-value="0">
+			<column name="poll_detail_id" />
+			<generator class="increment" />
+		</id>
+		<property name="siteId" type="string">
+			<column name="site_id" length="20" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="pollOption" type="string">
+			<column name="poll_option" length="80" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="seqNum" type="java.lang.Integer">
+			<column name="seq_num" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="pollVoteCount" type="java.lang.Integer">
+			<column name="poll_vote_count" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recUpdateBy" type="string">
+			<column name="rec_update_by" length="20" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recUpdateDatetime" type="timestamp">
+			<column name="rec_update_datetime" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recCreateBy" type="string">
+			<column name="rec_create_by" length="20" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recCreateDatetime" type="timestamp">
+			<column name="rec_create_datetime" not-null="true">
+				<comment />
+			</column>
+		</property>
+	</class>
+</hibernate-mapping>

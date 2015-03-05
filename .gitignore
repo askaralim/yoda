@@ -1,0 +1,10 @@
+*.DS_Store
+target
+src/main/webapp/META-INF
+src/main/webapp/uploads
+.classpath
+.project
+.settings
+*.iml
+*.idea
+AwsCredentials.properties

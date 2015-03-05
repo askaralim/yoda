@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.yoda.user.model.UserAuthority" table="authority" lazy="false">
+		<comment></comment>
+		<id name="id" type="long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+		<!-- <many-to-one name="user" class="com.yoda.user.model.User" fetch="select"> -->
+		<property name="authorityName" type="string">
+			<column name="authority_name" length="50" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<many-to-one name="user" column="user_id" class="com.yoda.user.model.User" not-null="true"/>
+	</class>
+</hibernate-mapping>

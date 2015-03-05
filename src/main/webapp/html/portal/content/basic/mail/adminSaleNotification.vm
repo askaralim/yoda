@@ -1,0 +1,2 @@
+You have received an order from ${adminSaleNotification.custFirstName} ${adminSaleNotification.custLastName}.
+Order total is ${adminSaleNotification.orderTotal}.

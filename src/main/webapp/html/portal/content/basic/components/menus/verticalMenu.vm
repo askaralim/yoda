@@ -1,0 +1,15 @@
+<script type="text/javascript">
+    YAHOO.example.onMenuReady = function(p_oEvent) {
+    // Instantiate and render the menu bar
+    var oMenu = new YAHOO.widget.Menu("$menuDivId", { position:"static", autosubmenudisplay:true, hidedelay:750, lazyload:true });
+        oMenu.render();
+    }
+    // Initialize and render the menu bar when it is available in the DOM
+    // YAHOO.util.Event.onContentReady("${menuDivId}_done", YAHOO.example.onMenuReady);
+    YAHOO.util.Event.on(window, "load", YAHOO.example.onMenuReady);
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>$verticalMenuCode</td>
+  </tr>
+</table>

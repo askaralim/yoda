@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.yoda.contactus.model.ContactUs" table="contact_us" lazy="false">
+		<comment></comment>
+		<id name="contactUsId" type="long" unsaved-value="0">
+			<column name="contact_us_id" />
+			<generator class="increment" />
+		</id>
+		<property name="siteId" type="long">
+			<column name="site_id" length="20" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="name" type="string">
+			<column name="name" length="50" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="addressLine1" type="string">
+			<column name="address_line1" length="30" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="addressLine2" type="string">
+			<column name="address_line2" length="30" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="cityName" type="string">
+			<column name="city_name" length="25" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<!-- <property name="contactUsStateName" type="string">
+			<column name="state_name" length="40" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="contactUsStateCode" type="string">
+			<column name="state_code" length="2" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="countryName" type="string">
+			<column name="country_name" length="40" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="countryCode" type="string">
+			<column name="country_code" length="2" not-null="true">
+				<comment />
+			</column>
+		</property> -->
+		<property name="zipCode" type="string">
+			<column name="zip_code" length="10" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="email" type="string">
+			<column name="email" length="50" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="phone" type="string">
+			<column name="phone" length="20" not-null="false">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="description" type="string">
+			<column name="description" length="255" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="seqNum" type="java.lang.Integer">
+			<column name="seq_num" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="active" type="java.lang.Character">
+			<column name="active" length="1" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recUpdateBy" type="long">
+			<column name="rec_update_by" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recUpdateDatetime" type="timestamp">
+			<column name="rec_update_datetime" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recCreateBy" type="long">
+			<column name="rec_create_by" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="recCreateDatetime" type="timestamp">
+			<column name="rec_create_datetime" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,161 @@
+<div id="content-body">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
+				<div class="page-header">
+					<h2>$contentInfo.title</h2>
+					<!--<p>$contentInfo.shortDescription</p>-->
+					<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
+				</div>
+				<ul class="nav nav-pills">
+					<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
+					<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab-should-know">
+						<p class="text-right">
+							<bd>
+								<i class="glyphicon glyphicon-user"></i>
+								<a href='#springUrl("/user/$contentInfo.createBy")'>$contentInfo.createBy</a>
+								&nbsp
+								<i class="glyphicon glyphicon-time"></i>
+								$contentInfo.createDate
+								&nbsp
+								<i class="glyphicon glyphicon-eye-open"></i>
+								$contentInfo.hitCounter
+							</bd>
+						</p>
+						<p>$contentInfo.description</p>
+						<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
+						<div class="content-actions">
+							<button id="thumbUp" class="glyphicon glyphicon-thumbs-up"></button>
+							<button id="thumbDown" class="glyphicon glyphicon-thumbs-down"></button>
+							<span id="score" class="label label-success">
+								#if ($contentInfo.score > 0)
+									+$contentInfo.score
+								#else
+									$contentInfo.score
+								#end
+							</span>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-recommend">
+						#foreach ($item in $contentInfo.items)
+							<div class="row content-preview-wrapper-row">
+								<div class="col-sm-4 content-preview-item">
+									<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
+								</div>
+								<div class="col-sm-8 content-preview-item">
+									<p>#springMessage('name') : $item.name</p>
+									<p>#springMessage('brand') : $item.brand</p>
+									<p>#springMessage('price') : $item.price</p>
+									<p>#springMessage('description') : $item.description</p>
+
+									<div class="content-actions">
+										<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
+										<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
+										<span id="rating$item.id" class="label label-success">
+											#if ($item.rating > 0)
+												+$item.rating
+											#else
+												$item.rating
+											#end
+										</span>
+									</div>
+								</div>
+							</div>
+						#end
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src='#springUrl("/template/basic/jquery-1.11.1.min.js")'></script>
+
+<script type="text/javascript">
+$(function(){
+	$('#thumbUp').click(function(){
+		$.ajax({
+			type: "POST",
+			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=up',
+			data:'${_csrf.parameterName}=${_csrf.token}',
+			dataType: "json",
+			success: function(data){
+				var score = data.score;
+
+				$('#score').empty();
+
+				if (score > 0) {
+					score = "+" + score;
+				}
+
+				$('#score').html(score);
+			}
+		});
+	});
+});
+
+$(function(){
+	$('#thumbDown').click(function(){
+		$.ajax({
+			type: "POST",
+			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=down',
+			data:'${_csrf.parameterName}=${_csrf.token}', 
+			dataType: "json",
+			success: function(data){
+				var score = data.score;
+
+				$('#score').empty();
+
+				if (score > 0) {
+					score = "+" + score;
+				}
+
+				$('#score').html(score);
+			}
+		});
+	});
+});
+
+function itemThumbUp(id){
+	$.ajax({
+		type: "POST",
+		url: '#springUrl("/items/")' + id + '/rating?thumb=up',
+		data:'${_csrf.parameterName}=${_csrf.token}', 
+		dataType: "json",
+		success: function(data){
+			var rating = data.rating;
+
+			$('#rating' + id).empty();
+
+			if (rating > 0) {
+				rating = "+" + rating;
+			}
+
+			$('#rating' + id).html(rating);
+		}
+	});
+}
+
+function itemThumbDown(id){
+	$.ajax({
+		type: "POST",
+		url: '#springUrl("/items/")' + id + '/rating?thumb=down',
+		data:'${_csrf.parameterName}=${_csrf.token}', 
+		dataType: "json",
+		success: function(data){
+			var rating = data.rating;
+
+			$('#rating' + id).empty();
+
+			if (rating > 0) {
+				rating = "+" + rating;
+			}
+
+			$('#rating' + id).html(rating);
+		}
+	});
+}
+</script>

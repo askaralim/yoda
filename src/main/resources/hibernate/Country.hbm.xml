@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.yoda.country.model.Country" table="country">
+		<comment></comment>
+		<id name="countryId" type="long">
+			<column name="country_id" />
+			<generator class="increment" />
+		</id>
+		<property name="siteId" type="long">
+			<column name="site_id" length="20" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="countryCode" type="string">
+			<column name="country_code" length="2" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="countryName" type="string">
+			<column name="country_name" length="40" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recUpdateBy" type="string">
+			<column name="rec_update_by" length="20" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recUpdateDatetime" type="timestamp">
+			<column name="rec_update_datetime" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recCreateBy" type="string">
+			<column name="rec_create_by" length="20" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="recCreateDatetime" type="timestamp">
+			<column name="rec_create_datetime" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<set name="states" table="state" inverse="true" order-by="state_name">
+			<key column="country_id" />
+			<one-to-many class="com.yoda.state.model.State" />
+		</set>
+	</class>
+</hibernate-mapping>

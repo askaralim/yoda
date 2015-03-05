@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	<definition name="controlpanelframe" template="/html/controlpanel/controlpanelframe.jsp"/>
+
+	<definition name="controlpanel/home/home" extends="controlpanelframe">
+		<put-attribute name="title" value="Home" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/home/home.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/content/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Content List" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/content/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/content/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Content Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/content/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/items/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Item List" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/items/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/items/form" extends="controlpanelframe">
+		<put-attribute name="title" value="Item Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/items/form.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/homepage/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Home Page Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/homepage/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/menu/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Menu" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/menu/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/section/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Section" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/section/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/system/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="System Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/system/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/system/done" extends="controlpanelframe">
+		<put-attribute name="title" value="System Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/system/done.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/site/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Site Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/site/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/user/list" extends="controlpanelframe">
+		<put-attribute name="title" value="User Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/user/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/user/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="User Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/user/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/contactus/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Contact Us Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/contactus/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/contactus/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Contact Us Listing - Contact Us Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/contactus/edit.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/feedback/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Feedback Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/feedback/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/feedback/view" extends="controlpanelframe">
+		<put-attribute name="title" value="Feedback Listing - View" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/feedback/view.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/site/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Site Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/site/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/site/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Site Listing - Site Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/site/edit.jsp" type="template" />
+	</definition>
+</tiles-definitions>

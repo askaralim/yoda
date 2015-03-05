@@ -1,0 +1,41 @@
+#if ($homeInfo.homePageFeatureData)
+	<header>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					#if ($info.defaultImageUrl)
+						#if ($info.feature)
+							<img class="img-circle" src="$homeInfo.homePageFeatureData.defaultImageUrl" alt="$homeInfo.homePageFeatureData.title" width="300" height="300">
+						#else
+							<img class="img-circle" src="$homeInfo.homePageFeatureData.defaultImageUrl" alt="$homeInfo.homePageFeatureData.title" width="300" height="300">
+						#end
+					#end
+					<div class="intro-text">
+						<h2>$homeInfo.homePageFeatureData.title</h2>
+						<span class="skills">$homeInfo.homePageFeatureData.shortDescription</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+#end
+
+<div class="section">
+	<div class="container">
+		#foreach ($homePageData in $homeInfo.homePageDatas)
+			#if ($velocityCount % 2 == 1)
+				</tr>
+				<tr>
+			#end
+
+			#set ($info = $homePageData)
+			#if ($homePageData.infoType == "content")
+				#set ($orientation = "left")
+				#parse("common/previewContent.vm")
+			#else
+				#set ($orientation = "top")
+				#parse("common/previewItem.vm")
+			#end
+		#end
+	</div>
+</div>

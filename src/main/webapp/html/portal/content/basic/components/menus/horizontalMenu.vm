@@ -1,0 +1,38 @@
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href='#springUrl("/")'><b>taklip</b></a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				$horizontalMenuCode
+
+				#if ($userLogin)
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="glyphicon glyphicon-user"></i> $username <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" role="menu">
+							#if ($roleAdmin == true) 
+								<li><a href='#springUrl("/controlpanel/home")'>#springMessage('control-panel')</a></li>
+								<li class="divider"></li>
+							#end
+							<li><a href='#springUrl("/user/$username")'>#springMessage('profile')</a></li>
+							<li><a href='#springUrl("/user/settings")'>#springMessage('settings')</a></li>
+							<li class="divider"></li>
+							<li><a href='#springUrl("/logout")'>#springMessage('logout')</a></li>
+						</ul>
+					</li>
+				#else
+					<li class="page-scroll"><a href=#springUrl("/login")>#springMessage('login')</a></li>
+				#end
+			</ul>
+		</div>
+	</div>
+</nav>

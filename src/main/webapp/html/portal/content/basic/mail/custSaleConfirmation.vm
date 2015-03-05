@@ -1,0 +1,182 @@
+<html>
+<head>
+<title>${info.siteName}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<table width="400" border="0" cellspacing="0" cellpadding="0">
+<tr> 
+  <td><font face=Arial size=2>Thank you for your recent order.  Your order has been received.</td>
+</tr>
+<tr> 
+  <td>&nbsp;</td>
+</tr>
+<tr> 
+  <td><font face=Arial size=2><b>My Account</b></font></td>
+</tr>
+<tr> 
+  <td> 
+	<hr>
+  </td>
+</tr>
+<tr> 
+  <td><font face=Arial size=2>${custSaleConfirmation.custEmail}</font></td>
+</tr>
+</table>
+<br>
+<table width="400" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td><font face=Arial size=2><b>Order Information</b></font></td>
+  </tr>
+  <tr> 
+    <td> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>Order Number: ${custSaleConfirmation.orderNum}</b></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>Date: ${custSaleConfirmation.orderDatetime}</b></td>
+  </tr>
+</table>
+<br>
+<table width="400" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td"><font face=Arial size=2><b>Shipping Address</b></font></td>
+  </tr>
+  <tr> 
+    <td> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.custFirstName} ${custSaleConfirmation.custLastName}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.custAddressLine1}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.custAddressLine2}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.custCityName} ${custSaleConfirmation.custStateName}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.custZipCode}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>Phone: ${custSaleConfirmation.custPhoneNum}</font></td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>Fax: ${custSaleConfirmation.custFaxNum}</font></td>
+  </tr>
+</table>
+<br>
+<table width="400" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td><font face=Arial size=2><b>Shipping Method</b></font></td>
+  </tr>
+  <tr> 
+    <td> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td><font face=Arial size=2>${custSaleConfirmation.shippingMethodName}</font></td>
+  </tr>
+</table>
+<br>
+<br>
+<table width="600" border="0" cellspacing="0" cellpadding="3" class="jc_tran_border">
+  <tr> 
+    <td bgcolor="#989DA5" nowrap><font face=Arial size=2 color=#ffffff><b>Item Details</b></font></td>
+    <td  bgcolor="#989DA5" nowrap> 
+      <div align="right"><font face=Arial size=2 color=#ffffff><b>Quantity</b></font></div>
+    </td>
+    <td  bgcolor="#989DA5" nowrap> 
+      <div align="right"><font face=Arial size=2 color=#ffffff><b>Item Price</b></font></div>
+    </td>
+    <td  bgcolor="#989DA5" nowrap> 
+      <div align="right"><font face=Arial size=2 color=#ffffff><b>Item Total</b></font></div>
+    </td>
+  </tr>
+  #foreach ($detail in $custSaleConfirmation.orderDetails) 
+  <tr> 
+    <td with="60%">
+      <font face=Arial size=2>${detail.itemShortDesc}&nbsp;${detail.itemShortDesc1}</font>
+    </td>
+    <td> 
+      <font face=Arial size=2><div align="center">${detail.itemOrderQty}</div></font>
+    </td>
+    <td> 
+      <font face=Arial size=2><div align="right">${detail.itemPriceDisplay}</div></font>
+    </td>
+    <td> 
+      <font face=Arial size=2><div align="right">${detail.itemPriceTotal}</div></font>
+    </td>
+  </tr>
+  #end
+  <tr> 
+    <td class="jc_tran_text">&nbsp;</td>
+    <td class="jc_tran_text">&nbsp;</td>
+    <td nowrap> 
+      <div align="right"><font face=Arial size=2><b>Sub-total</b></font>
+       </div>
+    </td>
+    <td> 
+      <div align="right">
+        <font face=Arial size=2>${custSaleConfirmation.priceTotal}</font>
+      </div>
+    </td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td nowrap> 
+      <div align="right">
+        <font face=Arial size=2><b>Shipping and Handling</b></font><br>
+       </div>
+    </td>
+    <td> 
+      <div align="right">
+        <font face=Arial size=2>${custSaleConfirmation.shippingTotal}</font>
+      </div>
+    </td>
+  </tr>
+  #foreach ($tax in $custSaleConfirmation.orderTaxes) 
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td nowrap> 
+      <div align="right">
+        <font face=Arial size=2><b>${tax.taxName}</b></font>
+      </div>
+    </td>
+    <td> 
+      <div align="right">
+        <font face=Arial size=2>${tax.taxAmount}</font>
+      </div>
+    </td>
+  </tr>
+  #end
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td> 
+      <div align="right"><font face=Arial size=2><b>Total Price</b></font></div>
+    </td>
+    <td> 
+      <div align="right"><font face=Arial size=2>${custSaleConfirmation.orderTotal}</font></div>
+    </td>
+  </tr>
+</table>
+<br>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><font face=Arial size=1>${custSaleConfirmation.shoppingCartMessage}</font></td>
+  </tr>
+</table>
+</body>
+</html>

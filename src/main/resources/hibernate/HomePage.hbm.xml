@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.yoda.homepage.model.HomePage" table="home_page">
+		<comment></comment>
+		<id name="homePageId" type="long">
+			<column name="home_page_id" />
+			<generator class="increment" />
+		</id>
+		<property name="siteId" type="long">
+			<column name="site_id">
+				<comment />
+			</column>
+		</property>
+		<property name="seqNum" type="int">
+			<column name="seq_num" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="featureData" type="char">
+			<column name="feature_data" length="1" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="updateBy" type="long">
+			<column name="update_by" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="updateDate" type="timestamp">
+			<column name="update_date" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="createBy" type="long">
+			<column name="create_by" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="createDate" type="timestamp">
+			<column name="create_date" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<!-- <many-to-one name="item" column="item_id" class="com.yoda.controlpanel.item.model.Item" /> -->
+		<many-to-one name="content" column="content_id" class="com.yoda.content.model.Content" />
+	</class>
+</hibernate-mapping>

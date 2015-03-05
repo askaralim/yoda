@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.yoda.site.model.Site" table="site" lazy="false">
+		<comment></comment>
+		<id name="siteId" type="long">
+			<column length="20" name="site_id" />
+			<generator class="assigned" />
+		</id>
+		<property name="siteName" type="string">
+			<column name="site_name" length="50" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="logoValue" type="binary" lazy="true">
+			<column name="logo_value" not-null="false" sql-type="longblob">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="logoContentType" type="string">
+			<column name="logo_content_type" length="20" not-null="false">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="active" type="java.lang.Character">
+			<column name="active" length="1" not-null="true">
+				<comment></comment>
+			</column>
+		</property>
+		<property name="updateBy" type="long">
+			<column name="update_by" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="updateDate" type="timestamp">
+			<column name="update_date" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="createBy" type="long">
+			<column name="create_by" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="createDate" type="timestamp">
+			<column name="create_date" not-null="true">
+				<comment />
+			</column>
+		</property>
+		<property name="publicPort" type="string">
+			<column name="public_port">
+				<comment />
+			</column>
+		</property>
+		<property name="securePort" type="string">
+			<column name="secure_port">
+				<comment />
+			</column>
+		</property>
+		<property name="domainName" type="string">
+			<column name="domain_name">
+				<comment />
+			</column>
+		</property>
+		<property name="googleAnalyticsId" type="string">
+			<column name="google_analytics_id">
+				<comment />
+			</column>
+		</property>
+		<property name="secureConnectionEnabled" type="boolean">
+			<column name="secure_connection_enabled">
+				<comment />
+			</column>
+		</property>
+		<property name="footer" type="string">
+			<column name="footer">
+				<comment />
+			</column>
+		</property>
+		<property name="listingPageSize" type="string">
+			<column name="listing_page_size">
+				<comment />
+			</column>
+		</property>
+		<property name="sectionPageSize" type="string">
+			<column name="section_page_size">
+				<comment />
+			</column>
+		</property>
+		<property name="themeId" type="long">
+			<column name="theme_id">
+				<comment />
+			</column>
+		</property>
+	</class>
+</hibernate-mapping>

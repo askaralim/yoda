@@ -1,0 +1,118 @@
+body {
+	background-color: #ffffff;
+	color: #2c3e50;
+	font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+	font-size: 13px;
+	line-height: 1.42857143;
+	overflow-x: hidden;
+}
+
+body>.container {
+	padding: 60px 15px 0;
+}
+
+a {
+	color: #3C8DBC;
+}
+
+a:hover, a:focus, a:active, a.active {
+	outline: 0;
+	color: #3C8DBC;
+	text-decoration: none;
+}
+
+/* navigation bar */
+.navbar {
+	margin-bottom: 0px;
+}
+
+.navbar .navbar-nav {
+	letter-spacing: 1px;
+}
+
+.navbar-static-top {
+	-webkit-transition: padding .3s;
+	-moz-transition: padding .3s;
+	transition: padding .3s;
+}
+
+.navbar-default {
+	background-color: #2c3e50;
+	border: 0;
+	border-color:transparent;
+}
+
+.navbar-default .navbar-toggle {
+	border-color: #1a242f;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #ffffff;
+}
+
+.navbar-default .navbar-brand {
+	color: #ffffff;
+}
+
+.navbar-brand {
+	font-size: 2em;
+	-webkit-transition: all .3s;
+	-moz-transition: all .3s;
+	transition: all .3s;
+}
+
+.navbar-brand b {
+	font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 400;
+}
+
+.navbar-default .navbar-nav>li>a {
+	color: #ffffff;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus
+	{
+	/* background: rgba(0, 0, 0, 0.1); */
+	background-color: #1b2d3f;
+	color: #ffffff;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+	background-color: #1b2d3f;
+	color: #ffffff;
+}
+
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus
+	{
+	background-color:transparent;
+	color: #ffffff;
+	/* background-color: #3c8dbc;
+	color: #0D5E8D; */
+}
+
+.section {
+	padding: 20px 20px;
+	/* transform: translateZ(0px); */
+}
+
+.nav-tabs-custom {
+	margin-bottom: 20px;
+}
+
+.nav-tabs-custom>.tab-content {
+	padding: 10px;
+}
+
+/* Footer */
+.footer {
+	/* padding: 25px 0; */
+	/* position: absolute; */
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	background-color: #f5f5f5;
+}
+.container .text-muted {
+	margin: 20px 0;
+}

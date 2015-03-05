@@ -1,0 +1,85 @@
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td valign="top">
+			#if ($homeInfo.homePageFeatureData)
+				<table width="100%" border="0" cellspacing="0" cellpadding="4">
+					<tr>
+						<td>
+							<div>
+								#set ($info = $homeInfo.homePageFeatureData)
+								#set ($orientation = "left")
+								#if
+									($homeInfo.homePageFeatureData.infoType == "content")
+									#parse("common/previewContent.vm")
+								#else
+									#parse("common/previewItem.vm")
+								#end
+							</div>
+						</td>
+					</tr>
+				</table>
+				<br>
+			#end
+			<table width="100%" border="0" cellspacing="0" cellpadding="4">
+				<tr>
+					<td>
+						<table width="100%" border="0" cellspacing="0" cellpadding="4">
+							<tr>
+								#foreach ($homePageData in $homeInfo.homePageDatas)
+									#if ($velocityCount % 2 == 1)
+										</tr>
+										<tr>
+									#end
+									<td width="50%">
+										<div style="height: 95%;">
+											#set ($info = $homePageData)
+											#if ($homePageData.infoType == "content")
+												#set ($orientation = "left")
+												#parse("common/previewContent.vm")
+											#else
+												#set ($orientation = "top")
+												#parse("common/previewItem.vm")
+											#end
+										</div>
+									</td>
+								#end
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		#if ($template.isShoppingCart() || $template.isPoll() ||
+		$template.isSyndication())
+		<td style="width: 10px;" height="100%" valign="top">
+			<div class="jc_vertical_line_seperator"></div>
+		</td> #end
+		<td style="width: 300px" valign="top">#if
+			($template.isShoppingCart())
+			<div class="jc_horizontal_line_seperator">&nbsp;</div>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td>$template.getShoppingCartSummary()</td>
+				</tr>
+			</table> #end #if ($template.isPoll())
+			<div class="jc_horizontal_line_seperator">&nbsp;</div>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td>$template.getPoll()</td>
+				</tr>
+			</table> #end #if ($template.isSyndication())
+			<div class="jc_horizontal_line_seperator">&nbsp;</div>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td>$template.getSyndication()</td>
+				</tr>
+			</table> #end
+			<div class="jc_horizontal_line_seperator">&nbsp;</div>
+		</td>
+	</tr>
+</table>
