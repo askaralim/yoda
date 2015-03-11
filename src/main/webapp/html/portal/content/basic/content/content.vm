@@ -2,70 +2,117 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
-				<div class="page-header">
-					<h2>$contentInfo.title</h2>
-					<!--<p>$contentInfo.shortDescription</p>-->
-					<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
-				</div>
-				<ul class="nav nav-pills">
-					<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
-					<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="tab-should-know">
-						<p class="text-right">
-							<bd>
-								<i class="glyphicon glyphicon-user"></i>
-								<a href='#springUrl("/user/$contentInfo.createBy")'>$contentInfo.createBy</a>
-								&nbsp
-								<i class="glyphicon glyphicon-time"></i>
-								$contentInfo.createDate
-								&nbsp
-								<i class="glyphicon glyphicon-eye-open"></i>
-								$contentInfo.hitCounter
-							</bd>
-						</p>
-						<p>$contentInfo.description</p>
-						<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
-						<div class="content-actions">
-							<button id="thumbUp" class="glyphicon glyphicon-thumbs-up"></button>
-							<button id="thumbDown" class="glyphicon glyphicon-thumbs-down"></button>
-							<span id="score" class="label label-success">
-								#if ($contentInfo.score > 0)
-									+$contentInfo.score
-								#else
-									$contentInfo.score
-								#end
-							</span>
-						</div>
+				<div class="content-post">
+					<div class="page-header">
+						<h2>$contentInfo.title</h2>
+						<!--<p>$contentInfo.shortDescription</p>-->
+						<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
 					</div>
-					<div class="tab-pane" id="tab-recommend">
-						#foreach ($item in $contentInfo.items)
-							<div class="row content-preview-wrapper-row">
-								<div class="col-sm-4 content-preview-item">
-									<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
-								</div>
-								<div class="col-sm-8 content-preview-item">
-									<p>#springMessage('name') : $item.name</p>
-									<p>#springMessage('brand') : $item.brand</p>
-									<p>#springMessage('price') : $item.price</p>
-									<p>#springMessage('description') : $item.description</p>
-
-									<div class="content-actions">
-										<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
-										<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
-										<span id="rating$item.id" class="label label-success">
-											#if ($item.rating > 0)
-												+$item.rating
-											#else
-												$item.rating
-											#end
-										</span>
+					<ul class="nav nav-pills">
+						<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
+						<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab-should-know">
+							<p class="text-right">
+								<bd>
+									<i class="glyphicon glyphicon-user"></i>
+									<a href='#springUrl("/user/$contentInfo.createBy")'>$contentInfo.createBy</a>
+									&nbsp
+									<i class="glyphicon glyphicon-time"></i>
+									$contentInfo.createDate
+									&nbsp
+									<i class="glyphicon glyphicon-eye-open"></i>
+									$contentInfo.hitCounter
+								</bd>
+							</p>
+							<p>$contentInfo.description</p>
+							<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
+							<div class="content-actions">
+								<button id="thumbUp" class="glyphicon glyphicon-thumbs-up"></button>
+								<button id="thumbDown" class="glyphicon glyphicon-thumbs-down"></button>
+								<span id="score" class="label label-success">
+									#if ($contentInfo.score > 0)
+										+$contentInfo.score
+									#else
+										$contentInfo.score
+									#end
+								</span>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab-recommend">
+							#foreach ($item in $contentInfo.items)
+								<div class="row content-preview-wrapper-row">
+									<div class="col-sm-4 content-preview-item">
+										<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
+									</div>
+									<div class="col-sm-8 content-preview-item">
+										<p>#springMessage('name') : $item.name</p>
+										<p>#springMessage('brand') : $item.brand</p>
+										<p>#springMessage('price') : $item.price</p>
+										<p>#springMessage('description') : $item.description</p>
+	
+										<div class="content-actions">
+											<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
+											<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
+											<span id="rating$item.id" class="label label-success">
+												#if ($item.rating > 0)
+													+$item.rating
+												#else
+													$item.rating
+												#end
+											</span>
+										</div>
 									</div>
 								</div>
-							</div>
-						#end
+							#end
+						</div>
 					</div>
+				</div>
+				<div class="content-post">
+					<h4>#springMessage('comments')($comments.size())</h4>
+					<ul class="comments">
+						#foreach ($comment in $comments)
+							<li class="left clearfix">
+								<span class="comments-img pull-left">
+									<img src='#springUrl("/resources/images/defaultAvatar.png")' alt="$comment.user.username" class="img-rounded" width="32" height="32" />
+								</span>
+								<div class="comments-body clearfix">
+									<div class="header">
+										<strong class="primary-font">
+											<a href='#springUrl("/user/$comment.user.username")'>$comment.user.username</a>
+										</strong>
+										<small class="pull-right text-muted label label-danger">
+											<i class="icon-time"></i> $comment.createDate
+										</small>
+									</div>
+									<p>
+										$comment.description
+									</p>
+								</div>
+							</li>
+						#end
+					</ul>
+					#if ($userLogin)
+						<div>
+							<form role="form" method="POST" action="#springUrl('/comments/new')">
+								<div class="form-group">
+									<textarea class="form-control" rows="5" id="description" name="description" placeholder='#springMessage("your-comment")' required></textarea>
+								</div>
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary pull-right">#springMessage("submit")</button>
+								</div>
+								<div class="clearfix"></div>
+
+								<input type="hidden" name="content.contentId" value="$contentInfo.contentId"/>
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+							</form>
+						<div>
+					#else
+						<p class="text-muted">
+							#springMessage("please-login-to-make-comments")
+						</p>
+					#end
 				</div>
 			</div>
 		</div>

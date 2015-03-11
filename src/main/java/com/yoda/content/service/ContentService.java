@@ -3,6 +3,7 @@ package com.yoda.content.service;
 import java.text.ParseException;
 import java.util.List;
 
+import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 
 public interface ContentService {
@@ -12,9 +13,13 @@ public interface ContentService {
 			String publishDate, String expireDate, Long updateBy,
 			boolean isPublished) throws Exception;
 
+	void addComment(Comment comment);
+
 	void deleteContent(Content content);
 
 	void deleteContent(Long contentId);
+
+	void deleteComment(int commentId);
 
 	void updateContent(Content content);
 
@@ -28,9 +33,17 @@ public interface ContentService {
 
 	Content getContent(Long siteId, String naturalKey);
 
+	Comment getComment(int commentId);
+
 	List<Content> getContents(Long siteId, String title);
 
 	List<Content> getContents(Long siteId);
+
+	List<Comment> getComments(long contentId);
+
+	List<Comment> getCommentsBySiteId(int siteId);
+
+	List<Comment> getCommentsByUserId(long userId);
 
 	List<Content> search(
 			Long siteId, String title, String published, String updateBy,

@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yoda.content.dao.CommentDAO;
 import com.yoda.content.dao.ContentDAO;
 import com.yoda.content.dao.ContentImageDAO;
+import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentImage;
 import com.yoda.homepage.dao.HomePageDAO;
@@ -27,6 +29,9 @@ import com.yoda.util.Utility;
 public class ContentServiceImpl implements ContentService {
 	@Autowired
 	private ContentDAO contentDAO;
+
+	@Autowired
+	private CommentDAO commentDAO;
 
 	@Autowired
 	private ContentImageDAO contentImageDAO;
@@ -63,6 +68,10 @@ public class ContentServiceImpl implements ContentService {
 		contentDAO.save(content);
 
 		return content;
+	}
+
+	public void addComment(Comment comment) {
+		commentDAO.save(comment);
 	}
 
 	public void deleteContent(Content content) {
@@ -106,6 +115,12 @@ public class ContentServiceImpl implements ContentService {
 		Content content = contentDAO.getById(contentId);
 
 		deleteContent(content);
+	}
+
+	public void deleteComment(int commentId) {
+		Comment comment = commentDAO.getById(commentId);
+
+		commentDAO.delete(comment);
 	}
 
 	public Content deleteContentImage(
@@ -158,6 +173,26 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(readOnly = true)
 	public List<Content> getContents(Long siteId, String contentTitle) {
 		return contentDAO.getContents(siteId, contentTitle);
+	}
+
+	@Transactional(readOnly = true)
+	public Comment getComment(int commentId) {
+		return commentDAO.getById(commentId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Comment> getComments(long contentId) {
+		return commentDAO.getCommentsByContentId(contentId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Comment> getCommentsBySiteId(int siteId) {
+		return commentDAO.getCommentsBySiteId(siteId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Comment> getCommentsByUserId(long userId) {
+		return commentDAO.getCommentsByUserId(userId);
 	}
 
 	@Transactional(readOnly = true)

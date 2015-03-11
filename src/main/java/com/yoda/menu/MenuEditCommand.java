@@ -25,7 +25,7 @@ public class MenuEditCommand {
 	long removeMenuId;
 	long createMenuId;
 	boolean isSequence;
-	long itemId;
+	int itemId;
 	String itemNum;
 	String itemShortDesc;
 	long contentId;
@@ -65,11 +65,11 @@ public class MenuEditCommand {
 		this.contentTitle = contentTitle;
 	}
 
-	public long getItemId() {
+	public int getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(long itemId) {
+	public void setItemId(int itemId) {
 		this.itemId = itemId;
 	}
 

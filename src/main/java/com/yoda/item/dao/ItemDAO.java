@@ -13,7 +13,7 @@ public class ItemDAO extends BaseDAO<Item> {
 	private static final String GET_ITEM_BY_SITEID_AND_CONTENTNATURALKEY = "from Item where siteId = ? and itemNaturalKey = ?";
 	private static final String GET_ITEM_BY_SITEID = "from Item item where item.siteId = ?";
 
-	public Item getItem(long siteId, long itemId) {
+	public Item getItem(long siteId, int itemId) {
 		Item item = getById(itemId);
 
 		if (item.getSiteId() != siteId) {

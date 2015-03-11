@@ -32,8 +32,8 @@ public class ItemController {
 
 	@RequestMapping(value="/controlpanel/items", method = RequestMethod.GET)
 	public String showItems(
-		Map<String, Object> model,
-		HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Object> model, HttpServletRequest request,
+		HttpServletResponse response) throws Exception {
 		Site site = PortalUtil.getSiteFromSession(request);
 
 		List<Item> items = itemService.getItems(site.getSiteId());

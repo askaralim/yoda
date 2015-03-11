@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -315,7 +314,6 @@ public class ContentController {
 
 		return "redirect:/controlpanel/content/list";
 	}
-
 
 //	public ActionForward remove(ActionMapping actionMapping,
 //			ActionForm actionForm, HttpServletRequest request,

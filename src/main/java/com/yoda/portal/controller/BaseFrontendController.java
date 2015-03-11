@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.contactus.service.ContactUsService;
+import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
@@ -31,7 +32,6 @@ import com.yoda.portal.content.data.ContentInfo;
 import com.yoda.portal.content.data.DataInfo;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.HomeInfo;
-import com.yoda.portal.content.data.SearchInfo;
 import com.yoda.portal.content.data.SectionInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.portal.content.frontend.MenuFactory;
@@ -147,6 +147,10 @@ public class BaseFrontendController {
 		return processContent(siteId, content, checkExpiry, updateStatistics);
 	}
 
+	public List<Comment> getComments(long contentId) {
+		return contentService.getComments(contentId);
+	}
+
 	public ContentInfo processContent(
 			long siteId, Content content, boolean checkExpiry, boolean updateStatistics) {
 		if (content == null) {
@@ -190,7 +194,7 @@ public class BaseFrontendController {
 
 		contentInfo.setUpdateDate(Format.getDate(content.getUpdateDate()));
 		contentInfo.setCreateBy(user.getUsername());
-		contentInfo.setCreateDate(Format.getFullDate(content.getCreateDate()));
+		contentInfo.setCreateDate(Format.getDate(content.getCreateDate()));
 
 		if (Format.isNullOrEmpty(content.getPageTitle())) {
 			contentInfo.setKeywords(content.getTitle());

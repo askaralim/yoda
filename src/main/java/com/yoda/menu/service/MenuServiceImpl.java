@@ -91,7 +91,7 @@ public class MenuServiceImpl implements MenuService {
 	public void addMenu(
 			long userId, long siteId, long menuId, String menuTitle, String menuName,
 			String menuUrl, String menuWindowTarget, String menuWindowMode,
-			char published, String menuType, long contentId, long itemId,
+			char published, String menuType, long contentId, int itemId,
 			long sectionId)
 		throws SecurityException, Exception {
 		Menu menu = new Menu();

@@ -2,17 +2,14 @@ package com.yoda.content.controller;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.Hibernate;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +33,6 @@ import com.yoda.content.service.ContentImageService;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
-import com.yoda.item.model.Item;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;

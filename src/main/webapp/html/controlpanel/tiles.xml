@@ -19,6 +19,16 @@
 		<put-attribute name="content" value="/html/controlpanel/content/edit.jsp" type="template" />
 	</definition>
 
+	<definition name="controlpanel/content/comments" extends="controlpanelframe">
+		<put-attribute name="title" value="Administration - Comments Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/content/comments.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/content/comment" extends="controlpanelframe">
+		<put-attribute name="title" value="Comment Listing - View" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/content/comment.jsp" type="template" />
+	</definition>
+
 	<definition name="controlpanel/items/list" extends="controlpanelframe">
 		<put-attribute name="title" value="Item List" type="string" />
 		<put-attribute name="content" value="/html/controlpanel/items/list.jsp" type="template" />

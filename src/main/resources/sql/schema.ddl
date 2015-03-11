@@ -149,6 +149,17 @@
 		FOREIGN KEY (content_id) REFERENCES content(content_id)
 	) engine=InnoDB;
 
+	CREATE TABLE comment (
+		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		content_id bigint,
+		user_id INT NOT NULL,
+		create_date DATETIME NOT NULL,
+		description VARCHAR(2000),
+		rating INT,
+		site_id INT NOT NULL,
+		FOREIGN KEY (content_id) REFERENCES content(content_id)
+	) engine=InnoDB;
+
     create table content_image (
         image_id bigint not null,
         site_id bigint not null,

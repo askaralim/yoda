@@ -3,6 +3,7 @@ package com.yoda.portal.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.portal.content.data.ComponentInfo;
@@ -86,6 +91,8 @@ public class FrontendContentController extends BaseFrontendController {
 
 		ContentInfo contentInfo = getContent(site.getSiteId(), content, checkExpiry, updateStatistics);
 
+		List<Comment> comments = getComments(content.getContentId());
+
 		Map<String, Object> model = new HashMap<String, Object>();
 
 		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
@@ -95,6 +102,13 @@ public class FrontendContentController extends BaseFrontendController {
 		}
 
 		model.put("contentInfo", contentInfo);
+		model.put("comments", comments);
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			model.put("userLogin", true);
+		}
 
 		String text = StringPool.BLANK;
 

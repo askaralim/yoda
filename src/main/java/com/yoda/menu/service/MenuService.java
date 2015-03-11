@@ -36,8 +36,8 @@ public interface MenuService {
 	Menu addMenu(long userId, long siteId, String menuSetName, String menuName);
 
 	void addMenu(long userId, long siteId, long menuId, String menuTitle, String menuName,
-				 String menuUrl, String menuWindowTarget, String menuWindowMode,
-				 char published, String menuType, long contentId, long itemId, long sectionId) throws SecurityException, Exception;
+				String menuUrl, String menuWindowTarget, String menuWindowMode,
+				char published, String menuType, long contentId, int itemId, long sectionId) throws SecurityException, Exception;
 
 	void deleteMenu(long siteId, long menuId);
 
