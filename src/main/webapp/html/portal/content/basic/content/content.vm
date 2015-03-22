@@ -10,7 +10,9 @@
 					</div>
 					<ul class="nav nav-pills">
 						<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
-						<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
+						#if ($contentInfo.items.size() > 0)
+							<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
+						#end
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab-should-know">
@@ -51,7 +53,6 @@
 										<p>#springMessage('brand') : $item.brand</p>
 										<p>#springMessage('price') : $item.price</p>
 										<p>#springMessage('description') : $item.description</p>
-	
 										<div class="content-actions">
 											<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
 											<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>

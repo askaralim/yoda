@@ -186,7 +186,7 @@ header .intro-text .name {
 	/* border: 7px solid #FFFFFF; */
 	border-radius: 5px;
 	bottom: 0;
-	box-shadow: 0 0 8px #999999;
+	/* box-shadow: 0 0 8px #999999; */
 	max-width: 80%;
 	vertical-align: bottom;
 }
