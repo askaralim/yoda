@@ -1,7 +1,7 @@
 package com.yoda.content;
 
 public class ContentMenuDisplayCommand {
-	Long menuId;
+	int menuId;
 
 	String menuLongDesc;
 
@@ -9,11 +9,11 @@ public class ContentMenuDisplayCommand {
 
 	String menuWindowTarget;
 
-	public Long getMenuId() {
+	public int getMenuId() {
 		return menuId;
 	}
 
-	public void setMenuId(Long menuId) {
+	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 

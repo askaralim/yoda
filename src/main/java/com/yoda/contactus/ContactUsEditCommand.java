@@ -6,7 +6,7 @@ import com.yoda.country.model.Country;
 import com.yoda.state.model.State;
 
 public class ContactUsEditCommand {
-	long contactUsId;
+	int contactUsId;
 	String contactUsName;
 	String contactUsEmail;
 	String contactUsPhone;
@@ -16,15 +16,15 @@ public class ContactUsEditCommand {
 	String contactUsZipCode;
 	String contactUsDesc;
 	String seqNum;
-	String active;
+	boolean active;
 	List<State> states;
 	List<Country> countries;
 
-	public String getActive() {
+	public boolean isActive() {
 		return active;
 	}
 
-	public void setActive(String active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
@@ -60,11 +60,11 @@ public class ContactUsEditCommand {
 		this.contactUsEmail = contactUsEmail;
 	}
 
-	public long getContactUsId() {
+	public int getContactUsId() {
 		return contactUsId;
 	}
 
-	public void setContactUsId(long contactUsId) {
+	public void setContactUsId(int contactUsId) {
 		this.contactUsId = contactUsId;
 	}
 

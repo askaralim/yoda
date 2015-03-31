@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserService {
 			String userName, String password, String email,
 			String phone, String userType, String addressLine1,
 			String addressLine2, String cityName,
-			Long siteId, Character active, long userId) throws PortalException {
-		List<Long> siteIds = new ArrayList<Long>();
+			int siteId, Character active, long userId) throws PortalException {
+		List<Integer> siteIds = new ArrayList<Integer>();
 
 		siteIds.add(siteId);
 
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 			String userName, String password, String email,
 			String phone, String userType, String addressLine1,
 			String addressLine2, String cityName,
-			List<Long> selectedSiteIds, Character active, long userId) throws PortalException {
+			List<Integer> selectedSiteIds, Character active, long userId) throws PortalException {
 		User user = new User();
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
 			if (selectedSiteIds != null) {
 				for (int i = 0; i < selectedSiteIds.size(); i++) {
-					long s = selectedSiteIds.get(i);
+					int s = selectedSiteIds.get(i);
 
 					Site site = siteDAO.getBySiteId(s);
 
@@ -159,11 +159,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public User updateUser(
-		Long siteId, Long userId, String username, String password,
+		int siteId, Long userId, String username, String password,
 		String email) {
 		User user = this.getUser(userId);
 
-		List<Long> siteIds = new ArrayList<Long>();
+		List<Integer> siteIds = new ArrayList<Integer>();
 
 		siteIds.add(siteId);
 
@@ -174,10 +174,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public User updateUser(
-			Long userId,String userName, String password,
+			long userId, String userName, String password,
 			String userEmail, String userPhone, String userType,
 			String userAddressLine1, String userAddressLine2,
-			String userCityName, List<Long> selectedSiteIds, Character active,
+			String userCityName, List<Integer> selectedSiteIds, Character active,
 			User signinUser) {
 		User user = getByUI_SU(userId, signinUser);
 
@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
 
 			if (selectedSiteIds != null) {
 				for (int i = 0; i < selectedSiteIds.size(); i++) {
-					long s = selectedSiteIds.get(i);
+					int s = selectedSiteIds.get(i);
 
 					Site site = siteDAO.getBySiteId(s);
 

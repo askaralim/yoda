@@ -38,22 +38,22 @@ public class MenuServiceImpl implements MenuService {
 	private SectionDAO sectionDAO;
 
 	public Menu addMenu(
-		long userId, long siteId, String menuSetName, String menuName) {
+		long userId, int siteId, String menuSetName, String menuName) {
 		Menu menuSet = new Menu();
 
 		menuSet.setSiteId(siteId);
-		menuSet.setMenuSetName(menuSetName);
-		menuSet.setMenuName(menuName);
+		menuSet.setSetName(menuSetName);
+		menuSet.setName(menuName);
 		menuSet.setSeqNum(0);
-		menuSet.setPublished('Y');
+		menuSet.setPublished(true);
 		menuSet.setMenuType("");
 		menuSet.setMenuUrl("");
 		menuSet.setMenuWindowTarget("");
 		menuSet.setMenuWindowMode("");
-		menuSet.setRecUpdateBy(userId);
-		menuSet.setRecCreateBy(userId);
-		menuSet.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
-		menuSet.setRecCreateDatetime(new Date(System.currentTimeMillis()));
+		menuSet.setUpdateBy(userId);
+		menuSet.setCreateBy(userId);
+		menuSet.setUpdateDate(new Date(System.currentTimeMillis()));
+		menuSet.setCreateDate(new Date(System.currentTimeMillis()));
 
 		menuDAO.save(menuSet);
 
@@ -61,27 +61,27 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	public Menu addMenu(
-			long siteId, long menuParentId, int seqNum, String menuSetName,
+			int siteId, int menuParentId, int seqNum, String menuSetName,
 			String menuTitle, String menuName, String menuType, String menuUrl,
-			String menuWindowTarget, String menuWindowMode, char published,
+			String menuWindowTarget, String menuWindowMode, boolean published,
 			long recUpdateBy, long recCreateBy) {
 		Menu menu = new Menu();
 
 		menu.setSiteId(siteId);
-		menu.setMenuParentId(menuParentId);
+		menu.setParentId(menuParentId);
 		menu.setSeqNum(seqNum);
-		menu.setMenuSetName(menuSetName);
-		menu.setMenuTitle(menuTitle);
-		menu.setMenuName(menuName);
+		menu.setSetName(menuSetName);
+		menu.setTitle(menuTitle);
+		menu.setName(menuName);
 		menu.setMenuType(menuType);
 		menu.setMenuUrl(menuUrl);
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
 		menu.setPublished(published);
-		menu.setRecUpdateBy(recUpdateBy);
-		menu.setRecCreateBy(recCreateBy);
-		menu.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
-		menu.setRecCreateDatetime(new Date(System.currentTimeMillis()));
+		menu.setUpdateBy(recUpdateBy);
+		menu.setCreateBy(recCreateBy);
+		menu.setUpdateDate(new Date(System.currentTimeMillis()));
+		menu.setCreateDate(new Date(System.currentTimeMillis()));
 
 		menuDAO.save(menu);
 
@@ -89,10 +89,10 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	public void addMenu(
-			long userId, long siteId, long menuId, String menuTitle, String menuName,
+			long userId, int siteId, int menuId, String menuTitle, String menuName,
 			String menuUrl, String menuWindowTarget, String menuWindowMode,
-			char published, String menuType, long contentId, int itemId,
-			long sectionId)
+			boolean published, String menuType, long contentId, int itemId,
+			int sectionId)
 		throws SecurityException, Exception {
 		Menu menu = new Menu();
 
@@ -100,25 +100,25 @@ public class MenuServiceImpl implements MenuService {
 			menu = menuDAO.getByMenuId_SiteId(siteId, menuId);
 		}
 
-		menu.setMenuTitle(menuTitle);
-		menu.setMenuName(menuName);
-//		menu.setMenuSetName(menuName);
+		menu.setTitle(menuTitle);
+		menu.setName(menuName);
+//		menu.setSetName(menuName);
 		menu.setMenuUrl(menuUrl);
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
-		menu.setPublished(published == Constants.PUBLISHED_YES ? Constants.PUBLISHED_YES : Constants.PUBLISHED_NO);
-		menu.setRecUpdateBy(userId);
-		menu.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
+		menu.setPublished(published);
+		menu.setUpdateBy(userId);
+		menu.setUpdateDate(new Date(System.currentTimeMillis()));
 		menu.setContent(null);
-		menu.setItem(null);
+//		menu.setItem(null);
 		menu.setSection(null);
 		menu.setSeqNum(0);
 		menu.setSiteId(siteId);
 		menu.setMenuType(menuType);
-		menu.setRecUpdateBy(userId);
-		menu.setRecCreateBy(userId);
-		menu.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
-		menu.setRecCreateDatetime(new Date(System.currentTimeMillis()));
+		menu.setUpdateBy(userId);
+		menu.setCreateBy(userId);
+		menu.setUpdateDate(new Date(System.currentTimeMillis()));
+		menu.setCreateDate(new Date(System.currentTimeMillis()));
 
 		if (menuType.equals(Constants.MENU_CONTENT)) {
 			if (Validator.isNotNull(contentId)) {
@@ -127,12 +127,12 @@ public class MenuServiceImpl implements MenuService {
 			}
 		}
 
-		if (menuType.equals(Constants.MENU_ITEM)) {
-			if (Validator.isNotNull(itemId)) {
-				Item item = itemDAO.getItem(siteId, itemId);
-				menu.setItem(item);
-			}
-		}
+//		if (menuType.equals(Constants.MENU_ITEM)) {
+//			if (Validator.isNotNull(itemId)) {
+//				Item item = itemDAO.getItem(siteId, itemId);
+//				menu.setItem(item);
+//			}
+//		}
 
 		if (menuType.equals(Constants.MENU_SECTION)) {
 			if (Validator.isNotNull(sectionId)) {
@@ -144,59 +144,59 @@ public class MenuServiceImpl implements MenuService {
 		menuDAO.update(menu);
 	}
 
-	public void deleteMenu(long siteId, long menuId) {
+	public void deleteMenu(int siteId, int menuId) {
 		menuDAO.delete(siteId, menuId);
 	}
 
 	@Transactional(readOnly = true)
-	public Menu getMenu(long menuId) {
+	public Menu getMenu(int menuId) {
 		return menuDAO.getByMenuId(menuId);
 	}
 
 	@Transactional(readOnly = true)
-	public Menu getMenuBySiteIdMenuName(long siteId, String menuName) {
+	public Menu getMenuBySiteIdMenuName(int siteId, String menuName) {
 		return menuDAO.getMenuBySiteIdMenuName(siteId, menuName);
 	}
 
 	@Transactional(readOnly = true)
-	public Menu getMenu(long siteId, String menuSetName) {
+	public Menu getMenu(int siteId, String menuSetName) {
 		return menuDAO.getMenu(siteId, menuSetName);
 	}
 
 	@Transactional(readOnly = true)
-	public Menu getMenu(long siteId, long menuId) throws SecurityException, Exception {
+	public Menu getMenu(int siteId, int menuId) throws SecurityException, Exception {
 		return menuDAO.getByMenuId_SiteId(siteId, menuId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Menu> getMenu(long siteId, String menuSetName, long menuParentId) {
+	public List<Menu> getMenu(int siteId, String menuSetName, int menuParentId) {
 		return menuDAO.getMenu(siteId, menuSetName, menuParentId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Menu> getByMenuParentId(long parentMenuId) {
+	public List<Menu> getByMenuParentId(int parentMenuId) {
 		return menuDAO.getByParentMenuId(parentMenuId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Menu> getBySiteIdMenuParentId(long siteId, long menuParentId) {
+	public List<Menu> getBySiteIdMenuParentId(int siteId, int menuParentId) {
 		return menuDAO.getBySiteId_MenuParentId(siteId, menuParentId);
 	}
 
 	@Transactional(readOnly = true)
-	public int selectMaxSeqNumByMenuId_SiteId(long siteId, long parentMenuId) {
+	public int selectMaxSeqNumByMenuId_SiteId(int siteId, int parentMenuId) {
 		return menuDAO.selectMaxSeqNumBySiteIdParentMenuId(siteId, parentMenuId);
 	}
 
 	public Menu updateMenu(
-			long siteId, long menuId, Content content, Item item,
+			int siteId, int menuId, Content content, Item item,
 			Section section, String menuUrl, String menuWindowMode,
 			String menuWindowTarget, String menuType)
 		throws SecurityException, Exception {
 		Menu menu = getMenu(siteId, menuId);
 
 		menu.setContent(content);
-		menu.setItem(item);
+//		menu.setItem(item);
 		menu.setSection(section);
 		menu.setMenuUrl(menuUrl);
 		menu.setMenuWindowMode(menuWindowMode);
@@ -212,11 +212,11 @@ public class MenuServiceImpl implements MenuService {
 		menuDAO.update(menu);
 	}
 
-	public void updateSeqNum(long siteId, long menuParentId, int seqNum) {
+	public void updateSeqNum(int siteId, int menuParentId, int seqNum) {
 		menuDAO.updateSeqNum(siteId, menuParentId, seqNum);
 	}
 
-	public String formatMenuName(long siteId, long menuId)
+	public String formatMenuName(int siteId, int menuId)
 		throws Exception {
 		String menuString = "";
 
@@ -233,13 +233,13 @@ public class MenuServiceImpl implements MenuService {
 				menuString = " - " + menuString;
 			}
 
-			if (menu.getMenuParentId() == 0) {
-				menuString = menu.getMenuSetName() + menuString;
+			if (menu.getParentId() == 0) {
+				menuString = menu.getSetName() + menuString;
 				break;
 			}
 
-			menuString = menu.getMenuName() + menuString;
-			menuId = menu.getMenuParentId();
+			menuString = menu.getName() + menuString;
+			menuId = menu.getParentId();
 		}
 
 		return menuString;
@@ -247,7 +247,7 @@ public class MenuServiceImpl implements MenuService {
 
 
 	@Transactional(readOnly = true)
-	public DropDownMenu[] makeMenuTreeList(long siteId)
+	public DropDownMenu[] makeMenuTreeList(int siteId)
 			throws Exception {
 		Vector<DropDownMenu> menuVector = new Vector<DropDownMenu>();
 
@@ -257,20 +257,20 @@ public class MenuServiceImpl implements MenuService {
 		List<Menu> menus = menuDAO.getBySiteId(siteId);
 
 		for (Menu menu : menus) {
-			if (menu.getMenuSetName().equals(Constants.MENUSET_MAIN)) {
+			if (menu.getSetName().equals(Constants.MENUSET_MAIN)) {
 				continue;
 			}
 
-//			if (menu.getMenuSetName().equals(Constants.MENUSET_SECONDARY)) {
+//			if (menu.getSetName().equals(Constants.MENUSET_SECONDARY)) {
 //				continue;
 //			}
 			/*
 			 * DropDownMenu list[] = new DropDownMenu[1]; list[0] =
-			 * makeMenuTree(siteId, menu.getMenuSetName()); DropDownMenu ddm =
-			 * new DropDownMenu(); ddm.setMenuName(menu.getMenuSetName());
+			 * makeMenuTree(siteId, menu.getSetName()); DropDownMenu ddm =
+			 * new DropDownMenu(); ddm.setName(menu.getSetName());
 			 * ddm.setMenuItems(list); menuVector.add(ddm);
 			 */
-			menuVector.add(makeMenuTree(siteId, menu.getMenuSetName()));
+			menuVector.add(makeMenuTree(siteId, menu.getSetName()));
 		}
 
 		DropDownMenu ddmList[] = new DropDownMenu[menuVector.size()];
@@ -281,14 +281,14 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Transactional(readOnly = true)
-	public DropDownMenu makeMenuTree(long siteId, String menuSetName)
+	public DropDownMenu makeMenuTree(int siteId, String menuSetName)
 			throws Exception {
 		Menu menu = menuDAO.getMenu(siteId, menuSetName);
 
 		DropDownMenu menus[] = makeMenu(siteId, menuSetName, menu.getMenuId());
 		DropDownMenu ddm = new DropDownMenu();
 
-		ddm.setMenuName(menu.getMenuSetName());
+		ddm.setMenuName(menu.getSetName());
 		ddm.setMenuKey(menu.getMenuId());
 		ddm.setMenuItems(menus);
 
@@ -297,7 +297,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Transactional(readOnly = true)
 	public DropDownMenu[] makeMenu(
-			long siteId, String menuSetName, long menuParentId)
+			int siteId, String menuSetName, int menuParentId)
 		throws Exception {
 		DropDownMenu menuArr[] = null;
 		Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
@@ -308,7 +308,7 @@ public class MenuServiceImpl implements MenuService {
 			DropDownMenu ddm = new DropDownMenu();
 
 			ddm.setMenuKey(menu.getMenuId());
-			ddm.setMenuName(menu.getMenuName());
+			ddm.setMenuName(menu.getName());
 
 			if (menu.getMenuId() != 0) {
 				DropDownMenu childMenus[] = makeDdmMenu(siteId, menuSetName, menu.getMenuId());
@@ -325,7 +325,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Transactional(readOnly = true)
 	public DropDownMenu[] makeDdmMenu(
-			long siteId, String menuSetName, Long menuParentId)
+			int siteId, String menuSetName, int menuParentId)
 		throws Exception {
 		DropDownMenu menuArr[] = null;
 		Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
@@ -336,7 +336,7 @@ public class MenuServiceImpl implements MenuService {
 			DropDownMenu ddm = new DropDownMenu();
 
 			ddm.setMenuKey(menu.getMenuId());
-			ddm.setMenuName(menu.getMenuName());
+			ddm.setMenuName(menu.getName());
 
 			if (menu.getMenuId() == 0) {
 				DropDownMenu childMenus[] = makeDdmMenu(siteId, menuSetName, menu.getMenuId());
@@ -354,7 +354,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Transactional(readOnly = true)
-	public JSONObject makeJSONMenuTree(long siteId) throws Exception {
+	public JSONObject makeJSONMenuTree(int siteId) throws Exception {
 		JSONObject object = new JSONObject();
 
 		List<Menu> menus = menuDAO.getBySiteId_MenuParentId_orderBy_MenuSetName(siteId);
@@ -373,18 +373,18 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Transactional(readOnly = true)
-	public JSONObject makeJSONMenuTreeNode(long siteId, long menuId)
+	public JSONObject makeJSONMenuTreeNode(int siteId, int menuId)
 			throws Exception {
 		JSONObject jsonObject = new JSONObject();
 
 		Menu menu = menuDAO.getByMenuId_SiteId(siteId, menuId);
 
-		if (menu.getMenuParentId() == 0) {
-			jsonObject.put("menuSetName", menu.getMenuSetName());
+		if (menu.getParentId() == 0) {
+			jsonObject.put("menuSetName", menu.getSetName());
 		}
 		else {
 			jsonObject.put("menuId", menu.getMenuId());
-			jsonObject.put("menuName", menu.getMenuName());
+			jsonObject.put("menuName", menu.getName());
 		}
 
 		List<Menu> menus = menuDAO.getBySiteId_MenuParentId(siteId, menuId);

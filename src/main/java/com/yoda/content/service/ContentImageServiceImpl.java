@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.yoda.content.dao.ContentImageDAO;
 import com.yoda.content.model.ContentImage;
 
-@Service
+@Deprecated
 public class ContentImageServiceImpl implements ContentImageService {
 	@Autowired
 	private ContentImageDAO contentImageDAO;
@@ -27,12 +27,12 @@ public class ContentImageServiceImpl implements ContentImageService {
 		return contentImageDAO.getContentImageById(contentImageId);
 	}
 
-	public ContentImage getContentImage(Long siteId, Long contentImageId) {
+	public ContentImage getContentImage(int siteId, Long contentImageId) {
 		return contentImageDAO.getContentImageBySId_Id(siteId, contentImageId);
 	}
 
 	public ContentImage addContentImage(
-			Long siteId, Long userId, String imageName, String contentType,
+			int siteId, Long userId, String imageName, String contentType,
 			byte[] imageValue, int height, int width) {
 		ContentImage contentImage = new ContentImage();
 

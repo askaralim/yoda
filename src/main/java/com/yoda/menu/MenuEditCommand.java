@@ -1,13 +1,11 @@
 package com.yoda.menu;
 
-import java.util.Enumeration;
-
 import com.yoda.section.model.DropDownMenu;
 
 public class MenuEditCommand {
 	DropDownMenu menuList[];
-	long menuId;
-	long menuParentId;
+	int menuId;
+	int menuParentId;
 	String menuTitle;
 	String menuName;
 	String seqNum;
@@ -16,21 +14,21 @@ public class MenuEditCommand {
 	String menuWindowTarget;
 	String menuWindowMode;
 	String menuPosition;
-	String published;
+	boolean published;
 	String mode;
 	String createMode;
 	MenuDisplayCommand childrenMenus[];
 	String menuSetName;
 	String createMenuSetName;
-	long removeMenuId;
-	long createMenuId;
+	int removeMenuId;
+	int createMenuId;
 	boolean isSequence;
 	int itemId;
 	String itemNum;
 	String itemShortDesc;
 	long contentId;
 	String contentTitle;
-	long sectionId;
+	int sectionId;
 	String sectionShortTitle;
 
 	public String getSectionShortTitle() {
@@ -41,11 +39,11 @@ public class MenuEditCommand {
 		this.sectionShortTitle = sectionShortTitle;
 	}
 
-	public long getSectionId() {
+	public int getSectionId() {
 		return sectionId;
 	}
 
-	public void setSectionId(long sectionId) {
+	public void setSectionId(int sectionId) {
 		this.sectionId = sectionId;
 	}
 
@@ -93,11 +91,11 @@ public class MenuEditCommand {
 		return childrenMenus[index];
 	}
 
-	public long getCreateMenuId() {
+	public int getCreateMenuId() {
 		return createMenuId;
 	}
 
-	public void setCreateMenuId(long createMenuId) {
+	public void setCreateMenuId(int createMenuId) {
 		this.createMenuId = createMenuId;
 	}
 
@@ -117,11 +115,11 @@ public class MenuEditCommand {
 		this.isSequence = isSequence;
 	}
 
-	public long getRemoveMenuId() {
+	public int getRemoveMenuId() {
 		return removeMenuId;
 	}
 
-	public void setRemoveMenuId(long removeMenuId) {
+	public void setRemoveMenuId(int removeMenuId) {
 		this.removeMenuId = removeMenuId;
 	}
 
@@ -141,11 +139,11 @@ public class MenuEditCommand {
 		this.childrenMenus = childrenMenus;
 	}
 
-	public long getMenuId() {
+	public int getMenuId() {
 		return menuId;
 	}
 
-	public void setMenuId(long menuId) {
+	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 
@@ -245,19 +243,19 @@ public class MenuEditCommand {
 //		}
 //	}
 
-	public long getMenuParentId() {
+	public int getMenuParentId() {
 		return menuParentId;
 	}
 
-	public void setMenuParentId(long menuParentId) {
+	public void setMenuParentId(int menuParentId) {
 		this.menuParentId = menuParentId;
 	}
 
-	public String getPublished() {
+	public boolean isPublished() {
 		return published;
 	}
 
-	public void setPublished(String published) {
+	public void setPublished(boolean published) {
 		this.published = published;
 	}
 

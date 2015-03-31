@@ -2,87 +2,83 @@ package com.yoda.site.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 
+@Entity
+@Table(name = "site")
 public class Site extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "site_id")
+	private Integer siteId;
 
-	private Long siteId;
-
+	@Column(name = "site_name")
 	private String siteName;
 
-	private byte[] logoValue;
+	@Column(name = "logo_path")
+	private String logoPath;
 
+	@Column(name = "logo_content_type")
 	private String logoContentType;
 
-	private Character active;
+	@Column(name = "active")
+	private boolean active;
 
-	private Long updateBy;
+	@Column(name = "update_by")
+	private long updateBy;
 
+	@Column(name = "update_date")
 	private Date updateDate;
 
-	private Long createBy;
+	@Column(name = "create_by")
+	private long createBy;
 
+	@Column(name = "create_date")
 	private Date createDate;
 
+	@Column(name = "public_port")
 	private String publicPort;
 
+	@Column(name = "secure_port")
 	private String securePort;
 
+	@Column(name = "domain_name")
 	private String domainName;
 
+	@Column(name = "google_analytics_id")
 	private String googleAnalyticsId;
 
+	@Column(name = "secure_connection_enabled")
 	private boolean secureConnectionEnabled;
 
+	@Column(name = "footer")
 	private String footer;
 
+	@Column(name = "listing_page_size")
 	private String listingPageSize;
 
+	@Column(name = "section_page_size")
 	private String sectionPageSize;
 
-	private Long themeId;
+	@Column(name = "theme_id")
+	private Integer themeId;
 
 	public Site() {
+		this.active = true;
 	}
 
-//	public Site(
-//			long siteId, String siteName, Character active,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.siteName = siteName;
-//		this.active = active;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	public Site(
-//			long siteId, String siteName, byte[] siteLogoValue,
-//			String siteLogoContentType, Character active, String recUpdateBy,
-//			Date recUpdateDatetime, String recCreateBy, Date recCreateDatetime,
-//			Set<SiteParam> siteParams, Set<User> users,
-//			Set<SiteDomain> domains) {
-//		this.siteId = siteId;
-//		this.siteName = siteName;
-//		this.siteLogoValue = siteLogoValue;
-//		this.siteLogoContentType = siteLogoContentType;
-//		this.active = active;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.siteParams = siteParams;
-//		this.users = users;
-//		this.domains = domains;
-//	}
-
-	public Long getSiteId() {
+	public Integer getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(Long siteId) {
+	public void setSiteId(Integer siteId) {
 		this.siteId = siteId;
 	}
 
@@ -94,12 +90,12 @@ public class Site extends BaseEntity {
 		this.siteName = siteName;
 	}
 
-	public byte[] getLogoValue() {
-		return this.logoValue;
+	public String getLogoPath() {
+		return this.logoPath;
 	}
 
-	public void setLogoValue(byte[] logoValue) {
-		this.logoValue = logoValue;
+	public void setLogoPath(String logoPath) {
+		this.logoPath = logoPath;
 	}
 
 	public String getLogoContentType() {
@@ -110,11 +106,11 @@ public class Site extends BaseEntity {
 		this.logoContentType = siteContentType;
 	}
 
-	public Character getActive() {
+	public boolean isActive() {
 		return this.active;
 	}
 
-	public void setActive(Character active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
@@ -215,11 +211,15 @@ public class Site extends BaseEntity {
 		this.footer = Footer;
 	}
 
-	public Long getThemeId() {
+	public Integer getThemeId() {
 		return themeId;
 	}
 
-	public void setThemeId(Long themeId) {
+	public void setThemeId(Integer themeId) {
 		this.themeId = themeId;
+	}
+
+	public boolean isNew() {
+		return (this.siteId == null);
 	}
 }

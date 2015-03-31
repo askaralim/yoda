@@ -9,7 +9,7 @@ public interface ContentImageService {
 
 	ContentImage getContentImage(Long contentImageId);
 
-	ContentImage getContentImage(Long siteId, Long contentImageId);
+	ContentImage getContentImage(int siteId, Long contentImageId);
 
-	ContentImage addContentImage(Long siteId, Long userId, String imageName, String contentType, byte[] imageValue, int height, int width);
+	ContentImage addContentImage(int siteId, Long userId, String imageName, String contentType, byte[] imageValue, int height, int width);
 }

@@ -58,7 +58,7 @@ public class UserEditController {
 
 		Set<Site> sites = user.getSites();
 
-		List<Long> siteIds = new ArrayList<Long>();
+		List<Integer> siteIds = new ArrayList<Integer>();
 
 		for (Site site : sites) {
 			siteIds.add(site.getSiteId());
@@ -132,7 +132,7 @@ public class UserEditController {
 		command.setPassword("**********");
 		command.setVerifyPassword("**********");
 
-		List<Long> siteIds = new ArrayList<Long>();
+		List<Integer> siteIds = new ArrayList<Integer>();
 
 		if (user.getUserType().equals(Constants.USERTYPE_SUPER)
 			|| user.getUserType().equals(Constants.USERTYPE_ADMIN)) {

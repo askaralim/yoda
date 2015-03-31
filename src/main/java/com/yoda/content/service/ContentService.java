@@ -8,7 +8,7 @@ import com.yoda.content.model.Content;
 
 public interface ContentService {
 	Content addContent(
-			Long siteId, Long userId, String naturalKey, String title,
+			int siteId, Long userId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
 			String publishDate, String expireDate, Long updateBy,
 			boolean isPublished) throws Exception;
@@ -24,20 +24,20 @@ public interface ContentService {
 	void updateContent(Content content);
 
 	Content updateContent(
-			Long contentId, Long siteId, String naturalKey, String title,
+			Long contentId, int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
 			String publishDate, String expireDate, Long updateBy,
 			boolean isPublished) throws Exception;
 
-	Content getContent(Long siteId, Long contentId);
+	Content getContent(int siteId, Long contentId);
 
-	Content getContent(Long siteId, String naturalKey);
+	Content getContent(int siteId, String naturalKey);
 
 	Comment getComment(int commentId);
 
-	List<Content> getContents(Long siteId, String title);
+	List<Content> getContents(int siteId, String title);
 
-	List<Content> getContents(Long siteId);
+	List<Content> getContents(int siteId);
 
 	List<Comment> getComments(long contentId);
 
@@ -46,19 +46,17 @@ public interface ContentService {
 	List<Comment> getCommentsByUserId(long userId);
 
 	List<Content> search(
-			Long siteId, String title, String published, String updateBy,
+			int siteId, String title, String published, String updateBy,
 			String createBy, String publishDateStart, String publishDateEnd,
 			String expireDateStart, String expireDateEnd) throws ParseException;
 
-//	Content updateContentImage(Long siteId, Long userId, Long contentId, ContentImage contentImage);
+//	Content updateContentImage(int siteId, Long userId, Long contentId, ContentImage contentImage);
 
-	Content updateContentImage(Long siteId, Long userId, Long contentId, String featureImage);
+	Content updateContentImage(int siteId, Long userId, Long contentId, String featureImage);
 
-//	Content updateDefaultContentImage(Long siteId, Long userId, Long contentId, Long defaultImageId);
-
-	Content deleteContentImage(Long siteId, Long userId, Long contentId, Long imageId);
+//	Content updateDefaultContentImage(int siteId, Long userId, Long contentId, Long defaultImageId);
 
 	List<Content> getContent(Long userId);
 
-	Content updateContent(Long siteId, Long contentId, Long userId, String title, String shortDescription, String description) throws Exception;
+	Content updateContent(int siteId, Long contentId, Long userId, String title, String shortDescription, String description) throws Exception;
 }

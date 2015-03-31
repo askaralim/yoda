@@ -25,34 +25,34 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public Item getItem(long siteId, int itemId) {
+	public Item getItem(int siteId, int itemId) {
 		return itemDAO.getItem(siteId, itemId);
 	}
 
 	@Transactional(readOnly = true)
-	public Item getItem(long siteId, String itemNaturalKey) {
+	public Item getItem(int siteId, String itemNaturalKey) {
 		return itemDAO.getItemBySiteId_NaturalKey(siteId, itemNaturalKey);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItems(long siteId) {
+	public List<Item> getItems(int siteId) {
 		return itemDAO.getAll();
 	}
 
 	public List<Item> search(
-			long siteId, String itemNum, String itemUpcCd,
+			int siteId, String itemNum, String itemUpcCd,
 			String itemShortDesc) {
 		return null;
 	}
 
-	public void save(Long siteId, Item item) {
+	public void save(int siteId, Item item) {
 		User user = PortalUtil.getAuthenticatedUser();
 
 		item.setCreateBy(user.getUserId().intValue());
 		item.setCreateDate(new Date());
 		item.setUpdateBy(user.getUserId().intValue());
 		item.setUpdateDate(new Date());
-		item.setSiteId(siteId.intValue());
+		item.setSiteId(siteId);
 
 		itemDAO.save(item);
 	}

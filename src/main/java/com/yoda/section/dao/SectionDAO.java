@@ -14,22 +14,22 @@ import com.yoda.util.Constants;
 
 @Repository
 public class SectionDAO extends BaseDAO<Section> {
-	private static final String GET_SECTION_BY_SITEID = "from section in class Section where siteId = ? and sectionParentId = 0 order by seqNum";
+	private static final String GET_SECTION_BY_SITEID = "from section in class Section where siteId = ? and parentId = 0 order by seqNum";
 
-	private static final String GET_SECTION_BY_SECTIONPARENTID = "from Section where sectionParentId = ?";
+	private static final String GET_SECTION_BY_SECTIONPARENTID = "from Section where parentId = ?";
 
-	private static final String GET_SECTION_BY_SITEID_AND_SECTIONPARENTID = "from section in class Section where siteId = ? and sectionParentId = ? order by seqNum";
+	private static final String GET_SECTION_BY_SITEID_AND_SECTIONPARENTID = "from section in class Section where siteId = ? and parentId = ? order by seqNum";
 
-	private static final String GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED = "from section in class Section where siteId = ? and sectionParentId = ? and published = ? order by seqNum";
+	private static final String GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED = "from section in class Section where siteId = ? and parentId = ? and published = ? order by seqNum";
 
-	private static final String GET_SECTION_BY_SITEID_AND_NATURALKEY = "from Section where siteId = ? and sectionNaturalKey = ?";
+	private static final String GET_SECTION_BY_SITEID_AND_NATURALKEY = "from Section where siteId = ? and naturalKey = ?";
 
-	private static final String SELECT_MAX_SEQNUM_BY_SITEID_AND_SECTIONPARENTID = "select max(seqNum) from Section where  siteId = ? and sectionParentId = ?";
+	private static final String SELECT_MAX_SEQNUM_BY_SITEID_AND_SECTIONPARENTID = "select max(seqNum) from Section where  siteId = ? and parentId = ?";
 
 	private static final String UPDATE_MENU_SEQNUM = "update Section set seqNum = seqNum + 1 where siteId = ? and Section = ? and seqNum >= ?";
 
-	public int selectMaxSeqNumBySiteIdParentMenuId(long siteId, long sectionParentId) {
-		List<Integer> seqNum = (List<Integer>)getHibernateTemplate().find(SELECT_MAX_SEQNUM_BY_SITEID_AND_SECTIONPARENTID, siteId, sectionParentId);
+	public int selectMaxSeqNumBySiteIdParentMenuId(int siteId, int parentId) {
+		List<Integer> seqNum = (List<Integer>)getHibernateTemplate().find(SELECT_MAX_SEQNUM_BY_SITEID_AND_SECTIONPARENTID, siteId, parentId);
 
 		if (seqNum.get(0) == null) {
 			return 0;
@@ -39,11 +39,11 @@ public class SectionDAO extends BaseDAO<Section> {
 		}
 	}
 
-	public void updateSeqNum(long siteId, long sectionParentId, int seqNum) {
+	public void updateSeqNum(int siteId, int parentId, int seqNum) {
 		Query query = createQuery(UPDATE_MENU_SEQNUM);
 
-		query.setLong("siteId", siteId);
-		query.setLong("menuParentId", sectionParentId);
+		query.setInteger("siteId", siteId);
+		query.setInteger("menuParentId", parentId);
 		query.setInteger("seqNum", seqNum);
 
 		query.executeUpdate();
@@ -51,7 +51,7 @@ public class SectionDAO extends BaseDAO<Section> {
 		getSession().flush();
 	}
 
-	public Section load(long siteId, long sectionId)
+	public Section load(int siteId, int sectionId)
 		throws SecurityException, Exception {
 
 		Section section = getById(sectionId);
@@ -63,7 +63,7 @@ public class SectionDAO extends BaseDAO<Section> {
 		return section;
 	}
 
-	public Section getSectionBySiteId_SectionId(long siteId, long sectionId) {
+	public Section getSectionBySiteId_SectionId(int siteId, int sectionId) {
 		Section seciton = getById(sectionId);
 
 		if (seciton.getSiteId() != siteId) {
@@ -72,7 +72,7 @@ public class SectionDAO extends BaseDAO<Section> {
 		return seciton;
 	}
 
-	public Section getSectionBySiteId(long siteId) {
+	public Section getSectionBySiteId(int siteId) {
 		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID, siteId);
 
 		if (sections.size() == 0) {
@@ -83,7 +83,7 @@ public class SectionDAO extends BaseDAO<Section> {
 		}
 	}
 
-	public Section getSectionBySiteId_NaturalKey(long siteId, String naturalKey) {
+	public Section getSectionBySiteId_NaturalKey(int siteId, String naturalKey) {
 		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_NATURALKEY, siteId, naturalKey);
 
 		if (sections.size() == 0) {
@@ -94,7 +94,7 @@ public class SectionDAO extends BaseDAO<Section> {
 		}
 	}
 
-	public List<Section> getSectionBySectionParentId(long sectionParentId) {
+	public List<Section> getSectionBySectionParentId(int sectionParentId) {
 		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SECTIONPARENTID, sectionParentId);
 
 		if (sections.size() == 0) {
@@ -105,8 +105,8 @@ public class SectionDAO extends BaseDAO<Section> {
 		}
 	}
 
-	public List<Section> getBySI_SPI(long siteId, long sectionParentId) {
-		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_SECTIONPARENTID, siteId, sectionParentId);
+	public List<Section> getBySI_SPI(int siteId, int parentId) {
+		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_SECTIONPARENTID, siteId, parentId);
 
 		if (sections.size() == 0) {
 			return new ArrayList<Section>();
@@ -116,8 +116,8 @@ public class SectionDAO extends BaseDAO<Section> {
 		}
 	}
 
-	public List<Section> getBySI_SPI_Published(long siteId, long sectionParentId, char pulished) {
-		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED, siteId, sectionParentId, pulished);
+	public List<Section> getBySI_SPI_Published(int siteId, int parentId, boolean pulished) {
+		List<Section> sections = (List<Section>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED, siteId, parentId, pulished);
 
 		if (sections.size() == 0) {
 			return new ArrayList<Section>();

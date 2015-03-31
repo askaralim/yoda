@@ -2,148 +2,120 @@ package com.yoda.menu.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.yoda.BaseEntity;
 import com.yoda.content.model.Content;
-import com.yoda.item.model.Item;
 import com.yoda.section.model.Section;
 
-public class Menu implements java.io.Serializable {
+@Entity
+@Table(name = "menu")
+public class Menu extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "menu_id")
+	private int menuId;
 
-	// Fields
+	@Column(name = "site_id")
+	private int siteId;
 
-	private long menuId;
+	@Column(name = "set_name")
+	private String setName;
 
-	private long siteId;
+	@Column(name = "title")
+	private String title;
 
-	private String menuSetName;
+	@Column(name = "name")
+	private String name;
 
-	private String menuTitle;
-
-	private String menuName;
-
+	@Column(name = "seq_num")
 	private int seqNum;
 
-	private Long menuParentId;
+	@Column(name = "parent_id")
+	private int parentId;
 
+	@Column(name = "menu_type")
 	private String menuType;
 
+	@Column(name = "menu_url")
 	private String menuUrl;
 
+	@Column(name = "menu_window_target")
 	private String menuWindowTarget;
 
+	@Column(name = "menu_window_mode")
 	private String menuWindowMode;
 
-	private char published;
+	@Column(name = "published")
+	private boolean published;
 
-	private long recUpdateBy;
+	@Column(name = "update_by")
+	private long updateBy;
 
-	private Date recUpdateDatetime;
+	@Column(name = "update_date")
+	private Date updateDate;
 
-	private long recCreateBy;
+	@Column(name = "create_by")
+	private long createBy;
 
-	private Date recCreateDatetime;
+	@Column(name = "create_date")
+	private Date createDate;
 
+	@ManyToOne
+	@JoinColumn(name = "section_id")
 	private Section section;
 
-	private Item item;
+//	private Item item;
 
+	@ManyToOne
+	@JoinColumn(name = "content_id")
 	private Content content;
 
-//	// Constructors
-//
-//	/** default constructor */
-//	public Menu() {
-//	}
-//
-//	/** minimal constructor */
-//	public Menu(
-//			long siteId, String menuSetName, String menuName, int seqNum,
-//			String menuType, String menuUrl, String menuWindowTarget,
-//			String menuWindowMode, char published, long recUpdateBy,
-//			Date recUpdateDatetime, long recCreateBy,
-//			Date recCreateDatetime) {
-//
-//		this.siteId = siteId;
-//		this.menuSetName = menuSetName;
-//		this.menuName = menuName;
-//		this.seqNum = seqNum;
-//		this.menuType = menuType;
-//		this.menuUrl = menuUrl;
-//		this.menuWindowTarget = menuWindowTarget;
-//		this.menuWindowMode = menuWindowMode;
-//		this.published = published;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	/** full constructor */
-//	public Menu(
-//			long siteId, String menuSetName, String menuName, int seqNum,
-//			Long menuParentId, String menuType, String menuUrl,
-//			String menuWindowTarget, String menuWindowMode, char published,
-//			long recUpdateBy, Date recUpdateDatetime, long recCreateBy,
-//			Date recCreateDatetime, Section section, Item item,
-//			Content content) {
-//
-//		this.siteId = siteId;
-//		this.menuSetName = menuSetName;
-//		this.menuName = menuName;
-//		this.seqNum = seqNum;
-//		this.menuParentId = menuParentId;
-//		this.menuType = menuType;
-//		this.menuUrl = menuUrl;
-//		this.menuWindowTarget = menuWindowTarget;
-//		this.menuWindowMode = menuWindowMode;
-//		this.published = published;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.section = section;
-//		this.item = item;
-//		this.content = content;
-//	}
-
-	// Property accessors
-	public long getMenuId() {
+	public int getMenuId() {
 		return this.menuId;
 	}
 
-	public void setMenuId(long menuId) {
+	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 
-	public long getSiteId() {
+	public int getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 
-	public String getMenuSetName() {
-		return this.menuSetName;
+	public String getSetName() {
+		return this.setName;
 	}
 
-	public void setMenuSetName(String menuSetName) {
-		this.menuSetName = menuSetName;
+	public void setSetName(String setName) {
+		this.setName = setName;
 	}
 
-	public String getMenuTitle() {
-		return this.menuTitle;
+	public String getTitle() {
+		return this.title;
 	}
 
-	public void setMenuTitle(String menuTitle) {
-		this.menuTitle = menuTitle;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getMenuName() {
-		return this.menuName;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setMenuName(String menuName) {
-		this.menuName = menuName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getSeqNum() {
@@ -154,12 +126,12 @@ public class Menu implements java.io.Serializable {
 		this.seqNum = seqNum;
 	}
 
-	public Long getMenuParentId() {
-		return this.menuParentId;
+	public int getParentId() {
+		return this.parentId;
 	}
 
-	public void setMenuParentId(Long menuParentId) {
-		this.menuParentId = menuParentId;
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
 	}
 
 	public String getMenuType() {
@@ -194,44 +166,44 @@ public class Menu implements java.io.Serializable {
 		this.menuWindowMode = menuWindowMode;
 	}
 
-	public char getPublished() {
+	public boolean isPublished() {
 		return this.published;
 	}
 
-	public void setPublished(char published) {
+	public void setPublished(boolean published) {
 		this.published = published;
 	}
 
-	public long getRecUpdateBy() {
-		return this.recUpdateBy;
+	public long getUpdateBy() {
+		return this.updateBy;
 	}
 
-	public void setRecUpdateBy(long recUpdateBy) {
-		this.recUpdateBy = recUpdateBy;
+	public void setUpdateBy(long updateBy) {
+		this.updateBy = updateBy;
 	}
 
-	public Date getRecUpdateDatetime() {
-		return this.recUpdateDatetime;
+	public Date getUpdateDate() {
+		return this.updateDate;
 	}
 
-	public void setRecUpdateDatetime(Date recUpdateDatetime) {
-		this.recUpdateDatetime = recUpdateDatetime;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
-	public long getRecCreateBy() {
-		return this.recCreateBy;
+	public long getCreateBy() {
+		return this.createBy;
 	}
 
-	public void setRecCreateBy(long recCreateBy) {
-		this.recCreateBy = recCreateBy;
+	public void setCreateBy(long createBy) {
+		this.createBy = createBy;
 	}
 
-	public Date getRecCreateDatetime() {
-		return this.recCreateDatetime;
+	public Date getCreateDate() {
+		return this.createDate;
 	}
 
-	public void setRecCreateDatetime(Date recCreateDatetime) {
-		this.recCreateDatetime = recCreateDatetime;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	public Section getSection() {
@@ -242,13 +214,13 @@ public class Menu implements java.io.Serializable {
 		this.section = section;
 	}
 
-	public Item getItem() {
-		return this.item;
-	}
-
-	public void setItem(Item item) {
-		this.item = item;
-	}
+//	public Item getItem() {
+//		return this.item;
+//	}
+//
+//	public void setItem(Item item) {
+//		this.item = item;
+//	}
 
 	public Content getContent() {
 		return this.content;

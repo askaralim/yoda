@@ -1,15 +1,32 @@
 package com.yoda.user.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
+@Entity
+@Table(name = "authority")
 public class UserAuthority implements GrantedAuthority {
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
 
+	@Column(name = "authority_name")
 	private String authorityName;
 
 	public UserAuthority() {

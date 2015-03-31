@@ -18,7 +18,7 @@ public class HomePageServiceImpl implements HomePageService {
 	private HomePageDAO homePageDAO;
 
 	public void addHomePage(
-			long siteId, long userId, char featureData, Content content) {
+			int siteId, long userId, boolean featureData, Content content) {
 		HomePage homePage = new HomePage();
 
 		homePage.setSiteId(siteId);
@@ -37,27 +37,27 @@ public class HomePageServiceImpl implements HomePageService {
 	}
 
 	@Transactional(readOnly = true)
-	public HomePage getHomePage(long siteId, long homePageId) {
+	public HomePage getHomePage(int siteId, long homePageId) {
 		return homePageDAO.getBySiteId_HomePageId(siteId, homePageId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<HomePage> getHomePages(long siteId) {
+	public List<HomePage> getHomePages(int siteId) {
 		return homePageDAO.getBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<HomePage> getHomePages(long siteId, String orderBy) {
+	public List<HomePage> getHomePages(int siteId, String orderBy) {
 		return homePageDAO.getBySiteId(siteId, orderBy);
 	}
 
 	@Transactional(readOnly = true)
-	public List<HomePage> getHomePagesBySiteIdAndFeatureData(long siteId) {
+	public List<HomePage> getHomePagesBySiteIdAndFeatureData(int siteId) {
 		return homePageDAO.getBySiteId_featureData(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(long siteId) {
+	public List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId) {
 		return homePageDAO.getBySiteId_featureData_NotY(siteId);
 	}
 

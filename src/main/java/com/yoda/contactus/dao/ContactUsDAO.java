@@ -12,7 +12,7 @@ import com.yoda.contactus.model.ContactUs;
 public class ContactUsDAO extends BaseDAO<ContactUs> {
 	private static final String GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED = "from ContactUs where siteId = ? and active = ? order by seqNum";
 
-	public ContactUs getContactUsById(long siteId, long contactUsId)
+	public ContactUs getContactUsById(int siteId, int contactUsId)
 			throws SecurityException, Exception {
 		ContactUs contactUs = getById(contactUsId);
 
@@ -23,7 +23,7 @@ public class ContactUsDAO extends BaseDAO<ContactUs> {
 		return contactUs;
 	}
 
-	public List<ContactUs> getContentBySiteIdIsActive(long siteId, char isActive) {
+	public List<ContactUs> getContentBySiteIdIsActive(int siteId, boolean isActive) {
 		List<ContactUs> sections = (List<ContactUs>)getHibernateTemplate().find(GET_SECTION_BY_SITEID_AND_SECTIONPARENTID_PUBLISHED, siteId, isActive);
 
 		if (sections.size() == 0) {

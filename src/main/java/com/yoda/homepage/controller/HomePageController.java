@@ -43,24 +43,11 @@ public class HomePageController {
 	@Autowired
 	HomePageService homePageService;
 
-//	@Autowired
-//	SiteParamService siteParamService;
-
 	SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
 	@RequestMapping(value="/controlpanel/homepage", method = RequestMethod.GET)
 	public ModelAndView setupForm(
 		HttpServletRequest request, HttpServletResponse response) {
-//		String loginMessage = AdminLookup.lookUpAdmin(request, response);
-//
-//		if (Validator.isNotNull(loginMessage)) {
-//			ModelMap modelMap = new ModelMap();
-//
-//			modelMap.put("loginMessage", loginMessage);
-//
-//			return new ModelAndView(
-//				"redirect:" + Constants.LOGIN_PAGE_URL, modelMap);
-//		}
 
 		HomePageEditCommand command = new HomePageEditCommand();
 
@@ -123,19 +110,19 @@ public class HomePageController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		String seqNums[] = command.getSeqNums();
-		String homePageIds[] = command.getHomePageIds();
+		long ids[] = command.getIds();
 
 		for (int i = 0; i < seqNums.length; i++) {
 			int seqNum = Format.getInt(seqNums[i]);
 
-			long homePageId = Format.getLong(homePageIds[i]);
+			long id = ids[i];
 
 			HomePage homePage = new HomePage();
 
-			homePage = homePageService.getHomePage(siteId, homePageId);
+			homePage = homePageService.getHomePage(siteId, id);
 
 			homePage.setSeqNum(seqNum);
 
@@ -154,7 +141,7 @@ public class HomePageController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		String featureData = command.getFeatureData();
 
@@ -172,14 +159,14 @@ public class HomePageController {
 			}
 
 			if (featureHomePage != null) {
-				if (featureHomePage.getHomePageId() != homePage.getHomePageId()) {
-					featureHomePage.setFeatureData('N');
+				if (featureHomePage.getId() != homePage.getId()) {
+					featureHomePage.setFeatureData(false);
 
 					homePageService.updateHomePage(featureHomePage);
 				}
 			}
 
-			homePage.setFeatureData('Y');
+			homePage.setFeatureData(true);
 
 			homePageService.updateHomePage(homePage);
 		}
@@ -189,7 +176,7 @@ public class HomePageController {
 		return "controlpanel/homepage/edit";
 	}
 
-	private void initListInfo(HomePageEditCommand command, long siteId)
+	private void initListInfo(HomePageEditCommand command, int siteId)
 			throws Exception {
 
 		List<HomePage> homePages = homePageService.getHomePages(siteId, "seqNum");
@@ -200,11 +187,11 @@ public class HomePageController {
 
 			HomePageDisplayCommand homePageDisplayCommand = new HomePageDisplayCommand();
 
-			homePageDisplayCommand.setHomePageId(homePage.getHomePageId());
+			homePageDisplayCommand.setHomePageId(homePage.getId());
 			homePageDisplayCommand.setSeqNum(Format.getInt(homePage.getSeqNum()));
 
-			if (homePage.getFeatureData() == 'Y') {
-				homePageDisplayCommand.setFeatureData(homePage.getHomePageId());
+			if (homePage.getFeatureData()) {
+				homePageDisplayCommand.setFeatureData(homePage.getId());
 			}
 
 			if (homePage.getContent() != null) {

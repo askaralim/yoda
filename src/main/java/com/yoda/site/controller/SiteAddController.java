@@ -1,7 +1,8 @@
 package com.yoda.site.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,15 +11,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.site.SiteEditCommand;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
-import com.yoda.util.Constants;
 import com.yoda.util.Format;
 
 @Controller
@@ -31,64 +29,38 @@ public class SiteAddController {
 	SiteService siteService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm(
-		HttpServletRequest request, HttpServletResponse response) {
-//		String loginMessage = AdminLookup.lookUpAdmin(request, response);
-//
-//		if (Validator.isNotNull(loginMessage)) {
-//			ModelMap modelMap = new ModelMap();
-//
-//			modelMap.put("loginMessage", loginMessage);
-//
-//			return new ModelAndView(
-//				"redirect:" + Constants.LOGIN_PAGE_URL, modelMap);
-//		}
+	public String initCreationForm(Map<String, Object> model) {
+		Site site = new Site();
 
-		SiteEditCommand command = new SiteEditCommand();
+		model.put("site", site);
+		model.put("tabIndex", "0");
 
-		command.setSiteId(null);
-		command.setSiteName("");
-		command.setDomainName("");
-		command.setPublicPort(null);
-		command.setSecurePort(null);
-		command.setActive(Constants.ACTIVE_NO);
-
-		return new ModelAndView("controlpanel/site/edit", "siteEditCommand", command);
+		return "controlpanel/site/edit";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String processSubmit(
-			@ModelAttribute SiteEditCommand command,
+	public String processCreationForm(
+			@ModelAttribute Site site,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request)
 		throws Throwable {
-
 		User user = PortalUtil.getAuthenticatedUser();
 
-		validate(command, result);
+		validate(site, result);
 
-		Site site = new Site();
+//		Site site = new Site();
 
 		if(result.hasErrors()) {
-			initListInfo(command, site);
+//			initListInfo(command, site);
 
 			return "controlpanel/site/edit";
 		}
 
-		char active;
-
-		if ((command.getActive() != null) && (command.getActive() == Constants.ACTIVE_YES)) {
-			active = Constants.ACTIVE_YES;
-		}
-		else {
-			active = Constants.PUBLISHED_NO;
-		}
-
-		site = siteService.addSite(
-			command.getSiteName(), active, user.getUserId(),
-			command.getDomainName(), command.getGoogleAnalyticsId(),
-			command.getPublicPort(), command.getSecurePort(),
-			command.isSecureConnectionEnabled());
+		siteService.addSite(
+			site.getSiteName(), site.isActive(), user.getUserId(),
+			site.getDomainName(), site.getGoogleAnalyticsId(),
+			site.getPublicPort(), site.getSecurePort(),
+			site.isSecureConnectionEnabled());
 
 //		SiteLoader siteLoader = new SiteLoader(command.getSiteId(), user.getUserId());
 
@@ -104,23 +76,23 @@ public class SiteAddController {
 
 //		adminBean.init(adminBean.getUser().getUserId(), adminBean.getSiteId());
 
-		initListInfo(command, site);
+//		initListInfo(command, site);
 
 		return "redirect:/controlpanel/site/list";
 	}
 
-	public void initListInfo(SiteEditCommand command, Site site)
-			throws Exception {
-		command.setLogoContentType(site.getLogoContentType());
+//	public void initListInfo(SiteEditCommand command, Site site)
+//			throws Exception {
+//		command.setLogoContentType(site.getLogoContentType());
+//
+//		if (Format.isNullOrEmpty(command.getTabIndex())) {
+//			command.setTabIndex("0");
+//		}
+//	}
 
-		if (Format.isNullOrEmpty(command.getTabIndex())) {
-			command.setTabIndex("0");
-		}
-	}
-
-	public void validate(SiteEditCommand command, BindingResult result)
+	public void validate(Site site, BindingResult result)
 			throws Exception {
-		if (Format.isNullOrEmpty(command.getSiteName())) {
+		if (Format.isNullOrEmpty(site.getSiteName())) {
 			result.rejectValue("siteName", "error.string.required");
 		}
 	}

@@ -36,7 +36,7 @@ public class ContentInfo extends DataInfo {
 
 	String createDate;
 
-	Long hitCounter;
+	int hitCounter;
 
 	long score;
 
@@ -44,11 +44,11 @@ public class ContentInfo extends DataInfo {
 
 //	Vector contentImageUrls;
 
-	public Long getHitCounter() {
+	public int getHitCounter() {
 		return hitCounter;
 	}
 
-	public void setHitCounter(Long hitCounter) {
+	public void setHitCounter(int hitCounter) {
 		this.hitCounter = hitCounter;
 	}
 

@@ -80,7 +80,7 @@ public class MenuFactory {
 	}
 
 	private List<MenuInfo> getMenus(
-			Site site, String menuSetName, Long menuParentId)
+			Site site, String menuSetName, int menuParentId)
 		{
 		List<MenuInfo> menuInfos = new ArrayList<MenuInfo>();
 
@@ -89,8 +89,8 @@ public class MenuFactory {
 		for (Menu menu : menus) {
 			MenuInfo menuInfo = new MenuInfo();
 
-			menuInfo.setMenuTitle(menu.getMenuTitle());
-			menuInfo.setMenuName(menu.getMenuName());
+			menuInfo.setMenuTitle(menu.getTitle());
+			menuInfo.setMenuName(menu.getName());
 			menuInfo.setSeqNo(menu.getSeqNum());
 			menuInfo.setMenuWindowMode(menu.getMenuWindowMode());
 			menuInfo.setMenuWindowTarget(menu.getMenuWindowTarget());
@@ -114,20 +114,20 @@ public class MenuFactory {
 				url = menu.getMenuUrl();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_HOME)) {
-				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getMenuName();
+				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_CONTENT) && menu.getContent() != null) {
 				Content content = menu.getContent();
 
-				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getMenuName() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
+				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_SECTION) && menu.getSection() != null) {
 				Section section = menu.getSection();
 
-				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getMenuName() + StringPool.SLASH + Constants.FRONTEND_URL_SECTION + StringPool.SLASH + section.getSectionId();
+				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName() + StringPool.SLASH + Constants.FRONTEND_URL_SECTION + StringPool.SLASH + section.getSectionId();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_CONTACTUS)) {
-				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getMenuName();
+				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_SIGNIN)) {
 				url = getSecureURLPrefix(site) + contextPath + StringPool.SLASH + "/account/login/accountLogin";
@@ -141,7 +141,7 @@ public class MenuFactory {
 			}
 
 			menuInfo.setMenuUrl(url);
-			menuName = menu.getMenuName();
+			menuName = menu.getName();
 
 			menuAnchor = "<a href=\"" + url + "\"" + "onclick=\"javascrpt:window.open('" + url + "', " + "'" + menu.getMenuWindowTarget() + "' ";
 

@@ -82,9 +82,6 @@ public class UserDAO extends BaseDAO<User> {
 
 	public User getByUI_SU(long userId, User signinUser)
 		throws SecurityException {
-	
-//		Session session = HibernateConnection.getInstance().getCurrentSession();
-
 		String userType = signinUser.getUserType();
 
 		if (!userType.equals(Constants.USERTYPE_ADMIN)
@@ -93,7 +90,6 @@ public class UserDAO extends BaseDAO<User> {
 			if (signinUser.getUserId() != userId) {
 				throw new SecurityException();
 			}
-
 		}
 
 		User user = getById(userId);

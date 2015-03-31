@@ -2,73 +2,67 @@ package com.yoda.homepage.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 import com.yoda.content.model.Content;
 
+@Entity
+@Table(name = "home_page")
 public class HomePage extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@Column(name = "home_page_id")
+	private Integer id;
 
-	private Long homePageId;
-
-	private Long siteId;
-
-	private int seqNum;
-
-	private Character featureData;
-
-	private Long updateBy;
-
+	@Column(name = "update_date")
 	private Date updateDate;
 
-	private Long createBy;
-
+	@Column(name = "create_date")
 	private Date createDate;
+
+	@Column(name = "create_by")
+	private long createBy;
+
+	@Column(name = "site_id")
+	private int siteId;
+
+	@Column(name = "update_by")
+	private long updateBy;
+
+	@Column(name = "seq_num")
+	private int seqNum;
+
+	@Column(name = "feature_data")
+	private boolean featureData;
 
 //	private Item item;
 
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name = "content_id")
 	private Content content;
 
-	public HomePage() {
+	public Integer getId() {
+		return this.id;
 	}
 
-//	public HomePage(long siteId, int seqNum, char featureData,
-//			long recUpdateBy, Date recUpdateDatetime, long recCreateBy,
-//			Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.seqNum = seqNum;
-//		this.featureData = featureData;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	public HomePage(long siteId, int seqNum, char featureData,
-//			long recUpdateBy, Date recUpdateDatetime, long recCreateBy,
-//			Date recCreateDatetime, Item item, Content content) {
-//		this.siteId = siteId;
-//		this.seqNum = seqNum;
-//		this.featureData = featureData;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.item = item;
-//		this.content = content;
-//	}
-
-	public Long getHomePageId() {
-		return this.homePageId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public void setHomePageId(Long homePageId) {
-		this.homePageId = homePageId;
-	}
-
-	public Long getSiteId() {
+	public int getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(Long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 
@@ -80,11 +74,11 @@ public class HomePage extends BaseEntity {
 		this.seqNum = seqNum;
 	}
 
-	public char getFeatureData() {
+	public boolean getFeatureData() {
 		return this.featureData;
 	}
 
-	public void setFeatureData(char featureData) {
+	public void setFeatureData(boolean featureData) {
 		this.featureData = featureData;
 	}
 
@@ -120,19 +114,15 @@ public class HomePage extends BaseEntity {
 		this.createDate = createDate;
 	}
 
-//	public Item getItem() {
-//		return this.item;
-//	}
-//
-//	public void setItem(Item item) {
-//		this.item = item;
-//	}
-
 	public Content getContent() {
 		return this.content;
 	}
 
 	public void setContent(Content content) {
 		this.content = content;
+	}
+
+	public boolean isNew() {
+		return (this.id == null);
 	}
 }

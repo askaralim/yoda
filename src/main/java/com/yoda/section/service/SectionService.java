@@ -11,46 +11,46 @@ import com.yoda.section.model.DropDownMenu;
 import com.yoda.section.model.Section;
 
 public interface SectionService {
-	public Section getBySiteId(long siteId);
+	public Section getBySiteId(int siteId);
 
-	public List<Section> getSectionBySiteId_SectionParentId(long siteId, long sectionParentId);
+	public List<Section> getSectionBySiteId_SectionParentId(int siteId, int parentId);
 
-	public List<Section> getSectionBySiteId_SectionParentId_Published(long siteId, long sectionParentId, char pulished);
+	public List<Section> getSectionBySiteId_SectionParentId_Published(int siteId, int parentId, boolean published);
 
-	JSONObject makeJSONSectionTree(long siteId) throws Exception;
+	JSONObject makeJSONSectionTree(int siteId) throws Exception;
 
-	JSONObject makeJSONSectionTreeNode(long siteId, long sectionId) throws Exception;
+	JSONObject makeJSONSectionTreeNode(int siteId,  int sectionId) throws Exception;
 
-	DropDownMenu makeSectionTree(long siteId);
+	DropDownMenu makeSectionTree(int siteId);
 
-	DropDownMenu[] makeSectionTreeItem(long siteId, long sectionParentId) throws Exception;
+	DropDownMenu[] makeSectionTreeItem(int siteId, int parentId) throws Exception;
 
-	DropDownMenu[] makeDdmSection(long siteId, long sectionParentId) throws Exception;
+	DropDownMenu[] makeDdmSection(int siteId, int parentId) throws Exception;
 
-	void getSectionIdTreeListWorker(long siteId, Vector<Long> list, long parentId) throws Exception;
+	void getSectionIdTreeListWorker(int siteId, Vector<Integer> list, int parentId) throws Exception;
 
-	Long[] getSectionIdTreeList(long siteId, long parentId) throws Exception;
+	Integer[] getSectionIdTreeList(int siteId, int parentId) throws Exception;
 
-	String formatSectionName(long siteId, long sectionId) throws Exception;
+	String formatSectionName(int siteId,  int sectionId) throws Exception;
 
-	Section getSectionBySiteId_SectionId(long siteId, long sectionId);
+	Section getSectionBySiteId_SectionId(int siteId,  int sectionId);
 
-	Section getSectionBySiteId_NaturalKey(long siteId, String naturalKey);
+	Section getSectionBySiteId_NaturalKey(int siteId, String naturalKey);
 
 	void updateSection(Section section);
 
-	public void addSection(long siteId, long userId, long sectionId, String sectionTitle, String sectionShortTitle, String sectionDesc, char published)
+	public void addSection(int siteId, long userId,  int sectionId, String title, String shortTitle, String description, boolean published)
 		throws UnsupportedEncodingException, SectionShortTitleException;
 
-	public List<Section> getBySectionParentId(long sectionParentId);
+	public List<Section> getBySectionParentId(int parentId);
 
-	public void cascadeRemoveSection(long siteId, long sectionId);
+	public void cascadeRemoveSection(int siteId,  int sectionId);
 
-	public int selectMaxSeqNumBySectionId_SiteId(long siteId, long sectionId);
+	public int selectMaxSeqNumBySectionId_SiteId(int siteId,  int sectionId);
 
-	public void updateSeqNum(long siteId, long sectionParentId, int seqNum);
+	public void updateSeqNum(int siteId, int parentId, int seqNum);
 
-	public Section addSection(long siteId, long userId, long sectionParentId, int seqNum, String sectionShortTitle, String sectionTitle, String sectionDesc, char published);
+	public Section addSection(int siteId, long userId, int sectionParentId, int seqNum, String shortTitle, String title, String description, boolean published);
 
 	public List<Section> search(String sql, String sortBy);
 }

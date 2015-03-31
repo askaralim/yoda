@@ -14,19 +14,19 @@ import com.yoda.site.service.SiteService;
 import com.yoda.util.Validator;
 
 public class PortalInstances {
-	public static void addSiteId(long siteId) {
+	public static void addSiteId(int siteId) {
 		_instance._addSiteId(siteId);
 	}
 
-	public static long getSiteId(HttpServletRequest request) {
+	public static int getSiteId(HttpServletRequest request) {
 		return _instance._getSiteId(request);
 	}
 
-	public static Site getSite(long siteId) {
+	public static Site getSite(int siteId) {
 		return _instance._getSite(siteId);
 	}
 
-	public static long[] getSiteIds() {
+	public static int[] getSiteIds() {
 		return _instance._getSiteIds();
 	}
 
@@ -35,33 +35,33 @@ public class PortalInstances {
 	}
 
 	private PortalInstances() {
-		_siteIds = new long[0];
+		_siteIds = new int[0];
 	}
 
-	private long _getDefaultSiteId() {
+	private int _getDefaultSiteId() {
 		return _siteIds[0];
 	}
 
-	private Site _getSite(long siteId) {
+	private Site _getSite(int siteId) {
 		return getService().getSite(siteId);
 	}
 
-	private long _getSiteId(HttpServletRequest request) {
+	private int _getSiteId(HttpServletRequest request) {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Get site id");
 		}
 
-		Long siteIdObj = (Long)request.getAttribute(WebKeys.SITE_ID);
+		Integer siteIdObj = (Integer)request.getAttribute(WebKeys.SITE_ID);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Site id from request " + siteIdObj);
 		}
 
 		if (siteIdObj != null) {
-			return siteIdObj.longValue();
+			return siteIdObj;
 		}
 
-		long siteId = _getSiteIdByVirtualHosts(request);
+		int siteId = _getSiteIdByVirtualHosts(request);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Site id from host " + siteId);
@@ -102,19 +102,19 @@ public class PortalInstances {
 			_log.debug("Set site id " + siteId);
 		}
 
-		request.setAttribute(WebKeys.SITE_ID, new Long(siteId));
+		request.setAttribute(WebKeys.SITE_ID, new Integer(siteId));
 
 		return siteId;
 	}
 
-	private void _addSiteId(long siteId) {
+	private void _addSiteId(int siteId) {
 		for (int i = 0; i < _siteIds.length; i++) {
 			if (siteId == _siteIds[i]) {
 				return;
 			}
 		}
 
-		long[] siteIds = new long[_siteIds.length + 1];
+		int[] siteIds = new int[_siteIds.length + 1];
 
 		System.arraycopy(_siteIds, 0, siteIds, 0, _siteIds.length);
 
@@ -123,7 +123,7 @@ public class PortalInstances {
 		_siteIds = siteIds;
 	}
 
-	private long _getSiteIdByVirtualHosts(HttpServletRequest request) {
+	private int _getSiteIdByVirtualHosts(HttpServletRequest request) {
 		String host = PortalUtil.getHost(request);
 
 		if (_log.isDebugEnabled()) {
@@ -147,7 +147,7 @@ public class PortalInstances {
 		return 0;
 	}
 
-	private long[] _getSiteIds() {
+	private int[] _getSiteIds() {
 		return _siteIds;
 	}
 
@@ -182,5 +182,5 @@ public class PortalInstances {
 
 	private static PortalInstances _instance = new PortalInstances();
 
-	private long[] _siteIds;
+	private int[] _siteIds;
 }

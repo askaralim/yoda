@@ -11,52 +11,52 @@ import com.yoda.section.model.DropDownMenu;
 import com.yoda.section.model.Section;
 
 public interface MenuService {
-	Menu getMenu(long menuId);
+	Menu getMenu(int menuId);
 
-	Menu getMenu(long siteId, String menuSetName);
+	Menu getMenu(int siteId, String menuSetName);
 
-	Menu getMenuBySiteIdMenuName(long siteId, String menuName);
+	Menu getMenuBySiteIdMenuName(int siteId, String menuName);
 
-	Menu getMenu(long siteId, long menuId) throws SecurityException, Exception;
+	Menu getMenu(int siteId, int menuId) throws SecurityException, Exception;
 
-	List<Menu> getMenu(long siteId, String menuSetName, long menuParentId);
+	List<Menu> getMenu(int siteId, String menuSetName, int menuParentId);
 
-	List<Menu> getBySiteIdMenuParentId(long siteId, long menuParentId);
+	List<Menu> getBySiteIdMenuParentId(int siteId, int menuParentId);
 
-	String formatMenuName(long siteId, long menuId) throws Exception;
+	String formatMenuName(int siteId, int menuId) throws Exception;
 
-	DropDownMenu[] makeMenuTreeList(long siteId) throws Exception;
+	DropDownMenu[] makeMenuTreeList(int siteId) throws Exception;
 
-	DropDownMenu makeMenuTree(long siteId, String menuSetName) throws Exception;
+	DropDownMenu makeMenuTree(int siteId, String menuSetName) throws Exception;
 
-	DropDownMenu[] makeMenu(long siteId, String menuSetName, long menuParentId) throws Exception;
+	DropDownMenu[] makeMenu(int siteId, String menuSetName, int menuParentId) throws Exception;
 
-	DropDownMenu[] makeDdmMenu(long siteId, String menuSetName, Long menuParentId) throws Exception;
+	DropDownMenu[] makeDdmMenu(int siteId, String menuSetName, int menuParentId) throws Exception;
 
-	Menu addMenu(long userId, long siteId, String menuSetName, String menuName);
+	Menu addMenu(long userId, int siteId, String menuSetName, String menuName);
 
-	void addMenu(long userId, long siteId, long menuId, String menuTitle, String menuName,
+	void addMenu(long userId, int siteId, int menuId, String menuTitle, String menuName,
 				String menuUrl, String menuWindowTarget, String menuWindowMode,
-				char published, String menuType, long contentId, int itemId, long sectionId) throws SecurityException, Exception;
+				boolean published, String menuType, long contentId, int itemId, int sectionId) throws SecurityException, Exception;
 
-	void deleteMenu(long siteId, long menuId);
+	void deleteMenu(int siteId, int menuId);
 
-	List<Menu> getByMenuParentId(long parentMenuId);
+	List<Menu> getByMenuParentId(int parentMenuId);
 
-	int selectMaxSeqNumByMenuId_SiteId(long siteId, long parentMenuId);
+	int selectMaxSeqNumByMenuId_SiteId(int siteId, int parentMenuId);
 
-	void updateSeqNum(long siteId, long menuParentId, int seqNum);
+	void updateSeqNum(int siteId, int menuParentId, int seqNum);
 
-	Menu addMenu(long siteId, long menuParentId, int seqNum,
+	Menu addMenu(int siteId, int menuParentId, int seqNum,
 				 String menuSetName, String menuTitle, String menuName, String menuType, String menuUrl,
-				 String menuWindowTarget, String menuWindowMode, char published, long recUpdateBy,
+				 String menuWindowTarget, String menuWindowMode, boolean published, long recUpdateBy,
 				 long recCreateBy);
 
 	void updateMenu(Menu menu);
 
-	public JSONObject makeJSONMenuTree(long siteId) throws Exception;
+	public JSONObject makeJSONMenuTree(int siteId) throws Exception;
 
-	public JSONObject makeJSONMenuTreeNode(long siteId, long menuId) throws Exception;
+	public JSONObject makeJSONMenuTreeNode(int siteId, int menuId) throws Exception;
 
-	Menu updateMenu(long siteId, long menuId, Content content, Item item, Section section, String menuUrl, String menuWindowMode, String menuWindowTarget, String menuType)  throws SecurityException, Exception;
+	Menu updateMenu(int siteId, int menuId, Content content, Item item, Section section, String menuUrl, String menuWindowMode, String menuWindowTarget, String menuType)  throws SecurityException, Exception;
 }

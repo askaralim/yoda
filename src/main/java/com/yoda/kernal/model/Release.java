@@ -2,16 +2,32 @@ package com.yoda.kernal.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "release_")
 public class Release {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "release_id")
 	private Long releaseId;
 
+	@Column(name = "create_date")
 	private Date createDate;
 
+	@Column(name = "modified_date")
 	private Date modifiedDate;
 
-	private Integer buildNumber;
+	@Column(name = "build_number")
+	private int buildNumber;
 
-	private Boolean verified;
+	@Column(name = "verified")
+	private boolean verified;
 
 	public Long getReleaseId() {
 		return releaseId;
@@ -37,19 +53,19 @@ public class Release {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public Integer getBuildNumber() {
+	public int getBuildNumber() {
 		return buildNumber;
 	}
 
-	public void setBuildNumber(Integer buildNumber) {
+	public void setBuildNumber(int buildNumber) {
 		this.buildNumber = buildNumber;
 	}
 
-	public Boolean getVerified() {
+	public boolean getVerified() {
 		return verified;
 	}
 
-	public void setVerified(Boolean verified) {
+	public void setVerified(boolean verified) {
 		this.verified = verified;
 	}
 }

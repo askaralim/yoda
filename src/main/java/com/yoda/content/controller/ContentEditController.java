@@ -28,8 +28,6 @@ import com.yoda.content.ContentEditCommand;
 import com.yoda.content.ContentEditValidator;
 import com.yoda.content.ContentMenuDisplayCommand;
 import com.yoda.content.model.Content;
-import com.yoda.content.model.ContentImage;
-import com.yoda.content.service.ContentImageService;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
@@ -51,8 +49,8 @@ import com.yoda.util.Validator;
 @Controller
 @RequestMapping("/controlpanel/content/{contentId}/edit")
 public class ContentEditController {
-	@Autowired
-	ContentImageService contentImageService;
+//	@Autowired
+//	ContentImageService contentImageService;
 
 	@Autowired
 	UserService userService;
@@ -98,7 +96,7 @@ public class ContentEditController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		new ContentEditValidator().validate(command, result);
 
@@ -123,7 +121,7 @@ public class ContentEditController {
 		if (command.isHomePage()) {
 			if (homePage == null) {
 				homePageService.addHomePage(
-					user.getLastVisitSiteId(), user.getUserId(), 'N', content);
+					user.getLastVisitSiteId(), user.getUserId(), true, content);
 			}
 		}
 		else {
@@ -155,17 +153,17 @@ public class ContentEditController {
 			HttpServletRequest request) {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		long contentId = command.getContentId();
 
 		Content content = contentService.getContent(siteId, contentId);
 
-		ContentImage contentImage = content.getImage();
-
-		if (contentImage != null) {
-			contentImageService.deleteContentImage(contentImage);
-		}
+//		ContentImage contentImage = content.getImage();
+//
+//		if (contentImage != null) {
+//			contentImageService.deleteContentImage(contentImage);
+//		}
 
 //		Iterator iterator = content.getImages().iterator();
 
@@ -198,7 +196,7 @@ public class ContentEditController {
 
 		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
 
-		content.setHitCounter(0l);
+		content.setHitCounter(0);
 		content.setUpdateBy(user.getUserId());
 		content.setUpdateDate(new Date());
 
@@ -223,8 +221,8 @@ public class ContentEditController {
 
 	@RequestMapping("/addSection")
 	public void addSection(
-			@PathVariable("contentId") Long contentId,
-			@RequestParam("sectionId") Long sectionId,
+			@PathVariable("contentId") long contentId,
+			@RequestParam("sectionId") int sectionId,
 			HttpServletRequest request,
 			HttpServletResponse response) throws Throwable {
 
@@ -296,7 +294,7 @@ public class ContentEditController {
 		outputStream.flush();
 	}
 
-	public JSONObject createJsonSelectedMenus(Long siteId, Content content)
+	public JSONObject createJsonSelectedMenus(int siteId, Content content)
 		throws Exception {
 		JSONObject jsonResult = new JSONObject();
 
@@ -325,7 +323,7 @@ public class ContentEditController {
 	@RequestMapping("/removeMenus")
 	public void removeMenus(
 			@PathVariable("contentId") Long contentId,
-			@RequestParam("removeMenus") Long[] menuIds,
+			@RequestParam("removeMenus") int[] menuIds,
 			HttpServletRequest request, HttpServletResponse response)
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
@@ -370,7 +368,7 @@ public class ContentEditController {
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("menuWindowTarget") String menuWindowTarget,
 			@RequestParam("menuWindowMode") String menuWindowMode,
-			@RequestParam("addMenus") Long[] addMenus,
+			@RequestParam("addMenus") int[] addMenus,
 			HttpServletRequest request, HttpServletResponse response)
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
@@ -546,19 +544,19 @@ public class ContentEditController {
 		return urlPrefix;
 	}
 
-	public JSONObject createJsonImages(Long siteId, Content content)
+	public JSONObject createJsonImages(int siteId, Content content)
 			throws Exception {
 		JSONObject jsonResult = new JSONObject();
 
-		ContentImage defaultImage = content.getImage();
-
-		if (defaultImage != null) {
-			JSONObject jsonDeFaultImage = new JSONObject();
-
-			jsonDeFaultImage.put("imageId", defaultImage.getImageId());
-			jsonDeFaultImage.put("imageName", defaultImage.getImageName());
-			jsonResult.put("defaultImage", jsonDeFaultImage);
-		}
+//		ContentImage defaultImage = content.getImage();
+//
+//		if (defaultImage != null) {
+//			JSONObject jsonDeFaultImage = new JSONObject();
+//
+//			jsonDeFaultImage.put("imageId", defaultImage.getImageId());
+//			jsonDeFaultImage.put("imageName", defaultImage.getImageName());
+//			jsonResult.put("defaultImage", jsonDeFaultImage);
+//		}
 
 //		Iterator iterator = content.getImages().iterator();
 
@@ -580,31 +578,31 @@ public class ContentEditController {
 		return jsonResult;
 	}
 
-	public void removeImages(
-			@PathVariable("contentId") Long contentId,
-			@RequestParam("removeImage") Long imageId,
-			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
-
-		Content content = contentService.deleteContentImage(
-			user.getLastVisitSiteId(), user.getUserId(), contentId, imageId);
-
-		JSONObject jsonResult = createJsonImages(user.getLastVisitSiteId(), content);
-
-		jsonResult.put("updateBy", content.getUpdateBy());
-		jsonResult.put("updateDate", Format.getFullDatetime(content.getUpdateDate()));
-
-		String jsonString = jsonResult.toString();
-
-		response.setContentType("text/html");
-		response.setContentLength(jsonString.length());
-
-		OutputStream outputStream = response.getOutputStream();
-
-		outputStream.write(jsonString.getBytes());
-		outputStream.flush();
-	}
+//	public void removeImages(
+//			@PathVariable("contentId") Long contentId,
+//			@RequestParam("removeImage") Long imageId,
+//			HttpServletRequest request, HttpServletResponse response)
+//		throws Throwable {
+//		User user = PortalUtil.getAuthenticatedUser();
+//
+//		Content content = contentService.deleteContentImage(
+//			user.getLastVisitSiteId(), user.getUserId(), contentId, imageId);
+//
+//		JSONObject jsonResult = createJsonImages(user.getLastVisitSiteId(), content);
+//
+//		jsonResult.put("updateBy", content.getUpdateBy());
+//		jsonResult.put("updateDate", Format.getFullDatetime(content.getUpdateDate()));
+//
+//		String jsonString = jsonResult.toString();
+//
+//		response.setContentType("text/html");
+//		response.setContentLength(jsonString.length());
+//
+//		OutputStream outputStream = response.getOutputStream();
+//
+//		outputStream.write(jsonString.getBytes());
+//		outputStream.flush();
+//	}
 
 //	@RequestMapping("/defaultImage")
 //	public void defaultImage(
@@ -635,7 +633,7 @@ public class ContentEditController {
 	public void createAdditionalInfo(
 			User user, Content content, ContentEditCommand command)
 		throws Exception {
-		Long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		Iterator iterator = content.getMenus().iterator();
 

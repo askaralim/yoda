@@ -23,7 +23,7 @@ public class SiteDAO extends BaseDAO<Site> {
 		return find(FINDER_ALL_SITES);
 	}
 
-	public Site getByS_U(long siteId, User signinUser)
+	public Site getByS_U(int siteId, User signinUser)
 			throws SecurityException{
 
 		String userType = signinUser.getUserType();
@@ -36,7 +36,7 @@ public class SiteDAO extends BaseDAO<Site> {
 		return this.getBySiteId(siteId);
 	}
 
-	public Site getBySiteId(long siteId) {
+	public Site getBySiteId(int siteId) {
 
 		Enumeration e = sites.elements();
 

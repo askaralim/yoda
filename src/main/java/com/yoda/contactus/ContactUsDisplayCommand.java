@@ -2,7 +2,7 @@ package com.yoda.contactus;
 
 public class ContactUsDisplayCommand {
 //	boolean remove;
-	long contactUsId;
+	int contactUsId;
 	String contactUsName;
 	String contactUsEmail;
 	String contactUsPhone;
@@ -25,11 +25,11 @@ public class ContactUsDisplayCommand {
 		this.contactUsEmail = contactUsEmail;
 	}
 
-	public long getContactUsId() {
+	public int getContactUsId() {
 		return contactUsId;
 	}
 
-	public void setContactUsId(long contactUsId) {
+	public void setContactUsId(int contactUsId) {
 		this.contactUsId = contactUsId;
 	}
 

@@ -37,23 +37,23 @@ public class SectionServiceImpl implements SectionService {
 	private MenuService menuService;
 
 	public Section addSection(
-			long siteId, long userId, long sectionParentId,
-			int seqNum, String sectionShortTitle, String sectionTitle,
-			String sectionDesc, char published) {
+			int siteId, long userId, int parentId,
+			int seqNum, String shortTitle, String title,
+			String description, boolean published) {
 		Section section = new Section();
 
 		section.setSiteId(siteId);
-		section.setSectionParentId(sectionParentId);
+		section.setParentId(parentId);
 		section.setSeqNum(seqNum);
-		section.setSectionShortTitle(sectionShortTitle);
-		section.setSectionTitle(sectionTitle);
-		section.setSectionDesc(sectionDesc);
+		section.setShortTitle(shortTitle);
+		section.setTitle(title);
+		section.setDescription(description);
 		section.setPublished(published);
-		section.setRecUpdateBy(userId);
-		section.setRecCreateBy(userId);
-		section.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
-		section.setRecCreateDatetime(new Date(System.currentTimeMillis()));
-		section.setSectionNaturalKey(getFullSectionPath(section, siteId));
+		section.setUpdateBy(userId);
+		section.setCreateBy(userId);
+		section.setUpdateDate(new Date(System.currentTimeMillis()));
+		section.setCreateDate(new Date(System.currentTimeMillis()));
+		section.setNaturalKey(getFullSectionPath(section, siteId));
 
 		sectionDAO.save(section);
 
@@ -61,14 +61,14 @@ public class SectionServiceImpl implements SectionService {
 	}
 
 	public void addSection(
-			long siteId, long userId, long sectionId, String sectionTitle,
-			String sectionShortTitle, String sectionDesc, char published)
+			int siteId, long userId, int sectionId, String title,
+			String shortTitle, String description, boolean published)
 		throws UnsupportedEncodingException, SectionShortTitleException {
 		boolean update = false;
 
 		Section section = sectionDAO.getSectionBySiteId_SectionId(siteId, sectionId);
 
-		section.setSectionShortTitle(sectionShortTitle);
+		section.setShortTitle(shortTitle);
 
 		String fullSectionPath = getFullSectionPath(section, siteId);
 
@@ -86,13 +86,13 @@ public class SectionServiceImpl implements SectionService {
 			throw new SectionShortTitleException();
 		}
 
-		section.setSectionTitle(sectionTitle);
-		section.setSectionDesc(sectionDesc);
+		section.setTitle(title);
+		section.setDescription(description);
 		section.setPublished(published);
-		section.setRecUpdateBy(userId);
-		section.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
+		section.setUpdateBy(userId);
+		section.setUpdateDate(new Date(System.currentTimeMillis()));
 
-		section.setSectionNaturalKey(fullSectionPath);
+		section.setNaturalKey(fullSectionPath);
 
 		update = true;
 
@@ -101,28 +101,28 @@ public class SectionServiceImpl implements SectionService {
 		sectionDAO.update(section);
 	}
 
-	public int selectMaxSeqNumBySectionId_SiteId(long siteId, long sectionId) {
+	public int selectMaxSeqNumBySectionId_SiteId(int siteId, int sectionId) {
 		return sectionDAO.selectMaxSeqNumBySiteIdParentMenuId(siteId, sectionId);
 	}
 
-	public List<Section> getBySectionParentId(long sectionParentId) {
-		return sectionDAO.getSectionBySectionParentId(sectionParentId);
+	public List<Section> getBySectionParentId(int parentId) {
+		return sectionDAO.getSectionBySectionParentId(parentId);
 	}
 
 	public List<Section> getSectionBySiteId_SectionParentId_Published(
-			long siteId, long sectionParentId, char pulished) {
-		return sectionDAO.getBySI_SPI_Published(siteId, sectionParentId, pulished);
+			int siteId, int parentId, boolean pulished) {
+		return sectionDAO.getBySI_SPI_Published(siteId, parentId, pulished);
 	}
 
-	public Section getBySiteId(long siteId) {
+	public Section getBySiteId(int siteId) {
 		return sectionDAO.getSectionBySiteId(siteId);
 	}
 
-	public List<Section> getSectionBySiteId_SectionParentId(long siteId, long sectionParentId) {
-		return (List<Section>)sectionDAO.getBySI_SPI(siteId, sectionParentId);
+	public List<Section> getSectionBySiteId_SectionParentId(int siteId, int parentId) {
+		return (List<Section>)sectionDAO.getBySI_SPI(siteId, parentId);
 	}
 
-	public Section getSectionBySiteId_SectionId(long siteId, long sectionId) {
+	public Section getSectionBySiteId_SectionId(int siteId, int sectionId) {
 		return sectionDAO.getSectionBySiteId_SectionId(siteId, sectionId);
 	}
 
@@ -130,11 +130,11 @@ public class SectionServiceImpl implements SectionService {
 		sectionDAO.update(section);
 	}
 
-	public void updateSeqNum(long siteId, long sectionParentId, int seqNum) {
-		sectionDAO.updateSeqNum(siteId, sectionParentId, seqNum);
+	public void updateSeqNum(int siteId, int parentId, int seqNum) {
+		sectionDAO.updateSeqNum(siteId, parentId, seqNum);
 	}
 
-	public void cascadeRemoveSection(long siteId, long sectionId) {
+	public void cascadeRemoveSection(int siteId, int sectionId) {
 		List<Section> sections = getBySectionParentId(sectionId);
 
 		for (Section childSection : sections) {
@@ -149,11 +149,11 @@ public class SectionServiceImpl implements SectionService {
 			contentService.updateContent(content);
 		}
 
-		for (Item item : section.getItems()) {
+//		for (Item item : section.getItems()) {
 //			item.setSection(null);
 
 //			itemService.updateItem(item);
-		}
+//		}
 
 		for (Menu menu : section.getMenus()) {
 			menu.setSection(null);
@@ -164,7 +164,7 @@ public class SectionServiceImpl implements SectionService {
 		sectionDAO.delete(section);
 	}
 
-	public JSONObject makeJSONSectionTree(long siteId)
+	public JSONObject makeJSONSectionTree(int siteId)
 			throws Exception {
 //		Session session = HibernateConnection.getInstance().getCurrentSession();
 		JSONObject object = new JSONObject();
@@ -186,14 +186,14 @@ public class SectionServiceImpl implements SectionService {
 		return object;
 	}
 
-	public JSONObject makeJSONSectionTreeNode(long siteId,long sectionId)
+	public JSONObject makeJSONSectionTreeNode(int siteId,int sectionId)
 			throws Exception {
 		JSONObject jsonObject = new JSONObject();
 
 		Section section = sectionDAO.load(siteId, sectionId);
 
 		jsonObject.put("sectionId", section.getSectionId());
-		jsonObject.put("sectionShortTitle", section.getSectionShortTitle());
+		jsonObject.put("sectionShortTitle", section.getShortTitle());
 
 		List<Section> sections = sectionDAO.getBySI_SPI(siteId, sectionId);
 
@@ -209,7 +209,7 @@ public class SectionServiceImpl implements SectionService {
 		return jsonObject;
 	}
 
-	public DropDownMenu makeSectionTree(long siteId) {
+	public DropDownMenu makeSectionTree(int siteId) {
 		Section section = null;
 
 		section = sectionDAO.getSectionBySiteId(siteId);
@@ -221,17 +221,17 @@ public class SectionServiceImpl implements SectionService {
 		DropDownMenu ddm = new DropDownMenu();
 
 		ddm.setMenuKey(section.getSectionId());
-		ddm.setMenuName(section.getSectionShortTitle());
+		ddm.setMenuName(section.getShortTitle());
 		ddm.setMenuItems(sections);
 
 		return ddm;
 	}
 
-	public DropDownMenu[] makeSectionTreeItem(long siteId, long sectionParentId) {
+	public DropDownMenu[] makeSectionTreeItem(int siteId, int parentId) {
 		DropDownMenu sections[] = null;
 		Vector<DropDownMenu> sectionList = new Vector<DropDownMenu>();
 
-		List<Section> sectionss = getSectionBySiteId_SectionParentId(siteId, sectionParentId);
+		List<Section> sectionss = getSectionBySiteId_SectionParentId(siteId, parentId);
 
 		for (Section section : sectionss) {
 			DropDownMenu childMenus[] = makeDdmSection(
@@ -240,7 +240,7 @@ public class SectionServiceImpl implements SectionService {
 			DropDownMenu ddm = new DropDownMenu();
 
 			ddm.setMenuKey(section.getSectionId());
-			ddm.setMenuName(section.getSectionShortTitle());
+			ddm.setMenuName(section.getShortTitle());
 			ddm.setMenuItems(childMenus);
 
 			sectionList.add(ddm);
@@ -251,11 +251,11 @@ public class SectionServiceImpl implements SectionService {
 		return sections;
 	}
 
-	public DropDownMenu[] makeDdmSection(long siteId, long sectionParentId) {
+	public DropDownMenu[] makeDdmSection(int siteId, int parentId) {
 		DropDownMenu sections[] = null;
 		Vector<DropDownMenu> sectionList = new Vector<DropDownMenu>();
 
-		List<Section> sectionss = getSectionBySiteId_SectionParentId(siteId, sectionParentId);
+		List<Section> sectionss = getSectionBySiteId_SectionParentId(siteId, parentId);
 
 		for (Section section : sectionss) {
 			DropDownMenu childMenus[] = makeDdmSection(
@@ -263,7 +263,7 @@ public class SectionServiceImpl implements SectionService {
 			DropDownMenu ddm = new DropDownMenu();
 
 			ddm.setMenuKey(section.getSectionId());
-			ddm.setMenuName(section.getSectionShortTitle());
+			ddm.setMenuName(section.getShortTitle());
 			ddm.setMenuItems(childMenus);
 
 			sectionList.add(ddm);
@@ -275,13 +275,13 @@ public class SectionServiceImpl implements SectionService {
 		return sections;
 	}
 
-	public Long[] getSectionIdTreeList(long siteId, long parentId)
+	public Integer[] getSectionIdTreeList(int siteId, int parentId)
 			throws Exception {
-		Vector<Long> list = new Vector<Long>();
+		Vector<Integer> list = new Vector<Integer>();
 
 		getSectionIdTreeListWorker(siteId, list, parentId);
 
-		Long sectionIdList[] = new Long[list.size()];
+		Integer sectionIdList[] = new Integer[list.size()];
 
 		list.copyInto(sectionIdList);
 
@@ -289,7 +289,7 @@ public class SectionServiceImpl implements SectionService {
 	}
 
 	public void getSectionIdTreeListWorker(
-			long siteId, Vector<Long> list, long parentId) throws Exception {
+			int siteId, Vector<Integer> list, int parentId) throws Exception {
 //		Session session = HibernateConnection.getInstance().getCurrentSession();
 //		Query query = session
 //				.createQuery("from section in class Section where siteId = :siteId and section.sectionParentId = :sectionParentId order by seqNum");
@@ -313,7 +313,7 @@ public class SectionServiceImpl implements SectionService {
 		}
 	}
 
-	public String formatSectionName(long siteId, long sectionId) throws SecurityException, Exception {
+	public String formatSectionName(int siteId, int sectionId) throws SecurityException, Exception {
 		String sectionString = "";
 
 		while (true) {
@@ -321,7 +321,7 @@ public class SectionServiceImpl implements SectionService {
 
 			section = sectionDAO.load(siteId, sectionId);
 
-			sectionId = section.getSectionParentId();
+			sectionId = section.getParentId();
 
 			if (sectionId == 0) {
 				break;
@@ -331,30 +331,30 @@ public class SectionServiceImpl implements SectionService {
 				sectionString = " - " + sectionString;
 			}
 
-			sectionString = section.getSectionShortTitle() + sectionString;
+			sectionString = section.getShortTitle() + sectionString;
 		}
 
 		return sectionString;
 	}
 
-	public String getFullSectionPath(Section section, long siteId) {
-		String path = section.getSectionShortTitle();
+	public String getFullSectionPath(Section section, int siteId) {
+		String path = section.getShortTitle();
 
-		long sectionParentId = section.getSectionParentId();
+		int sectionParentId = section.getParentId();
 
 		while (sectionParentId != 0) {
 			Section parent = getSectionBySiteId_SectionId(siteId, sectionParentId);
 
-			path = parent.getSectionShortTitle() + " " + path;
+			path = parent.getShortTitle() + " " + path;
 
-			sectionParentId = parent.getSectionParentId();
+			sectionParentId = parent.getParentId();
 		}
 
 		return path;
 	}
 
 	public int updateChildrenSectionPath(
-			Section section, long siteId, boolean update) throws UnsupportedEncodingException {
+			Section section, int siteId, boolean update) throws UnsupportedEncodingException {
 		List<Section> sections = getSectionBySiteId_SectionParentId(siteId, section.getSectionId());
 
 		int max = 0;
@@ -367,7 +367,7 @@ public class SectionServiceImpl implements SectionService {
 			}
 
 			if (update) {
-				child.setSectionNaturalKey(fullSectionPath);
+				child.setNaturalKey(fullSectionPath);
 				updateSection(child);
 //				session.save(child);
 			}
@@ -382,7 +382,7 @@ public class SectionServiceImpl implements SectionService {
 		return max;
 	}
 
-	public Section getSectionBySiteId_NaturalKey(long siteId, String naturalKey) {
+	public Section getSectionBySiteId_NaturalKey(int siteId, String naturalKey) {
 		return sectionDAO.getSectionBySiteId_NaturalKey(siteId, naturalKey);
 	}
 

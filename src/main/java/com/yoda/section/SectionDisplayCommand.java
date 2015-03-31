@@ -2,18 +2,18 @@ package com.yoda.section;
 
 public class SectionDisplayCommand {
 	boolean remove;
-	long sectionId;
+	int sectionId;
 	String sectionShortTitle;
 	String sectionTitle;
 	String sectionDesc;
 	String seqNum;
-	String published;
+	boolean published;
 
-	public String getPublished() {
+	public boolean isPublished() {
 		return published;
 	}
 
-	public void setPublished(String published) {
+	public void setPublished(boolean published) {
 		this.published = published;
 	}
 
@@ -41,11 +41,11 @@ public class SectionDisplayCommand {
 		this.seqNum = seqNum;
 	}
 
-	public long getSectionId() {
+	public int getSectionId() {
 		return sectionId;
 	}
 
-	public void setSectionId(long sectionId) {
+	public void setSectionId(int sectionId) {
 		this.sectionId = sectionId;
 	}
 

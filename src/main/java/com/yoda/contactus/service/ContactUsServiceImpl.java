@@ -11,7 +11,6 @@ import com.yoda.contactus.dao.ContactUsDAO;
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.country.dao.CountryDAO;
 import com.yoda.state.dao.StateDAO;
-import com.yoda.util.Constants;
 import com.yoda.util.Format;
 import com.yoda.util.Validator;
 
@@ -27,20 +26,15 @@ public class ContactUsServiceImpl implements ContactUsService {
 	private CountryDAO countryDAO;
 
 	public ContactUs addContactUs(
-			long siteId, long userId, String active, String name, String email,
+			int siteId, long userId, boolean active, String name, String email,
 			String phone, String addressLine1, String addressLine2,
 			String cityName, String zipCode, String seqNum, String description) {
 		ContactUs contactUs = new ContactUs();
 
 		contactUs.setSiteId(siteId);
-		contactUs.setRecCreateBy(userId);
-		contactUs.setRecCreateDatetime(new Date(System.currentTimeMillis()));
-		contactUs.setActive(new Character(Constants.ACTIVE_NO));
-
-		if (active != null && active.equals(String.valueOf(Constants.ACTIVE_YES))) {
-			contactUs.setActive(new Character(Constants.ACTIVE_YES));
-		}
-
+		contactUs.setCreateBy(userId);
+		contactUs.setCreateDate(new Date(System.currentTimeMillis()));
+		contactUs.setActive(active);
 		contactUs.setName(name);
 		contactUs.setEmail(email);
 		contactUs.setPhone(phone);
@@ -57,8 +51,8 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setRecUpdateBy(userId);
-		contactUs.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
+		contactUs.setUpdateBy(userId);
+		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
 		contactUsDAO.save(contactUs);
 
@@ -66,18 +60,13 @@ public class ContactUsServiceImpl implements ContactUsService {
 	}
 
 	public ContactUs updateContactUs(
-			long contactUsId, long siteId, long userId, String active,
+			int contactUsId, int siteId, long userId, boolean active,
 			String name, String email, String phone, String addressLine1,
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception {
 		ContactUs contactUs = getContactUsById(siteId, contactUsId);
 
-		contactUs.setActive(new Character(Constants.ACTIVE_NO));
-
-		if (active != null && active.equals(String.valueOf(Constants.ACTIVE_YES))) {
-			contactUs.setActive(new Character(Constants.ACTIVE_YES));
-		}
-
+		contactUs.setActive(active);
 		contactUs.setName(name);
 		contactUs.setEmail(email);
 		contactUs.setPhone(phone);
@@ -94,24 +83,24 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setRecUpdateBy(userId);
-		contactUs.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
+		contactUs.setUpdateBy(userId);
+		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
 		contactUsDAO.update(contactUs);
 
 		return contactUs;
 	}
 
-	public ContactUs getContactUsById(long siteId, long contactUsId)
+	public ContactUs getContactUsById(int siteId, int contactUsId)
 			throws SecurityException, Exception {
 		return contactUsDAO.getContactUsById(siteId, contactUsId);
 	}
 
-	public List<ContactUs> getContent(long siteId, char isActive) {
+	public List<ContactUs> getContent(int siteId, boolean isActive) {
 		return contactUsDAO.getContentBySiteIdIsActive(siteId, isActive);
 	}
 
-	public List<ContactUs> search(long siteId, String name, String srActive) {
+	public List<ContactUs> search(int siteId, String name, Boolean srActive) {
 		Query query = null;
 
 		String sql = "select contactUs from ContactUs contactUs where siteId = :siteId ";
@@ -120,7 +109,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 			sql += "and name like :name ";
 		}
 
-		if (srActive != null && !srActive.equals("*")) {
+		if (srActive != null) {
 			sql += "and active = :active ";
 		}
 
@@ -128,14 +117,14 @@ public class ContactUsServiceImpl implements ContactUsService {
 
 		query = contactUsDAO.getSession().createQuery(sql);
 
-		query.setLong("siteId", siteId);
+		query.setInteger("siteId", siteId);
 
 		if (Validator.isNotNull(name) && name.length() > 0) {
 			query.setString("name", "%" + name + "%");
 		}
 
-		if (!srActive.equals("*")) {
-			query.setString("active", srActive);
+		if (srActive != null) {
+			query.setBoolean("active", srActive);
 		}
 
 		return query.list();
@@ -145,7 +134,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 		contactUsDAO.update(contactUs);
 	}
 
-	public void deleteContactUs(long siteId, long contactUsId)
+	public void deleteContactUs(int siteId, int contactUsId)
 			throws SecurityException, Exception {
 		ContactUs contactUs = getContactUsById(siteId, contactUsId);
 

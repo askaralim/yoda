@@ -89,8 +89,8 @@
     drop table if exists user_site;
 
     create table contact_us (
-        contact_us_id bigint not null,
-        site_id bigint not null,
+        contact_us_id INT(4) not null,
+        site_id INT(4) not null,
         name varchar(50) not null comment '',
         address_line1 varchar(30) not null comment '',
         address_line2 varchar(30) not null comment '',
@@ -100,23 +100,23 @@
         phone varchar(20) comment '',
         description varchar(255) not null comment '',
         seq_num integer not null comment '',
-        active char(1) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
+        active boolean not null comment '',
+        update_by INT not null comment '',
+        update_date datetime not null comment '',
+        create_by INT not null comment '',
+        create_date datetime not null comment '',
         primary key (contact_us_id)
     ) comment='';
 
     create table content (
-        content_id bigint not null,
-        site_id bigint not null,
+        id bigint not null,
+        site_id INT(4) not null,
         natural_key varchar(255) not null comment '',
         title varchar(128) not null comment '',
         short_description text not null comment '',
         description text not null comment '',
         page_title varchar(255) not null comment '',
-        hit_counter bigint not null comment '',
+        hit_counter INT not null comment '',
         publish_date date not null comment '',
         expire_date date not null comment '',
         published boolean not null comment '',
@@ -124,9 +124,9 @@
         update_date datetime not null comment '',
         create_by bigint not null comment '',
         create_date datetime not null comment '',
-        section_id bigint comment '',
+        section_id INT comment '',
         featured_image varchar(255),
-        score bigint not null,
+        score INT not null,
         primary key (content_id)
     ) comment='';
 
@@ -142,7 +142,7 @@
 		name VARCHAR(30),
 		price INT,
 		rating INT,
-		site_id INT NOT NULL,
+		site_id INT(4) NOT NULL,
 		update_by INT NOT NULL,
 		update_date DATETIME NOT NULL,
 		INDEX(name),
@@ -156,22 +156,22 @@
 		create_date DATETIME NOT NULL,
 		description VARCHAR(2000),
 		rating INT,
-		site_id INT NOT NULL,
+		site_id INT(4) NOT NULL,
 		FOREIGN KEY (content_id) REFERENCES content(content_id)
 	) engine=InnoDB;
 
     create table content_image (
         image_id bigint not null,
         site_id bigint not null,
-        seq_num integer not null comment '',
+        seq_num INT not null comment '',
         content_type varchar(20) not null comment '',
         image_name varchar(40) not null comment '',
         image_value longblob not null comment '',
-        height integer not null comment '',
-        width integer not null comment '',
-        update_by bigint not null comment '',
+        height INT not null comment '',
+        width INT not null comment '',
+        update_by INT not null comment '',
         update_date datetime not null comment '',
-        create_by bigint not null comment '',
+        create_by INT not null comment '',
         create_date datetime not null comment '',
         content_id bigint,
         primary key (image_id)
@@ -208,10 +208,10 @@
     ) comment='';
 
     create table home_page (
-        home_page_id bigint not null,
-        site_id bigint not null,
-        seq_num integer not null comment '',
-        feature_data char(1) not null comment '',
+        home_page_id INT not null,
+        site_id INT(4) not null,
+        seq_num INT not null comment '',
+        feature_data boolean not null comment '',
         update_by bigint not null comment '',
         update_date datetime not null comment '',
         create_by bigint not null comment '',
@@ -230,23 +230,23 @@
 	);
 
     create table menu (
-        menu_id bigint not null,
-        site_id bigint not null,
-        menu_set_name varchar(20) not null comment '',
-        menu_title varchar(20) not null comment '',
-        menu_name varchar(20) not null comment '',
-        seq_num integer not null comment '',
-        menu_parent_id bigint comment '',
+        menu_id INT(4) not null,
+        site_id INT(4) not null,
+        set_name varchar(20) not null comment '',
+        title varchar(20) not null comment '',
+        name varchar(20) not null comment '',
+        seq_num INT not null comment '',
+        parent_id INT(4) comment '',
         menu_type varchar(5) not null comment '',
         menu_url varchar(255) not null comment '',
         menu_window_target varchar(20) not null comment '',
         menu_window_mode varchar(255) not null comment '',
-        published char(1) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        section_id bigint,
+        published boolean not null comment '',
+        update_by INT not null comment '',
+        update_date datetime not null comment '',
+        create_by INT not null comment '',
+        create_date datetime not null comment '',
+        section_id INT,
         content_id bigint,
         primary key (menu_id)
     ) comment='';
@@ -280,41 +280,41 @@
     ) comment='';
 
     create table section (
-        section_id bigint not null,
-        site_id bigint not null,
-        section_natural_key varchar(255) not null comment '',
-        section_title varchar(40) not null comment '',
-        seq_num integer not null comment '',
-        section_parent_id bigint comment '',
-        section_short_title varchar(20) not null comment '',
-        section_desc text not null comment '',
-        published char(1) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
+        section_id INT not null,
+        site_id INT(4) not null,
+        natural_key varchar(255) not null comment '',
+        title varchar(40) not null comment '',
+        seq_num INT not null comment '',
+        parent_id INT comment '',
+        short_title varchar(20) not null comment '',
+        description text not null comment '',
+        published boolean not null comment '',
+        update_by INT not null comment '',
+        update_date datetime not null comment '',
+        create_by INT not null comment '',
+        create_date datetime not null comment '',
         primary key (section_id)
     ) comment='';
 
     create table site (
-        site_id bigint not null,
-        site_name varchar(50) not null comment '',
-        logo_value longblob comment '',
-        logo_content_type varchar(20) comment '',
-        active CHAR(1) not null comment '',
+		site_id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+        site_name VARCHAR(50) not null comment '',
+        logo_path VARCHAR(50),
+        logo_content_type VARCHAR(20) comment '',
+        active BOOLEAN,
         update_by bigint not null comment '',
         update_date datetime not null comment '',
         create_by bigint not null comment '',
         create_date datetime not null comment '',
-        public_port varchar(4),
-        secure_port varchar(4),
-        domain_name varchar(50),
-        google_analytics_id varchar(50),
+        public_port VARCHAR(4),
+        secure_port VARCHAR(4),
+        domain_name VARCHAR(50),
+        google_analytics_id VARCHAR(50),
         secure_connection_enabled BOOLEAN,
-        footer text,
-        listing_page_size varchar(4),
-        section_page_size varchar(4),
-        theme_id bigint,
+        footer VARCHAR(255),
+        listing_page_size VARCHAR(4),
+        section_page_size VARCHAR(4),
+        theme_id INT(4),
         primary key (site_id)
     ) comment='';
 
@@ -346,6 +346,9 @@
 
     create table user_ (
         user_id bigint not null,
+        account_non_expired BOOLEAN NOT NULL;
+        account_non_locked BOOLEAN NOT NULL;
+        credentials_non_expired BOOLEAN NOT NULL;
         address_line1 varchar(30) not null comment '',
         address_line2 varchar(30) not null comment '',
         username varchar(50) not null comment '',
@@ -361,7 +364,7 @@
         phone varchar(20) comment '',
         user_type varchar(1) not null comment '',
         last_login_date datetime comment '',
-        last_visit_site_id bigint,
+        last_visit_site_id INT(4),
         active char(1) not null comment '',
         update_by bigint not null comment '',
         update_date datetime not null comment '',
@@ -380,7 +383,7 @@
 
     create table user_site (
         user_id bigint not null,
-        site_id bigint not null,
+        site_id INT(4) not null,
         primary key (user_id, site_id)
     );
 
@@ -428,7 +431,7 @@
         foreign key (poll_header_id) 
         references poll_header (poll_header_id);
 
-    create index section_natural_key on section (section_natural_key);
+    create index natural_key on section (natural_key);
 
     alter table state 
         add index FK68AC491D3F4ABD1 (country_id), 

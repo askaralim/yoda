@@ -1,11 +1,11 @@
 <%@ include file="/html/common/init.jsp"%>
 
-<jsp:useBean id="siteListCommand" type="com.yoda.site.SiteListCommand" scope="request" />
+<%-- <jsp:useBean id="siteListCommand" type="com.yoda.site.SiteListCommand" scope="request" /> --%>
 
 <script type="text/javascript">
 function submitNew() {
-	document.fm.action = '<c:url value="/controlpanel/site/add"/>';
-	document.fm.submit();
+	location.href = '<c:url value="/controlpanel/site/add"/>';
+
 	return false;
 }
 
@@ -27,7 +27,7 @@ function submitRemove() {
 	<li><a href="<spring:url value="/controlpanel/site/list" />">Site Listing</a></li>
 </ol>
 
-<form:form name="fm" modelAttribute="siteListCommand" method="post">
+<%-- <form:form name="fm" modelAttribute="siteListCommand" method="post"> --%>
 	<div class="row">
 		<div class="col-md-3">
 			<div class="panel panel-default">
@@ -35,33 +35,31 @@ function submitRemove() {
 					<spring:message code="search" />
 				</div>
 				<div class="panel-body">
-					<!-- <input type="button" value="New" class="jc_submit_button" onclick="return submitNewForm();"> -->
-
 					<div class="form-group">
 						<label for="siteId"><spring:message code="id" /></label>
-						<form:input path="siteId" cssClass="form-control" value="" />
+						<input id="siteId" name="siteId" type="text" class="form-control">
 					</div>
 					<div class="form-group">
 						<label for="siteName"><spring:message code="site-name" /></label>
-						<form:input path="siteName" cssClass="form-control" />
+						<input id="siteName" name="siteName" type="text" class="form-control">
 					</div>
 					<div class="form-group">
 						<label for="title">Active</label>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="Y" />
+								<input type="radio" name="active" id="active" value="Y">
 								Active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="N" />
+								<input type="radio" name="active" id="active" value="N">
 								In-active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="*" />
+								<input type="radio" name="active" id="active" value="*" checked>
 								All
 							</label>
 						</div>
@@ -81,7 +79,7 @@ function submitRemove() {
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
-					<c:if test="${siteListCommand.sites != null}">
+					<c:if test="${sites != null}">
 						<thead>
 							<tr>
 								<th></th>
@@ -93,7 +91,7 @@ function submitRemove() {
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="site" items="${siteListCommand.sites}">
+							<c:forEach var="site" items="${sites}">
 								<spring:url value="/controlpanel/site/{siteId}/edit" var="editSiteUrl">
 									<spring:param name="siteId" value="${site.siteId}"/>
 								</spring:url>
@@ -118,10 +116,16 @@ function submitRemove() {
 										</a>
 									</td>
 									<td>
-										<c:out value="${site.publicDomainNamePort}" />
+										<c:out value="${site.domainName}" />
+										<c:if test="${site.publicPort != null}">
+											: <c:out value="${site.publicPort}" />
+										</c:if>
 									</td>
 									<td>
-										<c:out value="${site.secureDomainNamePort}" />
+										<c:out value="${site.domainName}" />
+										<c:if test="${site.securePort != null}">
+											: <c:out value="${site.securePort}" />
+										</c:if>
 									</td>
 									<td>
 										<c:out value="${site.active}" />
@@ -134,4 +138,4 @@ function submitRemove() {
 			</div>
 		</div>
 	</div>
-</form:form>
+<%-- </form:form> --%>

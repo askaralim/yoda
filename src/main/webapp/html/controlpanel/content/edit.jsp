@@ -159,7 +159,7 @@ function removeContent() {
 							</thead>
 							<tbody>
 								<c:forEach var="item" items="${contentEditCommand.items}">
-									<spring:url value="/controlpanel/content/{contentId}/items/{itemId}edit" var="editItemUrl">
+									<spring:url value="/controlpanel/items/{itemId}/edit" var="editItemUrl">
 										<spring:param name="contentId" value="${contentEditCommand.contentId}"/>
 										<spring:param name="itemId" value="${item.id}"/>
 									</spring:url>

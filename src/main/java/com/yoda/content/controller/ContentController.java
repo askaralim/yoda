@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yoda.content.ContentDisplayCommand;
 import com.yoda.content.ContentListCommand;
 import com.yoda.content.model.Content;
-import com.yoda.content.service.ContentImageService;
 import com.yoda.content.service.ContentService;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.service.MenuService;
@@ -46,8 +45,8 @@ public class ContentController {
 	@Autowired
 	ContentService contentService;
 
-	@Autowired
-	ContentImageService contentImageService;
+//	@Autowired
+//	ContentImageService contentImageService;
 
 	@Autowired
 	MenuService menuService;
@@ -253,7 +252,7 @@ public class ContentController {
 		command.setContents(contents);
 	}
 
-	public void initSearchInfo(ContentListCommand command, long siteId)
+	public void initSearchInfo(ContentListCommand command, int siteId)
 		throws Exception {
 		if (command.getPublished() == null) {
 			command.setPublished("*");
@@ -392,7 +391,7 @@ public class ContentController {
 
 		command.setSrPageNo("");
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		List<Content> list = contentService.search(
 			siteId, command.getTitle(), command.getPublished(),

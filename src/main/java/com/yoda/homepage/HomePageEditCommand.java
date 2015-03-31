@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class HomePageEditCommand {
 	Vector homePages;
-	String homePageIds[];
+	long ids[];
 	String seqNums[];
 	String featureData;
 	String pageTitle;
@@ -33,12 +33,12 @@ public class HomePageEditCommand {
 		this.homePages = homePages;
 	}
 
-	public String[] getHomePageIds() {
-		return homePageIds;
+	public long[] getIds() {
+		return ids;
 	}
 
-	public void setHomePageIds(String[] homePageIds) {
-		this.homePageIds = homePageIds;
+	public void setIds(long[] ids) {
+		this.ids = ids;
 	}
 
 	public String getFeatureData() {

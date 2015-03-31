@@ -6,24 +6,24 @@ import com.yoda.contactus.model.ContactUs;
 
 public interface ContactUsService {
 
-	List<ContactUs> search(long siteId, String srContactUsName, String srActive);
+	List<ContactUs> search(int siteId, String srContactUsName, Boolean srActive);
 
-	public ContactUs getContactUsById(long siteId, long contactUsId) throws SecurityException, Exception;
+	public ContactUs getContactUsById(int siteId, int contactUsId) throws SecurityException, Exception;
 
 	void update(ContactUs contactUs);
 
-	void deleteContactUs(long siteId, long valueOf) throws SecurityException, Exception;
+	void deleteContactUs(int siteId, int valueOf) throws SecurityException, Exception;
 
 	ContactUs addContactUs(
-			long siteId, long userId, String active, String name, String email,
+			int siteId, long userId, boolean active, String name, String email,
 			String phone, String addressLine1, String addressLine2,
 			String cityName, String zipCode, String seqNum, String description);
 
 	ContactUs updateContactUs(
-			long contactUsId, long siteId, long userId, String active,
+			int contactUsId, int siteId, long userId, boolean active,
 			String name, String email, String phone, String addressLine1,
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception;
 
-	List<ContactUs> getContent(long siteId, char isActive);
+	List<ContactUs> getContent(int siteId, boolean isActive);
 }

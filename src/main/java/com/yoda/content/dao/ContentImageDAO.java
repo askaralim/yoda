@@ -1,11 +1,9 @@
 package com.yoda.content.dao;
 
-import org.springframework.stereotype.Repository;
-
 import com.yoda.BaseDAO;
 import com.yoda.content.model.ContentImage;
 
-@Repository
+@Deprecated
 public class ContentImageDAO extends BaseDAO<ContentImage> {
 	public ContentImage getContentImageBySId_Id(long siteId, long imageId) {
 		ContentImage contentImage = getById(imageId);
@@ -17,7 +15,7 @@ public class ContentImageDAO extends BaseDAO<ContentImage> {
 		return contentImage;
 	}
 
-	public ContentImage getContentImageById(long imageId){
+	public ContentImage getContentImageById(long imageId) {
 		return getById(imageId);
 	}
 }

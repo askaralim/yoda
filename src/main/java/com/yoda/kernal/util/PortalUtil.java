@@ -17,7 +17,7 @@ import com.yoda.util.Validator;
 
 public class PortalUtil {
 	public static Site getSite(HttpServletRequest request) {
-		long siteId = getSiteId(request);
+		int siteId = getSiteId(request);
 
 		if (siteId <= 0) {
 			return null;
@@ -46,11 +46,11 @@ public class PortalUtil {
 		return site;
 	}
 
-	public static long getSiteId(HttpServletRequest request) {
+	public static int getSiteId(HttpServletRequest request) {
 		return PortalInstances.getSiteId(request);
 	}
 
-	public long[] getSiteIds() {
+	public int[] getSiteIds() {
 		return PortalInstances.getSiteIds();
 	}
 

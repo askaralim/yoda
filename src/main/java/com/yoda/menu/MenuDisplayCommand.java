@@ -2,7 +2,7 @@ package com.yoda.menu;
 
 public class MenuDisplayCommand {
 	boolean remove;
-	long menuId;
+	int menuId;
 	String menuName;
 	String seqNum;
 	String menuUrlOrContent;
@@ -10,11 +10,11 @@ public class MenuDisplayCommand {
 	String menuWindowMode;
 	String published;
 
-	public long getMenuId() {
+	public int getMenuId() {
 		return menuId;
 	}
 
-	public void setMenuId(long menuId) {
+	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 

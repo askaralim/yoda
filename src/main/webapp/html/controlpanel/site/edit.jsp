@@ -2,7 +2,7 @@
 
 <%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
 
-<jsp:useBean id="siteEditCommand" type="com.yoda.site.SiteEditCommand" scope="request" />
+<%-- <jsp:useBean id="siteEditCommand" type="com.yoda.site.SiteEditCommand" scope="request" /> --%>
 
 <script type="text/javascript">
 function submitBackForm() {
@@ -18,8 +18,8 @@ function submitBackForm() {
 	<li>Site Maintenance</li>
 </ol>
 
-<form:form method="post" modelAttribute="siteEditCommand" name="fm">
-	<form:hidden path="tabIndex" />
+<form:form method="post" modelAttribute="site" name="fm">
+	<%-- <form:hidden path="tabIndex" /> --%>
 
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
@@ -42,11 +42,11 @@ function submitBackForm() {
 				</div>
 				<div class="panel-body">
 					<div class="form-group">
-						<c:if test="${!siteEditCommand['new']}">
+						<c:if test="${!site['new']}">
 							<div class="form-group">
 								<form:hidden path="siteId"/>
 								<label><spring:message code="id" /></label>
-								<p class="form-control-static"><c:out value="${siteEditCommand.siteId}" /></p>
+								<p class="form-control-static"><c:out value="${site.siteId}" /></p>
 								<form:hidden path="siteId"/>
 							</div>
 						</c:if>
@@ -91,7 +91,7 @@ function submitBackForm() {
 					<div class="form-group">
 						<div class="checkbox">
 							<label>
-								<form:checkbox path="active" value="Y" />Active
+								<form:checkbox path="active" value="true" />Active
 							</label>
 						</div>
 					</div>
@@ -100,10 +100,10 @@ function submitBackForm() {
 		</div>
 		<div class="col-md-9">
 			<div class="text-right">
-				<c:if test="${siteEditCommand['new']}">
+				<c:if test="${site['new']}">
 					<input type="submit" value="<spring:message code="save" />" class="btn btn-sm btn-primary" role="button">
 				</c:if>
-				<c:if test="${!siteEditCommand['new']}">
+				<c:if test="${!site['new']}">
 					<input type="submit" value="<spring:message code="update" />" class="btn btn-sm btn-primary" role="button">
 				</c:if>
 				<input type="button" value='<spring:message code="cancel" />' class="btn btn-sm btn-default" onclick="return submitBackForm();" role="button" >
@@ -111,8 +111,8 @@ function submitBackForm() {
 
 			<div class="nav-tabs-custom">
 				<ul class="nav nav-tabs">
-					<li class='${siteEditCommand.tabIndex == 0 ? "active" : ""}'><a href="#tab-general" data-toggle="tab">General</a></li>
-					<li class='${siteEditCommand.tabIndex == 1 ? "active" : ""}'><a href="#tab-logo" data-toggle="tab">Site logo</a></li>
+					<li class='${tabIndex == 0 ? "active" : ""}'><a href="#tab-general" data-toggle="tab">General</a></li>
+					<li class='${tabIndex == 1 ? "active" : ""}'><a href="#tab-logo" data-toggle="tab">Site logo</a></li>
 					<%-- <li class='${siteEditCommand.tabIndex == "mail" ? "active" : ""}'><a href="#tab-mail" data-toggle="tab">Mail</a></li>
 					<li class='${siteEditCommand.tabIndex == "template" ? "active" : ""}'><a href="#tab-template" data-toggle="tab">Template</a></li>
 					<li class='${siteEditCommand.tabIndex == "business" ? "active" : ""}'><a href="#tab-business" data-toggle="tab">Business</a></li>

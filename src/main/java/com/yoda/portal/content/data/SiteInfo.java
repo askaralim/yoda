@@ -1,7 +1,7 @@
 package com.yoda.portal.content.data;
 
 public class SiteInfo extends DataInfo {
-	long siteId;
+	int siteId;
 	String siteName;
 	String siteDomainName;
 	String googleAnalyticsId;
@@ -49,11 +49,11 @@ public class SiteInfo extends DataInfo {
 		this.siteFooter = siteFooter;
 	}
 
-	public long getSiteId() {
+	public int getSiteId() {
 		return siteId;
 	}
 
-	public void setSiteId(long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 

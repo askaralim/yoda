@@ -22,7 +22,7 @@ public class UserEditCommand {
 	String states;
 	String countries;
 	List<Site> sites;
-	List<Long> selectedSiteIds;
+	List<Integer> selectedSiteIds;
 	boolean hasAdministrator;
 	boolean hasSuperUser;
 
@@ -154,11 +154,11 @@ public class UserEditCommand {
 		this.verifyPassword = verifyPassword;
 	}
 
-	public List<Long> getSelectedSiteIds() {
+	public List<Integer> getSelectedSiteIds() {
 		return selectedSiteIds;
 	}
 
-	public void setSelectedSiteIds(List<Long> selectedSiteIds) {
+	public void setSelectedSiteIds(List<Integer> selectedSiteIds) {
 		this.selectedSiteIds = selectedSiteIds;
 	}
 

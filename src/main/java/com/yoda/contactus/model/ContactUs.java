@@ -2,120 +2,81 @@ package com.yoda.contactus.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 
+@Entity
+@Table(name = "contact_us")
 public class ContactUs extends BaseEntity {
-	private long contactUsId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "contact_us_id")
+	private Integer contactUsId;
 
-	private long siteId;
+	@Column(name = "site_id")
+	private int siteId;
 
+	@Column(name = "name")
 	private String name;
 
+	@Column(name = "address_line1")
 	private String addressLine1;
 
+	@Column(name = "address_line2")
 	private String addressLine2;
 
+	@Column(name = "city_name")
 	private String cityName;
 
+	@Column(name = "zip_code")
 	private String zipCode;
 
+	@Column(name = "email")
 	private String email;
 
+	@Column(name = "phone")
 	private String phone;
 
+	@Column(name = "description")
 	private String description;
 
-	private Integer seqNum;
+	@Column(name = "seq_num")
+	private int seqNum;
 
-	private Character active;
+	@Column(name = "active")
+	private boolean active;
 
-	private long recUpdateBy;
+	@Column(name = "update_by")
+	private long updateBy;
 
-	private Date recUpdateDatetime;
+	@Column(name = "update_date")
+	private Date updateDate;
 
-	private long recCreateBy;
+	@Column(name = "create_by")
+	private long createBy;
 
-	private Date recCreateDatetime;
+	@Column(name = "create_date")
+	private Date createDate;
 
-	// Constructors
-
-//	/** default constructor */
-//	public ContactUs() {
-//	}
-//
-//	/** minimal constructor */
-//	public ContactUs(String siteId, String contactUsName,
-//			String contactUsAddressLine1, String contactUsAddressLine2,
-//			String contactUsCityName, String contactUsStateName,
-//			String contactUsStateCode, String contactUsCountryName,
-//			String contactUsCountryCode, String contactUsZipCode,
-//			String contactUsEmail, String contactUsDesc, Integer seqNum,
-//			Character active, String recUpdateBy, Date recUpdateDatetime,
-//			String recCreateBy, Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.contactUsName = contactUsName;
-//		this.contactUsAddressLine1 = contactUsAddressLine1;
-//		this.contactUsAddressLine2 = contactUsAddressLine2;
-//		this.contactUsCityName = contactUsCityName;
-//		this.contactUsStateName = contactUsStateName;
-//		this.contactUsStateCode = contactUsStateCode;
-//		this.contactUsCountryName = contactUsCountryName;
-//		this.contactUsCountryCode = contactUsCountryCode;
-//		this.contactUsZipCode = contactUsZipCode;
-//		this.contactUsEmail = contactUsEmail;
-//		this.contactUsDesc = contactUsDesc;
-//		this.seqNum = seqNum;
-//		this.active = active;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	/** full constructor */
-//	public ContactUs(String siteId, String contactUsName,
-//			String contactUsAddressLine1, String contactUsAddressLine2,
-//			String contactUsCityName, String contactUsStateName,
-//			String contactUsStateCode, String contactUsCountryName,
-//			String contactUsCountryCode, String contactUsZipCode,
-//			String contactUsEmail, String contactUsPhone, String contactUsDesc,
-//			Integer seqNum, Character active, String recUpdateBy,
-//			Date recUpdateDatetime, String recCreateBy, Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.contactUsName = contactUsName;
-//		this.contactUsAddressLine1 = contactUsAddressLine1;
-//		this.contactUsAddressLine2 = contactUsAddressLine2;
-//		this.contactUsCityName = contactUsCityName;
-//		this.contactUsStateName = contactUsStateName;
-//		this.contactUsStateCode = contactUsStateCode;
-//		this.contactUsCountryName = contactUsCountryName;
-//		this.contactUsCountryCode = contactUsCountryCode;
-//		this.contactUsZipCode = contactUsZipCode;
-//		this.contactUsEmail = contactUsEmail;
-//		this.contactUsPhone = contactUsPhone;
-//		this.contactUsDesc = contactUsDesc;
-//		this.seqNum = seqNum;
-//		this.active = active;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-
-	// Property accessors
-	public long getContactUsId() {
+	public Integer getContactUsId() {
 		return this.contactUsId;
 	}
 
-	public void setContactUsId(long contactUsId) {
+	public void setContactUsId(Integer contactUsId) {
 		this.contactUsId = contactUsId;
 	}
 
-	public long getSiteId() {
+	public int getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 
@@ -191,43 +152,43 @@ public class ContactUs extends BaseEntity {
 		this.seqNum = seqNum;
 	}
 
-	public Character getActive() {
+	public boolean isActive() {
 		return this.active;
 	}
 
-	public void setActive(Character active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
-	public long getRecUpdateBy() {
-		return this.recUpdateBy;
+	public long getUpdateBy() {
+		return this.updateBy;
 	}
 
-	public void setRecUpdateBy(long recUpdateBy) {
-		this.recUpdateBy = recUpdateBy;
+	public void setUpdateBy(long updateBy) {
+		this.updateBy = updateBy;
 	}
 
-	public Date getRecUpdateDatetime() {
-		return this.recUpdateDatetime;
+	public Date getUpdateDate() {
+		return this.updateDate;
 	}
 
-	public void setRecUpdateDatetime(Date recUpdateDatetime) {
-		this.recUpdateDatetime = recUpdateDatetime;
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
-	public long getRecCreateBy() {
-		return this.recCreateBy;
+	public long getCreateBy() {
+		return this.createBy;
 	}
 
-	public void setRecCreateBy(long recCreateBy) {
-		this.recCreateBy = recCreateBy;
+	public void setCreateBy(long createBy) {
+		this.createBy = createBy;
 	}
 
-	public Date getRecCreateDatetime() {
-		return this.recCreateDatetime;
+	public Date getCreateDate() {
+		return this.createDate;
 	}
 
-	public void setRecCreateDatetime(Date recCreateDatetime) {
-		this.recCreateDatetime = recCreateDatetime;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 }

@@ -55,11 +55,11 @@ public class MenuController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		Menu referenceMenu = menuService.getMenu(siteId, menuEditCommand.getCreateMenuId());
 
-		long menuParentId = 0;
+		int menuParentId = 0;
 
 		int seqNum = 0;
 
@@ -76,35 +76,35 @@ public class MenuController {
 			}
 		}
 		else if (menuEditCommand.getCreateMode().equals("B")) { // before current
-			menuParentId = referenceMenu.getMenuParentId();
+			menuParentId = referenceMenu.getParentId();
 
 			seqNum = referenceMenu.getSeqNum();
 
-			menuService.updateSeqNum(siteId, referenceMenu.getMenuParentId(), referenceMenu.getSeqNum());
+			menuService.updateSeqNum(siteId, referenceMenu.getParentId(), referenceMenu.getSeqNum());
 		}
 		else if (menuEditCommand.getCreateMode().equals("A")) { // after current
-			menuParentId = referenceMenu.getMenuParentId();
+			menuParentId = referenceMenu.getParentId();
 
 			seqNum = referenceMenu.getSeqNum() + 1;
 
-			menuService.updateSeqNum(siteId, referenceMenu.getMenuParentId(), referenceMenu.getSeqNum());
+			menuService.updateSeqNum(siteId, referenceMenu.getParentId(), referenceMenu.getSeqNum());
 		}
 
 		Menu menu = menuService.addMenu(
-			siteId, menuParentId, seqNum, referenceMenu.getMenuSetName(),
+			siteId, menuParentId, seqNum, referenceMenu.getSetName(),
 			"New Menu", "New Menu", Constants.MENU_HOME, StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, Constants.PUBLISHED_YES, user.getUserId(), user.getUserId());
+			StringPool.BLANK, true, user.getUserId(), user.getUserId());
 
 		menuEditCommand.setMenuId(menu.getMenuId());
 		menuEditCommand.setMenuParentId(menuParentId);
-		menuEditCommand.setMenuSetName(menu.getMenuSetName());
-		menuEditCommand.setMenuTitle(menu.getMenuTitle());
-		menuEditCommand.setMenuName(menu.getMenuName());
+		menuEditCommand.setMenuSetName(menu.getSetName());
+		menuEditCommand.setMenuTitle(menu.getTitle());
+		menuEditCommand.setMenuName(menu.getName());
 		menuEditCommand.setMenuType(Constants.MENU_HOME);
 		menuEditCommand.setMenuUrl("");
 		menuEditCommand.setMenuWindowTarget("");
 		menuEditCommand.setMenuWindowMode("");
-		menuEditCommand.setPublished(menu.getPublished() == Constants.PUBLISHED_YES ? String.valueOf(Constants.PUBLISHED_YES) : String.valueOf(Constants.PUBLISHED_NO));
+		menuEditCommand.setPublished(menu.isPublished());
 		menuEditCommand.setMode(Constants.MODE_UPDATE);
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(siteId));
 //		menuEditCommand.setPublished(String.valueOf(Constants.PUBLISHED_YES));
@@ -120,7 +120,7 @@ public class MenuController {
 
 	@RequestMapping(value = "/controlpanel/menu/showsequence", method = RequestMethod.POST)
 	public String showSequence(
-			@RequestParam(value = "menuId") long menuId,
+			@RequestParam(value = "menuId") int menuId,
 			@ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
 			SessionStatus status, 
 			HttpServletRequest request, HttpServletResponse response)
@@ -133,18 +133,18 @@ public class MenuController {
 
 		menuEditCommand.setMenuId(menuId);
 
-		if (menu.getMenuParentId() != 0) {
-			menuEditCommand.setMenuParentId(menu.getMenuParentId());
+		if (menu.getParentId() != 0) {
+			menuEditCommand.setMenuParentId(menu.getParentId());
 		}
 
 		menuEditCommand.setMenuId(menu.getMenuId());
-		menuEditCommand.setMenuSetName(menu.getMenuSetName());
-		menuEditCommand.setMenuName(menu.getMenuName());
+		menuEditCommand.setMenuSetName(menu.getSetName());
+		menuEditCommand.setMenuName(menu.getName());
 		menuEditCommand.setMenuType(menu.getMenuType());
 		menuEditCommand.setMenuUrl(menu.getMenuUrl());
 		menuEditCommand.setMenuWindowTarget(menu.getMenuWindowTarget());
 		menuEditCommand.setMenuWindowMode(menu.getMenuWindowMode());
-		menuEditCommand.setPublished(menu.getPublished() == Constants.PUBLISHED_YES ? String.valueOf(Constants.PUBLISHED_YES) : String.valueOf(Constants.PUBLISHED_NO));
+		menuEditCommand.setPublished(menu.isPublished());
 		menuEditCommand.setMode(Constants.MODE_UPDATE);
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 //		menuEditCommand.setPublished(true);
@@ -167,7 +167,7 @@ public class MenuController {
 
 		for (int i = 0; i < childrenMenus.length; i++) {
 			if (childrenMenus[i].isRemove()) {
-				long menuId = childrenMenus[i].getMenuId();
+				int menuId = childrenMenus[i].getMenuId();
 
 				cascadeRemoveMenu(menuId, user.getLastVisitSiteId());
 			}
@@ -235,7 +235,7 @@ public class MenuController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		new MenuEditValidator().validate(menuEditCommand, result);
 
@@ -259,7 +259,7 @@ public class MenuController {
 
 	@RequestMapping(value = "/controlpanel/menu/update/{menuId}", method = RequestMethod.GET)
 	public ModelAndView updateMenu(
-			@PathVariable("menuId") long menuId,
+			@PathVariable("menuId") int menuId,
 			@ModelAttribute MenuEditCommand menuEditCommand,
 //			BindingResult result, SessionStatus status,
 			HttpServletRequest request)
@@ -272,18 +272,18 @@ public class MenuController {
 
 		menuEditCommand.setMenuId(menuEditCommand.getMenuId());
 
-		if (menu.getMenuParentId() != 0) {
-			menuEditCommand.setMenuParentId(menu.getMenuParentId());
+		if (menu.getParentId() != 0) {
+			menuEditCommand.setMenuParentId(menu.getParentId());
 		}
 
 		menuEditCommand.setMenuId(menu.getMenuId());
-		menuEditCommand.setMenuSetName(menu.getMenuSetName());
-		menuEditCommand.setMenuTitle(menu.getMenuTitle());
-		menuEditCommand.setMenuName(menu.getMenuName());
+		menuEditCommand.setMenuSetName(menu.getSetName());
+		menuEditCommand.setMenuTitle(menu.getTitle());
+		menuEditCommand.setMenuName(menu.getName());
 		menuEditCommand.setMenuUrl(menu.getMenuUrl());
 		menuEditCommand.setMenuWindowTarget(menu.getMenuWindowTarget());
 		menuEditCommand.setMenuWindowMode(menu.getMenuWindowMode());
-		menuEditCommand.setPublished(String.valueOf(menu.getPublished()));
+		menuEditCommand.setPublished(menu.isPublished());
 		menuEditCommand.setMode(Constants.MODE_UPDATE);
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 //		menuEditCommand.setPublished(true);
@@ -297,16 +297,16 @@ public class MenuController {
 			menuEditCommand.setContentId(menu.getContent().getContentId());
 			menuEditCommand.setContentTitle(menu.getContent().getTitle());
 		}
-		else if (menu.getMenuType().equals(Constants.MENU_ITEM)
-				&& menu.getItem() != null) {
+//		else if (menu.getMenuType().equals(Constants.MENU_ITEM)
+//				&& menu.getItem() != null) {
 //			menuEditCommand.setItemId(menu.getItem().getItemId());
 //			menuEditCommand.setItemNum(menu.getItem().getItemNum());
 //			menuEditCommand.setItemShortDesc(menu.getItem().getItemShortDesc());
-		}
+//		}
 		else if (menu.getMenuType().equals(Constants.MENU_SECTION)
 				&& menu.getSection() != null) {
 			menuEditCommand.setSectionId(menu.getSection().getSectionId());
-			menuEditCommand.setSectionShortTitle(menu.getSection().getSectionShortTitle());
+			menuEditCommand.setSectionShortTitle(menu.getSection().getShortTitle());
 		}
 
 		initListInfo(menuEditCommand, user.getLastVisitSiteId());
@@ -334,7 +334,7 @@ public class MenuController {
 			menuEditCommand.getMenuTitle(), menuEditCommand.getMenuName(), menuEditCommand.getMenuUrl(),
 			menuEditCommand.getMenuWindowTarget(),
 			menuEditCommand.getMenuWindowMode(),
-			menuEditCommand.getPublished().equals(String.valueOf(Constants.PUBLISHED_YES))? Constants.PUBLISHED_YES : Constants.PUBLISHED_NO,
+			menuEditCommand.isPublished(),
 			menuEditCommand.getMenuType(),
 			menuEditCommand.getContentId(), menuEditCommand.getItemId(),
 			menuEditCommand.getSectionId());
@@ -350,7 +350,7 @@ public class MenuController {
 
 	@RequestMapping(value = "/controlpanel/menu/removemenuset", method = RequestMethod.POST)
 	public String removeMenuSet(
-			@RequestParam(value = "removeMenuId") long removeMenuId,
+			@RequestParam(value = "removeMenuId") int removeMenuId,
 			@ModelAttribute MenuEditCommand menuEditCommand,
 			HttpServletRequest request) throws Exception {
 		User user = PortalUtil.getAuthenticatedUser();
@@ -381,7 +381,7 @@ public class MenuController {
 		return "controlpanel/menu/edit";
 	}
 
-	public void cascadeRemoveMenu(long menuId, long siteId) throws Exception {
+	public void cascadeRemoveMenu(int menuId, int siteId) throws Exception {
 		List<Menu> menus = menuService.getByMenuParentId(menuId);
 
 		for (Menu childMenu : menus) {
@@ -391,7 +391,7 @@ public class MenuController {
 		menuService.deleteMenu(siteId, menuId);
 	}
 
-	protected void initListInfo(MenuEditCommand command, long siteId)
+	protected void initListInfo(MenuEditCommand command, int siteId)
 			throws Exception {
 		List<Menu> menus = menuService.getBySiteIdMenuParentId(siteId, command.getMenuId());
 
@@ -401,11 +401,11 @@ public class MenuController {
 			MenuDisplayCommand display = new MenuDisplayCommand();
 
 			display.setMenuId(childMenu.getMenuId());
-			display.setMenuName(childMenu.getMenuName());
+			display.setMenuName(childMenu.getName());
 			display.setSeqNum(Format.getInt(childMenu.getSeqNum()));
 			display.setMenuWindowTarget(childMenu.getMenuWindowTarget());
 			display.setMenuWindowMode(childMenu.getMenuWindowMode());
-			display.setPublished(String.valueOf(childMenu.getPublished()));
+			display.setPublished(String.valueOf(childMenu.isPublished()));
 
 			vector.add(display);
 		}

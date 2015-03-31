@@ -233,7 +233,7 @@ public class ControlPanelHomeController {
 			User user, BindingResult result)
 		throws com.yoda.exception.SecurityException {
 
-		long siteId = homePageCommand.getSiteId();
+		int siteId = homePageCommand.getSiteId();
 
 		Site site = null;
 

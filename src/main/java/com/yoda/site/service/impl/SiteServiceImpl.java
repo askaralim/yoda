@@ -11,15 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yoda.site.SiteDisplayCommand;
-import com.yoda.site.SiteEditCommand;
-import com.yoda.site.SiteListCommand;
 import com.yoda.site.dao.SiteDAO;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.util.Constants;
-import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
 @Transactional
@@ -30,7 +26,7 @@ public class SiteServiceImpl implements SiteService {
 	private SiteDAO siteDAO;
 
 	public Site addSite(
-			String siteName, char active, long userId,
+			String siteName, boolean active, long userId,
 			String domainName, String googleAnalyticsId, String publicPort,
 			String securePort, boolean secureConnectionEnabled) {
 		Site site = new Site();
@@ -69,12 +65,12 @@ public class SiteServiceImpl implements SiteService {
 	}
 
 	@Transactional(readOnly = true)
-	public Site getSite(long siteId) {
+	public Site getSite(int siteId) {
 		return siteDAO.getBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public Site getSite(long siteId, User signinUser)
+	public Site getSite(int siteId, User signinUser)
 		throws SecurityException {
 		return siteDAO.getByS_U(siteId, signinUser);
 	}
@@ -122,95 +118,95 @@ public class SiteServiceImpl implements SiteService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<SiteDisplayCommand> search(SiteListCommand command) {
+	public List<Site> search(int siteId, String siteName, String active) {
 		Query query = null;
 
 		String sql = "select site from Site site where 1 = 1 ";
 
-		if (Validator.isNotNull(command.getSiteId())) {
+		if (Validator.isNotNull(siteId)) {
 			sql += "and siteId like :siteId ";
 		}
 
-		if (Validator.isNotNull(command.getSiteName())) {
+		if (Validator.isNotNull(siteName)) {
 			sql += "and siteName like :siteName ";
 		}
 
-		if (Validator.isNotNull(command.getActive()) && !command.getActive().equals("*")) {
+		if (Validator.isNotNull(active) && !active.equals("*")) {
 			sql += "and active = :active ";
 		}
 
 		query = siteDAO.getSession().createQuery(sql);
 
-		if (Validator.isNotNull(command.getSiteId())) {
-			query.setString("siteId", "%" + command.getSiteId() + "%");
+		if (Validator.isNotNull(siteId)) {
+			query.setString("siteId", "%" + siteId + "%");
 		}
 
-		if (Validator.isNotNull(command.getSiteName())) {
-			query.setString("siteName", "%" + command.getSiteName() + "%");
+		if (Validator.isNotNull(siteName)) {
+			query.setString("siteName", "%" + siteName + "%");
 		}
 
-		if (Validator.isNotNull(command.getActive()) && !command.getActive().equals("*")) {
-			query.setString("active", command.getActive());
+		if (Validator.isNotNull(active) && !active.equals("*")) {
+			query.setString("active", active);
 		}
 
 		Iterator iterator = query.iterate();
 
-		List<SiteDisplayCommand> sites = new ArrayList<SiteDisplayCommand>();
+		List<Site> sites = new ArrayList<Site>();
 
 		while (iterator.hasNext()) {
 			Site site = (Site) iterator.next();
 
-			SiteDisplayCommand siteDisplay = new SiteDisplayCommand();
+//			SiteDisplayCommand siteDisplay = new SiteDisplayCommand();
+//
+//			siteDisplay.setSiteId(site.getSiteId());
+//			siteDisplay.setSiteName(site.getSiteName());
+//
+//			String publicDomainNamePort = StringPool.BLANK;
+//			String secureDomainNamePort = StringPool.BLANK;
+//
+//			publicDomainNamePort += site.getDomainName();
+//
+//			if (Validator.isNotNull(site.getPublicPort())) {
+//				publicDomainNamePort += ":" + site.getPublicPort();
+//			}
+//
+//			secureDomainNamePort += site.getDomainName();
+//
+//			if (Validator.isNotNull(site.getSecurePort())) {
+//				secureDomainNamePort += ":" + site.getSecurePort();
+//			}
+//
+//			siteDisplay.setPublicDomainNamePort(publicDomainNamePort);
+//			siteDisplay.setSecureDomainNamePort(secureDomainNamePort);
+//
+//			siteDisplay.setActive(site.isActive());
 
-			siteDisplay.setSiteId(site.getSiteId());
-			siteDisplay.setSiteName(site.getSiteName());
-
-			String publicDomainNamePort = StringPool.BLANK;
-			String secureDomainNamePort = StringPool.BLANK;
-
-			publicDomainNamePort += site.getDomainName();
-
-			if (Validator.isNotNull(site.getPublicPort())) {
-				publicDomainNamePort += ":" + site.getPublicPort();
-			}
-
-			secureDomainNamePort += site.getDomainName();
-
-			if (Validator.isNotNull(site.getSecurePort())) {
-				secureDomainNamePort += ":" + site.getSecurePort();
-			}
-
-			siteDisplay.setPublicDomainNamePort(publicDomainNamePort);
-			siteDisplay.setSecureDomainNamePort(secureDomainNamePort);
-
-			siteDisplay.setActive(site.getActive());
-
-			sites.add(siteDisplay);
+			sites.add(site);
 		}
 
 		return sites;
 	}
 
-	public Site updataSite(SiteEditCommand command, long userId) {
-		Site site = getSite(command.getSiteId());
+	public Site updataSite(Site site, long userId) {
+		Site siteDb = getSite(site.getSiteId());
 
-		site.setSiteName(command.getSiteName());
-		site.setActive(command.getActive());
-		site.setDomainName(command.getDomainName());
-		site.setGoogleAnalyticsId(command.getGoogleAnalyticsId());
-		site.setPublicPort(command.getPublicPort());
-		site.setSecurePort(command.getSecurePort());
-		site.setActive(Constants.VALUE_YES);
-		site.setUpdateBy(userId);
-		site.setUpdateDate(new Date());
-		site.setSecureConnectionEnabled(command.isSecureConnectionEnabled());
-		site.setFooter(command.getFooter());
-		site.setListingPageSize(command.getListingPageSize());
-		site.setSectionPageSize(command.getSectionPageSize());
+		siteDb.setSiteName(site.getSiteName());
+		siteDb.setActive(site.isActive());
+		siteDb.setDomainName(site.getDomainName());
+		siteDb.setGoogleAnalyticsId(site.getGoogleAnalyticsId());
+		siteDb.setPublicPort(site.getPublicPort());
+		siteDb.setSecurePort(site.getSecurePort());
+		siteDb.setActive(site.isActive());
+		siteDb.setUpdateBy(userId);
+		siteDb.setUpdateDate(new Date());
+		siteDb.setSecureConnectionEnabled(site.isSecureConnectionEnabled());
+		siteDb.setFooter(site.getFooter());
+		siteDb.setListingPageSize(site.getListingPageSize());
+		siteDb.setSectionPageSize(site.getSectionPageSize());
 
-		siteDAO.update(site);
+		this.updateSite(siteDb);
 
-		return site;
+		return siteDb;
 	}
 
 //	public void initialize(Site site) {

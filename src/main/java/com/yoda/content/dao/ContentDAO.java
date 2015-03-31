@@ -10,17 +10,17 @@ import com.yoda.util.StringPool;
 
 @Repository
 public class ContentDAO extends BaseDAO<Content> {
-	private static final String GET_CONTENT_BY_SITEID_AND_CONTENTNATURALKEY = "from Content where siteId = ? and contentNaturalKey = ?";
+	private static final String GET_CONTENT_BY_SITEID_AND_CONTENTNATURALKEY = "from Content where siteId = ? and naturalKey = ?";
 
 	private static final String GET_CONTENT_BY_SITEID = "select content from Content content where siteId = ?";
 
 	private static final String GET_CONTENT_BY_CREATE_BY_USERID= "select content from Content content where create_by = ?";
 
-	private static final String GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE = "from Content content where siteId = ? and contentTitle = ? ";
+	private static final String GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE = "from Content content where siteId = ? and title = ? ";
 
-	private static final String GET_CONTENTS_BY_SITEID_AND_CONTENT_TITLE = "from Content content where siteId = ? and contentTitle like ? ";
+	private static final String GET_CONTENTS_BY_SITEID_AND_CONTENT_TITLE = "from Content content where siteId = ? and title like ? ";
 
-	public Content getContentById(long siteId, long contentId) {
+	public Content getContentById(int siteId, long contentId) {
 		Content content = getById(contentId);
 
 		if (content.getSiteId() != siteId) {
@@ -30,14 +30,14 @@ public class ContentDAO extends BaseDAO<Content> {
 		return content;
 	}
 
-	public List<Content> getContents(long siteId) {
+	public List<Content> getContents(int siteId) {
 		List<Content> contents = (List<Content>)getHibernateTemplate().find(GET_CONTENT_BY_SITEID, siteId);
 
 		return contents;
 	}
 
-	public Content getContent(long siteId, String contentTitle) {
-		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE, siteId, contentTitle);
+	public Content getContent(int siteId, String title) {
+		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE, siteId, title);
 
 		if (contents.size() == 0) {
 			return null;
@@ -45,14 +45,14 @@ public class ContentDAO extends BaseDAO<Content> {
 		else return contents.get(0);
 	}
 
-	public List<Content> getContents(long siteId, String contentTitle) {
-		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENTS_BY_SITEID_AND_CONTENT_TITLE, siteId, StringPool.PERCENT + contentTitle + StringPool.PERCENT);
+	public List<Content> getContents(int siteId, String title) {
+		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENTS_BY_SITEID_AND_CONTENT_TITLE, siteId, StringPool.PERCENT + title + StringPool.PERCENT);
 
 		return contents;
 	}
 
-	public Content getContentBySiteId_NaturalKey(long siteId, String contentNaturalKey) {
-		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENTNATURALKEY, siteId, contentNaturalKey);
+	public Content getContentBySiteId_NaturalKey(int siteId, String naturalKey) {
+		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENTNATURALKEY, siteId, naturalKey);
 
 		return contents.get(0);
 	}

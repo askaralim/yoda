@@ -44,12 +44,12 @@ public class SectionController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		Section referenceSection = sectionService.getSectionBySiteId_SectionId(siteId, sectionEditCommand.getCreateSectionId());
 //		Section referenceSection =  SectionDAO.load(siteId, Format.getLong(form.getCreateSectionId()));
 
-		long sectionParentId = 0;
+		int sectionParentId = 0;
 
 		int seqNum = 0;
 
@@ -70,30 +70,30 @@ public class SectionController {
 			}
 		}
 		else if (sectionEditCommand.getCreateMode().equals("B")) { // before current
-			sectionParentId = referenceSection.getSectionParentId();
+			sectionParentId = referenceSection.getParentId();
 
 			seqNum = referenceSection.getSeqNum();
 
-			sectionService.updateSeqNum(siteId, referenceSection.getSectionParentId(), referenceSection.getSeqNum());
+			sectionService.updateSeqNum(siteId, referenceSection.getParentId(), referenceSection.getSeqNum());
 		}
 		else if (sectionEditCommand.getCreateMode().equals("A")) { // after current
-			sectionParentId = referenceSection.getSectionParentId();
+			sectionParentId = referenceSection.getParentId();
 
 			seqNum = referenceSection.getSeqNum() + 1;
 
-			sectionService.updateSeqNum(siteId, referenceSection.getSectionParentId(), referenceSection.getSeqNum());
+			sectionService.updateSeqNum(siteId, referenceSection.getParentId(), referenceSection.getSeqNum());
 		}
 
 		Section section = sectionService.addSection(
 			siteId, user.getUserId(), sectionParentId, seqNum, "New section",
-			StringPool.BLANK, StringPool.BLANK, Constants.PUBLISHED_YES);
+			StringPool.BLANK, StringPool.BLANK, true);
 
 		sectionEditCommand.setSectionId(section.getSectionId());
 		sectionEditCommand.setSectionParentId(sectionParentId);
 		sectionEditCommand.setSectionTitle("");
-		sectionEditCommand.setSectionShortTitle(section.getSectionShortTitle());
+		sectionEditCommand.setSectionShortTitle(section.getShortTitle());
 		sectionEditCommand.setSectionDesc("");
-		sectionEditCommand.setPublished(section.getPublished() == Constants.PUBLISHED_YES ? true : false);
+		sectionEditCommand.setPublished(section.isPublished());
 		sectionEditCommand.setMode(Constants.MODE_UPDATE);
 		sectionEditCommand.setSectionTree(sectionService.makeSectionTree(siteId));
 		sectionEditCommand.setPublished(true);
@@ -163,7 +163,7 @@ public class SectionController {
 				sectionEditCommand.getSectionTitle(),
 				sectionEditCommand.getSectionShortTitle(),
 				sectionEditCommand.getSectionDesc(),
-				sectionEditCommand.isPublished() ? Constants.PUBLISHED_YES : Constants.PUBLISHED_NO);
+				sectionEditCommand.isPublished());
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (SectionShortTitleException e) {
@@ -205,7 +205,7 @@ public class SectionController {
 
 		for (int i = 0; i < childrenSections.length; i++) {
 			if (childrenSections[i].isRemove()) {
-				long sectionId = childrenSections[i].getSectionId();
+				int sectionId = childrenSections[i].getSectionId();
 
 				sectionService.cascadeRemoveSection(sectionId, user.getLastVisitSiteId());
 			}
@@ -242,7 +242,7 @@ public class SectionController {
 		for (int i = 0; i < childSections.length; i++) {
 			int seqNum = Format.getInt(childSections[i].getSeqNum());
 
-			long sectionId = childSections[i].getSectionId();
+			int sectionId = childSections[i].getSectionId();
 
 			Section section = sectionService.getSectionBySiteId_SectionId(user.getLastVisitSiteId(), sectionId);
 
@@ -259,7 +259,7 @@ public class SectionController {
 
 	@RequestMapping(value = "/controlpanel/section/showsequence", method = RequestMethod.POST)
 	public String showSequence(
-			@RequestParam(value = "sectionId") long sectionId,
+			@RequestParam(value = "sectionId") int sectionId,
 			@ModelAttribute SectionEditCommand command, BindingResult result,
 			SessionStatus status, 
 			HttpServletRequest request, HttpServletResponse response)
@@ -272,14 +272,14 @@ public class SectionController {
 
 		command.setSectionId(sectionId);
 
-		if (section.getSectionParentId() != 0) {
-			command.setSectionParentId(section.getSectionParentId());
+		if (section.getParentId() != 0) {
+			command.setSectionParentId(section.getParentId());
 		}
 
-		command.setSectionTitle(section.getSectionTitle());
-		command.setSectionShortTitle(section.getSectionShortTitle());
-		command.setSectionDesc(section.getSectionDesc());
-		command.setPublished(section.getPublished() == Constants.PUBLISHED_YES ? true : false);
+		command.setSectionTitle(section.getTitle());
+		command.setSectionShortTitle(section.getShortTitle());
+		command.setSectionDesc(section.getDescription());
+		command.setPublished(section.isPublished());
 		command.setMode(Constants.MODE_UPDATE);
 		command.setSequence(true);
 
@@ -290,7 +290,7 @@ public class SectionController {
 
 	@RequestMapping(value = "/controlpanel/section/update/{sectionId}", method = RequestMethod.GET)
 	public ModelAndView updateMenu(
-			@PathVariable("sectionId") long sectionId,
+			@PathVariable("sectionId") int sectionId,
 			@ModelAttribute SectionEditCommand command,
 			HttpServletRequest request)
 		throws Throwable {
@@ -302,21 +302,21 @@ public class SectionController {
 
 		command.setSectionId(sectionId);
 
-		if (section.getSectionParentId() != 0) {
-			command.setSectionParentId(section.getSectionParentId());
+		if (section.getParentId() != 0) {
+			command.setSectionParentId(section.getParentId());
 		}
 
-		command.setSectionTitle(section.getSectionTitle());
-		command.setSectionShortTitle(section.getSectionShortTitle());
-		command.setSectionDesc(section.getSectionDesc());
-		command.setPublished(section.getPublished() == Constants.PUBLISHED_YES ? true : false);
+		command.setSectionTitle(section.getTitle());
+		command.setSectionShortTitle(section.getShortTitle());
+		command.setSectionDesc(section.getDescription());
+		command.setPublished(section.isPublished());
 		command.setMode(Constants.MODE_UPDATE);
 		command.setSequence(false);
 
 		return new ModelAndView("controlpanel/section/edit", "sectionEditCommand", command);
 	}
 
-	protected void initListInfo(SectionEditCommand command, long siteId)
+	protected void initListInfo(SectionEditCommand command, int siteId)
 			throws Exception {
 		List<Section> sections = sectionService.getSectionBySiteId_SectionParentId(siteId, command.getSectionId());
 
@@ -327,10 +327,10 @@ public class SectionController {
 
 			display.setSectionId(childSection.getSectionId());
 			display.setSeqNum(Format.getInt(childSection.getSeqNum()));
-			display.setSectionShortTitle(childSection.getSectionShortTitle());
-			display.setSectionTitle(childSection.getSectionTitle());
-			display.setSectionDesc(childSection.getSectionDesc());
-			display.setPublished(String.valueOf(childSection.getPublished()));
+			display.setSectionShortTitle(childSection.getShortTitle());
+			display.setSectionTitle(childSection.getTitle());
+			display.setSectionDesc(childSection.getDescription());
+			display.setPublished(childSection.isPublished());
 
 			vector.add(display);
 		}

@@ -31,38 +31,6 @@ public class Country extends BaseEntity {
 //
 //	private ShippingRegion shippingRegion;
 
-	public Country() {
-	}
-
-//	public Country(
-//			long siteId, String countryCode, String countryName,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.countryCode = countryCode;
-//		this.countryName = countryName;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	public Country(long siteId, String countryCode, String countryName,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime, Set<State> states, Set<Tax> taxes,
-//			ShippingRegion shippingRegion) {
-//		this.siteId = siteId;
-//		this.countryCode = countryCode;
-//		this.countryName = countryName;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.states = states;
-//		this.taxes = taxes;
-//		this.shippingRegion = shippingRegion;
-//	}
-
 	public long getCountryId() {
 		return this.countryId;
 	}

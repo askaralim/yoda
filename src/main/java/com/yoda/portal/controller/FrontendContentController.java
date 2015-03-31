@@ -141,7 +141,7 @@ public class FrontendContentController extends BaseFrontendController {
 
 		Content content = contentService.getContent(site.getSiteId(), contentId);
 
-		long score = 0;
+		int score = 0;
 
 		if (thumb.equals("up")) {
 			score = content.getScore() + 1;

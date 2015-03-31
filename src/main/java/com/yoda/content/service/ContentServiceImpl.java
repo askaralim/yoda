@@ -13,10 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yoda.content.dao.CommentDAO;
 import com.yoda.content.dao.ContentDAO;
-import com.yoda.content.dao.ContentImageDAO;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
-import com.yoda.content.model.ContentImage;
 import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.menu.dao.MenuDAO;
@@ -34,16 +32,13 @@ public class ContentServiceImpl implements ContentService {
 	private CommentDAO commentDAO;
 
 	@Autowired
-	private ContentImageDAO contentImageDAO;
-
-	@Autowired
 	private HomePageDAO homePageDAO;
 
 	@Autowired
 	private MenuDAO menuDAO;
 
 	public Content addContent(
-			Long siteId, Long userId, String naturalKey,
+			int siteId, Long userId, String naturalKey,
 			String title, String shortDescription, String description,
 			String pageTitle, String publishDate, String expireDate,
 			Long updateBy, boolean isPublished) throws Exception {
@@ -60,8 +55,8 @@ public class ContentServiceImpl implements ContentService {
 		content.setUpdateBy(updateBy);
 		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
-		content.setHitCounter(0l);
-		content.setScore(0l);
+		content.setHitCounter(0);
+		content.setScore(0);
 		content.setCreateBy(userId);
 		content.setCreateDate(new Date());
 
@@ -123,32 +118,32 @@ public class ContentServiceImpl implements ContentService {
 		commentDAO.delete(comment);
 	}
 
-	public Content deleteContentImage(
-			Long siteId, Long userId, Long contentId, Long imageId) {
-		Content content = getContent(siteId, contentId);
-
-		ContentImage defaultImage = content.getImage();
-
-		if (imageId != null) {
-			if (defaultImage != null && (defaultImage.getImageId() == imageId)) {
-
-				content.setImage(null);
-
-				updateContent(content);
-
-				contentImageDAO.delete(defaultImage);
-
-				defaultImage = null;
-			}
-			else {
-				ContentImage contentImage = contentImageDAO.getContentImageBySId_Id(siteId, imageId);
-
-				contentImageDAO.delete(contentImage);
-			}
-		}
-
-		return content;
-	}
+//	public Content deleteContentImage(
+//			int siteId, Long userId, Long contentId, Long imageId) {
+//		Content content = getContent(siteId, contentId);
+//
+//		ContentImage defaultImage = content.getImage();
+//
+//		if (imageId != null) {
+//			if (defaultImage != null && (defaultImage.getImageId() == imageId)) {
+//
+//				content.setImage(null);
+//
+//				updateContent(content);
+//
+//				contentImageDAO.delete(defaultImage);
+//
+//				defaultImage = null;
+//			}
+//			else {
+//				ContentImage contentImage = contentImageDAO.getContentImageBySId_Id(siteId, imageId);
+//
+//				contentImageDAO.delete(contentImage);
+//			}
+//		}
+//
+//		return content;
+//	}
 
 	@Transactional(readOnly = true)
 	public List<Content> getContent(Long userId) {
@@ -156,22 +151,22 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Content getContent(Long siteId, Long contentId) {
+	public Content getContent(int siteId, Long contentId) {
 		return contentDAO.getContentById(siteId, contentId);
 	}
 
 	@Transactional(readOnly = true)
-	public Content getContent(Long siteId, String contentNaturalKey) {
+	public Content getContent(int siteId, String contentNaturalKey) {
 		return contentDAO.getContentBySiteId_NaturalKey(siteId, contentNaturalKey);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Content> getContents(Long siteId) {
+	public List<Content> getContents(int siteId) {
 		return contentDAO.getContents(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Content> getContents(Long siteId, String contentTitle) {
+	public List<Content> getContents(int siteId, String contentTitle) {
 		return contentDAO.getContents(siteId, contentTitle);
 	}
 
@@ -197,7 +192,7 @@ public class ContentServiceImpl implements ContentService {
 
 	@Transactional(readOnly = true)
 	public List<Content> search(
-			Long siteId, String title, String published,
+			int siteId, String title, String published,
 			String updateBy, String createBy,
 			String publishDateStart, String publishDateEnd,
 			String expireDateStart, String expireDateEnd) throws ParseException {
@@ -317,7 +312,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content updateContent(
-		Long siteId, Long userId, Long contentId, String title,
+		int siteId, Long userId, Long contentId, String title,
 		String shortDescription, String description) throws Exception  {
 		Content content = getContent(siteId, contentId);
 
@@ -328,7 +323,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content updateContent(
-		Long contentId, Long siteId, String naturalKey,
+		Long contentId, int siteId, String naturalKey,
 		String title, String shortDescription, String description,
 		String pageTitle, String publishDate, String expireDate,
 		Long updateBy, boolean isPublished) throws Exception {
@@ -372,7 +367,7 @@ public class ContentServiceImpl implements ContentService {
 //	}
 
 	public Content updateContentImage(
-			Long siteId, Long userId, Long contentId, String featuredImage) {
+			int siteId, Long userId, Long contentId, String featuredImage) {
 		Content content = getContent(siteId, contentId);
 
 		content.setFeaturedImage(featuredImage);

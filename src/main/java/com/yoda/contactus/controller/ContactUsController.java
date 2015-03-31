@@ -84,7 +84,7 @@ public class ContactUsController {
 
 		for (int i = 0; i < arrIds.length; i++) {
 			try {
-				contactUsService.deleteContactUs(user.getLastVisitSiteId(), Long.valueOf(arrIds[i]));
+				contactUsService.deleteContactUs(user.getLastVisitSiteId(), Integer.valueOf(arrIds[i]));
 			}
 			catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -139,7 +139,16 @@ public class ContactUsController {
 			command.setSrPageNo(1);
 		}
 
-		List<ContactUs> list = contactUsService.search(user.getLastVisitSiteId() ,command.getSrContactUsName(), command.getSrActive());
+		Boolean active = null;
+
+		if (command.getSrActive().equals(Constants.ACTIVE_YES)) {
+			active = true;
+		}
+		else if (command.getSrActive().equals(Constants.ACTIVE_NO)) {
+			active = false;
+		}
+
+		List<ContactUs> list = contactUsService.search(user.getLastVisitSiteId() ,command.getSrContactUsName(), active);
 
 		calcPage(user, command, list, command.getSrPageNo());
 
@@ -158,7 +167,7 @@ public class ContactUsController {
 			contactUsDisplay.setContactUsName(contactUs.getName());
 			contactUsDisplay.setContactUsEmail(contactUs.getEmail());
 			contactUsDisplay.setContactUsPhone(contactUs.getPhone());
-			contactUsDisplay.setActive(String.valueOf(contactUs.getActive()));
+			contactUsDisplay.setActive(String.valueOf(contactUs.isActive()));
 			contactUsDisplay.setSeqNum(Format.getInt(contactUs.getSeqNum()));
 
 			vector.add(contactUsDisplay);

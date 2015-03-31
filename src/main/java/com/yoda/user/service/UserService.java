@@ -27,19 +27,19 @@ public interface UserService {
 	User addUser(String userName, String password, String email,
 				 String phone, String userType, String addressLine1,
 				 String addressLine2, String cityName,
-				 Long siteId, Character active, long userId) throws PortalException;
+				 int siteId, Character active, long userId) throws PortalException;
 
 	User addUser(String userName, String userPassword, String userEmail,
 				 String userPhone, String userType, String userAddressLine1,
 				 String userAddressLine2, String userCityName,
-				 List<Long> selectedSiteIds, Character active, long userId) throws PortalException;
+				 List<Integer> selectedSiteIds, Character active, long userId) throws PortalException;
 
-	User updateUser(Long userId, String userName, String userPassword, String userEmail,
+	User updateUser(long userId, String userName, String userPassword, String userEmail,
 					String userPhone, String userType, String userAddressLine1,
 					String userAddressLine2, String userCityName,
-					List<Long> selectedSiteIds, Character active, User signinUser) throws PortalException;
+					List<Integer> selectedSiteIds, Character active, User signinUser) throws PortalException;
 
 	void deleteUser(long userId, User signinUser) throws SecurityException;
 
-	User updateUser(Long siteId, Long userId, String username, String password, String email);
+	User updateUser(int siteId, Long userId, String username, String password, String email);
 }

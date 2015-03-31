@@ -41,7 +41,7 @@ public class ContactUsEditController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showPanel(
-		@PathVariable("contactUsId") long contactUsId,
+		@PathVariable("contactUsId") int contactUsId,
 		HttpServletRequest request, HttpServletResponse response) {
 		User user = PortalUtil.getAuthenticatedUser();
 
@@ -91,7 +91,7 @@ public class ContactUsEditController {
 
 		ContactUs contactUs = contactUsService.updateContactUs(
 			command.getContactUsId(),
-			user.getLastVisitSiteId(), user.getUserId(), command.getActive(),
+			user.getLastVisitSiteId(), user.getUserId(), command.isActive(),
 			command.getContactUsName(), command.getContactUsEmail(),
 			command.getContactUsPhone(), command.getContactUsAddressLine1(),
 			command.getContactUsAddressLine2(), command.getContactUsCityName(),
@@ -118,7 +118,7 @@ public class ContactUsEditController {
 		command.setContactUsZipCode(contactUs.getZipCode());
 		command.setContactUsPhone(contactUs.getPhone());
 		command.setContactUsDesc(contactUs.getDescription());
-		command.setActive(String.valueOf(contactUs.getActive()));
+		command.setActive(contactUs.isActive());
 	}
 
 	public void initSearchInfo(ContactUsEditCommand command, long siteId) {

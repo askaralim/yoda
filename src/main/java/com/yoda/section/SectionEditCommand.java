@@ -4,14 +4,14 @@ import com.yoda.section.model.DropDownMenu;
 
 public class SectionEditCommand {
 	DropDownMenu sectionTree;
-	long sectionId;
-	long sectionParentId;
+	int sectionId;
+	int sectionParentId;
 	String sectionTitle;
 	String sectionShortTitle;
 	String sectionDesc;
 	boolean published;
 	String mode;
-	long createSectionId;
+	int createSectionId;
 	String createMode;
 	SectionDisplayCommand childrenSections[];
 	boolean sequence;
@@ -52,11 +52,11 @@ public class SectionEditCommand {
 		return childrenSections[index];
 	}
 
-	public long getCreateSectionId() {
+	public int getCreateSectionId() {
 		return createSectionId;
 	}
 
-	public void setCreateSectionId(long createSectionId) {
+	public void setCreateSectionId(int createSectionId) {
 		this.createSectionId = createSectionId;
 	}
 
@@ -92,19 +92,19 @@ public class SectionEditCommand {
 		this.sectionDesc = sectionDesc;
 	}
 
-	public long getSectionId() {
+	public int getSectionId() {
 		return sectionId;
 	}
 
-	public void setSectionId(long sectionId) {
+	public void setSectionId(int sectionId) {
 		this.sectionId = sectionId;
 	}
 
-	public long getSectionParentId() {
+	public int getSectionParentId() {
 		return sectionParentId;
 	}
 
-	public void setSectionParentId(long sectionParentId) {
+	public void setSectionParentId(int sectionParentId) {
 		this.sectionParentId = sectionParentId;
 	}
 

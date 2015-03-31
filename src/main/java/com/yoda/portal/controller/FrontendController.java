@@ -173,8 +173,8 @@ public class FrontendController extends BaseFrontendController {
 
 		PageInfo pageInfo = new PageInfo();
 
-		String topSectionNaturalKey = section.getSectionNaturalKey();
-		String sectionNaturalKey = section.getSectionNaturalKey();
+		String topSectionNaturalKey = section.getNaturalKey();
+		String sectionNaturalKey = section.getNaturalKey();
 
 		String value = getCategoryParameter(request, 4);
 

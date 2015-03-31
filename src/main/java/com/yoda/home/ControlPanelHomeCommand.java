@@ -32,7 +32,7 @@ public class ControlPanelHomeCommand {
 	Map<String, String> serverStats;
 	Map<String, String> threadStats;
 	Map<String, String> jvmStats;
-	long siteId;
+	int siteId;
 	List<Site> sites;
 
 	public List<Site> getSites() {
@@ -43,11 +43,11 @@ public class ControlPanelHomeCommand {
 		this.sites = sites;
 	}
 
-	public long getSiteId() {
+	public int getSiteId() {
 		return siteId;
 	}
 
-	public void setSiteId(long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 

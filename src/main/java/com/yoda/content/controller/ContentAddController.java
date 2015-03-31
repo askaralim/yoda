@@ -81,7 +81,7 @@ public class ContentAddController {
 
 		User user = PortalUtil.getAuthenticatedUser();
 
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		Content content = new Content();
 
@@ -98,7 +98,7 @@ public class ContentAddController {
 		}
 
 		content = contentService.addContent(
-			siteId, user.getLastVisitSiteId(), command.getTitle(),
+			siteId, user.getUserId(), command.getTitle(),
 			command.getTitle(), command.getShortDescription(),
 			command.getDescription(), command.getPageTitle(),
 			command.getPublishDate(), command.getExpireDate(),
@@ -109,7 +109,7 @@ public class ContentAddController {
 		if (command.isHomePage()) {
 			if (homePage == null) {
 				homePageService.addHomePage(
-					user.getLastVisitSiteId(), user.getUserId(), 'N', content);
+					user.getLastVisitSiteId(), user.getUserId(), false, content);
 			}
 		}
 		else {
@@ -160,7 +160,7 @@ public class ContentAddController {
 	public void createAdditionalInfo(
 			User user, Content content, ContentEditCommand command)
 		throws Exception {
-		long siteId = user.getLastVisitSiteId();
+		int siteId = user.getLastVisitSiteId();
 
 		Iterator iterator = content.getMenus().iterator();
 

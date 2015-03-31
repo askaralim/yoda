@@ -77,7 +77,7 @@ public class UserRegisterController {
 			return model;
 		}
 
-		long siteId = PortalUtil.getSiteId(request);
+		int siteId = PortalUtil.getSiteId(request);
 
 		try {
 			User user = userService.addUser(

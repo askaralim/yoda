@@ -48,7 +48,7 @@ public class ContactUsAddController {
 
 		ContactUsEditCommand command = new ContactUsEditCommand();
 
-		command.setActive(String.valueOf(Constants.ACTIVE_YES));
+		command.setActive(true);
 
 		initSearchInfo(command, siteId);
 
@@ -78,7 +78,7 @@ public class ContactUsAddController {
 		}
 
 		ContactUs contactUs = contactUsService.addContactUs(
-			user.getLastVisitSiteId(), user.getUserId(), command.getActive(),
+			user.getLastVisitSiteId(), user.getUserId(), command.isActive(),
 			command.getContactUsName(), command.getContactUsEmail(),
 			command.getContactUsPhone(), command.getContactUsAddressLine1(),
 			command.getContactUsAddressLine2(), command.getContactUsCityName(),

@@ -19,8 +19,8 @@
 
 LOCK TABLES "menu" WRITE;
 /*!40000 ALTER TABLE "menu" DISABLE KEYS;*/
-INSERT INTO "menu" ("menu_id", "site_id", "menu_set_name", "menu_title", "menu_name", "seq_num", "menu_parent_id", "menu_type", "menu_url", "menu_window_target", "menu_window_mode", "published", "rec_update_by", "rec_update_datetime", "rec_create_by", "rec_create_datetime", "section_id", "content_id") VALUES
-    (100,1,'MAIN','Home','Home',0,NULL,'HOME',' ',' ',' ','Y',1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00',null,null);
+INSERT INTO "menu" ("menu_id", "site_id", "set_name", "title", "name", "seq_num", "parent_id", "menu_type", "menu_url", "menu_window_target", "menu_window_mode", "published", "update_by", "update_date", "create_by", "create_date", "section_id", "content_id") VALUES
+    (100,1,'MAIN','Home','Home',0,0,'HOME',' ',' ',' ',true,1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00',null,null);
 /*!40000 ALTER TABLE "menu" ENABLE KEYS;*/
 UNLOCK TABLES;
 
@@ -31,8 +31,8 @@ UNLOCK TABLES;
 
 LOCK TABLES "section" WRITE;
 /*!40000 ALTER TABLE "section" DISABLE KEYS;*/
-INSERT INTO "section" ("section_id", "site_id", "section_natural_key", "section_title", "seq_num", "section_parent_id", "section_short_title", "section_desc", "published", "rec_update_by", "rec_update_datetime", "rec_create_by", "rec_create_datetime") VALUES
-    (100,1,'','Home',0,0,'Home',' ','Y',1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00');
+INSERT INTO "section" ("section_id", "site_id", "natural_key", "title", "seq_num", "parent_id", "short_title", "description", "published", "update_by", "update_date", "create_by", "create_date") VALUES
+    (100,1,'','Home',0,0,'Home',' ',1,1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00');
 /*!40000 ALTER TABLE "section" ENABLE KEYS;*/
 UNLOCK TABLES;
 
@@ -54,8 +54,8 @@ UNLOCK TABLES;
 
 LOCK TABLES "user_" WRITE;
 /*!40000 ALTER TABLE "user" DISABLE KEYS;*/
-INSERT INTO "user_" ("user_id", "username", "password", "enabled", "address_line1", "address_line2", "city_name", "state_name", "country_name", "zip_code", "email", "phone", "user_type", "last_login_date", "last_visit_site_id", "active", "update_by", "update_date", "create_by", "create_date") VALUES
-    (1,'admin','$2a$10$amX8DeVP1pk6BbLrcZBbFe89S4v6XtP2qYW1OpJcpDGuZ/Dfddz0q',TRUE,'','','','Xinjiang','China','admin@test.com','','','S','2014-05-21 00:00:00',0,'Y',1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00');
+INSERT INTO "user_" ("user_id", "username", "password", "account_non_expired", "account_non_locked", "credentials_non_expired", "enabled", "address_line1", "address_line2", "city_name", "state_name", "country_name", "zip_code", "email", "phone", "user_type", "last_login_date", "last_visit_site_id", "active", "update_by", "update_date", "create_by", "create_date") VALUES
+    (1,'admin','$2a$10$amX8DeVP1pk6BbLrcZBbFe89S4v6XtP2qYW1OpJcpDGuZ/Dfddz0q',TRUE,TRUE,TRUE,TRUE,'','','','Xinjiang','China','admin@test.com','','','S','2014-05-21 00:00:00',0,'Y',1,'2014-05-21 00:00:00',1,'2014-05-21 00:00:00');
 /*!40000 ALTER TABLE "user" ENABLE KEYS;*/
 UNLOCK TABLES;
 

@@ -128,19 +128,19 @@ public class BaseFrontendController {
 		return siteInfo;
 	}
 
-	public List<ContactUs> getContactUs(long siteId) {
-		return contactUsService.getContent(siteId, Constants.VALUE_YES);
+	public List<ContactUs> getContactUs(int siteId) {
+		return contactUsService.getContent(siteId, true);
 	}
 
 	/******************************************************************************************************/
 	public ContentInfo getContent(
-			long siteId, Content content, boolean checkExpiry,
+			int siteId, Content content, boolean checkExpiry,
 			boolean updateStatistics) {
 		return processContent(siteId, content, checkExpiry, updateStatistics);
 	}
 
 	public ContentInfo getContent(
-			long siteId, String contentNaturalKey, boolean checkExpiry,
+			int siteId, String contentNaturalKey, boolean checkExpiry,
 			boolean updateStatistics) {
 		Content content = contentService.getContent(siteId, contentNaturalKey);
 
@@ -152,7 +152,7 @@ public class BaseFrontendController {
 	}
 
 	public ContentInfo processContent(
-			long siteId, Content content, boolean checkExpiry, boolean updateStatistics) {
+			int siteId, Content content, boolean checkExpiry, boolean updateStatistics) {
 		if (content == null) {
 			return null;
 		}
@@ -231,7 +231,7 @@ public class BaseFrontendController {
 		return contentInfo;
 	}
 
-	public HomeInfo getHome(long siteId) {
+	public HomeInfo getHome(int siteId) {
 		HomeInfo homeInfo = new HomeInfo();
 
 		List<HomePage> homePages = homePageService.getHomePagesBySiteIdAndFeatureData(siteId);
@@ -286,7 +286,7 @@ public class BaseFrontendController {
 	}
 
 	public SectionInfo getSection(
-			long siteId, String sectionNaturalKey, String topSectionNaturalKey, int pageSize,
+			int siteId, String sectionNaturalKey, String topSectionNaturalKey, int pageSize,
 			int pageNavCount, int pageNum, String sortBy)
 		throws Exception {
 		String contextPath = ServletContextUtil.getContextPath();
@@ -306,20 +306,20 @@ public class BaseFrontendController {
 		sectionInfo.setSectionId(section.getSectionId());
 		sectionInfo.setTopSectionId(0);
 		sectionInfo.setTopSectionNaturalKey(topSectionNaturalKey);
-		sectionInfo.setSectionShortTitle(section.getSectionShortTitle());
-		sectionInfo.setSectionTitle(section.getSectionTitle());
-		sectionInfo.setSectionDesc(section.getSectionDesc());
+		sectionInfo.setSectionShortTitle(section.getShortTitle());
+		sectionInfo.setSectionTitle(section.getTitle());
+		sectionInfo.setSectionDesc(section.getDescription());
 
 //		String url = "/" + ApplicationGlobal.getContextPath()
 		String url = contextPath + StringPool.SLASH
 			+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
 			+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH + topSectionNaturalKey + // topSection
-			StringPool.SLASH + section.getSectionNaturalKey(); // section
+			StringPool.SLASH + section.getNaturalKey(); // section
 
 		sectionInfo.setSectionUrl(url);
 		sectionInfo.setSortBy(sortBy == null ? "" : sortBy);
 
-		List<Section> childSections = sectionService.getSectionBySiteId_SectionParentId_Published(siteId, section.getSectionId(), Constants.PUBLISHED_YES);
+		List<Section> childSections = sectionService.getSectionBySiteId_SectionParentId_Published(siteId, section.getSectionId(), true);
 
 		Vector<Object> vector = new Vector<Object>();
 
@@ -327,16 +327,16 @@ public class BaseFrontendController {
 			SectionInfo childSectionInfo = new SectionInfo();
 
 			childSectionInfo.setSectionId(childSection.getSectionId());
-			childSectionInfo.setSectionShortTitle(childSection.getSectionShortTitle());
-			childSectionInfo.setSectionTitle(childSection.getSectionTitle());
-			childSectionInfo.setSectionDesc(childSection.getSectionDesc());
+			childSectionInfo.setSectionShortTitle(childSection.getShortTitle());
+			childSectionInfo.setSectionTitle(childSection.getTitle());
+			childSectionInfo.setSectionDesc(childSection.getDescription());
 
 //			url = "/" + ApplicationGlobal.getContextPath()
 			url = contextPath + StringPool.SLASH
 				+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
 				+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
 				+ topSectionNaturalKey + // topSection
-				StringPool.SLASH + childSection.getSectionNaturalKey(); // section
+				StringPool.SLASH + childSection.getNaturalKey(); // section
 
 			childSectionInfo.setSectionUrl(url);
 
@@ -441,10 +441,10 @@ public class BaseFrontendController {
 
 		Vector<SectionInfo> titleSectionVector = new Vector<SectionInfo>();
 
-		Long sectionParentId = section.getSectionParentId();
+		int sectionParentId = section.getParentId();
 
 		while (true) {
-			key = Utility.reEncode(section.getSectionNaturalKey());
+			key = Utility.reEncode(section.getNaturalKey());
 
 			if (key.equals(topKey)) {
 				break;
@@ -452,30 +452,30 @@ public class BaseFrontendController {
 
 			section = sectionService.getSectionBySiteId_SectionId(siteId, sectionParentId);
 
-			if (section.getSectionParentId() == 0) {
+			if (section.getParentId() == 0) {
 				break;
 			}
 
 			SectionInfo titleSectionInfo = new SectionInfo();
 
-			titleSectionInfo.setSectionNaturalKey(section.getSectionNaturalKey());
+			titleSectionInfo.setSectionNaturalKey(section.getNaturalKey());
 			titleSectionInfo.setSectionId(section.getSectionId());
-			titleSectionInfo.setSectionShortTitle(section.getSectionShortTitle());
-			titleSectionInfo.setSectionTitle(section.getSectionTitle());
-			titleSectionInfo.setSectionDesc(section.getSectionDesc());
+			titleSectionInfo.setSectionShortTitle(section.getShortTitle());
+			titleSectionInfo.setSectionTitle(section.getTitle());
+			titleSectionInfo.setSectionDesc(section.getDescription());
 
 //			url = "/" + ApplicationGlobal.getContextPath()
 			url = contextPath + StringPool.SLASH
 					+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
 					+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
 					+ topSectionNaturalKey + // topSection
-					StringPool.SLASH + section.getSectionNaturalKey(); // section
+					StringPool.SLASH + section.getNaturalKey(); // section
 
 			titleSectionInfo.setSectionUrl(url);
 
 			titleSectionVector.add(titleSectionInfo);
 
-			sectionParentId = section.getSectionParentId();
+			sectionParentId = section.getParentId();
 		}
 
 		// Reverse sequence order

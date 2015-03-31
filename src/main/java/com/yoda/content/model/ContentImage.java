@@ -2,82 +2,63 @@ package com.yoda.content.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 
+@Entity
+@Table(name = "content_image")
 public class ContentImage extends BaseEntity {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "image_d")
 	private Long imageId;
 
-	private Long siteId;
+	@Column(name = "site_id")
+	private int siteId;
 
+	@Column(name = "seq_num")
 	private int seqNum;
 
+	@Column(name = "content_type")
 	private String contentType;
 
+	@Column(name = "image_name")
 	private String imageName;
 
+	@Column(name = "image_value")
 	private byte[] imageValue;
 
+	@Column(name = "height")
 	private int height;
 
+	@Column(name = "width")
 	private int width;
 
+	@Column(name = "update_by")
 	private Long updateBy;
 
+	@Column(name = "update_date")
 	private Date updateDate;
 
+	@Column(name = "create_by")
 	private Long createBy;
 
+	@Column(name = "create_date")
 	private Date createDate;
 
+//	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//	@JoinColumn(name = "content_id")
 //	private Content content;
 
-	// Constructors
-
-	/** default constructor */
-	public ContentImage() {
-	}
-
-//	/** minimal constructor */
-//	public ContentImage(
-//			long siteId, int seqNum, String contentType, String imageName,
-//			byte[] imageValue, int imageHeight, int imageWidth,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.seqNum = seqNum;
-//		this.contentType = contentType;
-//		this.imageName = imageName;
-//		this.imageValue = imageValue;
-//		this.imageHeight = imageHeight;
-//		this.imageWidth = imageWidth;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	/** full constructor */
-//	public ContentImage(
-//			long siteId, int seqNum, String contentType, String imageName,
-//			byte[] imageValue, int imageHeight, int imageWidth,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime, Content content) {
-//		this.siteId = siteId;
-//		this.seqNum = seqNum;
-//		this.contentType = contentType;
-//		this.imageName = imageName;
-//		this.imageValue = imageValue;
-//		this.imageHeight = imageHeight;
-//		this.imageWidth = imageWidth;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.content = content;
-//	}
-
-	// Property accessors
 	public Long getImageId() {
 		return this.imageId;
 	}
@@ -86,11 +67,11 @@ public class ContentImage extends BaseEntity {
 		this.imageId = imageId;
 	}
 
-	public Long getSiteId() {
+	public int getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(Long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 

@@ -4,95 +4,81 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 import com.yoda.content.model.Content;
 import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 
+@Entity
+@Table(name = "section")
 public class Section extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "section_id")
+	private Integer sectionId;
 
-	private long sectionId;
+	@Column(name = "site_id")
+	private int siteId;
 
-	private long siteId;
+	@Column(name = "natural_key")
+	private String naturalKey;
 
-	private String sectionNaturalKey;
+	@Column(name = "title")
+	private String title;
 
-	private String sectionTitle;
-
+	@Column(name = "seq_num")
 	private int seqNum;
 
-	private long sectionParentId;
+	@Column(name = "parent_id")
+	private int parentId;
 
-	private String sectionShortTitle;
+	@Column(name = "short_title")
+	private String shortTitle;
 
-	private String sectionDesc;
+	@Column(name = "description")
+	private String description;
 
-	private char published;
+	@Column(name = "published")
+	private boolean published;
 
-	private long recUpdateBy;
+	@Column(name = "update_by")
+	private long updateBy;
 
-	private Date recUpdateDatetime;
+	@Column(name = "create_by")
+	private long createBy;
 
-	private long recCreateBy;
+	@Column(name = "update_date")
+	private Date updateDate;
 
-	private Date recCreateDatetime;
+	@Column(name = "create_date")
+	private Date createDate;
 
-	private Set<Menu> menus = new HashSet<Menu>(0);
+	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@JoinColumn(name = "section_id")
+	private Set<Menu> menus = new HashSet<Menu>();
 
-	private Set<Item> items = new HashSet<Item>(0);
+//	private Set<Item> items = new HashSet<Item>(0);
 
-	private Set<Content> contents = new HashSet<Content>(0);
+	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@JoinColumn(name = "section_id")
+	private Set<Content> contents = new HashSet<Content>();
 
-//	public Section() {
-//	}
-//
-//	public Section(
-//			long siteId, String sectionNaturalKey,
-//			String sectionTitle, int seqNum, String sectionShortTitle,
-//			String sectionDesc, char published, String recUpdateBy,
-//			Date recUpdateDatetime, String recCreateBy, Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.sectionNaturalKey = sectionNaturalKey;
-//		this.sectionTitle = sectionTitle;
-//		this.seqNum = seqNum;
-//		this.sectionShortTitle = sectionShortTitle;
-//		this.sectionDesc = sectionDesc;
-//		this.published = published;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	public Section(
-//			long siteId, String sectionNaturalKey,
-//			String sectionTitle, int seqNum, long sectionParentId,
-//			String sectionShortTitle, String sectionDesc, char published,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime, Set<Menu> menus, Set<Item> items,
-//			Set<Content> contents) {
-//		this.siteId = siteId;
-//		this.sectionNaturalKey = sectionNaturalKey;
-//		this.sectionTitle = sectionTitle;
-//		this.seqNum = seqNum;
-//		this.sectionParentId = sectionParentId;
-//		this.sectionShortTitle = sectionShortTitle;
-//		this.sectionDesc = sectionDesc;
-//		this.published = published;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.menus = menus;
-//		this.items = items;
-//		this.contents = contents;
-//	}
-
-	public long getSectionId() {
+	public Integer getSectionId() {
 		return this.sectionId;
 	}
 
-	public void setSectionId(long sectionId) {
+	public void setSectionId(Integer sectionId) {
 		this.sectionId = sectionId;
 	}
 
@@ -100,24 +86,88 @@ public class Section extends BaseEntity {
 		return this.siteId;
 	}
 
-	public void setSiteId(long siteId) {
+	public String getNaturalKey() {
+		return naturalKey;
+	}
+
+	public void setNaturalKey(String naturalKey) {
+		this.naturalKey = naturalKey;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public int getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getShortTitle() {
+		return shortTitle;
+	}
+
+	public void setShortTitle(String shortTitle) {
+		this.shortTitle = shortTitle;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
+	}
+
+	public long getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(long updateBy) {
+		this.updateBy = updateBy;
+	}
+
+	public long getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(long createBy) {
+		this.createBy = createBy;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
-	}
-
-	public String getSectionNaturalKey() {
-		return this.sectionNaturalKey;
-	}
-
-	public void setSectionNaturalKey(String sectionNaturalKey) {
-		this.sectionNaturalKey = sectionNaturalKey;
-	}
-
-	public String getSectionTitle() {
-		return this.sectionTitle;
-	}
-
-	public void setSectionTitle(String sectionTitle) {
-		this.sectionTitle = sectionTitle;
 	}
 
 	public int getSeqNum() {
@@ -128,70 +178,6 @@ public class Section extends BaseEntity {
 		this.seqNum = seqNum;
 	}
 
-	public long getSectionParentId() {
-		return this.sectionParentId;
-	}
-
-	public void setSectionParentId(long sectionParentId) {
-		this.sectionParentId = sectionParentId;
-	}
-
-	public String getSectionShortTitle() {
-		return this.sectionShortTitle;
-	}
-
-	public void setSectionShortTitle(String sectionShortTitle) {
-		this.sectionShortTitle = sectionShortTitle;
-	}
-
-	public String getSectionDesc() {
-		return this.sectionDesc;
-	}
-
-	public void setSectionDesc(String sectionDesc) {
-		this.sectionDesc = sectionDesc;
-	}
-
-	public char getPublished() {
-		return this.published;
-	}
-
-	public void setPublished(char published) {
-		this.published = published;
-	}
-
-	public long getRecUpdateBy() {
-		return this.recUpdateBy;
-	}
-
-	public void setRecUpdateBy(long recUpdateBy) {
-		this.recUpdateBy = recUpdateBy;
-	}
-
-	public Date getRecUpdateDatetime() {
-		return this.recUpdateDatetime;
-	}
-
-	public void setRecUpdateDatetime(Date recUpdateDatetime) {
-		this.recUpdateDatetime = recUpdateDatetime;
-	}
-
-	public long getRecCreateBy() {
-		return this.recCreateBy;
-	}
-
-	public void setRecCreateBy(long recCreateBy) {
-		this.recCreateBy = recCreateBy;
-	}
-
-	public Date getRecCreateDatetime() {
-		return this.recCreateDatetime;
-	}
-
-	public void setRecCreateDatetime(Date recCreateDatetime) {
-		this.recCreateDatetime = recCreateDatetime;
-	}
-
 	public Set<Menu> getMenus() {
 		return this.menus;
 	}
@@ -200,13 +186,13 @@ public class Section extends BaseEntity {
 		this.menus = menus;
 	}
 
-	public Set<Item> getItems() {
-		return this.items;
-	}
-
-	public void setItems(Set<Item> items) {
-		this.items = items;
-	}
+//	public Set<Item> getItems() {
+//		return this.items;
+//	}
+//
+//	public void setItems(Set<Item> items) {
+//		this.items = items;
+//	}
 
 	public Set<Content> getContents() {
 		return this.contents;
@@ -214,5 +200,9 @@ public class Section extends BaseEntity {
 
 	public void setContents(Set<Content> contents) {
 		this.contents = contents;
+	}
+
+	public boolean isNew() {
+		return (this.sectionId == null);
 	}
 }
