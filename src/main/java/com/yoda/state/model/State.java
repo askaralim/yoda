@@ -2,63 +2,60 @@ package com.yoda.state.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 import com.yoda.country.model.Country;
 
+@Entity
+@Table(name = "state")
 public class State extends BaseEntity {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "state_id")
 	private long stateId;
 
+	@Column(name = "site_id")
 	private long siteId;
 
+	@Column(name = "state_code")
 	private String stateCode;
 
+	@Column(name = "state_name")
 	private String stateName;
 
+	@Column(name = "rec_update_by")
 	private String recUpdateBy;
 
+	@Column(name = "rec_update_datetime")
 	private Date recUpdateDatetime;
 
+	@Column(name = "rec_create_by")
 	private String recCreateBy;
 
+	@Column(name = "rec_create_datetime")
 	private Date recCreateDatetime;
 
 //	private Set<Tax> taxes = new HashSet<Tax>(0);
 
+	@ManyToOne
+	@JoinColumn(name = "country_id")
 	private Country country;
 
+//	@ManyToOne
+//	@JoinColumn(name = "shipping_region_id")
 //	private ShippingRegion shippingRegion;
 
 	public State() {
 	}
-
-//	public State(long siteId, String stateCode, String stateName,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.stateCode = stateCode;
-//		this.stateName = stateName;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-//
-//	public State(long siteId, String stateCode, String stateName,
-//			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-//			Date recCreateDatetime, Set<Tax> taxes, Country country,
-//			ShippingRegion shippingRegion) {
-//		this.siteId = siteId;
-//		this.stateCode = stateCode;
-//		this.stateName = stateName;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//		this.taxes = taxes;
-//		this.country = country;
-//		this.shippingRegion = shippingRegion;
-//	}
 
 	public long getStateId() {
 		return this.stateId;

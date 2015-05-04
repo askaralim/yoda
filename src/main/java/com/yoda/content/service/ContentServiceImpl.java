@@ -21,6 +21,7 @@ import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
 import com.yoda.util.Format;
 import com.yoda.util.Utility;
+import com.yoda.util.Validator;
 
 @Service
 @Transactional
@@ -192,59 +193,34 @@ public class ContentServiceImpl implements ContentService {
 
 	@Transactional(readOnly = true)
 	public List<Content> search(
-			int siteId, String title, String published,
-			String updateBy, String createBy,
-			String publishDateStart, String publishDateEnd,
-			String expireDateStart, String expireDateEnd) throws ParseException {
+			int siteId, String title, Boolean published,
+			String updateBy, String createBy, String publishDateStart,
+			String publishDateEnd, String expireDateStart, String expireDateEnd)
+		throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 		Query query = null;
 
 		String sql = "select content from Content content where siteId = :siteId ";
 
-		if (title.length() > 0) {
-			sql += "and title like :contentTitle ";
+		if (Validator.isNotNull(title) && title.length() > 0) {
+			sql += "and title like : title ";
 		}
 
-		if (!published.equals("*")) {
+		if (Validator.isNotNull(published)) {
 			sql += "and published = :published ";
 		}
 
-		sql += "and publishDate between :contentPublishOnStart and :contentPublishOnEnd ";
-		sql += "and expireDate between :contentExpireOnStart and :contentExpireOnEnd ";
+		sql += "and publishDate between :publishDateStart and :publishDateEnd ";
+		sql += "and expireDate between :expireDateStart and :expireDateEnd ";
 
-		if (!updateBy.equals("All")) {
-			sql += "and updateBy = :recUpdateBy ";
+		if (Validator.isNotNull(updateBy)) {
+			sql += "and updateBy = :updateBy ";
 		}
 
-		if (!createBy.equals("All")) {
-			sql += "and createBy = :recCreateBy ";
+		if (Validator.isNotNull(createBy)) {
+			sql += "and createBy = :createBy ";
 		}
-
-//		String selectedSections[] = command.getSrSelectedSections();
-//
-//		if (selectedSections != null) {
-//
-//			sql += "and sectionId in (";
-//
-//			int index = 0;
-//
-//			for (int i = 0; i < selectedSections.length; i++) {
-//				Long sectionIds[] = sectionService.getSectionIdTreeList(
-//					siteId, Format.getLong(selectedSections[i]));
-//
-//				for (int j = 0; j < sectionIds.length; j++) {
-//
-//					if (index > 0) {
-//						sql += ",";
-//					}
-//
-//					sql += ":selectedSection" + index++;
-//				}
-//
-//				sql += ") ";
-//			}
-//		}
 
 		query = contentDAO.getSession().createQuery(sql);
 
@@ -254,41 +230,52 @@ public class ContentServiceImpl implements ContentService {
 
 		query.setLong("siteId", siteId);
 
-		if (title.length() > 0) {
-			query.setString("contentTitle", "%" + title + "%");
+		if (Validator.isNotNull(title) && title.length() > 0) {
+			query.setString("title", "%" + title + "%");
 		}
-		if (!published.equals("*")) {
-			query.setString("published", published);
+
+		if (Validator.isNotNull(published)) {
+			query.setBoolean("published", published);
 		}
+
 		if (publishDateStart.length() > 0) {
 			date = dateFormat.parse(publishDateStart);
-			query.setDate("contentPublishOnStart", date);
-		} else {
-			query.setDate("contentPublishOnStart", lowDate);
+			query.setDate("publishDateStart", date);
 		}
+		else {
+			query.setDate("publishDateStart", lowDate);
+		}
+
 		if (publishDateEnd.length() > 0) {
 			date = dateFormat.parse(publishDateEnd);
-			query.setDate("contentPublishOnEnd", date);
-		} else {
-			query.setDate("contentPublishOnEnd", highDate);
+			query.setDate("publishDateEnd", date);
 		}
+		else {
+			query.setDate("publishDateEnd", highDate);
+		}
+
 		if (expireDateStart.length() > 0) {
 			date = dateFormat.parse(expireDateStart);
-			query.setDate("contentExpireOnStart", date);
-		} else {
-			query.setDate("contentExpireOnStart", lowDate);
+			query.setDate("expireDateStart", date);
 		}
+		else {
+			query.setDate("expireDateStart", lowDate);
+		}
+
 		if (expireDateEnd.length() > 0) {
 			date = dateFormat.parse(expireDateEnd);
-			query.setDate("contentExpireOnEnd", date);
-		} else {
-			query.setDate("contentExpireOnEnd", highDate);
+			query.setDate("expireDateEnd", date);
 		}
-		if (!updateBy.equals("All")) {
-			query.setString("recUpdateBy", updateBy);
+		else {
+			query.setDate("expireDateEnd", highDate);
 		}
-		if (!createBy.equals("All")) {
-			query.setString("recCreateBy", createBy);
+
+		if (Validator.isNotNull(updateBy)) {
+			query.setString("updateBy", updateBy);
+		}
+
+		if (Validator.isNotNull(createBy)) {
+			query.setString("createBy", createBy);
 		}
 //		if (selectedSections != null) {
 //			int index = 0;

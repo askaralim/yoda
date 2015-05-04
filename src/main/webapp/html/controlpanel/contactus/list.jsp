@@ -129,8 +129,8 @@ function submitResequence() {
 					<tbody>
 						<c:forEach var="contactUs" items="${contactUsListCommand.contactUsCommands}">
 							<spring:url value="/controlpanel/contactus/{contactUsId}/edit" var="editContactUsUrl">
-									<spring:param name="contactUsId" value="${contactUs.contactUsId}"/>
-								</spring:url>
+								<spring:param name="contactUsId" value="${contactUs.contactUsId}"/>
+							</spring:url>
 							<tr>
 								<td>
 									<input type="checkbox" id="contantUsIds" value="${contactUs.contactUsId}">

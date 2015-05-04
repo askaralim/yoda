@@ -89,7 +89,7 @@
     drop table if exists user_site;
 
     create table contact_us (
-        contact_us_id INT(4) not null,
+        contact_us_id INT(4) not null AUTO_INCREMENT,
         site_id INT(4) not null,
         name varchar(50) not null comment '',
         address_line1 varchar(30) not null comment '',
@@ -109,7 +109,7 @@
     ) comment='';
 
     create table content (
-        id bigint not null,
+        content_id bigint not null AUTO_INCREMENT,
         site_id INT(4) not null,
         natural_key varchar(255) not null comment '',
         title varchar(128) not null comment '',
@@ -345,7 +345,7 @@
     ) comment='';
 
     create table user_ (
-        user_id bigint not null,
+        user_id bigint not null AUTO_INCREMENT,
         account_non_expired BOOLEAN NOT NULL;
         account_non_locked BOOLEAN NOT NULL;
         credentials_non_expired BOOLEAN NOT NULL;
@@ -365,7 +365,6 @@
         user_type varchar(1) not null comment '',
         last_login_date datetime comment '',
         last_visit_site_id INT(4),
-        active char(1) not null comment '',
         update_by bigint not null comment '',
         update_date datetime not null comment '',
         primary key (user_id)

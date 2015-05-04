@@ -1,31 +1,26 @@
 package com.yoda.user.controller;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
-import com.yoda.user.UserEditCommand;
 import com.yoda.user.UserEditValidator;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
-import com.yoda.util.Constants;
+import com.yoda.util.StringPool;
+import com.yoda.util.Validator;
 
 @Controller
 @RequestMapping("/controlpanel/user/{userId}/edit")
@@ -37,70 +32,59 @@ public class UserEditController {
 	SiteService siteService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm(
-			@PathVariable("userId") long userId,
-			HttpServletRequest request, HttpServletResponse response) {
-		User signinUser = PortalUtil.getAuthenticatedUser();
+	public String setupForm(
+			@PathVariable("userId") long userId, Map<String, Object> model) {
+		model.put("user", userService.getUser(userId));
+		model.put("sites", siteService.getSites());
 
-		UserEditCommand command = new UserEditCommand();
-
-		User user = new User();
-
-		try {
-			user = userService.getByUI_SU(userId, signinUser);
-		}
-		catch (SecurityException e) {
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		Set<Site> sites = user.getSites();
-
-		List<Integer> siteIds = new ArrayList<Integer>();
-
-		for (Site site : sites) {
-			siteIds.add(site.getSiteId());
-		}
-
-		command.setSelectedSiteIds(siteIds);
-
-		copyProperties(command, user);
-
-		initSearchInfo(command, signinUser.getLastVisitSiteId(), signinUser);
-
-		return new ModelAndView("controlpanel/user/edit", "userEditCommand", command);
+		return "controlpanel/user/edit";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(
-			@ModelAttribute UserEditCommand command,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request)
+			@ModelAttribute User user, BindingResult result,
+			SessionStatus status, HttpServletRequest request)
 		throws Throwable {
-
 		User signinUser = PortalUtil.getAuthenticatedUser();
 
-		new UserEditValidator().validate(command, result);
+		new UserEditValidator().validate(user, result);
+
+		ModelMap model = new ModelMap();
 
 		if(result.hasErrors()) {
-			initSearchInfo(command, signinUser.getLastVisitSiteId(), signinUser);
+			model.put("sites", siteService.getSites());
+			model.put("errors", "errors");
 
 			return "controlpanel/user/edit/{userId}";
 		}
 
+		String role = request.getParameter("userRole");
+		String[] selectedSiteIds = request.getParameterValues("selectedSiteIds");
+
+		if (Validator.isNull(role)) {
+			role = StringPool.BLANK;
+		}
+
+		Integer[] siteIds = new Integer[0];
+
+		if (Validator.isNotNull(selectedSiteIds)) {
+			siteIds = new Integer[selectedSiteIds.length];
+
+			for (int i = 0; i < selectedSiteIds.length; i++) {
+				siteIds[i] = Integer.valueOf(selectedSiteIds[i]);
+			}
+		}
+
 		userService.updateUser(
-			command.getUserId(),
-			command.getUsername(), command.getPassword(),
-			command.getEmail(), command.getPhone(),
-			command.getUserType(), command.getAddressLine1(),
-			command.getAddressLine2(), command.getCityName(),
-			command.getSelectedSiteIds(), command.getActive(), signinUser);
+			user.getUserId(), user.getUsername(), user.getPassword(),
+			user.getEmail(), user.getPhone(), user.getAddressLine1(),
+			user.getAddressLine2(), user.getCityName(), siteIds,
+			user.isEnabled(), signinUser.getUserId());
 
-		initSearchInfo(command, signinUser.getLastVisitSiteId(), signinUser);
+		model.put("sites", siteService.getSites());
+		model.put("success", "success");
 
-		return "redirect:/controlpanel/user/list";
+		return "controlpanel/user/edit";
 	}
 
 //	@RequestMapping(value = "/remove", method = RequestMethod.GET)
@@ -115,60 +99,4 @@ public class UserEditController {
 //
 //		return "redirect:/controlpanel/user/list";
 //	}
-
-	private void copyProperties(UserEditCommand command, User user) {
-		command.setUserId(user.getUserId());
-		command.setUsername(user.getUsername());
-		command.setEmail(user.getEmail());
-		command.setAddressLine1(user.getAddressLine1());
-		command.setAddressLine2(user.getAddressLine2());
-//		command.setUserCityName(user.getUserCityName());
-//		command.setUserStateCode(user.getUserStateCode());
-//		command.setUserCountryCode(user.getUserCountryCode());
-//		command.setUserZipCode(user.getUserZipCode());
-		command.setUserPhone(user.getPhone());
-		command.setUserType(user.getUserType());
-		command.setActive(user.getActive());
-		command.setPassword("**********");
-		command.setVerifyPassword("**********");
-
-		List<Integer> siteIds = new ArrayList<Integer>();
-
-		if (user.getUserType().equals(Constants.USERTYPE_SUPER)
-			|| user.getUserType().equals(Constants.USERTYPE_ADMIN)) {
-			List<Site> sites = siteService.getSites();
-
-			for (Site site : sites) {
-				siteIds.add(site.getSiteId());
-			}
-		}
-		else {
-			Iterator iterator = user.getSites().iterator();
-
-			while (iterator.hasNext()) {
-				Site site = (Site) iterator.next();
-				siteIds.add(site.getSiteId());
-			}
-		}
-
-		command.setSelectedSiteIds(siteIds);
-	}
-
-	public void initSearchInfo(
-			UserEditCommand command, long siteId, User signinUser) {
-		List<Site> sites = siteService.getSites();
-
-		command.setSites(sites);
-		command.setHasAdministrator(false);
-		command.setHasSuperUser(false);
-
-		if (signinUser.getUserType().equals(Constants.USERTYPE_SUPER)) {
-			command.setHasAdministrator(true);
-			command.setHasSuperUser(true);
-		}
-
-		if (signinUser.getUserType().equals(Constants.USERTYPE_ADMIN)) {
-			command.setHasAdministrator(true);
-		}
-	}
 }

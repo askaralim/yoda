@@ -6,14 +6,18 @@ import org.springframework.stereotype.Repository;
 
 import com.yoda.BaseDAO;
 import com.yoda.user.model.User;
-import com.yoda.util.Constants;
 
 @Repository
 public class UserDAO extends BaseDAO<User> {
 
 	private static final String GET_USER_BY_EMAIL = "from User u where u.email = ?";
 	private static final String GET_USER_BY_USERNAME = "from User u where u.username = ?";
+	private static final String FINDER_ALL_USERS = "FROM User order by userId";
 //	private static final String GET_USER_BY_USERID = "from User u where u.userId = ?";
+
+	public List<User> getAll(){
+		return find(FINDER_ALL_USERS);
+	}
 
 	public User getByUserName(String userName) {
 		List<User> users = (List<User>)getHibernateTemplate().find(GET_USER_BY_USERNAME, userName);
@@ -52,51 +56,51 @@ public class UserDAO extends BaseDAO<User> {
 //		}
 //	}
 
-	public int getRank(User user) {
-		int rank = 0;
+//	public int getRank(User user) {
+//		int rank = 0;
+//
+//		String userType = user.getUserType();
+//
+//		if (userType.equals(Constants.USERTYPE_SUPER)) {
+//			rank = 3;
+//		}
+//
+//		if (userType.equals(Constants.USERTYPE_ADMIN)) {
+//			rank = 2;
+//		}
+//
+//		if (userType.equals(Constants.USERTYPE_REGULAR)) {
+//			rank = 1;
+//		}
+//
+//		return rank;
+//	}
 
-		String userType = user.getUserType();
-
-		if (userType.equals(Constants.USERTYPE_SUPER)) {
-			rank = 3;
-		}
-
-		if (userType.equals(Constants.USERTYPE_ADMIN)) {
-			rank = 2;
-		}
-
-		if (userType.equals(Constants.USERTYPE_REGULAR)) {
-			rank = 1;
-		}
-
-		return rank;
-	}
-
-	public boolean hasAccess(User self, User user) {
-		if (getRank(self) >= getRank(user)) {
-			return true;
-		}
-
-		return false;
-	}
+//	public boolean hasAccess(User self, User user) {
+//		if (getRank(self) >= getRank(user)) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 	public User getByUI_SU(long userId, User signinUser)
 		throws SecurityException {
-		String userType = signinUser.getUserType();
-
-		if (!userType.equals(Constants.USERTYPE_ADMIN)
-			&& !userType.equals(Constants.USERTYPE_SUPER)) {
-
-			if (signinUser.getUserId() != userId) {
-				throw new SecurityException();
-			}
-		}
+//		String userType = signinUser.getUserType();
+//
+//		if (!userType.equals(Constants.USERTYPE_ADMIN)
+//			&& !userType.equals(Constants.USERTYPE_SUPER)) {
+//
+//			if (signinUser.getUserId() != userId) {
+//				throw new SecurityException();
+//			}
+//		}
 
 		User user = getById(userId);
 
-		if (!hasAccess(signinUser, user)) {
-			throw new SecurityException();
-		}
+//		if (!hasAccess(signinUser, user)) {
+//			throw new SecurityException();
+//		}
 
 		return user;
 	}

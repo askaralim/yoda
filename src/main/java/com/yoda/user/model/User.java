@@ -65,8 +65,8 @@ public class User implements UserDetails {
 	private int lastVisitSiteId;
 
 	/* Should be removed, use enabled instead. */
-	@Column(name = "active")
-	private Character active;
+//	@Column(name = "active")
+//	private Character active;
 
 	@Column(name = "last_login_date")
 	private Date lastLoginDate;
@@ -107,8 +107,8 @@ public class User implements UserDetails {
 	@Column(name = "username")
 	private String username;
 
-	@Column(name = "user_type")
-	private String userType;
+//	@Column(name = "user_type")
+//	private String userType;
 
 	@Column(name = "zip_code")
 	private String zipCode;
@@ -165,7 +165,6 @@ public class User implements UserDetails {
 		this.createBy = createBy;
 		this.updateBy = updateBy;
 		this.lastVisitSiteId = lastVisitSiteId;
-		this.active = active;
 		this.lastLoginDate = lastLoginDate;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
@@ -181,7 +180,6 @@ public class User implements UserDetails {
 		this.phone = phone;
 		this.stateName = stateName;
 		this.username = username;
-		this.userType = userType;
 		this.zipCode = zipCode;
 	}
 
@@ -383,14 +381,6 @@ public class User implements UserDetails {
 		this.phone = phone;
 	}
 
-	public String getUserType() {
-		return this.userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
-
 	public Date getLastLoginDate() {
 		return this.lastLoginDate;
 	}
@@ -405,14 +395,6 @@ public class User implements UserDetails {
 
 	public void setLastVisitSiteId(int lastVisitSiteId) {
 		this.lastVisitSiteId = lastVisitSiteId;
-	}
-
-	public Character getActive() {
-		return this.active;
-	}
-
-	public void setActive(Character active) {
-		this.active = active;
 	}
 
 	public long getUpdateBy() {
@@ -490,4 +472,8 @@ public class User implements UserDetails {
 //	public void eraseCredentials() {
 //		password = null;
 //	}
+
+	public boolean isNew() {
+		return (this.userId == null);
+	}
 }

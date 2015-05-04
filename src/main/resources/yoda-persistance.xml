@@ -67,6 +67,11 @@
 				<value>com.yoda.kernal.model.Release</value>
 				<value>com.yoda.menu.model.Menu</value>
 				<value>com.yoda.user.model.User</value>
+				<value>com.yoda.country.model.Country</value>
+				<value>com.yoda.poll.model.PollDetail</value>
+				<value>com.yoda.poll.model.PollHeader</value>
+				<value>com.yoda.template.model.Template</value>
+				<value>com.yoda.state.model.State</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

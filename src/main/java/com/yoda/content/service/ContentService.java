@@ -45,10 +45,7 @@ public interface ContentService {
 
 	List<Comment> getCommentsByUserId(long userId);
 
-	List<Content> search(
-			int siteId, String title, String published, String updateBy,
-			String createBy, String publishDateStart, String publishDateEnd,
-			String expireDateStart, String expireDateEnd) throws ParseException;
+	List<Content> search(int siteId, String title, Boolean published, String updateBy, String createBy, String publishDateStart, String publishDateEnd, String expireDateStart, String expireDateEnd) throws ParseException;
 
 //	Content updateContentImage(int siteId, Long userId, Long contentId, ContentImage contentImage);
 

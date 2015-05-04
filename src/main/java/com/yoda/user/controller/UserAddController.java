@@ -1,12 +1,13 @@
 package com.yoda.user.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +19,11 @@ import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.UserAddValidator;
-import com.yoda.user.UserEditCommand;
 import com.yoda.user.model.User;
+import com.yoda.user.model.UserAuthority;
 import com.yoda.user.service.UserService;
-import com.yoda.util.Constants;
+import com.yoda.util.StringPool;
+import com.yoda.util.Validator;
 
 @Controller
 @RequestMapping("/controlpanel/user/add")
@@ -33,82 +35,64 @@ public class UserAddController {
 	SiteService siteService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm(
-			HttpServletRequest request, HttpServletResponse response) {
-//		String loginMessage = AdminLookup.lookUpAdmin(request, response);
-//
-//		if (Validator.isNotNull(loginMessage)) {
-//			ModelMap modelMap = new ModelMap();
-//
-//			modelMap.put("loginMessage", loginMessage);
-//
-//			return new ModelAndView(
-//				"redirect:" + Constants.LOGIN_PAGE_URL, modelMap);
-//		}
+	public String setupForm(Map<String, Object> model) {
+		User user = new User();
 
-		User user = PortalUtil.getAuthenticatedUser();
+		user.setEnabled(true);
+		user.getAuthorities().add(new UserAuthority(user, "ROLE_USER"));
 
-		User signinUser = userService.getUser(user.getUserId());
+		model.put("user", user);
+		model.put("sites", siteService.getSites());
 
-		UserEditCommand command = new UserEditCommand();
-
-		command.setUserType(Constants.USERTYPE_REGULAR);
-
-		command.setActive(Constants.ACTIVE_YES);
-
-		initSearchInfo(command, user.getLastVisitSiteId(), signinUser);
-
-		return new ModelAndView("controlpanel/user/edit", "userEditCommand", command);
+		return "controlpanel/user/edit";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String add(
-			@ModelAttribute UserEditCommand command,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request)
+	public ModelAndView add(
+			@ModelAttribute User user, BindingResult result,
+			SessionStatus status, HttpServletRequest request)
 		throws Throwable {
 
 		User signinUser = PortalUtil.getAuthenticatedUser();
 
-		new UserAddValidator().validate(command, result);
+		new UserAddValidator().validate(user, result);
+
+		ModelMap model = new ModelMap();
 
 		if(result.hasErrors()) {
-			initSearchInfo(command, signinUser.getLastVisitSiteId(), signinUser);
+			user.setEnabled(true);
+			user.getAuthorities().add(new UserAuthority(user, "ROLE_USER"));
 
-			return "controlpanel/user/edit";
+			model.put("sites", siteService.getSites());
+			model.put("errors", "errors");
+
+			return new ModelAndView("controlpanel/user/edit", model);
 		}
 
 		status.setComplete();
 
-		User user = userService.addUser(
-			command.getUsername(), command.getPassword(),
-			command.getEmail(), command.getPhone(),
-			command.getUserType(), command.getAddressLine1(),
-			command.getAddressLine2(), command.getCityName(),
-			command.getSelectedSiteIds(), command.getActive(),
-			signinUser.getUserId());
+		String role = request.getParameter("userRole");
+		String[] selectedSiteIds = request.getParameterValues("selectedSiteIds");
 
-		initSearchInfo(command, signinUser.getLastVisitSiteId(), signinUser);
-
-		return "redirect:/controlpanel/user/list";
-	}
-
-	public void initSearchInfo(
-			UserEditCommand command, long siteId, User signinUser) {
-		List<Site> sites = siteService.getSites();
-
-		command.setSites(sites);
-
-		command.setHasAdministrator(false);
-		command.setHasSuperUser(false);
-
-		if (signinUser.getUserType().equals(Constants.USERTYPE_SUPER)) {
-			command.setHasAdministrator(true);
-			command.setHasSuperUser(true);
+		if (Validator.isNull(role)) {
+			role = StringPool.BLANK;
 		}
 
-		if (signinUser.getUserType().equals(Constants.USERTYPE_ADMIN)) {
-			command.setHasAdministrator(true);
+		Integer[] siteIds = new Integer[0];
+
+		if (Validator.isNotNull(selectedSiteIds)) {
+			siteIds = new Integer[selectedSiteIds.length];
+
+			for (int i = 0; i < selectedSiteIds.length; i++) {
+				siteIds[i] = Integer.valueOf(selectedSiteIds[i]);
+			}
 		}
+
+		User userDb = userService.addUser(user.getUsername(), user.getPassword(),
+			user.getEmail(), user.getPhone(), role, user.getAddressLine1(),
+			user.getAddressLine2(), user.getCityName(), siteIds,
+			user.isEnabled(), signinUser.getUserId());
+
+		return new ModelAndView("redirect:/controlpanel/user/" + userDb.getUserId() + "/edit", model);
 	}
 }

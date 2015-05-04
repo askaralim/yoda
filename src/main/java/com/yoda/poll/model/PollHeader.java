@@ -4,63 +4,57 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PollHeader implements java.io.Serializable {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.yoda.BaseEntity;
+
+@Entity
+@Table(name = "poll_header")
+public class PollHeader extends BaseEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "poll_header_id")
 	private Long pollHeaderId;
 
+	@Column(name = "site_id")
 	private String siteId;
 
+	@Column(name = "poll_topic")
 	private String pollTopic;
 
+	@Column(name = "poll_publish_on")
 	private Date pollPublishOn;
 
+	@Column(name = "poll_expire_on")
 	private Date pollExpireOn;
 
+	@Column(name = "published")
 	private char published;
 
+	@Column(name = "rec_update_by")
 	private String recUpdateBy;
 
+	@Column(name = "rec_update_datetime")
 	private Date recUpdateDatetime;
 
+	@Column(name = "rec_create_by")
 	private String recCreateBy;
 
+	@Column(name = "rec_create_datetime")
 	private Date recCreateDatetime;
 
+	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@JoinColumn(name = "poll_header_id")
 	private Set<PollDetail> pollDetails = new HashSet<PollDetail>(0);
-
-	public PollHeader() {
-	}
-
-//	/** minimal constructor */
-//	public PollHeader(String siteId, String pollTopic, Date pollPublishOn,
-//			Date pollExpireOn, char published, String recUpdateBy,
-//			Date recUpdateDatetime, String recCreateBy, Date recCreateDatetime) {
-//		this.siteId = siteId;
-//		this.pollTopic = pollTopic;
-//		this.pollPublishOn = pollPublishOn;
-//		this.pollExpireOn = pollExpireOn;
-//		this.published = published;
-//		this.recUpdateBy = recUpdateBy;
-//		this.recUpdateDatetime = recUpdateDatetime;
-//		this.recCreateBy = recCreateBy;
-//		this.recCreateDatetime = recCreateDatetime;
-//	}
-
-	/** full constructor */
-	public PollHeader(String siteId, String pollTopic, Date pollPublishOn,
-			Date pollExpireOn, char published, String recUpdateBy,
-			Date recUpdateDatetime, String recCreateBy, Date recCreateDatetime,
-			Set<PollDetail> pollDetails) {
-		this.siteId = siteId;
-		this.pollTopic = pollTopic;
-		this.pollPublishOn = pollPublishOn;
-		this.pollExpireOn = pollExpireOn;
-		this.published = published;
-		this.recUpdateBy = recUpdateBy;
-		this.recUpdateDatetime = recUpdateDatetime;
-		this.recCreateBy = recCreateBy;
-		this.recCreateDatetime = recCreateDatetime;
-		this.pollDetails = pollDetails;
-	}
 
 	// Property accessors
 	public Long getPollHeaderId() {

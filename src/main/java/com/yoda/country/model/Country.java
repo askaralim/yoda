@@ -4,27 +4,51 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 import com.yoda.state.model.State;
 
+@Entity
+@Table(name = "country")
 public class Country extends BaseEntity {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "country_id")
 	private long countryId;
 
+	@Column(name = "site_id")
 	private long siteId;
 
+	@Column(name = "country_code")
 	private String countryCode;
 
+	@Column(name = "country_name")
 	private String countryName;
 
+	@Column(name = "rec_update_by")
 	private String recUpdateBy;
 
+	@Column(name = "rec_update_datetime")
 	private Date recUpdateDatetime;
 
+	@Column(name = "rec_create_by")
 	private String recCreateBy;
 
+	@Column(name = "rec_create_datetime")
 	private Date recCreateDatetime;
 
+	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@JoinColumn(name = "country_id")
 	private Set<State> states = new HashSet<State>(0);
 
 //	private Set<Tax> taxes = new HashSet<Tax>(0);

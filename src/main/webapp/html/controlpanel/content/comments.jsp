@@ -81,27 +81,31 @@ function getSelectedIds(){
 							<th><spring:message code="id" /></th>
 							<th><spring:message code="content" /></th>
 							<th><spring:message code="create-date" /></th>
+							<th><spring:message code="action" /></th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach var="comment" items="${comments}">
-							<spring:url value="/controlpanel/comments/{id}" var="viewCommentUrl">
-								<spring:param name="id" value="${comment.id}"/>
-							</spring:url>
 							<tr>
 								<td>
 									<input type="checkbox" id="ids" value="${comment.id}">
 								</td>
 								<td>
-									<a href="${fn:escapeXml(viewCommentUrl)}">
-										<c:out value="${comment.id}" />
-									</a>
+									<c:out value="${comment.id}" />
 								</td>
 								<td>
 									<c:out value="${comment.content.title}" />
 								</td>
 								<td>
 									<c:out value="${comment.createDate}" />
+								</td>
+								<td>
+									<spring:url value="/controlpanel/comments/{id}" var="viewCommentUrl">
+										<spring:param name="id" value="${comment.id}"/>
+									</spring:url>
+									<a href="${fn:escapeXml(viewCommentUrl)}">
+										<spring:message code="view" />
+									</a>
 								</td>
 							</tr>
 						</c:forEach>

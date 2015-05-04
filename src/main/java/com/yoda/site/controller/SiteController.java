@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,9 +23,7 @@ public class SiteController {
 	SiteService siteService;
 
 	@RequestMapping(value="/controlpanel/site/list", method = RequestMethod.GET)
-	public String showPanel(
-			Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String showPanel(Map<String, Object> model) {
 		List<Site> sites = siteService.getSites();
 
 		model.put("sites", sites);

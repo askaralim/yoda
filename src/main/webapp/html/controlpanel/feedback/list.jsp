@@ -83,21 +83,17 @@ function getSelectedIds(){
 							<th><spring:message code="email" /></th>
 							<th><spring:message code="phone" /></th>
 							<th><spring:message code="create-date" /></th>
+							<th><spring:message code="action" /></th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach var="feedback" items="${feedbacks}">
-							<spring:url value="/controlpanel/feedback/{id}" var="viewFeedbackUrl">
-								<spring:param name="id" value="${feedback.id}"/>
-							</spring:url>
 							<tr>
 								<td>
 									<input type="checkbox" id="ids" value="${feedback.id}">
 								</td>
 								<td>
-									<a href="${fn:escapeXml(viewFeedbackUrl)}">
-										<c:out value="${feedback.id}" />
-									</a>
+									<c:out value="${feedback.id}" />
 								</td>
 								<td>
 									<c:out value="${feedback.username}" />
@@ -110,6 +106,14 @@ function getSelectedIds(){
 								</td>
 								<td>
 									<c:out value="${feedback.createDate}" />
+								</td>
+								<td>
+									<spring:url value="/controlpanel/feedback/{id}" var="viewFeedbackUrl">
+										<spring:param name="id" value="${feedback.id}"/>
+									</spring:url>
+									<a href="${fn:escapeXml(viewFeedbackUrl)}">
+										<spring:message code="view" />
+									</a>
 								</td>
 							</tr>
 						</c:forEach>

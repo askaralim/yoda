@@ -54,9 +54,9 @@ function submitRemove() {
 	<li><a href="<spring:url value="/controlpanel/user/list" htmlEscape="true" />">User Listing</a></li>
 </ol>
 
-<form:form name="fm" modelAttribute="userListCommand" method="post">
+<form:form name="fm" modelAttribute="searchForm" method="post">
 	<!-- <html:hidden property="process" value="search" /> -->
-	<form:hidden path="srPageNo" />
+	<%-- <form:hidden path="srPageNo" /> --%>
 
 	<div class="row">
 		<div class="col-md-3">
@@ -70,33 +70,33 @@ function submitRemove() {
 						<form:input path="userId" cssClass="form-control" value="" />
 					</div>
 					<div class="form-group">
-						<label for=userName><spring:message code="username" /></label>
-						<form:input path="userName" cssClass="form-control" />
+						<label for="username"><spring:message code="username" /></label>
+						<form:input path="username" cssClass="form-control" />
 					</div>
 					<div class="form-group">
 						<label>User Type</label>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="type" value="S" />
-								<spring:message code="user.type.S" />
+								<form:radiobutton path="role" value="administrator" />
+								<spring:message code="administrator" />
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="type" value="A" />
-								<spring:message code="user.type.A" />
+								<form:radiobutton path="role" value="superUser" />
+								<spring:message code="super-user" />
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="type" value="R" />
-								<spring:message code="user.type.R" />
+								<form:radiobutton path="role" value="user" />
+								<spring:message code="user" />
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="type" value="*" />
-								<spring:message code="user.type.*" />
+								<form:radiobutton path="role" value="" />
+								<spring:message code="all" />
 							</label>
 						</div>
 					</div>
@@ -104,19 +104,19 @@ function submitRemove() {
 						<label for="title">Active</label>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="Y" />
+								<form:radiobutton path="enabled" value="true" />
 								Active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="N" />
+								<form:radiobutton path="enabled" value="false" />
 								In-active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="active" value="*" />
+								<form:radiobutton path="enabled" value="" />
 								All
 							</label>
 						</div>
@@ -132,22 +132,23 @@ function submitRemove() {
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
-					<c:if test="${userListCommand.users != null}">
+					<c:if test="${users != null}">
 						<div class="text-right">
-							<input type="submit" value="<spring:message code="new" />" class="btn btn-sm btn-primary" role="button" onclick="return submitNew();">
-							<input type="submit" value="<spring:message code="remove" />" class="btn btn-sm btn-default" role="button" onclick="return submitRemove();">
+							<input type="submit" value='<spring:message code="new" />' class="btn btn-sm btn-primary" role="button" onclick="return submitNew();">
+							<input type="submit" value='<spring:message code="remove" />' class="btn btn-sm btn-default" role="button" onclick="return submitRemove();">
 						</div>
 						<thead>
 							<tr>
 								<th></th>
 								<th><spring:message code="id" /></th>
 								<th><spring:message code="username" /></th>
-								<th>User Type</th>
-								<th>Active</th>
+								<th><spring:message code="role" /></th>
+								<th><spring:message code="enabled" /></th>
+								<th><spring:message code="action" /></th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="user" items="${userListCommand.users}">
+							<c:forEach var="user" items="${users}">
 								<tr>
 									<td>
 										<%-- <form:checkbox path="${users.userId}" id="removeUserId" label="" value="${user.userId}" /> --%>
@@ -157,24 +158,28 @@ function submitRemove() {
 										<html:hidden indexed="true" name="user" property="userId" /> -->
 									</td>
 									<td>
+										<c:out value="${user.userId}" />
+									</td>
+									<td>
+										<input type="hidden" value="${user.username}">
+										<c:out value="${user.username}" />
+									</td>
+									<td>
+										<c:forEach var="authority" items="${user.authorities}">
+											${authority.authorityName}
+										</c:forEach>
+									</td>
+									<td>
+										<input type="hidden" value="${user.enabled}">
+										<c:out value="${user.enabled}" />
+									</td>
+									<td>
 										<spring:url value="/controlpanel/user/{userId}/edit" var="editUserUrl">
 											<spring:param name="userId" value="${user.userId}"/>
 										</spring:url>
 										<a href="${fn:escapeXml(editUserUrl)}">
-											<c:out value="${user.userId}" />
+											<spring:message code="edit" />
 										</a>
-									</td>
-									<td>
-										<input type="hidden" value="${user.userName}">
-										<c:out value="${user.userName}" />
-									</td>
-									<td>
-										<spring:message code="${user.type}" />
-									</td>
-									<td>
-										<input type="hidden" value="${user.active}">
-										<!-- <html:hidden indexed="true" name="user" property="active" /> -->
-										<c:out value="${user.active}" />
 									</td>
 								</tr>
 							</c:forEach>
@@ -184,7 +189,7 @@ function submitRemove() {
 			</div>
 		</div>
 	</div>
-
+</form:form>
 	<%-- <c:if test="${userListCommand.pageNo > 1}">
 		<td>
 			<spring:url value="/controlpanel/user/list/search/{srPageNo}" var="srPageNoUrl">
@@ -235,4 +240,3 @@ function submitRemove() {
 			</a>
 		</td>
 	</c:if> --%>
-</form:form>

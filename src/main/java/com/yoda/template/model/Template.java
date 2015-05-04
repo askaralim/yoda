@@ -2,40 +2,44 @@ package com.yoda.template.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.yoda.BaseEntity;
 
+@Entity
+@Table(name = "template")
 public class Template extends BaseEntity {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "template_id")
 	private Long templateId;
 
+	@Column(name = "site_id")
 	private String siteId;
 
+	@Column(name = "template_name")
 	private String templateName;
 
+	@Column(name = "template_desc")
 	private String templateDesc;
 
+	@Column(name = "rec_update_by")
 	private String recUpdateBy;
 
+	@Column(name = "rec_update_datetime")
 	private Date recUpdateDatetime;
 
+	@Column(name = "rec_create_by")
 	private String recCreateBy;
 
+	@Column(name = "rec_create_datetime")
 	private Date recCreateDatetime;
-
-	/*public Template() {
-	}
-
-	public Template(String siteId, String templateName, String templateDesc,
-			String recUpdateBy, Date recUpdateDatetime, String recCreateBy,
-			Date recCreateDatetime) {
-		this.siteId = siteId;
-		this.templateName = templateName;
-		this.templateDesc = templateDesc;
-		this.recUpdateBy = recUpdateBy;
-		this.recUpdateDatetime = recUpdateDatetime;
-		this.recCreateBy = recCreateBy;
-		this.recCreateDatetime = recCreateDatetime;
-	}*/
 
 	public Long getTemplateId() {
 		return this.templateId;

@@ -2,8 +2,6 @@
 
 <%@ page import="com.yoda.section.DropDownMenuGenerator" %>
 
-<jsp:useBean id="contentListCommand" type="com.yoda.content.ContentListCommand" scope="request" />
-
 <script type="text/javascript">
 function submitNewForm() {
 	var url = '<c:url value="/controlpanel/content/add"/>';
@@ -57,8 +55,8 @@ function getSelectedContentIds(){
 	<li><a href="<spring:url value="/controlpanel/content/list" />">Content Listing</a></li>
 </ol>
 
-<form:form modelAttribute="contentListCommand" name="fm">
-	<form:hidden path="srPageNo" />
+<form:form modelAttribute="searchForm" name="fm" method="post">
+	<%-- <form:hidden path="srPageNo" /> --%>
 
 	<div class="row">
 		<div class="col-md-3">
@@ -76,24 +74,24 @@ function getSelectedContentIds(){
 					<div class="form-group">
 						<div class="radio">
 							<label>
-								<form:radiobutton path="published" value="Y"/>
+								<form:radiobutton path="published" value="true"/>
 								Published
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="published" value="N"/>
+								<form:radiobutton path="published" value="false"/>
 								Not-Published
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<form:radiobutton path="published" value="*"/>
+								<form:radiobutton path="published" value=""/>
 								All
 							</label>
 						</div>
 					</div>
-					<div class="form-group">
+					<%-- <div class="form-group">
 						<label for="updateBy"><spring:message code="update-by" /></label>
 						<form:select path="updateBy" cssClass="form-control">
 							<form:option value="All" />
@@ -106,7 +104,7 @@ function getSelectedContentIds(){
 							<form:option value="All" />
 							<form:options items="${contentListCommand.selectUsers}" />
 						</form:select>
-					</div>
+					</div> --%>
 					<%-- <div class="form-group">
 						<label for="createBy">Select sections to show</label>
 						<div id="sectionLocation"></div>
@@ -145,47 +143,35 @@ function getSelectedContentIds(){
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
-					<c:if test="${contentListCommand.contents != null}">
+					<c:if test="${contents != null}">
 						<thead>
 							<tr>
 								<th></th>
-								<th>ID</th>
-								<th>Title</th>
-								<th>Section</th>
-								<th>Publish</th>
-								<th>Publish On</th>
-								<th>Expire On</th>
+								<th><spring:message code="id" /></th>
+								<th><spring:message code="title" /></th>
+								<!-- <th>Section</th> -->
+								<th><spring:message code="published" /></th>
+								<th><spring:message code="publish-date" /></th>
+								<th><spring:message code="expire-date" /></th>
+								<th><spring:message code="hit-counter" /></th>
+								<th><spring:message code="action" /></th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="content" items="${contentListCommand.contents}">
-								<spring:url value="/controlpanel/content/{contentId}/edit" var="editContentUrl">
-									<spring:param name="contentId" value="${content.contentId}"/>
-								</spring:url>
+							<c:forEach var="content" items="${contents}">
 								<tr>
 									<td>
-										<%-- <input type="hidden" name="content" value="${content.contentId}"/>
-										<input type="hidden" name="content" value="${content.title}"/>
-										<input type="hidden" name="content" value="${content.title}"/>
-										<input type="hidden" name="content" value="${content.sectionName}"/>
-										<input type="hidden" name="content" value="${content.published}"/>
-										<input type="hidden" name="content" value="${content.publishDate}"/>
-										<input type="hidden" name="content" value="${content.expireDate}"/> --%>
 										<input type="checkbox" id="contentIds" value="${content.contentId}">
 									</td>
 									<td>
-										<a href="${fn:escapeXml(editContentUrl)}">
-											<c:out value="${content.contentId}" />
-										</a>
+										<c:out value="${content.contentId}" />
 									</td>
 									<td>
-										<a href="${fn:escapeXml(editContentUrl)}">
-											<c:out value="${content.title}" />
-										</a>
+										<c:out value="${content.title}" />
 									</td>
-									<td>
+									<%-- <td>
 										<c:out value="${content.sectionName}" />
-									</td>
+									</td> --%>
 									<td>
 										<c:out value="${content.published}" />
 									</td>
@@ -194,6 +180,17 @@ function getSelectedContentIds(){
 									</td>
 									<td>
 										<c:out value="${content.expireDate}" />
+									</td>
+									<td>
+										<c:out value="${content.hitCounter}" />
+									</td>
+									<td>
+										<spring:url value="/controlpanel/content/{contentId}/edit" var="editContentUrl">
+											<spring:param name="contentId" value="${content.contentId}"/>
+										</spring:url>
+										<a href="${fn:escapeXml(editContentUrl)}">
+											<spring:message code="edit" />
+										</a>
 									</td>
 								</tr>
 							</c:forEach>

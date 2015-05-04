@@ -22,7 +22,6 @@ import com.yoda.content.ContentEditCommand;
 import com.yoda.content.ContentEditValidator;
 import com.yoda.content.ContentMenuDisplayCommand;
 import com.yoda.content.model.Content;
-import com.yoda.content.model.ContentImage;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;

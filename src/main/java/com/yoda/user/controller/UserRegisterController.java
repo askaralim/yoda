@@ -49,18 +49,18 @@ public class UserRegisterController {
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 
-		if (!Validator.isEmailAddress(email)) {
-			model.addObject("error", "invalid-email");
+		User userDb = userService.getUserByUserName(username);
+
+		if (Validator.isNotNull(userDb)) {
+			model.addObject("error", "duplicate-username");
 
 			model.setViewName("portal/user/register");
 
 			return model;
 		}
 
-		User userDb = userService.getUserByUserName(username);
-
-		if (Validator.isNotNull(userDb)) {
-			model.addObject("error", "duplicate-username");
+		if (!Validator.isEmailAddress(email)) {
+			model.addObject("error", "invalid-email");
 
 			model.setViewName("portal/user/register");
 
@@ -81,8 +81,8 @@ public class UserRegisterController {
 
 		try {
 			User user = userService.addUser(
-				username, password, email, StringPool.BLANK, Constants.USERTYPE_REGULAR,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, Constants.ACTIVE_YES, 0);
+				username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true, 0);
 		}
 		catch (PortalException e) {
 			e.printStackTrace();

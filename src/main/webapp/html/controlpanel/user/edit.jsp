@@ -13,7 +13,7 @@ function submitCancel(type) {
 	<li>User Maintenance</li>
 </ol>
 
-<form:form method="post" modelAttribute="userEditCommand">
+<form:form method="post" modelAttribute="user">
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
 			<a class="panel-close close" data-dismiss="alert">×</a>
@@ -29,11 +29,11 @@ function submitCancel(type) {
 
 	<div class="row">
 		<div class="col-md-6">
-			<c:if test="${!userEditCommand['new']}">
+			<c:if test="${!user['new']}">
 				<div class="form-group">
 					<form:hidden path="userId"/>
 					<label><spring:message code="id" /></label>
-					<p class="form-control-static"><c:out value="${userEditCommand.userId}" /></p>
+					<p class="form-control-static"><c:out value="${user.userId}" /></p>
 				</div>
 			</c:if>
 			<div class="form-group">
@@ -47,37 +47,6 @@ function submitCancel(type) {
 			<div class="form-group">
 				<label for="verifyPassword"><spring:message code="verify-password" /></label>
 				<form:password path="verifyPassword" cssClass="form-control" />
-			</div>
-			<div class="form-group">
-				<label>User Type</label>
-				<c:if test="${userEditCommand.hasSuperUser}">
-					<div class="radio">
-						<label>
-							<form:radiobutton path="userType" value="S" />
-							<spring:message code="user.type.S" />
-						</label>
-					</div>
-				</c:if>
-				<c:if test="${userEditCommand.hasAdministrator}">
-					<div class="radio">
-						<label>
-							<form:radiobutton path="userType" value="A" />
-							<spring:message code="user.type.A" />
-						</label>
-					</div>
-				</c:if>
-				<div class="radio">
-					<label>
-						<form:radiobutton path="userType" value="R" />
-						<spring:message code="user.type.R" />
-					</label>
-				</div>
-			</div>
-			<div class="checkbox">
-				<label>
-					<form:checkbox path="active" value="Y" />
-					Active
-				</label>
 			</div>
 			<div class="form-group">
 				<label for="email"><spring:message code="email" /></label>
@@ -96,13 +65,60 @@ function submitCancel(type) {
 
 		<div class="col-md-6">
 			<div class="form-group">
-				<label>User has access to the following sites</label>
-				<form:checkboxes items="${userEditCommand.sites}" path="selectedSiteIds" itemLabel="siteName" itemValue="siteId" cssClass="checkbox" />
+				<label class="control-label"><spring:message code="site" /></label>
+				<c:forEach var="site" items="${user.sites}">
+					<p class="form-control-static">
+						${site.siteName}
+					</p>
+				</c:forEach>
+				<label class="control-label"><spring:message code="select-site" /></label>
+				<c:forEach var="site" items="${sites}">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="selectedSiteIds" value="${site.siteId}" />${site.siteName}
+						</label>
+					</div>
+				</c:forEach>
 			</div>
-			<c:if test="${userEditCommand['new']}">
+			<div class="form-group">
+				<label class="control-label"><spring:message code="role" /></label>
+				<c:forEach var="authority" items="${user.authorities}">
+					<p class="form-control-static">
+						${authority.authorityName}
+					</p>
+				</c:forEach>
+				<label class="control-label"><spring:message code="select-role" /></label>
+				<div class="radio">
+					<label>
+						<input type="radio" name="userRole" id="administrator" value="administrator">
+						<spring:message code="administrator" />
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="userRole" id="superUser" value="superUser">
+						<spring:message code="super-user" />
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="userRole" id="user" value="user">
+						<spring:message code="user" />
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label><spring:message code="enabled" /></label>
+				<div class="checkbox">
+					<label>
+						<form:checkbox path="enabled" value="enabled" /><spring:message code="enabled" />
+					</label>
+				</div>
+			</div>
+			<c:if test="${user['new']}">
 				<input type="submit" value='<spring:message code="save" />' class="btn btn-sm btn-primary" role="button">
 			</c:if>
-			<c:if test="${!userEditCommand['new']}">
+			<c:if test="${!user['new']}">
 				<input type="submit" value='<spring:message code="update" />' class="btn btn-sm btn-primary" role="button">
 			</c:if>
 			<input type="button" value='<spring:message code="cancel" />' class="btn btn-sm btn-default" role="button" onclick="return submitCancel();">

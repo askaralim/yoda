@@ -87,11 +87,11 @@ public class Constants {
 
 	public static final String SESSION_IGNORETOKEN = "com.yoda.ignoreToken";
 
-	public static final String USERTYPE_SUPER = "S";
+	public static final String USER_ROLE_ADMINISTRATOR = "administrator";
 
-	public static final String USERTYPE_ADMIN = "A";
+	public static final String USER_ROLE_SUPERUSER = "superUser";
 
-	public static final String USERTYPE_REGULAR = "R";
+	public static final String USER_ROLE_USER = "user";
 
 	public static final char VALUE_YES = 'Y';
 

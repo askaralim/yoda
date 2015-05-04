@@ -156,15 +156,11 @@ public class ControlPanelHomeController {
 		homePageCommand.setJvmStats(statistics.getJvmStats());
 
 
-		String userType = user.getUserType();
-
 		List<Site> sites = new ArrayList<Site>();
 
 		Iterator iterator = null;
 
-		if (userType.equals(Constants.USERTYPE_SUPER)
-			|| userType.equals(Constants.USERTYPE_ADMIN)) {
-
+		if (PortalUtil.isAdminRole(user)) {
 			iterator = siteService.getSites().iterator();
 
 			while (iterator.hasNext()) {
@@ -241,7 +237,7 @@ public class ControlPanelHomeController {
 			return;
 		}
 
-		if (!user.getUserType().equals(Constants.USERTYPE_SUPER)) {
+		if (!PortalUtil.isAdminRole(user)) {
 			Iterator iterator = user.getSites().iterator();
 
 			boolean found = false;

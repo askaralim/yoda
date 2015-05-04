@@ -88,32 +88,34 @@ function getSelectedItemIds(){
 							<th><spring:message code="name" /></th>
 							<th><spring:message code="content" /></th>
 							<th><spring:message code="create-date" /></th>
+							<th><spring:message code="action" /></th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach var="item" items="${items}">
-							<spring:url value="/controlpanel/items/{id}/edit" var="editItemUrl">
-								<spring:param name="id" value="${item.id}"/>
-							</spring:url>
 							<tr>
 								<td>
 									<input type="checkbox" id="ids" value="${item.id}">
 								</td>
 								<td>
-									<a href="${fn:escapeXml(editItemUrl)}">
-										<c:out value="${item.id}" />
-									</a>
+									<c:out value="${item.id}" />
 								</td>
 								<td>
-									<a href="${fn:escapeXml(editItemUrl)}">
-										<c:out value="${item.name}" />
-									</a>
+									<c:out value="${item.name}" />
 								</td>
 								<td>
 									<c:out value="${item.content.title}" />
 								</td>
 								<td>
 									<c:out value="${item.createDate}" />
+								</td>
+								<td>
+									<spring:url value="/controlpanel/items/{id}/edit" var="editItemUrl">
+										<spring:param name="id" value="${item.id}"/>
+									</spring:url>
+									<a href="${fn:escapeXml(editItemUrl)}">
+										<spring:message code="edit" />
+									</a>
 								</td>
 							</tr>
 						</c:forEach>

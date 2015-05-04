@@ -8,9 +8,9 @@ import java.util.Vector;
 import org.springframework.stereotype.Repository;
 
 import com.yoda.BaseDAO;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
-import com.yoda.util.Constants;
 
 @Repository
 public class SiteDAO extends BaseDAO<Site> {
@@ -23,13 +23,8 @@ public class SiteDAO extends BaseDAO<Site> {
 		return find(FINDER_ALL_SITES);
 	}
 
-	public Site getByS_U(int siteId, User signinUser)
-			throws SecurityException{
-
-		String userType = signinUser.getUserType();
-
-		if (!userType.equals(Constants.USERTYPE_ADMIN)
-			&& !userType.equals(Constants.USERTYPE_SUPER)) {
+	public Site getByS_U(int siteId, User signinUser) throws SecurityException{
+		if (!PortalUtil.isAdminRole(signinUser)) {
 			throw new SecurityException();
 		}
 
@@ -63,10 +58,7 @@ public class SiteDAO extends BaseDAO<Site> {
 	}
 
 	public Site getDefaultSite(User user) throws Exception {
-
-		if (user.getUserType().equals(Constants.USERTYPE_ADMIN)
-			|| user.getUserType().equals(Constants.USERTYPE_SUPER)) {
-
+		if (PortalUtil.isAdminRole(user)) {
 			List<Site> sites = find("from Site site");
 
 			while (sites.size() > 0) {

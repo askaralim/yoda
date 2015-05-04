@@ -1,7 +1,6 @@
 <%@ include file="/html/common/init.jsp" %>
 
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%-- <%@ page errorPage="/html/global/jerror.jsp" %> --%>
 

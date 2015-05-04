@@ -81,8 +81,8 @@ public class UserSettingsController extends BaseFrontendController {
 		}
 
 		User userDb = userService.updateUser(
-			site.getSiteId(), user.getUserId(),
-			user.getUsername(), user.getPassword(), user.getEmail());
+			site.getSiteId(), user.getUserId(), user.getUsername(),
+			user.getPassword(), user.getEmail(), user.getUserId());
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
 

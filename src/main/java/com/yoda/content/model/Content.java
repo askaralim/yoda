@@ -25,7 +25,7 @@ import com.yoda.section.model.Section;
 @Table(name = "content")
 public class Content extends BaseEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "content_id")
 	private Long contentId;
 
@@ -96,8 +96,8 @@ public class Content extends BaseEntity {
 		return this.contentId;
 	}
 
-	public void setContentId(Long id) {
-		this.contentId = id;
+	public void setContentId(Long contentId) {
+		this.contentId = contentId;
 	}
 
 	public int getSiteId() {
