@@ -25,7 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yoda.item.ItemValidator;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
-import com.yoda.kernal.util.FileUploadUtil;
+import com.yoda.kernal.util.FileUploader;
 import com.yoda.util.Format;
 
 @Controller
@@ -74,9 +74,7 @@ public class ItemEditController {
 			@PathVariable("id") int id, HttpServletRequest request,
 			HttpServletResponse response)
 		throws Throwable {
-		byte[] fileData = file.getBytes();
-
-		if (fileData.length <= 0) {
+		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/items/" + id + "/edit";
 		}
 
@@ -84,9 +82,9 @@ public class ItemEditController {
 			return "redirect:/controlpanel/items/" + id + "/edit";
 		}
 
-		String savedPath = new FileUploadUtil().saveImage(file);
+//		String savedPath = new FileUploader().saveFile(file);
 
-		itemService.updateItemImage(id, savedPath);
+		itemService.updateItemImage(id, file);
 
 		return "redirect:/controlpanel/items/" + id + "/edit";
 	}

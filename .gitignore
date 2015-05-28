@@ -2,6 +2,7 @@
 target
 src/main/webapp/META-INF
 src/main/webapp/uploads
+src/main/webapp/upload
 .classpath
 .project
 .settings

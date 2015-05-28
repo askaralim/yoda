@@ -1,7 +1,10 @@
 package com.yoda.content.service;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
@@ -49,7 +52,7 @@ public interface ContentService {
 
 //	Content updateContentImage(int siteId, Long userId, Long contentId, ContentImage contentImage);
 
-	Content updateContentImage(int siteId, Long userId, Long contentId, String featureImage);
+	Content updateContentImage(int siteId, Long userId, Long contentId, MultipartFile featureImage);
 
 //	Content updateDefaultContentImage(int siteId, Long userId, Long contentId, Long defaultImageId);
 

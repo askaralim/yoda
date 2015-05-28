@@ -1,6 +1,5 @@
 package com.yoda.content.controller;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Iterator;
@@ -31,7 +30,7 @@ import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
-import com.yoda.kernal.servlet.ServletContextUtil;
+import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.service.MenuService;
@@ -42,7 +41,6 @@ import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
 import com.yoda.util.Format;
-import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
@@ -121,7 +119,7 @@ public class ContentEditController {
 		if (command.isHomePage()) {
 			if (homePage == null) {
 				homePageService.addHomePage(
-					user.getLastVisitSiteId(), user.getUserId(), true, content);
+					user.getLastVisitSiteId(), user.getUserId(), false, content);
 			}
 		}
 		else {
@@ -414,9 +412,7 @@ public class ContentEditController {
 
 //		JSONObject jsonResult = new JSONObject();
 
-		byte[] fileData = file.getBytes();
-
-		if (fileData.length <= 0) {
+		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/content/" + contentId + "/edit";
 		}
 
@@ -424,7 +420,8 @@ public class ContentEditController {
 			return "redirect:/controlpanel/content/" + contentId + "/edit";
 		}
 
-		String savedPath = saveImage(request, file);
+		contentService.updateContentImage(
+			user.getLastVisitSiteId(), user.getUserId(), contentId, file);
 
 //		ImageScaler scaler = null;
 //
@@ -454,9 +451,6 @@ public class ContentEditController {
 //			file.getContentType(), scaler.getBytes(), scaler.getHeight(),
 //			scaler.getWidth());
 
-		Content content = contentService.updateContentImage(
-			user.getLastVisitSiteId(), user.getUserId(), contentId, savedPath);
-
 //		jsonResult = createJsonImages(admin.getSiteId(), content);
 //		jsonResult.put("recUpdateBy", content.getRecUpdateBy());
 //		jsonResult.put("recUpdateDatetime",Format.getFullDatetime(content.getRecUpdateDatetime()));
@@ -471,77 +465,6 @@ public class ContentEditController {
 //		outputStream.flush();
 
 		return "redirect:/controlpanel/content/" + contentId + "/edit";
-	}
-
-	private String saveImage(HttpServletRequest request, MultipartFile file) {
-		String newName = "";
-
-		String fileNameLong = file.getOriginalFilename();
-
-		fileNameLong = fileNameLong.replace('\\', '/');
-
-		String[] pathParts = fileNameLong.split("/");
-
-		String fileName = pathParts[pathParts.length - 1];
-
-		String nameWithoutExt = fileName.substring(0, fileName.lastIndexOf("."));
-
-		String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-		String currentDirPath = StringPool.BLANK;
-
-		try {
-			currentDirPath = getBaseDir(request);
-
-			File pathToSave = new File(currentDirPath, fileName);
-
-			int counter = 1;
-
-			while (pathToSave.exists()) {
-				newName = nameWithoutExt + "(" + counter + ")" + "." + ext;
-
-				pathToSave = new File(currentDirPath, newName);
-
-				fileName = newName;
-				counter++;
-			}
-
-			file.transferTo(pathToSave);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return getUrlPrefix(request) + fileName;
-	}
-
-	private String getBaseDir(HttpServletRequest request) {
-		User user = PortalUtil.getAuthenticatedUser();
-
-		String prefix = ServletContextUtil.getServletContext().getRealPath("/uploads/");
-
-		if (Validator.isNotNull(user)) {
-			prefix = prefix.concat("/" + user.getUserId());
-		}
-
-		File baseFile = new File(prefix);
-
-		if (!baseFile.exists())
-			baseFile.mkdirs();
-
-		return prefix;
-	}
-
-	private String getUrlPrefix(HttpServletRequest request) {
-		User user = PortalUtil.getAuthenticatedUser();
-
-		String urlPrefix = ServletContextUtil.getContextPath() + "/uploads/";
-
-		if (Validator.isNotNull(user)) {
-			urlPrefix = urlPrefix.concat(user.getUserId() + "/");
-		}
-
-		return urlPrefix;
 	}
 
 	public JSONObject createJsonImages(int siteId, Content content)

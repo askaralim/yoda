@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.item.dao.ItemDAO;
 import com.yoda.item.model.Item;
+import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.user.model.User;
 
@@ -57,8 +59,14 @@ public class ItemServiceImpl implements ItemService {
 		itemDAO.save(item);
 	}
 
-	public Item updateItemImage(int id, String imagePath) {
+	public Item updateItemImage(int id, MultipartFile file) {
 		Item item = getItem(id);
+
+		FileUploader fileUpload = FileUploader.getInstance();
+
+		fileUpload.deleteFile(item.getImagePath());
+
+		String imagePath = fileUpload.saveFile(file);
 
 		item.setImagePath(imagePath);
 		item.setUpdateBy(PortalUtil.getAuthenticatedUser().getUserId().intValue());

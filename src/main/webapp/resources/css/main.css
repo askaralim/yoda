@@ -70,8 +70,7 @@ a:hover, a:focus, a:active, a.active {
 	color: #ffffff;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus
-	{
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
 	/* background: rgba(0, 0, 0, 0.1); */
 	background-color: #1b2d3f;
 	color: #ffffff;
@@ -82,8 +81,7 @@ a:hover, a:focus, a:active, a.active {
 	color: #ffffff;
 }
 
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus
-	{
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
 	background-color:transparent;
 	color: #ffffff;
 	/* background-color: #3c8dbc;

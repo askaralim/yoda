@@ -1,5 +1,6 @@
 package com.yoda.content.service;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,6 +11,7 @@ import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.content.dao.CommentDAO;
 import com.yoda.content.dao.ContentDAO;
@@ -17,9 +19,11 @@ import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
+import com.yoda.kernal.util.FileUploader;
 import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
 import com.yoda.util.Format;
+import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
@@ -117,6 +121,20 @@ public class ContentServiceImpl implements ContentService {
 		Comment comment = commentDAO.getById(commentId);
 
 		commentDAO.delete(comment);
+	}
+
+	public void deleteContentImage(int siteId, Long userId, Long contentId) {
+		Content content = getContent(siteId, contentId);
+
+		FileUploader fileUpload = FileUploader.getInstance();
+
+		fileUpload.deleteFile(content.getFeaturedImage());
+
+		content.setFeaturedImage(StringPool.BLANK);
+		content.setUpdateBy(userId);
+		content.setUpdateDate(new Date());
+
+		contentDAO.update(content);
 	}
 
 //	public Content deleteContentImage(
@@ -334,31 +352,17 @@ public class ContentServiceImpl implements ContentService {
 		return content;
 	}
 
-//	public Content updateContentImage(
-//			Long siteId, Long userId, Long contentId, ContentImage contentImage) {
-//		Content content = getContent(siteId, contentId);
-//
-////		if (content.getImage() == null) {
-//		content.setImage(contentImage);
-////		}
-////		else {
-////			content.getImages().add(contentImage);
-////		}
-//
-//		content.setUpdateBy(userId);
-//		content.setUpdateDate(new Date());
-//
-//		contentDAO.update(content);
-//
-//		return content;
-//	}
-
 	public Content updateContentImage(
-			int siteId, Long userId, Long contentId, String featuredImage) {
+			int siteId, Long userId, Long contentId, MultipartFile image) {
 		Content content = getContent(siteId, contentId);
 
-		content.setFeaturedImage(featuredImage);
+		FileUploader fileUpload = FileUploader.getInstance();
 
+		fileUpload.deleteFile(content.getFeaturedImage());
+
+		String imagePath = fileUpload.saveFile(image);
+
+		content.setFeaturedImage(imagePath);
 		content.setUpdateBy(userId);
 		content.setUpdateDate(new Date());
 

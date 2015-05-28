@@ -21,6 +21,8 @@ public class Constants {
 
 	public static final int DEFAULT_LISTING_PAGE_SIZE = 10;
 
+	public static final String DEFAULT_CONTEXT_PATH = "yoda";
+
 	public static final String FRONTEND_URL_PREFIX = "";
 
 	public static final String FRONTEND_URL_SECTION = "section";
