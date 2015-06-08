@@ -72,6 +72,7 @@
 				<value>com.yoda.poll.model.PollHeader</value>
 				<value>com.yoda.template.model.Template</value>
 				<value>com.yoda.state.model.State</value>
+				<value>com.yoda.category.model.Category</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

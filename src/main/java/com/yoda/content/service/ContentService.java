@@ -1,6 +1,5 @@
 package com.yoda.content.service;
 
-import java.io.File;
 import java.text.ParseException;
 import java.util.List;
 
@@ -10,10 +9,12 @@ import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 
 public interface ContentService {
+	void addContent(int siteId, Content content, Integer categoryId);
+
 	Content addContent(
 			int siteId, Long userId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			String publishDate, String expireDate, Long updateBy,
+			Integer categoryId, String publishDate, String expireDate, Long updateBy,
 			boolean isPublished) throws Exception;
 
 	void addComment(Comment comment);
@@ -26,10 +27,12 @@ public interface ContentService {
 
 	void updateContent(Content content);
 
+	Content updateContent(int siteId, Content content, Integer categoryId) throws Exception;
+
 	Content updateContent(
 			Long contentId, int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			String publishDate, String expireDate, Long updateBy,
+			Integer categoryId, String publishDate, String expireDate, Long updateBy,
 			boolean isPublished) throws Exception;
 
 	Content getContent(int siteId, Long contentId);

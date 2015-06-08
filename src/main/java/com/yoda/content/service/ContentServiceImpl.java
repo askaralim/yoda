@@ -1,6 +1,6 @@
 package com.yoda.content.service;
 
-import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,15 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yoda.category.dao.CategoryDAO;
+import com.yoda.category.model.Category;
 import com.yoda.content.dao.CommentDAO;
 import com.yoda.content.dao.ContentDAO;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
+import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.util.FileUploader;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
+import com.yoda.user.model.User;
 import com.yoda.util.Format;
 import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
@@ -30,6 +35,9 @@ import com.yoda.util.Validator;
 @Service
 @Transactional
 public class ContentServiceImpl implements ContentService {
+	@Autowired
+	private CategoryDAO categoryDAO;
+
 	@Autowired
 	private ContentDAO contentDAO;
 
@@ -42,10 +50,53 @@ public class ContentServiceImpl implements ContentService {
 	@Autowired
 	private MenuDAO menuDAO;
 
+	@Autowired
+	HomePageService homePageService;
+
+	public void addContent(int siteId, Content content, Integer categoryId) {
+		User user = PortalUtil.getAuthenticatedUser();
+
+		try {
+			content.setNaturalKey(Utility.encode(content.getTitle()));
+		}
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		content.setCreateBy(user.getUserId().intValue());
+		content.setCreateDate(new Date());
+		content.setHitCounter(0);
+		content.setSiteId(siteId);
+		content.setScore(0);
+		content.setUpdateBy(user.getUserId().intValue());
+		content.setUpdateDate(new Date());
+
+		if (Validator.isNotNull(categoryId)) {
+			Category category = categoryDAO.getById(categoryId);
+
+			content.setCategory(category);
+		}
+
+		contentDAO.save(content);
+
+		HomePage homePage = getHomePage(siteId, content.getContentId());
+
+		if (content.isHomePage()) {
+			if (homePage == null) {
+				homePageService.addHomePage(siteId, user.getUserId(), false, content);
+			}
+		}
+		else {
+			if (homePage != null) {
+				homePageService.deleteHomePage(homePage);
+			}
+		}
+	}
+
 	public Content addContent(
 			int siteId, Long userId, String naturalKey,
 			String title, String shortDescription, String description,
-			String pageTitle, String publishDate, String expireDate,
+			String pageTitle, Integer categoryId, String publishDate, String expireDate,
 			Long updateBy, boolean isPublished) throws Exception {
 		Content content = new Content();
 
@@ -64,6 +115,12 @@ public class ContentServiceImpl implements ContentService {
 		content.setScore(0);
 		content.setCreateBy(userId);
 		content.setCreateDate(new Date());
+
+		if (Validator.isNotNull(categoryId)) {
+			Category category = categoryDAO.getById(categoryId);
+
+			content.setCategory(category);
+		}
 
 		contentDAO.save(content);
 
@@ -316,21 +373,63 @@ public class ContentServiceImpl implements ContentService {
 		contentDAO.update(content);
 	}
 
+	public Content updateContent(int siteId, Content content, Integer categoryId)
+		throws Exception {
+		User user = PortalUtil.getAuthenticatedUser();
+
+		Content contentDb = this.getContent(siteId, content.getContentId());
+
+		contentDb.setNaturalKey(Utility.encode(content.getTitle()));
+		contentDb.setTitle(content.getTitle());
+		contentDb.setShortDescription(content.getShortDescription());
+		contentDb.setDescription(content.getDescription());
+		contentDb.setPageTitle(content.getPageTitle());
+		contentDb.setPublishDate(content.getPublishDate());
+		contentDb.setExpireDate(content.getExpireDate());
+		contentDb.setPublished(content.isPublished());
+//		contentDb.setHomePage(content.isHomePage());
+		contentDb.setUpdateBy(user.getUserId());
+		contentDb.setUpdateDate(new Date());
+
+		if (Validator.isNotNull(categoryId)) {
+			Category category = categoryDAO.getById(categoryId);
+
+			contentDb.setCategory(category);
+		}
+
+		contentDAO.update(contentDb);
+
+		HomePage homePage = getHomePage(siteId, content.getContentId());
+
+		if (content.isHomePage()) {
+			if (homePage == null) {
+				homePageService.addHomePage(siteId, user.getUserId(), false, content);
+			}
+		}
+		else {
+			if (homePage != null) {
+				homePageService.deleteHomePage(homePage);
+			}
+		}
+
+		return contentDb;
+	}
+
 	public Content updateContent(
 		int siteId, Long userId, Long contentId, String title,
-		String shortDescription, String description) throws Exception  {
+		String shortDescription, String description) throws Exception {
 		Content content = getContent(siteId, contentId);
 
 		return this.updateContent(
 			contentId, siteId, content.getNaturalKey(), title, shortDescription,
-			description, content.getPageTitle(), String.valueOf(content.getPublishDate()),
+			description, content.getPageTitle(), null, String.valueOf(content.getPublishDate()),
 			String.valueOf(content.getExpireDate()), userId, content.isPublished());	
 	}
 
 	public Content updateContent(
 		Long contentId, int siteId, String naturalKey,
 		String title, String shortDescription, String description,
-		String pageTitle, String publishDate, String expireDate,
+		String pageTitle, Integer categoryId, String publishDate, String expireDate,
 		Long updateBy, boolean isPublished) throws Exception {
 		Content content = contentDAO.getContentById(siteId, contentId);
 
@@ -346,6 +445,12 @@ public class ContentServiceImpl implements ContentService {
 		content.setUpdateBy(updateBy);
 		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
+
+		if (Validator.isNotNull(categoryId)) {
+			Category category = categoryDAO.getById(categoryId);
+
+			content.setCategory(category);
+		}
 
 		contentDAO.update(content);
 
@@ -369,6 +474,22 @@ public class ContentServiceImpl implements ContentService {
 		contentDAO.update(content);
 
 		return content;
+	}
+
+	private HomePage getHomePage(int siteId, Long contentId) {
+		List<HomePage> homePages = homePageService.getHomePages(siteId);
+
+		for (HomePage homePage : homePages) {
+			Content homePageContent = homePage.getContent();
+
+			if (homePageContent != null) {
+				if (homePageContent.getContentId() == contentId) {
+					return homePage;
+				}
+			}
+		}
+
+		return null;
 	}
 
 //	public Content updateDefaultContentImage(

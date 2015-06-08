@@ -26,7 +26,7 @@ public class CommentController {
 	@Autowired
 	ContentService contentService;
 
-	@RequestMapping(value="/controlpanel/comments", method = RequestMethod.GET)
+	@RequestMapping(value="/controlpanel/comment", method = RequestMethod.GET)
 	public String showComments(
 		Map<String, Object> model, HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
@@ -39,7 +39,7 @@ public class CommentController {
 		return "controlpanel/content/comments";
 	}
 
-	@RequestMapping(value = "/controlpanel/comments/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/controlpanel/comment/{id}", method = RequestMethod.GET)
 	public ModelAndView viewComment(@PathVariable("id") int id) {
 		Comment comment = contentService.getComment(id);
 
@@ -47,7 +47,7 @@ public class CommentController {
 			"controlpanel/content/comment", "comment", comment);
 	}
 
-	@RequestMapping(value = "/comments/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/comment/new", method = RequestMethod.POST)
 	public String addComment(HttpServletRequest request, @ModelAttribute Comment comment) {
 		comment.setSiteId(PortalUtil.getSiteFromSession(request).getSiteId().intValue());
 		comment.setCreateDate(new Date());
@@ -58,7 +58,7 @@ public class CommentController {
 		return "redirect:/content/" + comment.getContent().getContentId();
 	}
 
-	@RequestMapping(value = "/controlpanel/comments/remove")
+	@RequestMapping(value = "/controlpanel/comment/remove")
 	public String removeComments(
 			@RequestParam("ids") String ids,
 			HttpServletRequest request) {
@@ -68,6 +68,6 @@ public class CommentController {
 			contentService.deleteComment(Integer.valueOf(arrIds[i]));
 		}
 
-		return "redirect:/controlpanel/comments";
+		return "redirect:/controlpanel/comment";
 	}
 }

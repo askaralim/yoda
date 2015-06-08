@@ -50,9 +50,10 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contents<span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href='<c:url value="/controlpanel/content/list" />'>Content</a></li>
-								<li><a href='<c:url value="/controlpanel/items" />'>Items</a></li>
-								<li><a href='<c:url value="/controlpanel/comments" />'>Comments</a></li>
+								<li><a href='<c:url value="/controlpanel/content" />'>Content</a></li>
+								<li><a href='<c:url value="/controlpanel/item" />'>Item</a></li>
+								<li><a href='<c:url value="/controlpanel/comment" />'>Comment</a></li>
+								<li><a href='<c:url value="/controlpanel/category" />'>Category</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">

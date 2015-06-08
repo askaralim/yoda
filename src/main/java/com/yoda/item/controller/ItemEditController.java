@@ -25,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yoda.item.ItemValidator;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
-import com.yoda.kernal.util.FileUploader;
 import com.yoda.util.Format;
 
 @Controller
@@ -33,16 +32,16 @@ public class ItemEditController {
 	@Autowired
 	ItemService itemService;
 
-	@RequestMapping(value = "/controlpanel/items/{itemId}/edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = RequestMethod.GET)
 	public String initUpdateForm(@PathVariable("itemId") int itemId, Map<String, Object> model) {
 		Item item = itemService.getItem(itemId);
 
 		model.put("item", item);
 
-		return "controlpanel/items/form";
+		return "controlpanel/item/form";
 	}
 
-	@RequestMapping(value = "/controlpanel/items/{itemId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
+	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ModelAndView processUpdateForm(
 			@ModelAttribute("item") Item item, BindingResult result, SessionStatus status) {
 		new ItemValidator().validate(item, result);
@@ -52,7 +51,7 @@ public class ItemEditController {
 		if (result.hasErrors()) {
 			model.put("errors", "errors");
 
-			return new ModelAndView("controlpanel/items/form", model);
+			return new ModelAndView("controlpanel/item/form", model);
 		}
 		else {
 			Item itemDb = itemService.update(
@@ -64,32 +63,32 @@ public class ItemEditController {
 
 			status.setComplete();
 
-			return new ModelAndView("controlpanel/items/form", model);
+			return new ModelAndView("controlpanel/item/form", model);
 		}
 	}
 
-	@RequestMapping(value = "/controlpanel/items/{id}/uploadImage", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/item/{id}/uploadImage", method = RequestMethod.POST)
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("id") int id, HttpServletRequest request,
 			HttpServletResponse response)
 		throws Throwable {
 		if (file.getBytes().length <= 0) {
-			return "redirect:/controlpanel/items/" + id + "/edit";
+			return "redirect:/controlpanel/item/" + id + "/edit";
 		}
 
 		if (Format.isNullOrEmpty(file.getName())) {
-			return "redirect:/controlpanel/items/" + id + "/edit";
+			return "redirect:/controlpanel/item/" + id + "/edit";
 		}
 
 //		String savedPath = new FileUploader().saveFile(file);
 
 		itemService.updateItemImage(id, file);
 
-		return "redirect:/controlpanel/items/" + id + "/edit";
+		return "redirect:/controlpanel/item/" + id + "/edit";
 	}
 
-	@RequestMapping(value="/items/{id}/rating" ,method = RequestMethod.POST)
+	@RequestMapping(value="/item/{id}/rating" ,method = RequestMethod.POST)
 	public void score(
 			@PathVariable("id") int id,
 			@RequestParam("thumb") String thumb,

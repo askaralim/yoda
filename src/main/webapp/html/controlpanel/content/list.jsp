@@ -11,7 +11,7 @@ function submitNewForm() {
 }
 
 function submitSearch() {
-	document.fm.action = '<c:url value="/controlpanel/content/list/search"/>';
+	document.fm.action = '<c:url value="/controlpanel/content/search"/>';
 	document.fm.method="POST";
 	document.fm.submit();
 }
@@ -20,7 +20,7 @@ function submitRemove() {
 	var ids = getSelectedContentIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/content/list/remove"/>?contentIds='+ids+'';
+		var url = '<c:url value="/controlpanel/content/remove"/>?contentIds='+ids+'';
 		location.href = url;
 	}
 
@@ -151,6 +151,7 @@ function getSelectedContentIds(){
 								<th><spring:message code="title" /></th>
 								<!-- <th>Section</th> -->
 								<th><spring:message code="published" /></th>
+								<th><spring:message code="category" /></th>
 								<th><spring:message code="publish-date" /></th>
 								<th><spring:message code="expire-date" /></th>
 								<th><spring:message code="hit-counter" /></th>
@@ -174,6 +175,9 @@ function getSelectedContentIds(){
 									</td> --%>
 									<td>
 										<c:out value="${content.published}" />
+									</td>
+									<td>
+										<c:out value="${content.category.name}" />
 									</td>
 									<td>
 										<c:out value="${content.publishDate}" />

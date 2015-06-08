@@ -15,8 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.yoda.BaseEntity;
+import com.yoda.category.model.Category;
 import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 import com.yoda.section.model.Section;
@@ -32,10 +36,19 @@ public class Content extends BaseEntity {
 	@Column(name = "published")
 	private boolean published;
 
+	@Transient
+	private boolean isHomePage;
+
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
+
 	@Column(name = "publish_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date publishDate;
 
 	@Column(name = "expire_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date expireDate;
 
 	@Column(name = "update_date")
@@ -196,6 +209,22 @@ public class Content extends BaseEntity {
 		this.published = published;
 	}
 
+	public boolean isHomePage() {
+		return isHomePage;
+	}
+
+	public void setHomePage(boolean isHomePage) {
+		this.isHomePage = isHomePage;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 	public long getUpdateBy() {
 		return this.updateBy;
 	}
@@ -264,5 +293,9 @@ public class Content extends BaseEntity {
 		getItems().add(item);
 
 		item.setContent(this);
+	}
+
+	public boolean isNew() {
+		return (this.contentId == null);
 	}
 }

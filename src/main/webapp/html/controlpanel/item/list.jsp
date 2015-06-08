@@ -1,15 +1,8 @@
 <%@ include file="/html/common/init.jsp" %>
 
 <script type="text/javascript">
-function submitNewForm() {
-	var url = '<c:url value="/controlpanel/items/new"/>';
-	location.href = url;
-
-	return false;
-}
-
 function submitSearch() {
-	document.fm.action = '<c:url value="/controlpanel/items/search"/>';
+	document.fm.action = '<c:url value="/controlpanel/item/search"/>';
 	document.fm.method="POST";
 	document.fm.submit();
 }
@@ -18,7 +11,7 @@ function submitRemove() {
 	var ids = getSelectedItemIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/items/remove"/>?ids='+ids+'';
+		var url = '<c:url value="/controlpanel/item/remove"/>?ids='+ids+'';
 		location.href = url;
 	}
 
@@ -50,7 +43,7 @@ function getSelectedItemIds(){
 
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
-	<li><a href="<spring:url value="/controlpanel/items" />">Item Listing</a></li>
+	<li><a href="<spring:url value="/controlpanel/item" />">Item Listing</a></li>
 </ol>
 
 <div class="row">
@@ -75,7 +68,6 @@ function getSelectedItemIds(){
 			<h4>Item Listing Result</h4>
 		</div>
 		<div class="text-right">
-			<%-- <input type="submit" value="<spring:message code="new" />" class="btn btn-sm btn-primary" role="button" onclick="return submitNewForm();"> --%>
 			<input type="submit" value="<spring:message code="remove" />" class="btn btn-sm btn-default" role="button" onclick="return submitRemove();">
 		</div>
 		<div class="table-responsive">
@@ -110,7 +102,7 @@ function getSelectedItemIds(){
 									<c:out value="${item.createDate}" />
 								</td>
 								<td>
-									<spring:url value="/controlpanel/items/{id}/edit" var="editItemUrl">
+									<spring:url value="/controlpanel/item/{id}/edit" var="editItemUrl">
 										<spring:param name="id" value="${item.id}"/>
 									</spring:url>
 									<a href="${fn:escapeXml(editItemUrl)}">

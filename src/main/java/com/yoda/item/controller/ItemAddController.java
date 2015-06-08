@@ -33,7 +33,7 @@ public class ItemAddController {
 	@Autowired
 	ContentService contentService;
 
-	@RequestMapping(value = "/controlpanel/{contentId}/items/new", method = RequestMethod.GET)
+	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.GET)
 	public ModelAndView initCreationForm(
 			@PathVariable("contentId") long contentId, Map<String, Object> model) {
 		User user = PortalUtil.getAuthenticatedUser();
@@ -46,10 +46,10 @@ public class ItemAddController {
 
 		model.put("item", item);
 
-		return new ModelAndView("controlpanel/items/form", model);
+		return new ModelAndView("controlpanel/item/form", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/{contentId}/items/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
 			@ModelAttribute("item") Item item, 
 			@PathVariable("contentId") long contentId, BindingResult result,
@@ -62,14 +62,12 @@ public class ItemAddController {
 		if (result.hasErrors()) {
 			model.put("errors", "errors");
 
-			return new ModelAndView("controlpanel/items/form", model);
+			return new ModelAndView("controlpanel/item/form", model);
 		}
 		else {
-			User user = PortalUtil.getAuthenticatedUser();
-
 			Site site = PortalUtil.getSiteFromSession(request);
 
-			Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+			Content content = contentService.getContent(site.getSiteId(), contentId);
 
 			content.addItem(item);
 
@@ -77,7 +75,7 @@ public class ItemAddController {
 
 			status.setComplete();
 
-			return new ModelAndView("redirect:/controlpanel/items/" + item.getId() + "/edit", model);
+			return new ModelAndView("redirect:/controlpanel/item/" + item.getId() + "/edit", model);
 		}
 	}
 }

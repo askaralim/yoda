@@ -29,14 +29,24 @@
 		<put-attribute name="content" value="/html/controlpanel/content/comment.jsp" type="template" />
 	</definition>
 
-	<definition name="controlpanel/items/list" extends="controlpanelframe">
+	<definition name="controlpanel/item/list" extends="controlpanelframe">
 		<put-attribute name="title" value="Item List" type="string" />
-		<put-attribute name="content" value="/html/controlpanel/items/list.jsp" type="template" />
+		<put-attribute name="content" value="/html/controlpanel/item/list.jsp" type="template" />
 	</definition>
 
-	<definition name="controlpanel/items/form" extends="controlpanelframe">
+	<definition name="controlpanel/item/form" extends="controlpanelframe">
 		<put-attribute name="title" value="Item Maintenance" type="string" />
-		<put-attribute name="content" value="/html/controlpanel/items/form.jsp" type="template" />
+		<put-attribute name="content" value="/html/controlpanel/item/form.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/category/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Category Listing - View" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/category/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/category/form" extends="controlpanelframe">
+		<put-attribute name="title" value="Category Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/category/form.jsp" type="template" />
 	</definition>
 
 	<definition name="controlpanel/homepage/edit" extends="controlpanelframe">

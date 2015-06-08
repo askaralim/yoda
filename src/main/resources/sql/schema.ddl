@@ -110,6 +110,7 @@
 
     create table content (
         content_id bigint not null AUTO_INCREMENT,
+        category_id INT comment '',
         site_id INT(4) not null,
         natural_key varchar(255) not null comment '',
         title varchar(128) not null comment '',
@@ -127,7 +128,8 @@
         section_id INT comment '',
         featured_image varchar(255),
         score INT not null,
-        primary key (content_id)
+        primary key (content_id),
+        FOREIGN KEY (category_id) REFERENCES category(category_id)
     ) comment='';
 
 	CREATE TABLE item (
@@ -190,10 +192,14 @@
     ) comment='';
 
     create table category (
-        id bigint not null,
+        category_id INT not null AUTO_INCREMENT,
         name varchar(50) not null,
-        parent varchar(50) not null comment '',
+        parent INT not null comment '',
         description text not null comment '',
+        update_by bigint not null comment '',
+        update_date datetime not null comment '',
+        create_by bigint not null comment '',
+        create_date datetime not null comment '',
         primary key (id)
     ) comment='';
 

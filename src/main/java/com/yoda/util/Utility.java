@@ -715,7 +715,7 @@ public class Utility {
 			return false;
 		}
 
-		Date current = new Date(System.currentTimeMillis());
+		Date current = new Date();
 
 		if (current.before(content.getPublishDate())
 			|| current.after(content.getExpireDate())) {

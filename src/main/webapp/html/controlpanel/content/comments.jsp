@@ -13,7 +13,7 @@ function submitRemove() {
 	var ids = getSelectedIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/comments/remove"/>?ids='+ids+'';
+		var url = '<c:url value="/controlpanel/comment/remove"/>?ids='+ids+'';
 		location.href = url;
 	}
 
@@ -45,7 +45,7 @@ function getSelectedIds(){
 
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
-	<li><a href="<spring:url value="/controlpanel/comments" />">Comment Listing</a></li>
+	<li><a href="<spring:url value="/controlpanel/comment" />">Comment Listing</a></li>
 </ol>
 
 <div class="row">
@@ -100,7 +100,7 @@ function getSelectedIds(){
 									<c:out value="${comment.createDate}" />
 								</td>
 								<td>
-									<spring:url value="/controlpanel/comments/{id}" var="viewCommentUrl">
+									<spring:url value="/controlpanel/comment/{id}" var="viewCommentUrl">
 										<spring:param name="id" value="${comment.id}"/>
 									</spring:url>
 									<a href="${fn:escapeXml(viewCommentUrl)}">

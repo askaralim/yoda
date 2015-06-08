@@ -92,7 +92,7 @@ public class FrontendContentAddController extends BaseFrontendController {
 			site.getSiteId(), currentUser.getUserId(),
 			StringPool.BLANK, content.getTitle(),
 			content.getShortDescription(), content.getDescription(),
-			StringPool.BLANK, Format.getFullDatetime(publishDate),
+			StringPool.BLANK, null, Format.getFullDatetime(publishDate),
 			Format.getFullDatetime(expireDate), currentUser.getUserId(), false);
 
 		return new ModelAndView("redirect:/content/" + content.getContentId() + "/edit", model);

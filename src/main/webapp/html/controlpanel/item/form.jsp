@@ -2,18 +2,18 @@
 
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
-	<li><a href="<spring:url value="/controlpanel/items" />">Item Listing</a></li>
+	<li><a href="<spring:url value="/controlpanel/item" />">Item Listing</a></li>
 	<li>Item Maintenance</li>
 </ol>
 
-<c:choose>
+<%-- <c:choose>
 	<c:when test="${owner['new']}">
 		<c:set var="method" value="post" />
 	</c:when>
 	<c:otherwise>
 		<c:set var="method" value="put" />
 	</c:otherwise>
-</c:choose>
+</c:choose> --%>
 
 <h2>
 	<c:if test="${item['new']}"><spring:message code="new" /></c:if>
@@ -151,7 +151,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="H2">Upload Image</h4>
 				</div>
-				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/items/${item.id}/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
+				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/item/${item.id}/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
 							<label class="control-label col-lg-4">Image</label>

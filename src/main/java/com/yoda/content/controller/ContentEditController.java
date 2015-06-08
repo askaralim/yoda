@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,25 +24,24 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.content.ContentEditCommand;
+import com.yoda.category.model.Category;
+import com.yoda.category.service.CategoryService;
 import com.yoda.content.ContentEditValidator;
-import com.yoda.content.ContentMenuDisplayCommand;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
-import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.service.MenuService;
 import com.yoda.section.model.Section;
 import com.yoda.section.service.SectionService;
+import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
 import com.yoda.util.Format;
-import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
 @Controller
@@ -60,6 +60,9 @@ public class ContentEditController {
 	SectionService sectionService;
 
 	@Autowired
+	CategoryService categoryService;
+
+	@Autowired
 	ContentService contentService;
 
 	@Autowired
@@ -69,34 +72,41 @@ public class ContentEditController {
 	HomePageService homePageService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView setupForm(
+	public String initUpdateForm(
 			@PathVariable("contentId") long contentId,
-			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
+			Map<String, Object> model, HttpServletRequest request) {
+		Site site = PortalUtil.getSiteFromSession(request);
 
-		ContentEditCommand command = new ContentEditCommand();
+		Content content = contentService.getContent(site.getSiteId(), contentId);
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+//		copyProperties(command, content);
 
-		copyProperties(command, content);
+//		createAdditionalInfo(user, content, command);
 
-		createAdditionalInfo(user, content, command);
+		content.setHomePage(false);
 
-		return new ModelAndView("controlpanel/content/edit", "contentEditCommand", command);
+		if (getHomePage(site.getSiteId(), content.getContentId()) != null) {
+			content.setHomePage(true);
+		}
+
+		List<Category> categories = categoryService.getCategories();
+
+		model.put("categories", categories);
+		model.put("content", content);
+
+		return "controlpanel/content/edit";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView updateContent(
-			@ModelAttribute ContentEditCommand command, BindingResult result,
-			SessionStatus status,HttpServletRequest request,
-			HttpServletResponse response)
+			@ModelAttribute Content content,
+			@RequestParam("categoryId") Integer categoryId,
+			BindingResult result, SessionStatus status,
+			HttpServletRequest request)
 		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
+		Site site = PortalUtil.getSiteFromSession(request);
 
-		int siteId = user.getLastVisitSiteId();
-
-		new ContentEditValidator().validate(command, result);
+		new ContentEditValidator().validate(content, result);
 
 		ModelMap model = new ModelMap();
 
@@ -106,40 +116,25 @@ public class ContentEditController {
 			return new ModelAndView("controlpanel/content/edit", model);
 		}
 
-		Content content = contentService.updateContent(
-			command.getContentId(), siteId,
-			Utility.encode(command.getTitle()),
-			command.getTitle(), command.getShortDescription(),
-			command.getDescription(), command.getPageTitle(),
-			command.getPublishDate(), command.getExpireDate(),
-			user.getUserId(), command.isPublished());
-
-		HomePage homePage = getHomePage(user, content.getContentId());
-
-		if (command.isHomePage()) {
-			if (homePage == null) {
-				homePageService.addHomePage(
-					user.getLastVisitSiteId(), user.getUserId(), false, content);
-			}
-		}
-		else {
-			if (homePage != null) {
-				homePageService.deleteHomePage(homePage);
-			}
-		}
+		Content contentDb = contentService.updateContent(site.getSiteId(), content, categoryId);
 
 //		Indexer.getInstance(siteId).removeContent(content);
 //		Indexer.getInstance(siteId).indexContent(content);
 
-		copyProperties(command, content);
-		createAdditionalInfo(user, content, command);
+//		copyProperties(command, content);
 
-//		form.setMode("U");
-//		FormUtils.setFormDisplayMode(request, command, FormUtils.EDIT_MODE);
-
+//		createAdditionalInfo(user, content, content);
 
 //		uploadImage(content.getContentId(), contentImage, request, response);
 
+		if (getHomePage(site.getSiteId(), content.getContentId()) != null) {
+			content.setHomePage(true);
+		}
+
+		List<Category> categories = categoryService.getCategories();
+
+		model.put("categories", categories);
+		model.put("content", contentDb);
 		model.put("success", "success");
 
 		return new ModelAndView("controlpanel/content/edit", model);
@@ -147,15 +142,15 @@ public class ContentEditController {
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public String deleteContent(
-			@ModelAttribute ContentEditCommand command,
+			@ModelAttribute Content content,
 			HttpServletRequest request) {
 		User user = PortalUtil.getAuthenticatedUser();
 
 		int siteId = user.getLastVisitSiteId();
 
-		long contentId = command.getContentId();
+		long contentId = content.getContentId();
 
-		Content content = contentService.getContent(siteId, contentId);
+		Content contentDb = contentService.getContent(siteId, contentId);
 
 //		ContentImage contentImage = content.getImage();
 //
@@ -171,14 +166,14 @@ public class ContentEditController {
 //			contentImageService.deleteContentImage(contentImage);
 //		}
 
-		Iterator iterator = (Iterator)content.getMenus().iterator();
+		Iterator iterator = (Iterator)contentDb.getMenus().iterator();
 
 		while (iterator.hasNext()) {
 			Menu menu = (Menu)iterator.next();
 			menu.setContent(null);
 		}
 
-		contentService.deleteContent(content);
+		contentService.deleteContent(contentDb);
 
 //		Indexer.getInstance(siteId).removeContent(content);
 
@@ -406,11 +401,11 @@ public class ContentEditController {
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("contentId") long contentId,
-			HttpServletRequest request, HttpServletResponse response)
+			HttpServletRequest request)
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-//		JSONObject jsonResult = new JSONObject();
+		Site site = PortalUtil.getSiteFromSession(request);
 
 		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/content/" + contentId + "/edit";
@@ -421,7 +416,7 @@ public class ContentEditController {
 		}
 
 		contentService.updateContentImage(
-			user.getLastVisitSiteId(), user.getUserId(), contentId, file);
+			site.getSiteId(), user.getUserId(), contentId, file);
 
 //		ImageScaler scaler = null;
 //
@@ -553,66 +548,66 @@ public class ContentEditController {
 //		outputStream.flush();
 //	}
 
-	public void createAdditionalInfo(
-			User user, Content content, ContentEditCommand command)
-		throws Exception {
-		int siteId = user.getLastVisitSiteId();
-
-		Iterator iterator = content.getMenus().iterator();
-
-		Vector<ContentMenuDisplayCommand> selectedMenuVector = new Vector<ContentMenuDisplayCommand>();
-
-		while (iterator.hasNext()) {
-			Menu menu = (Menu) iterator.next();
-
-			ContentMenuDisplayCommand menuDisplayForm = new ContentMenuDisplayCommand();
-
-			menuDisplayForm.setMenuId(menu.getMenuId());
-			menuDisplayForm.setMenuLongDesc(menuService.formatMenuName(siteId, menu.getMenuId()));
-			menuDisplayForm.setMenuWindowMode(menu.getMenuWindowMode());
-			menuDisplayForm.setMenuWindowTarget(menu.getMenuWindowTarget());
-
-			selectedMenuVector.add(menuDisplayForm);
-		}
-
-		ContentMenuDisplayCommand selectedMenuList[] = new ContentMenuDisplayCommand[selectedMenuVector.size()];
-
-		selectedMenuVector.copyInto(selectedMenuList);
-
-		command.setSelectedMenus(selectedMenuList);
-		command.setSelectedMenusCount(selectedMenuList.length);
-
-		Section section = content.getSection();
-
-		if (section != null) {
-			command.setSelectedSection(sectionService.formatSectionName(siteId, section.getSectionId()));
-		}
-
-		command.setMenuList(menuService.makeMenuTreeList(siteId));
-		command.setSectionTree(sectionService.makeSectionTree(siteId));
-
-//		iterator = content.getImages().iterator();
+//	@Deprecated
+//	public void createAdditionalInfo(
+//			User user, Content content, ContentEditCommand command)
+//		throws Exception {
+//		int siteId = user.getLastVisitSiteId();
 //
-//		List<ContentImage> images = new ArrayList<ContentImage>(); 
+//		Iterator iterator = content.getMenus().iterator();
+//
+//		Vector<ContentMenuDisplayCommand> selectedMenuVector = new Vector<ContentMenuDisplayCommand>();
 //
 //		while (iterator.hasNext()) {
-//			ContentImage image = (ContentImage) iterator.next();
+//			Menu menu = (Menu) iterator.next();
 //
-//			images.add(image);
+//			ContentMenuDisplayCommand menuDisplayForm = new ContentMenuDisplayCommand();
+//
+//			menuDisplayForm.setMenuId(menu.getMenuId());
+//			menuDisplayForm.setMenuLongDesc(menuService.formatMenuName(siteId, menu.getMenuId()));
+//			menuDisplayForm.setMenuWindowMode(menu.getMenuWindowMode());
+//			menuDisplayForm.setMenuWindowTarget(menu.getMenuWindowTarget());
+//
+//			selectedMenuVector.add(menuDisplayForm);
 //		}
 //
-//		command.setImages(images);
+//		ContentMenuDisplayCommand selectedMenuList[] = new ContentMenuDisplayCommand[selectedMenuVector.size()];
+//
+//		selectedMenuVector.copyInto(selectedMenuList);
+//
+//		command.setSelectedMenus(selectedMenuList);
+//		command.setSelectedMenusCount(selectedMenuList.length);
+//
+//		Section section = content.getSection();
+//
+//		if (section != null) {
+//			command.setSelectedSection(sectionService.formatSectionName(siteId, section.getSectionId()));
+//		}
+//
+//		command.setMenuList(menuService.makeMenuTreeList(siteId));
+//		command.setSectionTree(sectionService.makeSectionTree(siteId));
+//
+////		iterator = content.getImages().iterator();
+////
+////		List<ContentImage> images = new ArrayList<ContentImage>(); 
+////
+////		while (iterator.hasNext()) {
+////			ContentImage image = (ContentImage) iterator.next();
+////
+////			images.add(image);
+////		}
+////
+////		command.setImages(images);
+//
+//		command.setHomePage(false);
+//
+//		if (getHomePage(siteId, content.getContentId()) != null) {
+//			command.setHomePage(true);
+//		}
+//	}
 
-		command.setHomePage(false);
-
-		if (getHomePage(user, content.getContentId()) != null) {
-			command.setHomePage(true);
-		}
-	}
-
-	private HomePage getHomePage(User user, Long contentId)
-			throws Exception {
-		List<HomePage> homePages = homePageService.getHomePages(user.getLastVisitSiteId());
+	private HomePage getHomePage(int siteId, Long contentId) {
+		List<HomePage> homePages = homePageService.getHomePages(siteId);
 
 		for (HomePage homePage : homePages) {
 			Content homePageContent = homePage.getContent();
@@ -624,41 +619,5 @@ public class ContentEditController {
 		}
 
 		return null;
-	}
-
-	private void copyProperties(ContentEditCommand command, Content content) {
-		command.setContentId(content.getContentId());
-		command.setTitle(content.getTitle());
-		command.setShortDescription(content.getShortDescription());
-		command.setDescription(content.getDescription());
-		command.setPageTitle(content.getPageTitle());
-		command.setHitCounter(String.valueOf(content.getHitCounter()));
-		command.setPublished(content.isPublished());
-		command.setPublishDate(Format.getDate(content.getPublishDate()));
-		command.setExpireDate(Format.getDate(content.getExpireDate()));
-		command.setRemoveImages(null);
-		command.setRemoveMenus(null);
-		command.setMenuWindowMode("");
-		command.setImagePath(content.getFeaturedImage());
-		command.setItems(content.getItems());
-
-//		ContentImage contentImage = content.getImage();
-
-//		if (contentImage != null) {
-//			command.setDefaultImage(contentImage);
-//
-////			List<ContentImage> contentImages = new ArrayList<ContentImage>(); 
-////
-////			contentImages.add(contentImage);
-////
-////			command.setImages(contentImages);
-//		} else {
-//			command.setDefaultImage(null);
-//		}
-
-		command.setUpdateBy(content.getUpdateBy());
-		command.setUpdateDate(Format.getFullDatetime(content.getUpdateDate()));
-		command.setCreateBy(content.getCreateBy());
-		command.setCreateDate(Format.getFullDatetime(content.getCreateDate()));
 	}
 }

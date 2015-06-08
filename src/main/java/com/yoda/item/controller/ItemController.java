@@ -30,7 +30,7 @@ public class ItemController {
 	@Autowired
 	SiteService siteService;
 
-	@RequestMapping(value="/controlpanel/items", method = RequestMethod.GET)
+	@RequestMapping(value="/controlpanel/item", method = RequestMethod.GET)
 	public String showItems(
 		Map<String, Object> model, HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
@@ -40,10 +40,10 @@ public class ItemController {
 
 		model.put("items", items);
 
-		return "controlpanel/items/list";
+		return "controlpanel/item/list";
 	}
 
-	@RequestMapping(value="/controlpanel/items/remove")
+	@RequestMapping(value="/controlpanel/item/remove")
 	public String removeItems(@RequestParam("ids") String ids) {
 		String[] arrIds = ids.split(",");
 
@@ -51,6 +51,6 @@ public class ItemController {
 			itemService.remove(Integer.valueOf(arrIds[i]));
 		}
 
-		return "redirect:/controlpanel/items";
+		return "redirect:/controlpanel/item";
 	}
 }
