@@ -5,6 +5,9 @@
 				<div class="content-post">
 					<div class="page-header">
 						<h2>$contentInfo.title</h2>
+						#if ($contentInfo.category)
+							<span class="label label-default">$contentInfo.category.name</span>
+						#end
 						<!--<p>$contentInfo.shortDescription</p>-->
 						<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
 					</div>
@@ -31,8 +34,8 @@
 							<p>$contentInfo.description</p>
 							<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
 							<div class="content-actions">
-								<button id="thumbUp" class="glyphicon glyphicon-thumbs-up"></button>
-								<button id="thumbDown" class="glyphicon glyphicon-thumbs-down"></button>
+								<button id="thumbUp" class="fa fa-thumbs-o-up"></button>
+								<button id="thumbDown" class="fa fa-thumbs-o-down"></button>
 								<span id="score" class="label label-success">
 									#if ($contentInfo.score > 0)
 										+$contentInfo.score
@@ -108,7 +111,7 @@
 								<input type="hidden" name="content.contentId" value="$contentInfo.contentId"/>
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							</form>
-						<div>
+						</div>
 					#else
 						<p class="text-muted">
 							#springMessage("please-login-to-make-comments")

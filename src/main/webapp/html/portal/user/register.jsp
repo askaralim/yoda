@@ -22,7 +22,40 @@
 </head>
 
 <body>
-	<div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="form-box" id="login-box">
+		<div class="header">
+			<div class="icons">
+				<a href='<c:url value="/"/>'><i class="glyphicon glyphicon-home"></i></a>
+			</div>
+			<h2 class="text-center"><spring:message code="register" /></h2>
+		</div>
+		<form action="<c:url value='/user/register'/>" method="POST" name="fm">
+			<div class="body">
+				<c:if test="${error != null}">
+					<p class="alert alert-danger" role="alert"><spring:message code="${error}" /></p>
+				</c:if>
+
+				<div class="form-group">
+					<input id="username" name="username" type="text" class="form-control" placeholder='<spring:message code="username" />' required autofocus>
+				</div>
+				<div class="form-group">
+					<input id="email" name="email" type="email" class="form-control" placeholder='<spring:message code="email" />' required>
+				</div>
+				<div class="form-group">
+					<input id="password" name="password" type="password" class="form-control" placeholder='<spring:message code="password" />' required>
+				</div>
+
+				<input type="hidden" name="<c:out value="${_csrf.parameterName}"/>" value="<c:out value="${_csrf.token}"/>"/>
+			</div>
+
+			<div class="footer">
+				<button class="btn btn-block"><spring:message code="register" /></button>
+			</div>
+		</form>
+
+	</div>
+
+	<%-- <div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -48,7 +81,7 @@
 						</div>
 						<div class="form-group">
 							<button class="btn btn-primary btn-lg btn-block"><spring:message code="register" /></button>
-							<%-- <span><a href="#">Need help?</a></span> --%>
+							<span><a href="#">Need help?</a></span>
 						</div>
 
 						<input type="hidden" name="<c:out value="${_csrf.parameterName}"/>" value="<c:out value="${_csrf.token}"/>"/>
@@ -56,11 +89,11 @@
 				</div>
 				<div class="modal-footer">
 					<div class="col-md-12">
-						<%-- <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button> --%>
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> --%>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.yoda.portal.content.data;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.yoda.category.model.Category;
 import com.yoda.item.model.Item;
 
 public class ContentInfo extends DataInfo {
@@ -42,7 +43,17 @@ public class ContentInfo extends DataInfo {
 
 	private Set<Item> items = new HashSet<Item>();
 
+	private Category category;
+
 //	Vector contentImageUrls;
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 
 	public int getHitCounter() {
 		return hitCounter;

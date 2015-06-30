@@ -12,6 +12,21 @@
 	</div>
 	<div class="col-sm-8 content-preview-item">
 		<h3><a href="$info.contentUrl" class="">$info.title</a></h3>
+		<p class="text-left">
+			<bd>
+				<i class="fa fa-eye"></i>
+				$info.hitCounter
+				&nbsp
+				<i class="fa fa-heart"></i>
+				<span id="score">
+					#if ($info.score > 0)
+						+$info.score
+					#else
+						$info.score
+					#end
+				</span>
+			</bd>
+		</p>
 		<p>$info.shortDescription</p>
 		<p><a class="btn btn-blue" href="$info.contentUrl" role="button">更多</a></p>
 	</div>

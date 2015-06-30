@@ -102,7 +102,6 @@ function removeContent() {
 					<div class="form-group">
 						<label for="expireDate"><spring:message code="expire-date" /></label>
 						<form:input path="expireDate" cssClass="form-control" />
-						
 					</div>
 					<div class="form-group">
 						<label for="category"><spring:message code="category" /></label>

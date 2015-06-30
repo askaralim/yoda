@@ -24,9 +24,9 @@
 <body>
 	${horizontalMenu}
 
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12">
+	<div class="container pt">
+		<%-- <div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
 				<div class="page-header">
 					<h3><i class="fa fa-user"></i> ${user.username}</h3>
 					<i class="fa fa-envelope"></i> ${user.email}&nbsp&nbsp&nbsp
@@ -35,58 +35,76 @@
 					</c:if>
 				</div>
 			</div>
-		</div>
+		</div> --%>
 
-		<div class="row mt">
-			<div class="col-md-2">
-				<ul class="nav nav-pills nav-stacked" role="tablist">
-					<!-- <li class="nav-header"></li> -->
-					<li class="active" role="presentation"><a href="#post"><i class="glyphicon glyphicon-list"></i> <b><spring:message code="posts" /></b></a></li>
-				</ul>
-			</div>
-			<div class="col-md-8">
-				<div class="tab-content">
-					<div class="tab-pane active" id="posts">
-						<div class="row">
-							<ul class="list-group">
-								<c:forEach var="content" items="${contents}">
-									<li class="list-group-item">
-										<c:choose>
-											<c:when test='${content.published}'>
-												<spring:url value="/content/{contentId}" var="contentUrl">
-													<spring:param name="contentId" value="${content.contentId}"/>
-												</spring:url>
-												<a href="${fn:escapeXml(contentUrl)}">
-													<small><fmt:formatDate value="${content.createDate}" pattern="yyyy-MM-dd" /></small>&nbsp&nbsp&nbsp<b>${content.title}</b>&nbsp[<spring:message code="published" />]
-												</a>
-											</c:when>
-											<c:otherwise>
-												<small><fmt:formatDate value="${content.createDate}" pattern="yyyy-MM-dd" /></small>&nbsp&nbsp&nbsp<b>${content.title}</b>&nbsp[<spring:message code="unpublished" />]
-											</c:otherwise>
-										</c:choose>
-										<c:if test="${currentUser != null && currentUser.userId == content.createBy}">
-											<spring:url value="/content/{contentId}/edit" var="editContentUrl">
-												<spring:param name="contentId" value="${content.contentId}"/>
-											</spring:url>
-											<span class="pull-right">
-												<a href="${fn:escapeXml(editContentUrl)}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
-												<%-- <a href="${fn:escapeXml(deleteContentUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a> --%>
-											</span>
-										</c:if>
-									</li>
-								</c:forEach>
-							</ul>
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
+				<div class="nav-tabs-custom">
+					<ul class="nav nav-tabs">
+						<%-- <li class='${tab == "basic" ? "active" : ""}'> --%>
+						<li class="active">
+							<a href="#post"><i class="glyphicon glyphicon-list"></i>&nbsp<spring:message code="posts" /></a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="posts">
+								<div class="box-body table-responsive no-padding">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th><spring:message code="title" /></th>
+												<th><spring:message code="create-date" /></th>
+												<th><spring:message code="hit-counter" /></th>
+												<th><spring:message code="edit" /></th>
+											</tr>
+										</thead>
+										<c:forEach var="content" items="${contents}" step="1" varStatus="s">
+											<tr>
+												<td>${s.count}</td>
+												<td>
+													<c:choose>
+														<c:when test='${content.published}'>
+															<spring:url value="/content/{contentId}" var="contentUrl">
+																<spring:param name="contentId" value="${content.contentId}"/>
+															</spring:url>
+															<a href="${fn:escapeXml(contentUrl)}">
+																${content.title}&nbsp[<spring:message code="published" />]
+															</a>
+														</c:when>
+														<c:otherwise>
+															${content.title}&nbsp[<spring:message code="unpublished" />]
+														</c:otherwise>
+													</c:choose>
+												</td>
+												<td><fmt:formatDate value="${content.createDate}" pattern="yyyy-MM-dd" /></td>
+												<td>
+													<c:out value="${content.hitCounter}" />
+												</td>
+												<td>
+													<c:if test="${currentUser != null && currentUser.userId == content.createBy}">
+														<spring:url value="/content/{contentId}/edit" var="editContentUrl">
+															<spring:param name="contentId" value="${content.contentId}"/>
+														</spring:url>
+														<a href="${fn:escapeXml(editContentUrl)}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+															<%-- <a href="${fn:escapeXml(deleteContentUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a> --%>
+													</c:if>
+												</td>
+											</tr>
+										</c:forEach>
+									</table>
+								</div>
+								<!-- /.box-body -->
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2">
+			<div class="col-lg-2">
 				<c:if test="${currentUser != null && currentUser.userId == user.userId}">
 					<a class="btn btn-primary btn-sm" href='<c:url value="/content/add" />' role="button"><spring:message code="new-content" /></a>
 				</c:if>
 			</div>
 		</div>
-		<hr>
 	</div>
 
 	<footer class="text-center">

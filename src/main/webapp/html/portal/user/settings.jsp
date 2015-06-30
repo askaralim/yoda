@@ -23,7 +23,7 @@
 
 <body>
 	${horizontalMenu}
-	<div class="container">
+	<div class="container pt">
 		<!-- <h3>Edit Profile</h3>
 		<hr> -->
 		<div class="row">
@@ -38,10 +38,7 @@
 			</div> --%>
 
 			<!-- edit form column -->
-			<div class="col-md-9 personal-info">
-				<h3><spring:message code="settings" /></h3>
-				<hr>
-
+			<div class="col-lg-8 col-lg-offset-2">
 				<form:form method="post" modelAttribute="user" cssClass="form-horizontal" role="form">
 					<c:if test="${success != null}">
 						<div class="alert alert-success" role="alert">
@@ -59,42 +56,64 @@
 
 					<form:hidden path="userId" />
 
-					<div class="form-group">
-						<label class="col-md-3 control-label"><spring:message code="username" /></label>
-						<div class="col-md-8">
-							<form:input path="username" cssClass="form-control" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"><spring:message code="email" /></label>
-						<div class="col-md-8">
-							<form:input path="email" cssClass="form-control" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"><spring:message code="password" /></label>
-						<div class="col-md-8">
-							<form:password path="password" cssClass="form-control" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"><spring:message code="verify-password" /></label>
-						<div class="col-md-8">
-							<form:password path="verifyPassword" cssClass="form-control" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label"></label>
-						<div class="col-md-8">
-							<input type="submit" class="btn btn-primary" value='<spring:message code="save" />'>
-							<span></span>
-							<%--
-							<input type="reset" class="btn btn-primary" value="<spring:message code="cancel" />">
-							--%>
+					<div class="nav-tabs-custom">
+						<ul class="nav nav-tabs">
+							<li class='${tab == "basic" ? "active" : ""}'>
+								<a href="#tab-basic" data-toggle="tab"><spring:message code="basic" /></a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tab-basic">
+								<div class="form-group">
+									<label class="col-md-2 control-label"><spring:message code="username" /></label>
+									<div class="col-md-8">
+										<form:input path="username" cssClass="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label"><spring:message code="email" /></label>
+									<div class="col-md-8">
+										<form:input path="email" cssClass="form-control" readonly="true" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label"><spring:message code="password" /></label>
+									<div class="col-md-8">
+										<form:password path="password" cssClass="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label"><spring:message code="verify-password" /></label>
+									<div class="col-md-8">
+										<form:password path="verifyPassword" cssClass="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-8">
+										<input type="submit" class="btn btn-primary" value='<spring:message code="save" />'>
+										<span></span>
+										<%--
+										<input type="reset" class="btn btn-primary" value="<spring:message code="cancel" />">
+										--%>
+									</div>
+								</div>
+									<%-- <a class="btn btn-sm btn-primary" href="javascript:submitForm('password');" role="button"><spring:message code="update" /></a> --%>
+	
+								<%-- <div class="tab-pane" id="tab-profile">
+									<div class="form-group">
+										<label for="userName"><spring:message code="username" /></label>
+										<form:input path="userName" cssClass="form-control" />
+									</div>
+									<a class="btn btn-sm btn-primary" href="javascript:submitForm('update');" role="button"><spring:message code="update" /></a>
+								</div> --%>
+							</div>
 						</div>
 					</div>
 				</form:form>
 			</div>
+
+			<!-- Custom Tabs -->
 		</div>
 	</div>
 

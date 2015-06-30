@@ -189,6 +189,7 @@ public class BaseFrontendController {
 		contentInfo.setHitCounter(content.getHitCounter());
 		contentInfo.setScore(content.getScore());
 		contentInfo.setItems(content.getItems());
+		contentInfo.setCategory(content.getCategory());
 
 		User user = userService.getUser(content.getCreateBy());
 

@@ -42,6 +42,7 @@ public class UserSettingsController extends BaseFrontendController {
 		}
 
 		model.put("user", user);
+		model.put("tab", "basic");
 
 		SiteInfo siteInfo = getSite(site);
 

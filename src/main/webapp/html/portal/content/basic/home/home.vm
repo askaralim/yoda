@@ -27,7 +27,6 @@
 				</tr>
 				<tr>
 			#end
-
 			#set ($info = $homePageData)
 			#if ($homePageData.infoType == "content")
 				#set ($orientation = "left")
