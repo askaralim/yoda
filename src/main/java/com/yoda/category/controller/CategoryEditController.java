@@ -50,7 +50,7 @@ public class CategoryEditController {
 		}
 		else {
 			Category categoryDb = categoryService.update(
-				category.getId(), category.getName(), category.getDescription(),
+				category.getCategoryId(), category.getName(), category.getDescription(),
 				category.getParent());
 
 			List<Category> categories = categoryService.getCategories();

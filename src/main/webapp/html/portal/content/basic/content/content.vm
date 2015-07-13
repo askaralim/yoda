@@ -11,65 +11,84 @@
 						<!--<p>$contentInfo.shortDescription</p>-->
 						<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
 					</div>
-					<ul class="nav nav-pills">
-						<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
-						#if ($contentInfo.items.size() > 0)
-							<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
-						#end
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="tab-should-know">
-							<p class="text-right">
-								<bd>
-									<i class="glyphicon glyphicon-user"></i>
-									<a href='#springUrl("/user/$contentInfo.createBy")'>$contentInfo.createBy</a>
-									&nbsp
-									<i class="glyphicon glyphicon-time"></i>
-									$contentInfo.createDate
-									&nbsp
-									<i class="glyphicon glyphicon-eye-open"></i>
-									$contentInfo.hitCounter
-								</bd>
-							</p>
-							<p>$contentInfo.description</p>
-							<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
-							<div class="content-actions">
-								<button id="thumbUp" class="fa fa-thumbs-o-up"></button>
-								<button id="thumbDown" class="fa fa-thumbs-o-down"></button>
-								<span id="score" class="label label-success">
-									#if ($contentInfo.score > 0)
-										+$contentInfo.score
-									#else
-										$contentInfo.score
-									#end
-								</span>
+					<div class="nav-tabs-custom">
+						<ul class="nav nav-tabs">
+							<li class="active"><a data-toggle="tab" href="#tab-should-know">#springMessage('should-know')</a></li>
+							#if ($contentInfo.contentBrands.size() > 0)
+								<li><a data-toggle="tab" href="#tab-brand">#springMessage('related-brands')</a></li>
+							#end
+							#if ($contentInfo.items.size() > 0)
+								<li><a data-toggle="tab" href="#tab-recommend">#springMessage('recommend-product')</a></li>
+							#end
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tab-should-know">
+								<p class="text-right">
+									<bd>
+										<i class="glyphicon glyphicon-user"></i>
+										<a href='#springUrl("/user/$contentInfo.createBy")'>$contentInfo.createBy</a>
+										&nbsp
+										<i class="glyphicon glyphicon-time"></i>
+										$contentInfo.createDate
+										&nbsp
+										<i class="glyphicon glyphicon-eye-open"></i>
+										$contentInfo.hitCounter
+									</bd>
+								</p>
+								<p>$contentInfo.description</p>
+								<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
+								<div class="content-actions">
+									<button id="thumbUp" class="fa fa-thumbs-o-up"></button>
+									<button id="thumbDown" class="fa fa-thumbs-o-down"></button>
+									<span id="score" class="label label-success">
+										#if ($contentInfo.score > 0)
+											+$contentInfo.score
+										#else
+											$contentInfo.score
+										#end
+									</span>
+								</div>
 							</div>
-						</div>
-						<div class="tab-pane" id="tab-recommend">
-							#foreach ($item in $contentInfo.items)
+							<div class="tab-pane" id="tab-brand">
+								#foreach ($contentBrand in $contentInfo.contentBrands)
 								<div class="row content-preview-wrapper-row">
-									<div class="col-sm-4 content-preview-item">
-										<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
+								<div class="col-sm-12 content-preview-item">
+									<h4>
+										<p><a href='#springUrl("/brands/$contentBrand.brandId")'>$contentBrand.brandName</a></p>
+									</h4>
+									<p>$contentBrand.description</p>
 									</div>
-									<div class="col-sm-8 content-preview-item">
-										<p>#springMessage('name') : $item.name</p>
-										<p>#springMessage('brand') : $item.brand</p>
-										<p>#springMessage('price') : $item.price</p>
-										<p>#springMessage('description') : $item.description</p>
-										<div class="content-actions">
-											<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
-											<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
-											<span id="rating$item.id" class="label label-success">
-												#if ($item.rating > 0)
-													+$item.rating
-												#else
-													$item.rating
-												#end
-											</span>
+									</div>
+								#end
+							</div>
+							<div class="tab-pane" id="tab-recommend">
+								#foreach ($item in $contentInfo.items)
+									<div class="row content-preview-wrapper-row">
+										<div class="col-sm-4 content-preview-item">
+											<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
+										</div>
+										<div class="col-sm-8 content-preview-item">
+											<p>#springMessage('name') : $item.name</p>
+											<p>#springMessage('brand') : 
+												<a href='#springUrl("/brands/$item.brand.brandId")'>$item.brand.name</a>
+											</p>
+											<p>#springMessage('price') : $item.price</p>
+											<p>#springMessage('description') : $item.description</p>
+											<div class="content-actions">
+												<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
+												<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
+												<span id="rating$item.id" class="label label-success">
+													#if ($item.rating > 0)
+														+$item.rating
+													#else
+														$item.rating
+													#end
+												</span>
+											</div>
 										</div>
 									</div>
-								</div>
-							#end
+								#end
+							</div>
 						</div>
 					</div>
 				</div>

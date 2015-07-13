@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
+import com.yoda.content.model.ContentBrand;
 
 public interface ContentService {
 	void addContent(int siteId, Content content, Integer categoryId);
@@ -18,6 +19,8 @@ public interface ContentService {
 			boolean isPublished) throws Exception;
 
 	void addComment(Comment comment);
+
+	void addContentBrand(ContentBrand contentBrand);
 
 	void deleteContent(Content content);
 
@@ -38,6 +41,8 @@ public interface ContentService {
 	Content getContent(int siteId, Long contentId);
 
 	Content getContent(int siteId, String naturalKey);
+
+	ContentBrand getContentBrand(long contentBrandId);
 
 	Comment getComment(int commentId);
 
@@ -62,4 +67,6 @@ public interface ContentService {
 	List<Content> getContent(Long userId);
 
 	Content updateContent(int siteId, Long contentId, Long userId, String title, String shortDescription, String description) throws Exception;
+
+	ContentBrand updateContentBrand(ContentBrand contentBrand);
 }

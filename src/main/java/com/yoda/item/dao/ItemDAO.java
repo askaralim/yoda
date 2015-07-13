@@ -11,7 +11,10 @@ import com.yoda.item.model.Item;
 @Repository
 public class ItemDAO extends BaseDAO<Item> {
 	private static final String GET_ITEM_BY_SITEID_AND_CONTENTNATURALKEY = "from Item where siteId = ? and itemNaturalKey = ?";
+
 	private static final String GET_ITEM_BY_SITEID = "from Item item where item.siteId = ?";
+
+	private static final String GET_ITEM_BY_CONTENTID = "from Item item where item.contentId = ?";
 
 	public Item getItem(long siteId, int itemId) {
 		Item item = getById(itemId);
@@ -22,8 +25,14 @@ public class ItemDAO extends BaseDAO<Item> {
 		return item;
 	}
 
-	public List<Item> getItems(long siteId) {
+	public List<Item> getItems(int siteId) {
 		List<Item> items = (List<Item>) getHibernateTemplate().find(GET_ITEM_BY_SITEID, siteId);
+
+		return items;
+	}
+
+	public List<Item> getItemsByContentId(long contentId) {
+		List<Item> items = (List<Item>) getHibernateTemplate().find(GET_ITEM_BY_CONTENTID, contentId);
 
 		return items;
 	}

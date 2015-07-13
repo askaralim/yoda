@@ -1,9 +1,12 @@
 package com.yoda.portal.content.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.yoda.category.model.Category;
+import com.yoda.content.model.ContentBrand;
 import com.yoda.item.model.Item;
 
 public class ContentInfo extends DataInfo {
@@ -41,7 +44,9 @@ public class ContentInfo extends DataInfo {
 
 	long score;
 
-	private Set<Item> items = new HashSet<Item>();
+	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
+
+	private List<Item> items = new ArrayList<Item>();
 
 	private Category category;
 
@@ -199,11 +204,19 @@ public class ContentInfo extends DataInfo {
 		this.updateDate = updateDate;
 	}
 
-	public Set<Item> getItems() {
+	public List<Item> getItems() {
 		return items;
 	}
 
-	public void setItems(Set<Item> items) {
+	public void setItems(List<Item> items) {
 		this.items = items;
+	}
+
+	public Set<ContentBrand> getContentBrands() {
+		return contentBrands;
+	}
+
+	public void setContentBrands(Set<ContentBrand> contentBrands) {
+		this.contentBrands = contentBrands;
 	}
 }

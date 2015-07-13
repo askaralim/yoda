@@ -69,7 +69,7 @@ public class ContentController {
 			contentService.deleteContent(content);
 		}
 
-		return "redirect:/controlpanel/content/list";
+		return "redirect:/controlpanel/content";
 	}
 
 	@RequestMapping(value="/controlpanel/content/search", method = RequestMethod.POST)

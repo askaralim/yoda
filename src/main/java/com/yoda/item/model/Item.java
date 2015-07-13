@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.yoda.BaseEntity;
-import com.yoda.content.model.Content;
+import com.yoda.brand.model.Brand;
 
 @Entity
 @Table(name = "item")
@@ -22,9 +22,17 @@ public class Item extends BaseEntity {
 	@Column(name = "id")
 	private Integer id;
 
+	@Column(name = "category_id")
+	private Integer categoryId;
+
+	//	@ManyToOne
+//	@JoinColumn(name = "content_id")
+	@Column(name = "content_id")
+	private Long contentId;
+
 	@ManyToOne
-	@JoinColumn(name = "content_id")
-	private Content content;
+	@JoinColumn(name = "brand_id")
+	private Brand brand;
 
 	@Column(name = "update_date")
 	private Date updateDate;
@@ -46,8 +54,8 @@ public class Item extends BaseEntity {
 	@Column(name = "update_by")
 	private Integer updateBy;
 
-	@Column(name = "brand")
-	private String brand;
+//	@Column(name = "brand")
+//	private String brand;
 
 	@Column(name = "description")
 	private String description;
@@ -72,12 +80,20 @@ public class Item extends BaseEntity {
 		this.id = id;
 	}
 
-	public Content getContent() {
-		return content;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setContent(Content content) {
-		this.content = content;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Long getContentId() {
+		return contentId;
+	}
+
+	public void setContentId(Long contentId) {
+		this.contentId = contentId;
 	}
 
 	public Integer getSiteId() {
@@ -104,11 +120,11 @@ public class Item extends BaseEntity {
 		this.name = name;
 	}
 
-	public String getBrand() {
+	public Brand getBrand() {
 		return this.brand;
 	}
 
-	public void setBrand(String brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
 

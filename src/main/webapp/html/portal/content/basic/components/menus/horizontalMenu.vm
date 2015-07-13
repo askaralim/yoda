@@ -11,6 +11,8 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
+				<li class="page-scroll"><a href=#springUrl("/brands")>#springMessage('brand')</a></li>
+
 				$horizontalMenuCode
 
 				#if ($userLogin)

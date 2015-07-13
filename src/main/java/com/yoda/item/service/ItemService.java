@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
 
 public interface ItemService {
@@ -17,9 +18,11 @@ public interface ItemService {
 
 	Item update(Item item);
 
-	Item update(int id, String brand, String description, String level, String name, int price);
+	Item update(int id, Brand brand, Integer categoryId, Long contentId, String description, String level, String name, int price);
 
 	List<Item> getItems(int siteId);
+
+	List<Item> getItemsByContentId(long contentId);
 
 	List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 

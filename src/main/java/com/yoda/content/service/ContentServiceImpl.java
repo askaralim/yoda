@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yoda.category.dao.CategoryDAO;
 import com.yoda.category.model.Category;
 import com.yoda.content.dao.CommentDAO;
+import com.yoda.content.dao.ContentBrandDAO;
 import com.yoda.content.dao.ContentDAO;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
+import com.yoda.content.model.ContentBrand;
 import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
@@ -40,6 +42,9 @@ public class ContentServiceImpl implements ContentService {
 
 	@Autowired
 	private ContentDAO contentDAO;
+
+	@Autowired
+	private ContentBrandDAO contentBrandDAO;
 
 	@Autowired
 	private CommentDAO commentDAO;
@@ -129,6 +134,10 @@ public class ContentServiceImpl implements ContentService {
 
 	public void addComment(Comment comment) {
 		commentDAO.save(comment);
+	}
+
+	public void addContentBrand(ContentBrand contentBrand) {
+		contentBrandDAO.save(contentBrand);
 	}
 
 	public void deleteContent(Content content) {
@@ -234,6 +243,11 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(readOnly = true)
 	public Content getContent(int siteId, String contentNaturalKey) {
 		return contentDAO.getContentBySiteId_NaturalKey(siteId, contentNaturalKey);
+	}
+
+	@Transactional(readOnly = true)
+	public ContentBrand getContentBrand(long contentBrandId) {
+		return contentBrandDAO.getById(contentBrandId);
 	}
 
 	@Transactional(readOnly = true)
@@ -474,6 +488,12 @@ public class ContentServiceImpl implements ContentService {
 		contentDAO.update(content);
 
 		return content;
+	}
+
+	public ContentBrand updateContentBrand(ContentBrand contentBrand) {
+		contentBrandDAO.update(contentBrand);
+
+		return contentBrand;
 	}
 
 	private HomePage getHomePage(int siteId, Long contentId) {

@@ -27,7 +27,6 @@ public class FeedbackController {
 
 	@RequestMapping(value = "/controlpanel/feedback", method = RequestMethod.GET)
 	public ModelAndView showPanel() {
-
 		List<Feedback> feedbacks = new ArrayList<Feedback>();
 
 		try {

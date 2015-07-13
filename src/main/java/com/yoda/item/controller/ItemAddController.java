@@ -1,5 +1,6 @@
 package com.yoda.item.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +14,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.brand.model.Brand;
+import com.yoda.brand.service.BrandService;
+import com.yoda.category.model.Category;
+import com.yoda.category.service.CategoryService;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.item.ItemValidator;
@@ -24,6 +30,7 @@ import com.yoda.item.service.ItemService;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
+import com.yoda.util.Validator;
 
 @Controller
 public class ItemAddController {
@@ -33,26 +40,43 @@ public class ItemAddController {
 	@Autowired
 	ContentService contentService;
 
-	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.GET)
-	public ModelAndView initCreationForm(
-			@PathVariable("contentId") long contentId, Map<String, Object> model) {
-		User user = PortalUtil.getAuthenticatedUser();
+	@Autowired
+	BrandService brandService;
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+	@Autowired
+	CategoryService categoryService;
+
+//	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.GET)
+	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.GET)
+	public ModelAndView initCreationForm(
+//			@PathVariable("contentId") long contentId,
+			Map<String, Object> model,
+			HttpServletRequest request) {
+		Site site = PortalUtil.getSiteFromSession(request);
+
+		List<Content> contents = contentService.getContents(site.getSiteId());
+
+		List<Category> categories = categoryService.getCategories();
 
 		Item item = new Item();
 
-		content.addItem(item);
+//		content.addItem(item);
+
+		List<Brand> brands = brandService.getBrands();
 
 		model.put("item", item);
+		model.put("brands", brands);
+		model.put("categories", categories);
+		model.put("contents", contents);
 
 		return new ModelAndView("controlpanel/item/form", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
 			@ModelAttribute("item") Item item, 
-			@PathVariable("contentId") long contentId, BindingResult result,
+//			@PathVariable("contentId") long contentId,
+			@RequestParam("brandId") Integer brandId, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {
 		new ItemValidator().validate(item, result);
@@ -67,9 +91,15 @@ public class ItemAddController {
 		else {
 			Site site = PortalUtil.getSiteFromSession(request);
 
-			Content content = contentService.getContent(site.getSiteId(), contentId);
+			if (Validator.isNotNull(brandId)) {
+				Brand brand = brandService.getBrand(brandId);
 
-			content.addItem(item);
+				item.setBrand(brand);
+			}
+
+//			Content content = contentService.getContent(site.getSiteId(), contentId);
+//
+//			content.addItem(item);
 
 			this.itemService.save(site.getSiteId(), item);
 

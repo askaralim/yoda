@@ -17,7 +17,7 @@ public class Category extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "category_id")
-	private Integer id;
+	private Integer categoryId;
 
 	@Column(name = "create_date")
 	private Date createDate;
@@ -40,12 +40,12 @@ public class Category extends BaseEntity {
 	@Column(name = "parent")
 	private Integer parent;
 
-	public Integer getId() {
-		return id;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public Date getCreateDate() {
@@ -105,6 +105,6 @@ public class Category extends BaseEntity {
 	}
 
 	public boolean isNew() {
-		return (this.id == null);
+		return (this.categoryId == null);
 	}
 }

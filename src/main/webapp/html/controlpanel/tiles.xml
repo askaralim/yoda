@@ -19,6 +19,26 @@
 		<put-attribute name="content" value="/html/controlpanel/content/edit.jsp" type="template" />
 	</definition>
 
+	<definition name="controlpanel/content/editContentBrand" extends="controlpanelframe">
+		<put-attribute name="title" value="Content Brand Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/content/editContentBrand.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/brand/list" extends="controlpanelframe">
+		<put-attribute name="title" value="Brand List" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/brand/list.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/brand/view" extends="controlpanelframe">
+		<put-attribute name="title" value="Brand Listing - View" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/brand/view.jsp" type="template" />
+	</definition>
+
+	<definition name="controlpanel/brand/edit" extends="controlpanelframe">
+		<put-attribute name="title" value="Brand Maintenance" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/brand/edit.jsp" type="template" />
+	</definition>
+
 	<definition name="controlpanel/content/comments" extends="controlpanelframe">
 		<put-attribute name="title" value="Administration - Comments Listing" type="string" />
 		<put-attribute name="content" value="/html/controlpanel/content/comments.jsp" type="template" />

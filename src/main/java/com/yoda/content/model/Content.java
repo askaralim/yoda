@@ -99,7 +99,11 @@ public class Content extends BaseEntity {
 
 	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "content_id")
-	private Set<Item> items = new HashSet<Item>();
+	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
+
+//	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+//	@JoinColumn(name = "content_id")
+//	private Set<Item> items = new HashSet<Item>();
 
 	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "content_id")
@@ -281,19 +285,33 @@ public class Content extends BaseEntity {
 		this.menus = menus;
 	}
 
-	public Set<Item> getItems() {
-		return items;
+	public Set<ContentBrand> getContentBrands() {
+		return contentBrands;
 	}
 
-	public void setItems(Set<Item> items) {
-		this.items = items;
+	public void setContentBrands(Set<ContentBrand> contentBrands) {
+		this.contentBrands = contentBrands;
 	}
 
-	public void addItem(Item item) {
-		getItems().add(item);
+	public void addContentBrand(ContentBrand contentBrand) {
+		getContentBrands().add(contentBrand);
 
-		item.setContent(this);
+//		contentBrand.setContent(this);
 	}
+
+//	public Set<Item> getItems() {
+//		return items;
+//	}
+//
+//	public void setItems(Set<Item> items) {
+//		this.items = items;
+//	}
+
+//	public void addItem(Item item) {
+//		getItems().add(item);
+//
+//		item.setContent(this);
+//	}
 
 	public boolean isNew() {
 		return (this.contentId == null);

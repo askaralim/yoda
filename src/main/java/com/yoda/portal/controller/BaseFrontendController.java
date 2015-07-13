@@ -24,6 +24,8 @@ import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
+import com.yoda.item.model.Item;
+import com.yoda.item.service.ItemService;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.kernal.util.WebKeys;
@@ -55,6 +57,9 @@ public class BaseFrontendController {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+	protected ItemService itemService;
 
 	@Autowired
 	protected MenuService menuService;
@@ -188,7 +193,12 @@ public class BaseFrontendController {
 		contentInfo.setDescription(content.getDescription());
 		contentInfo.setHitCounter(content.getHitCounter());
 		contentInfo.setScore(content.getScore());
-		contentInfo.setItems(content.getItems());
+
+		List<Item> items = itemService.getItemsByContentId(content.getContentId());
+
+		contentInfo.setItems(items);
+
+		contentInfo.setContentBrands(content.getContentBrands());
 		contentInfo.setCategory(content.getCategory());
 
 		User user = userService.getUser(content.getCreateBy());

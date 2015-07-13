@@ -18,7 +18,7 @@ function submitRemove() {
 	var ids = getSelectedCategoryIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/category/remove"/>?ids='+ids+'';
+		var url = '<c:url value="/controlpanel/category/remove"/>?categoryIds='+ids+'';
 		location.href = url;
 	}
 
@@ -26,7 +26,7 @@ function submitRemove() {
 }
 
 function getSelectedCategoryIds(){
-	var selectBoxs = document.all("ids");
+	var selectBoxs = document.all("categoryIds");
 
 	if(!selectBoxs) return null;
 
@@ -95,10 +95,10 @@ function getSelectedCategoryIds(){
 						<c:forEach var="category" items="${categories}">
 							<tr>
 								<td>
-									<input type="checkbox" id="ids" value="${category.id}">
+									<input type="checkbox" id="categoryIds" value="${category.categoryId}">
 								</td>
 								<td>
-									<c:out value="${category.id}" />
+									<c:out value="${category.categoryId}" />
 								</td>
 								<td>
 									<c:out value="${category.name}" />
@@ -110,8 +110,8 @@ function getSelectedCategoryIds(){
 									<c:out value="${category.createDate}" />
 								</td>
 								<td>
-									<spring:url value="/controlpanel/category/{id}/edit" var="editCategoryUrl">
-										<spring:param name="id" value="${category.id}"/>
+									<spring:url value="/controlpanel/category/{categoryId}/edit" var="editCategoryUrl">
+										<spring:param name="categoryId" value="${category.categoryId}"/>
 									</spring:url>
 									<a href="${fn:escapeXml(editCategoryUrl)}">
 										<spring:message code="edit" />

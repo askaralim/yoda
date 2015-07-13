@@ -1,6 +1,5 @@
-package com.yoda.category.controller;
+package com.yoda.brand.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,47 +15,44 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.category.CategoryValidator;
-import com.yoda.category.model.Category;
-import com.yoda.category.service.CategoryService;
+import com.yoda.brand.BrandValidator;
+import com.yoda.brand.model.Brand;
+import com.yoda.brand.service.BrandService;
 
 @Controller
-public class CategoryAddController {
+public class BrandAddController {
 	@Autowired
-	CategoryService categoryService;
+	BrandService brandService;
 
-	@RequestMapping(value = "/controlpanel/category/new", method = RequestMethod.GET)
+	@RequestMapping(value = "/controlpanel/brand/new", method = RequestMethod.GET)
 	public ModelAndView initCreationForm(Map<String, Object> model) {
-		Category category = new Category();
+		Brand brand = new Brand();
 
-		List<Category> categories = categoryService.getCategories();
+		model.put("brand", brand);
 
-		model.put("categories", categories);
-		model.put("category", category);
-
-		return new ModelAndView("controlpanel/category/form", model);
+		return new ModelAndView("controlpanel/brand/edit", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/category/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/brand/new", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
-			@ModelAttribute("category") Category category, BindingResult result,
+			@ModelAttribute("brand") Brand brand, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {
-		new CategoryValidator().validate(category, result);
+		new BrandValidator().validate(brand, result);
 
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
 			model.put("errors", "errors");
 
-			return new ModelAndView("controlpanel/category/form", model);
+			return new ModelAndView("controlpanel/brand/form", model);
 		}
 		else {
-			this.categoryService.addCategory(category);
+			brandService.addBrand(brand);
 
 			status.setComplete();
 
-			return new ModelAndView("redirect:/controlpanel/category/" + category.getCategoryId() + "/edit", model);
+			return new ModelAndView("redirect:/controlpanel/brand/" + brand.getBrandId() + "/edit", model);
 		}
 	}
 }

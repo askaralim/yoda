@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yoda.brand.model.Brand;
 import com.yoda.item.dao.ItemDAO;
 import com.yoda.item.model.Item;
 import com.yoda.kernal.util.FileUploader;
@@ -41,6 +42,11 @@ public class ItemServiceImpl implements ItemService {
 		return itemDAO.getAll();
 	}
 
+	@Transactional(readOnly = true)
+	public List<Item> getItemsByContentId(long contentId) {
+		return itemDAO.getItemsByContentId(contentId);
+	}
+
 	public List<Item> search(
 			int siteId, String itemNum, String itemUpcCd,
 			String itemShortDesc) {
@@ -69,8 +75,6 @@ public class ItemServiceImpl implements ItemService {
 		String imagePath = fileUpload.saveFile(file);
 
 		item.setImagePath(imagePath);
-		item.setUpdateBy(PortalUtil.getAuthenticatedUser().getUserId().intValue());
-		item.setUpdateDate(new Date());
 
 		update(item);
 
@@ -78,17 +82,17 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public Item update(
-			int id, String brand, String description, String level, String name,
-			int price) {
+			int id, Brand brand, Integer categoryId, Long contentId,
+			String description, String level, String name, int price) {
 		Item item = this.getItem(id);
 
 		item.setBrand(brand);
+		item.setCategoryId(categoryId);
+		item.setContentId(contentId);
 		item.setDescription(description);
 		item.setLevel(level);
 		item.setName(name);
 		item.setPrice(price);
-		item.setUpdateBy(PortalUtil.getAuthenticatedUser().getUserId().intValue());
-		item.setUpdateDate(new Date());
 
 		update(item);
 
@@ -96,6 +100,9 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public Item update(Item item) {
+		item.setUpdateBy(PortalUtil.getAuthenticatedUser().getUserId().intValue());
+		item.setUpdateDate(new Date());
+
 		itemDAO.update(item);
 
 		return item;

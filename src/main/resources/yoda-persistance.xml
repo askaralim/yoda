@@ -55,11 +55,13 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>com.yoda.feedback.model.Feedback</value>
+				<value>com.yoda.brand.model.Brand</value>
 				<value>com.yoda.item.model.Item</value>
 				<value>com.yoda.content.model.Comment</value>
 				<value>com.yoda.site.model.Site</value>
 				<value>com.yoda.homepage.model.HomePage</value>
 				<value>com.yoda.content.model.Content</value>
+				<value>com.yoda.content.model.ContentBrand</value>
 				<value>com.yoda.section.model.Section</value>
 				<value>com.yoda.user.model.UserAuthority</value>
 				<value>com.yoda.contactus.model.ContactUs</value>

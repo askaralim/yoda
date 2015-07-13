@@ -21,7 +21,7 @@
 </h2>
 
 <form:form method="post" modelAttribute="item" name="fm">
-	<div class="form-group">
+<%-- 	<div class="form-group">
 		<label><spring:message code="content" /></label>
 
 		<spring:url value="/controlpanel/content/{contentId}/edit" var="editContentUrl">
@@ -33,7 +33,7 @@
 				<c:out value="${item.content.title}" />
 			</a>
 		</p>
-	</div>
+	</div> --%>
 
 	<form:hidden path="id" />
 	<%-- <form:hidden path="content" /> --%>
@@ -60,7 +60,30 @@
 			</div>
 			<div class="form-group">
 				<label for="brand"><spring:message code="brand" /></label>
-				<form:input path="brand" cssClass="form-control" />
+				<select id="brandId" name="brandId" class="form-control">
+					<option value="" />
+					<c:forEach var="brand" items="${brands}">
+						<option value="${brand.brandId}" ${item.brand.brandId == brand.brandId ? "selected='selected'" : ""}>${brand.name}</option>
+					</c:forEach>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="category"><spring:message code="category" /></label>
+				<select id="categoryId" name="categoryId" class="form-control">
+					<option value="" />
+					<c:forEach var="category" items="${categories}">
+						<option value="${category.categoryId}" ${item.categoryId == category.categoryId ? "selected='selected'" : ""}>${category.name}</option>
+					</c:forEach>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="content"><spring:message code="content" /></label>
+				<select id="contentId" name="contentId" class="form-control">
+					<option value="" />
+					<c:forEach var="content" items="${contents}">
+						<option value="${content.contentId}" ${item.contentId == content.contentId ? "selected='selected'" : ""}>${content.title}</option>
+					</c:forEach>
+				</select>
 			</div>
 			<div class="form-group">
 				<label for="price"><spring:message code="price" /></label>
@@ -104,7 +127,7 @@
 									<c:when test="${empty item.imagePath}">
 									</c:when>
 									<c:otherwise>
-										<div class="thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+										<div class="thumbnail" style="max-width: 200px; max-height: 200px; line-height: 20px;">
 											<img src="${item.imagePath}" alt="..">
 										</div>
 									</c:otherwise>
@@ -175,7 +198,7 @@
 
 <script type="text/javascript">
 function submitBackForm(type) {
-	location.href='<spring:url value="/controlpanel/content/list" />';
+	location.href='<spring:url value="/controlpanel/item/list" />';
 	return false;
 }
 </script>

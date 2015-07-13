@@ -24,6 +24,7 @@
 		<link rel="stylesheet" href='<c:url value="/resources/css/main.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/bootstrap-fileupload.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/datepicker.css" />' />
+		<link rel="stylesheet" href='<c:url value="/resources/css/chosen.min.css" />' />
 
 		<link rel="stylesheet" href="http://fonts.useso.com/css?family=Montserrat:400,700" />
 
@@ -51,6 +52,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contents<span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li><a href='<c:url value="/controlpanel/content" />'>Content</a></li>
+								<li><a href='<c:url value="/controlpanel/brand" />'>Brand</a></li>
 								<li><a href='<c:url value="/controlpanel/item" />'>Item</a></li>
 								<li><a href='<c:url value="/controlpanel/comment" />'>Comment</a></li>
 								<li><a href='<c:url value="/controlpanel/category" />'>Category</a></li>
@@ -114,6 +116,7 @@
 
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
+		<%-- <script src='<c:url value="/resources/js/jquery-2.0.3.min.js" />'></script> --%>
 		<script src='<c:url value="/resources/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
 		<%-- <script src='<c:url value="/resources/js/modernizr-2.6.2-respond-1.1.0.min.js" />'></script> --%>
 		<script src='<c:url value="/resources/js/fileupload/bootstrap-fileupload.js" />'></script>

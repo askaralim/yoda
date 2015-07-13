@@ -20,7 +20,7 @@ function submitCancel() {
 </h2>
 
 <form:form method="post" modelAttribute="category" name="fm">
-	<form:hidden path="id" />
+	<form:hidden path="categoryId" />
 
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
@@ -47,7 +47,7 @@ function submitCancel() {
 				<form:select path="parent" cssClass="form-control">
 					<form:option value="" />
 					<c:forEach var="cate" items="${categories}">
-						<form:option value="${cate.id}" label="${cate.name}" />
+						<form:option value="${cate.categoryId}" label="${cate.name}" />
 					</c:forEach>
 				</form:select>
 			</div>

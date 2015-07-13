@@ -2,30 +2,31 @@
 
 <script type="text/javascript">
 function submitNewForm() {
-	location.href = '<c:url value="/controlpanel/item/new"/>';
+	var url = '<c:url value="/controlpanel/brand/new"/>';
+	location.href = url;
 
 	return false;
 }
 
 function submitSearch() {
-	document.fm.action = '<c:url value="/controlpanel/item/search"/>';
+	document.fm.action = '<c:url value="/controlpanel/brand/search"/>';
 	document.fm.method="POST";
 	document.fm.submit();
 }
 
 function submitRemove() {
-	var ids = getSelectedItemIds();
+	var ids = getSelectedBrandIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/item/remove"/>?ids='+ids+'';
+		var url = '<c:url value="/controlpanel/brand/remove"/>?brandIds='+brandIds+'';
 		location.href = url;
 	}
 
 	return false;
 }
 
-function getSelectedItemIds(){
-	var selectBoxs = document.all("ids");
+function getSelectedBrandIds(){
+	var selectBoxs = document.all("brandIds");
 
 	if(!selectBoxs) return null;
 
@@ -33,23 +34,23 @@ function getSelectedItemIds(){
 		return selectBoxs.value;
 	}
 	else{//many checkbox ,so is a array 
-		var ids = "";
+		var brandIds = "";
 		var split = "";
 		for(var i = 0 ; i < selectBoxs.length ; i++){
 			if(selectBoxs[i].checked){
-				ids += split+selectBoxs[i].value;
+				brandIds += split+selectBoxs[i].value;
 				split = ",";
 			}
 		}
 
-		return ids;
+		return brandIds;
 	}
 }
 </script>
 
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
-	<li><a href="<spring:url value="/controlpanel/item" />">Item Listing</a></li>
+	<li><a href="<spring:url value="/controlpanel/brand" />">Brand Listing</a></li>
 </ol>
 
 <div class="row">
@@ -71,7 +72,7 @@ function getSelectedItemIds(){
 	</div>
 	<div class="col-md-9">
 		<div class="page-header">
-			<h4>Item Listing Result</h4>
+			<h4>Brand Listing Result</h4>
 		</div>
 		<div class="text-right">
 			<input type="submit" value="<spring:message code="new" />" class="btn btn-sm btn-primary" role="button" onclick="return submitNewForm();">
@@ -79,44 +80,50 @@ function getSelectedItemIds(){
 		</div>
 		<div class="table-responsive">
 			<table class="table table-striped">
-				<c:if test="${items != null}">
+				<c:if test="${brands != null}">
 					<thead>
 						<tr>
 							<th></th>
 							<th><spring:message code="id" /></th>
 							<th><spring:message code="name" /></th>
-							<th><spring:message code="brand" /></th>
-							<%-- <th><spring:message code="content" /></th> --%>
-							<th><spring:message code="create-date" /></th>
+							<th><spring:message code="kind" /></th>
+							<th><spring:message code="country" /></th>
+							<th><spring:message code="score" /></th>
 							<th><spring:message code="action" /></th>
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="item" items="${items}">
+						<c:forEach var="brand" items="${brands}">
 							<tr>
 								<td>
-									<input type="checkbox" id="ids" value="${item.id}">
+									<input type="checkbox" id="brandIds" value="${brand.brandId}">
 								</td>
 								<td>
-									<c:out value="${item.id}" />
+									<c:out value="${brand.brandId}" />
 								</td>
 								<td>
-									<c:out value="${item.name}" />
+									<c:out value="${brand.name}" />
 								</td>
 								<td>
-									<c:out value="${item.brand.name}" />
-								</td>
-								<%--<td>
-									<c:out value="${item.content.title}" />
-								</td> --%>
-								<td>
-									<c:out value="${item.createDate}" />
+									<c:out value="${brand.kind}" />
 								</td>
 								<td>
-									<spring:url value="/controlpanel/item/{id}/edit" var="editItemUrl">
-										<spring:param name="id" value="${item.id}"/>
+									<c:out value="${brand.country}" />
+								</td>
+								<td>
+									<c:out value="${brand.score}" />
+								</td>
+								<td>
+									<spring:url value="/controlpanel/brand/{id}" var="viewBrandUrl">
+										<spring:param name="id" value="${brand.brandId}"/>
 									</spring:url>
-									<a href="${fn:escapeXml(editItemUrl)}">
+									<a href="${fn:escapeXml(viewBrandUrl)}">
+										<spring:message code="view" />
+									</a>
+									<spring:url value="/controlpanel/brand/{id}/edit" var="editBrandUrl">
+										<spring:param name="id" value="${brand.brandId}"/>
+									</spring:url>
+									<a href="${fn:escapeXml(editBrandUrl)}">
 										<spring:message code="edit" />
 									</a>
 								</td>

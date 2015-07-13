@@ -29,6 +29,9 @@ import com.yoda.util.Format;
 @Controller
 @RequestMapping("/controlpanel/content/add")
 public class ContentAddController {
+//	@Autowired
+//	BrandService brandService;
+
 	@Autowired
 	CategoryService categoryService;
 
@@ -46,6 +49,9 @@ public class ContentAddController {
 
 		List<Category> categories = categoryService.getCategories();
 
+//		List<Brand> brands = brandService.getBrands();
+
+//		model.put("brands", brands);
 		model.put("categories", categories);
 		model.put("content", content);
 

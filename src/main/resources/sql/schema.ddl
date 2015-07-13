@@ -134,7 +134,8 @@
 
 	CREATE TABLE item (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		brand VARCHAR(30),
+		brand_id INT,
+		category_id INT,
 		content_id bigint,
 		create_by INT NOT NULL,
 		create_date DATETIME NOT NULL,
@@ -148,8 +149,39 @@
 		update_by INT NOT NULL,
 		update_date DATETIME NOT NULL,
 		INDEX(name),
-		FOREIGN KEY (content_id) REFERENCES content(content_id)
+		FOREIGN KEY (content_id) REFERENCES content(content_id),
+		FOREIGN KEY (brand_id) REFERENCES brand(brand_id)
 	) engine=InnoDB;
+
+	CREATE TABLE brand (
+		brand_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		country varchar(30),
+		create_by bigint NOT NULL,
+		create_date DATETIME NOT NULL,
+		name VARCHAR(30),
+		description VARCHAR(2000),
+		kind VARCHAR(30),
+		image_path VARCHAR(50),
+		score INT,
+		update_by bigint NOT NULL,
+		update_date DATETIME NOT NULL,
+		INDEX(name)
+	) engine=InnoDB;
+
+	create table content_brand (
+		content_brand_id bigint not null AUTO_INCREMENT PRIMARY KEY,
+		content_id bigint not null,
+		brand_id INT not null,
+		brand_name VARCHAR(30),
+		description VARCHAR(2000),
+		INDEX(content_brand_id)
+	);
+
+	create table brand_category (
+		brand_id INT not null,
+		category_id INT not null,
+		primary key (brand_id, category_id)
+	);
 
 	CREATE TABLE comment (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -179,17 +211,15 @@
         primary key (image_id)
     ) comment='';
 
-    create table country (
-        country_id bigint not null,
-        site_id bigint not null,
-        country_code varchar(2) not null comment '',
-        country_name varchar(40) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        primary key (country_id)
-    ) comment='';
+	create table country (
+		country_id int not null AUTO_INCREMENT PRIMARY KEY,,
+		country_name varchar(40) not null comment '',
+		create_by varchar(20) not null comment '',
+		create_date datetime not null comment '',
+		site_id int not null,
+		update_by varchar(20) not null comment '',
+		update_date datetime not null comment '',
+	);
 
     create table category (
         category_id INT not null AUTO_INCREMENT,

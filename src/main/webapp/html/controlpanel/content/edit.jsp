@@ -58,11 +58,21 @@ function removeContent() {
 				<form:input path="shortDescription" cssClass="form-control" />
 			</div>
 			<div class="form-group">
-				<label for=description><spring:message code="text" /></label>
+				<label for="description"><spring:message code="text" /></label>
 				<%
 				out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", content.getDescription()));
 				%>
 			</div>
+			<%-- <div class="form-group">
+				<label for="brand"><spring:message code="brand" /></label>
+				<select data-placeholder="Choose a Brand" class="form-control chosen-select" multiple="multiple" tabindex="4">
+					<c:forEach var="brand" items="${brands}">
+						<option value="${brand.brandId}" ${content.category.id == category.id ? "selected='selected'" : ""}>${category.name}</option>
+					</c:forEach>
+					<option value="United States" selected="selected">United States</option>
+					<option value="United Kingdom">United Kingdom</option>
+				</select>
+			</div> --%>
 			<div class="form-group">
 				<label for="pageTitle"><spring:message code="keywords" /></label>
 				<form:textarea path="pageTitle" cssClass="form-control" />
@@ -108,7 +118,7 @@ function removeContent() {
 						<select id="categoryId" name="categoryId" class="form-control">
 							<option value="" />
 							<c:forEach var="category" items="${categories}">
-								<option value="${category.id}" ${content.category.id == category.id ? "selected='selected'" : ""}>${category.name}</option>
+								<option value="${category.categoryId}" ${content.category.categoryId == category.categoryId ? "selected='selected'" : ""}>${category.name}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -135,7 +145,7 @@ function removeContent() {
 									<c:when test="${empty content.featuredImage}">
 									</c:when>
 									<c:otherwise>
-										<div class="thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;">
+										<div class="thumbnail" style="max-width: 200px; max-height: 200px; line-height: 20px;">
 											<img src="${content.featuredImage}" alt="..">
 										</div>
 									</c:otherwise>
@@ -148,10 +158,58 @@ function removeContent() {
 
 				<div class="panel panel-default">
 					<div class="panel-heading">
+						<spring:message code="brand" />
+					</div>
+					<div class="panel-body">
+						<spring:url value="/controlpanel/content/{contentId}/brand/add" var="addBrandUrl">
+							<spring:param name="contentId" value="${content.contentId}" />
+						</spring:url>
+						<a href="${fn:escapeXml(addBrandUrl)}" class="btn btn-sm btn-primary">Add Brand</a>
+					</div>
+					<table class="table">
+						<c:if test="${content.contentBrands != null}">
+							<thead>
+								<tr>
+									<th></th>
+									<th><spring:message code="id" /></th>
+									<th><spring:message code="name" /></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="contentBrand" items="${content.contentBrands}">
+									<spring:url value="/controlpanel/content/{contentId}/brand/{contentBrandId}/edit" var="editBrandUrl">
+										<spring:param name="contentId" value="${content.contentId}"/>
+										<spring:param name="contentBrandId" value="${contentBrand.contentBrandId}"/>
+									</spring:url>
+									<tr>
+										<td>
+											<input type="checkbox" id="itemIds" value="${contentBrand.contentBrandId}">
+										</td>
+										<td>
+											<c:out value="${contentBrand.contentBrandId}" />
+										</td>
+										<td>
+											<c:out value="${contentBrand.brandName}" />
+										</td>
+										<td>
+											<a href="${fn:escapeXml(editBrandUrl)}">
+												<spring:message code="edit" />
+											</a>
+										</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</c:if>
+					</table>
+				</div>
+
+				<%-- <div class="panel panel-default">
+					<div class="panel-heading">
 						<spring:message code="items" />
 					</div>
 					<div class="panel-body">
-						<spring:url value="/controlpanel/{contentId}/items/new" var="addUrl">
+						<spring:url value="/controlpanel/{contentId}/item/new" var="addUrl">
 							<spring:param name="contentId" value="${content.contentId}" />
 						</spring:url>
 						<a href="${fn:escapeXml(addUrl)}" class="btn btn-sm btn-primary">Add New Item</a>
@@ -169,7 +227,7 @@ function removeContent() {
 							</thead>
 							<tbody>
 								<c:forEach var="item" items="${content.items}">
-									<spring:url value="/controlpanel/items/{itemId}/edit" var="editItemUrl">
+									<spring:url value="/controlpanel/item/{itemId}/edit" var="editItemUrl">
 										<spring:param name="contentId" value="${content.contentId}"/>
 										<spring:param name="itemId" value="${item.id}"/>
 									</spring:url>
@@ -184,7 +242,7 @@ function removeContent() {
 											<c:out value="${item.name}" />
 										</td>
 										<td>
-											<c:out value="${item.brand}" />
+											<c:out value="${item.brand.name}" />
 										</td>
 										<td>
 											<a href="${fn:escapeXml(editItemUrl)}">
@@ -196,7 +254,7 @@ function removeContent() {
 							</tbody>
 						</c:if>
 					</table>
-				</div>
+				</div> --%>
 
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -255,6 +313,12 @@ function removeContent() {
 
 <script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
 <script src='<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />'></script>
+<!-- Multiple Select -->
+<script src='<c:url value="/resources/js/chosen.jquery.min.js" />'></script>
+
+<script type="text/javascript">
+	$(".chosen-select").chosen();
+</script>
 
 <script type="text/javascript">
 $('#publishDate').datepicker({
@@ -268,7 +332,6 @@ $('#expireDate').datepicker({
 	weekStart : 1,
 	todayHighlight : true
 });
-
 
 function resetCounter() {
 	$.ajax({

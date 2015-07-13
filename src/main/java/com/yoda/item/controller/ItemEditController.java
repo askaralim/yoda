@@ -2,6 +2,7 @@ package com.yoda.item.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,28 +23,63 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.brand.model.Brand;
+import com.yoda.brand.service.BrandService;
+import com.yoda.category.model.Category;
+import com.yoda.category.service.CategoryService;
+import com.yoda.content.model.Content;
+import com.yoda.content.service.ContentService;
 import com.yoda.item.ItemValidator;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
+import com.yoda.kernal.util.PortalUtil;
+import com.yoda.site.model.Site;
 import com.yoda.util.Format;
+import com.yoda.util.StringPool;
+import com.yoda.util.Validator;
 
 @Controller
 public class ItemEditController {
 	@Autowired
 	ItemService itemService;
 
+	@Autowired
+	BrandService brandService;
+
+	@Autowired
+	ContentService contentService;
+
+	@Autowired
+	CategoryService categoryService;
+
 	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("itemId") int itemId, Map<String, Object> model) {
+	public String initUpdateForm(
+			@PathVariable("itemId") int itemId, Map<String, Object> model,
+			HttpServletRequest request) {
+		Site site = PortalUtil.getSiteFromSession(request);
+
 		Item item = itemService.getItem(itemId);
 
+		List<Brand> brands = brandService.getBrands();
+
+		List<Content> contents = contentService.getContents(site.getSiteId());
+
+		List<Category> categories = categoryService.getCategories();
+
 		model.put("item", item);
+		model.put("brands", brands);
+		model.put("categories", categories);
+		model.put("contents", contents);
 
 		return "controlpanel/item/form";
 	}
 
 	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ModelAndView processUpdateForm(
-			@ModelAttribute("item") Item item, BindingResult result, SessionStatus status) {
+			@ModelAttribute("item") Item item,
+			@RequestParam("brandId") Integer brandId,
+			BindingResult result, SessionStatus status,
+			HttpServletRequest request) {
 		new ItemValidator().validate(item, result);
 
 		ModelMap model = new ModelMap();
@@ -54,11 +90,31 @@ public class ItemEditController {
 			return new ModelAndView("controlpanel/item/form", model);
 		}
 		else {
+//			String brandName = StringPool.BLANK;
+			Brand brand = null;
+
+			if (Validator.isNotNull(brandId)) {
+				brand = brandService.getBrand(brandId);
+//				brandName = brand.getName();
+			}
+
 			Item itemDb = itemService.update(
-				item.getId(), item.getBrand(), item.getDescription(),
-				item.getLevel(), item.getName(), item.getPrice());
+				item.getId(), brand, item.getCategoryId(), item.getContentId(),
+				item.getDescription(), item.getLevel(), item.getName(),
+				item.getPrice());
+
+			List<Brand> brands = brandService.getBrands();
+
+			Site site = PortalUtil.getSiteFromSession(request);
+
+			List<Content> contents = contentService.getContents(site.getSiteId());
+
+			List<Category> categories = categoryService.getCategories();
 
 			model.put("item", itemDb);
+			model.put("brands", brands);
+			model.put("categories", categories);
+			model.put("contents", contents);
 			model.put("success", "success");
 
 			status.setComplete();
