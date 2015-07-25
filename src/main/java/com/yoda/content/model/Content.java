@@ -21,7 +21,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.yoda.BaseEntity;
 import com.yoda.category.model.Category;
-import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 import com.yoda.section.model.Section;
 

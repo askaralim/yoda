@@ -52,7 +52,7 @@ function getSelectedContentIds(){
 
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
-	<li><a href="<spring:url value="/controlpanel/content/list" />">Content Listing</a></li>
+	<li><a href="<spring:url value="/controlpanel/content" />">Content Listing</a></li>
 </ol>
 
 <form:form modelAttribute="searchForm" name="fm" method="post">

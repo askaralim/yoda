@@ -49,9 +49,6 @@ public class ContentAddController {
 
 		List<Category> categories = categoryService.getCategories();
 
-//		List<Brand> brands = brandService.getBrands();
-
-//		model.put("brands", brands);
 		model.put("categories", categories);
 		model.put("content", content);
 
@@ -82,14 +79,6 @@ public class ContentAddController {
 		Site site = PortalUtil.getSiteFromSession(request);
 
 		contentService.addContent(site.getSiteId(), content, categoryId);
-
-//		Indexer.getInstance(siteId).removeContent(content);
-//		Indexer.getInstance(siteId).indexContent(content);
-
-//		copyProperties(command, content);
-//		createAdditionalInfo(user, content, command);
-
-//		model.put("success", "success");
 
 		return new ModelAndView("redirect:/controlpanel/content/" + content.getContentId() + "/edit", model);
 	}

@@ -24,6 +24,7 @@ import com.yoda.content.model.ContentBrand;
 import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
+import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.dao.MenuDAO;
@@ -96,6 +97,8 @@ public class ContentServiceImpl implements ContentService {
 				homePageService.deleteHomePage(homePage);
 			}
 		}
+
+		new ContentIndexer().createIndex(content);
 	}
 
 	public Content addContent(
@@ -128,6 +131,8 @@ public class ContentServiceImpl implements ContentService {
 		}
 
 		contentDAO.save(content);
+
+		new ContentIndexer().createIndex(content);
 
 		return content;
 	}
@@ -173,6 +178,8 @@ public class ContentServiceImpl implements ContentService {
 
 			menuDAO.update(menu);
 		}
+
+		new ContentIndexer().deleteIndex(content.getContentId());
 
 		contentDAO.delete(content);
 	}
@@ -290,10 +297,12 @@ public class ContentServiceImpl implements ContentService {
 
 		Query query = null;
 
+		title = title.trim();
+
 		String sql = "select content from Content content where siteId = :siteId ";
 
 		if (Validator.isNotNull(title) && title.length() > 0) {
-			sql += "and title like : title ";
+			sql += "and title like :title ";
 		}
 
 		if (Validator.isNotNull(published)) {
@@ -426,6 +435,8 @@ public class ContentServiceImpl implements ContentService {
 			}
 		}
 
+		new ContentIndexer().updateIndex(content);
+
 		return contentDb;
 	}
 
@@ -467,6 +478,8 @@ public class ContentServiceImpl implements ContentService {
 		}
 
 		contentDAO.update(content);
+
+		new ContentIndexer().updateIndex(content);
 
 		return content;
 	}

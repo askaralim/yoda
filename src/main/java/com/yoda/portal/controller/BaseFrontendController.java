@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.csrf.CsrfToken;
 
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.contactus.service.ContactUsService;
@@ -87,6 +88,12 @@ public class BaseFrontendController {
 			if (PortalUtil.isAdminRole(userDetail)) {
 				model.put("roleAdmin", true);
 			}
+		}
+
+		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
+
+		if (csrfToken != null) {
+			model.put("_csrf", csrfToken);
 		}
 
 		String horizontalMenuCode = MenuFactory.getHorizontalMenu(request, response);

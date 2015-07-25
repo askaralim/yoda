@@ -31,6 +31,7 @@ import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
+import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.service.MenuService;
@@ -136,6 +137,8 @@ public class ContentEditController {
 		model.put("categories", categories);
 		model.put("content", contentDb);
 		model.put("success", "success");
+
+		new ContentIndexer().updateIndex(content);
 
 		return new ModelAndView("controlpanel/content/edit", model);
 	}

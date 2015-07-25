@@ -168,12 +168,22 @@ label {
 	color: #ffffff;
 }
 
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus
-	{
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
 	background-color:transparent;
 	color: #ffffff;
 	/* background-color: #3c8dbc;
 	color: #0D5E8D; */
+}
+
+.button-search {
+	/* position: absolute;
+	right: 0;
+	top: 0; */
+	width: 36px;
+	height: 34px;
+	/* border: 0;
+	cursor: pointer;
+	display: inline-block; */
 }
 
 /* Box */

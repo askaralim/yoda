@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.yoda.BaseDAO;
 import com.yoda.content.model.Content;
 import com.yoda.util.StringPool;
+import com.yoda.util.Validator;
 
 @Repository
 public class ContentDAO extends BaseDAO<Content> {
@@ -23,7 +24,7 @@ public class ContentDAO extends BaseDAO<Content> {
 	public Content getContentById(int siteId, long contentId) {
 		Content content = getById(contentId);
 
-		if (content.getSiteId() != siteId) {
+		if (Validator.isNotNull(content) && (content.getSiteId() != siteId)) {
 			throw new SecurityException();
 		}
 

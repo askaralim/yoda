@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.brand.dao.BrandDAO;
 import com.yoda.brand.model.Brand;
+import com.yoda.kernal.elasticsearch.BrandIndexer;
 import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.user.model.User;
@@ -28,6 +29,8 @@ public class BrandServiceImpl implements BrandService {
 		brand.setUpdateBy(user.getUserId());
 		brand.setUpdateDate(new Date());
 
+		new BrandIndexer().createIndex(brand);
+
 		brandDAO.save(brand);
 	}
 
@@ -44,6 +47,8 @@ public class BrandServiceImpl implements BrandService {
 	public void deleteBrand(Integer brandId) {
 		Brand brand = brandDAO.getById(brandId);
 
+		new BrandIndexer().deleteIndex(brandId);
+
 		brandDAO.delete(brand);
 	}
 
@@ -52,6 +57,8 @@ public class BrandServiceImpl implements BrandService {
 		brand.setUpdateDate(new Date());
 
 		brandDAO.update(brand);
+
+		new BrandIndexer().updateIndex(brand);
 
 		return brand;
 	}
