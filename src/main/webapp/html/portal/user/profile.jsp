@@ -107,15 +107,7 @@
 		</div>
 	</div>
 
-	<footer class="text-center">
-		<div class="footer-below">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">${siteInfo.siteFooter}</div>
-				</div>
-			</div>
-		</div>
-	</footer>
+	<p class="small text-muted text-center">${siteInfo.siteFooter}</p>
 
 	<script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/template/basic/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>

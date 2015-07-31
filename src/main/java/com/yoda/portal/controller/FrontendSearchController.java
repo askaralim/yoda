@@ -1,19 +1,21 @@
 package com.yoda.portal.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yoda.kernal.servlet.ServletContextUtil;
-import com.yoda.portal.content.data.ComponentInfo;
+import com.yoda.brand.model.Brand;
+import com.yoda.content.model.Content;
+import com.yoda.kernal.elasticsearch.BrandIndexer;
+import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.PageInfo;
 import com.yoda.portal.content.data.SearchInfo;
@@ -22,30 +24,34 @@ import com.yoda.site.model.Site;
 import com.yoda.util.Format;
 
 @Controller
+@RequestMapping("/search")
 public class FrontendSearchController extends BaseFrontendController {
-	@RequestMapping(value = "/search" ,method = RequestMethod.POST)
-	public ModelAndView search(
+	@RequestMapping(method = RequestMethod.POST)
+	public String setupForm(
+			@RequestParam("q") String q, Map<String, Object> model,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
 		SiteInfo siteInfo = getSite(site);
 
-		PageInfo pageInfo = getSearch(request, response);
-
 		String horizontalMenu = getHorizontalMenu(request, response);
 
-		ComponentInfo componentInfo = new ComponentInfo();
+		model.put("horizontalMenu", horizontalMenu);
+		model.put("siteInfo", siteInfo);
 
-		componentInfo.setContextPath(ServletContextUtil.getContextPath());
+		ContentIndexer indexer = new ContentIndexer();
+		BrandIndexer brandIndexer = new BrandIndexer();
 
-		ModelMap modelMap = new ModelMap();
+		List<Content> contents = indexer.search(q);
+		List<Brand> brands = brandIndexer.search(q);
 
-		modelMap.put("horizontalMenu", horizontalMenu);
-		modelMap.put("siteInfo", siteInfo);
-		modelMap.put("pageInfo", pageInfo);
-		modelMap.put("componentInfo", componentInfo);
+		model.put("contentsTotal", contents.size());
+		model.put("contents", contents);
+		model.put("brandsTotal", brands.size());
+		model.put("brands", brands);
+		model.put("q", q);
 
-		return new ModelAndView("template", modelMap);
+		return "portal/search/search";
 	}
 
 	public PageInfo getSearch(

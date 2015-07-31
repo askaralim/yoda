@@ -51,13 +51,13 @@
 							</div>
 							<div class="tab-pane" id="tab-brand">
 								#foreach ($contentBrand in $contentInfo.contentBrands)
-								<div class="row content-preview-wrapper-row">
-								<div class="col-sm-12 content-preview-item">
-									<h4>
-										<p><a href='#springUrl("/brands/$contentBrand.brandId")'>$contentBrand.brandName</a></p>
-									</h4>
-									<p>$contentBrand.description</p>
-									</div>
+									<div class="row content-preview-wrapper-row">
+										<div class="col-sm-12 content-preview-item">
+											<h4>
+												<p><a href='#springUrl("/brand/$contentBrand.brandId")'>$contentBrand.brandName</a></p>
+											</h4>
+											<p>$contentBrand.description</p>
+										</div>
 									</div>
 								#end
 							</div>
@@ -70,7 +70,7 @@
 										<div class="col-sm-8 content-preview-item">
 											<p>#springMessage('name') : $item.name</p>
 											<p>#springMessage('brand') : 
-												<a href='#springUrl("/brands/$item.brand.brandId")'>$item.brand.name</a>
+												<a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a>
 											</p>
 											<p>#springMessage('price') : $item.price</p>
 											<p>#springMessage('description') : $item.description</p>

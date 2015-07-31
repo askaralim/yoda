@@ -1,5 +1,19 @@
 <%@ include file="/html/common/init.jsp" %>
 
+<script type="text/javascript">
+function prepareIndex() {
+	location.href = '<c:url value="/controlpanel/elasticsearch/prepareindex"/>';
+
+	return false;
+}
+
+function deleteIndex() {
+	location.href = '<c:url value="/controlpanel/elasticsearch/deleteindex"/>';
+
+	return false;
+}
+</script>
+
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
 	<li><a href="<spring:url value="/controlpanel/elasticsearch" />">Elastic Search Configuration</a></li>
@@ -12,12 +26,23 @@
 	</div>
 </c:if>
 
+<c:if test="${errors != null}">
+	<div class="alert alert-danger" role="alert">
+		<a class="panel-close close" data-dismiss="alert">×</a>
+		<form:errors path="*" />
+	</div>
+</c:if>
+
 <div class="row">
 	<div class="col-md-3">
 	</div>
 	<div class="col-md-9">
 		<div class="page-header">
 			<h4>Indexes</h4>
+		</div>
+		<div class="text-right">
+			<input type="submit" value="<spring:message code="prepare-index" />" class="btn btn-sm btn-primary" role="button" onclick="return prepareIndex();">
+			<input type="submit" value="<spring:message code="delete-index" />" class="btn btn-sm btn-default" role="button" onclick="return deleteIndex();">
 		</div>
 		<div class="table-responsive">
 			<table class="table table-striped">

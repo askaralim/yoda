@@ -27,7 +27,7 @@
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
 				<c:forEach var="brand" items="${brands}">
-					<spring:url value="/brands/{brandId}" var="brandUrl">
+					<spring:url value="/brand/{brandId}" var="brandUrl">
 						<spring:param name="brandId" value="${brand.brandId}"/>
 					</spring:url>
 					<div class="col-xs-6 col-sm-4 col-md-3">

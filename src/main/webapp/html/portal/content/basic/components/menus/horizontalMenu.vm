@@ -22,7 +22,7 @@
 						</span>
 					</div>
 				</form>
-				<li class="page-scroll"><a href=#springUrl("/brands")>#springMessage('brand')</a></li>
+				<li class="page-scroll"><a href=#springUrl("/brand")>#springMessage('brand')</a></li>
 
 				$horizontalMenuCode
 

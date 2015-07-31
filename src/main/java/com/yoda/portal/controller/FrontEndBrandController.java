@@ -23,7 +23,7 @@ import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 
 @Controller
-@RequestMapping("/brands")
+@RequestMapping("/brand")
 public class FrontEndBrandController extends BaseFrontendController {
 	@Autowired
 	BrandService brandService;
