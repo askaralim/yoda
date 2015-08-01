@@ -1,5 +1,6 @@
 package com.yoda.portal.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.content.model.Content;
@@ -22,15 +22,25 @@ import com.yoda.portal.content.data.SearchInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.util.Format;
+import com.yoda.util.StringPool;
 
 @Controller
 @RequestMapping("/search")
 public class FrontendSearchController extends BaseFrontendController {
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.GET)
 	public String setupForm(
-			@RequestParam("q") String q, Map<String, Object> model,
+			Map<String, Object> model,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
+
+		String q = StringPool.BLANK;
+
+		try {
+			q = new String(request.getParameter("q").getBytes("iso-8859-1"), "utf-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
 		SiteInfo siteInfo = getSite(site);
 
