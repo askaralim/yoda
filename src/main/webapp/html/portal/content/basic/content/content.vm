@@ -118,7 +118,7 @@
 					</ul>
 					#if ($userLogin)
 						<div>
-							<form role="form" method="POST" action="#springUrl('/comments/new')">
+							<form role="form" method="POST" action="#springUrl('/comment/new')">
 								<div class="form-group">
 									<textarea class="form-control" rows="5" id="description" name="description" placeholder='#springMessage("your-comment")' required></textarea>
 								</div>
