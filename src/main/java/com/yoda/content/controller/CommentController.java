@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.service.ContentService;
@@ -52,6 +53,7 @@ public class CommentController {
 		comment.setSiteId(PortalUtil.getSiteFromSession(request).getSiteId().intValue());
 		comment.setCreateDate(new Date());
 		comment.setUser(PortalUtil.getAuthenticatedUser());
+		comment.setDescription(HtmlUtils.htmlEscape(comment.getDescription()));
 
 		contentService.addComment(comment);
 

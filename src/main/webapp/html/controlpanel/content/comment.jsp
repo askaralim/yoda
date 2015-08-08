@@ -2,7 +2,7 @@
 
 <ol class="breadcrumb">
 	<li><a href='<spring:url value="/controlpanel/home" />'>Administration</a></li>
-	<li class="active"><a href="<spring:url value="/controlpanel/comments" />">Comments</a></li>
+	<li class="active"><a href="<spring:url value="/controlpanel/comment" />">Comments</a></li>
 </ol>
 
 <div class="container-fluid">

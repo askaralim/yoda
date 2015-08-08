@@ -173,6 +173,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 			.setSearchType(SearchType.QUERY_THEN_FETCH)
 //			.setQuery(QueryBuilders.termQuery("title", keyword))
 			.setQuery(QueryBuilders.queryStringQuery(keyword).field("title").analyzer("ik"))
+			.setQuery(QueryBuilders.queryStringQuery(keyword).field("description").analyzer("ik"))
 			.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
 
 		SearchHits hits = response.getHits();

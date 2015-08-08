@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.HtmlUtils;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.content.model.Content;
@@ -52,8 +53,8 @@ public class FrontendSearchController extends BaseFrontendController {
 		ContentIndexer indexer = new ContentIndexer();
 		BrandIndexer brandIndexer = new BrandIndexer();
 
-		List<Content> contents = indexer.search(q);
-		List<Brand> brands = brandIndexer.search(q);
+		List<Content> contents = indexer.search(HtmlUtils.htmlEscape(q));
+		List<Brand> brands = brandIndexer.search(HtmlUtils.htmlEscape(q));
 
 		model.put("contentsTotal", contents.size());
 		model.put("contents", contents);
