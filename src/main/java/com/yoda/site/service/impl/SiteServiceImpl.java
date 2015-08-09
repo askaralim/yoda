@@ -100,7 +100,7 @@ public class SiteServiceImpl implements SiteService {
 					port = site.getPublicPort();
 				}
 
-				Logger.getLogger(SiteServiceImpl.class).info("DomainName = " + site.getDomainName() + " , port = " + serverPort);
+				Logger.getLogger(SiteServiceImpl.class).debug("DomainName = " + site.getDomainName() + " , port = " + serverPort);
 
 				if (site.getDomainName().equals(serverName) && port.equals(serverPort)) {
 					return site;

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -164,32 +165,37 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 	public List<Brand> search(String keyword) {
 		List<Brand> brands = new ArrayList<Brand>();
 
-		SearchResponse response = getClient()
-			.prepareSearch(INDEX)
-			.setTypes(TYPE)
-			.setSearchType(SearchType.QUERY_THEN_FETCH)
-			.setQuery(QueryBuilders.termQuery("name", keyword))
-			.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
+		try {
+			SearchResponse response = getClient()
+				.prepareSearch(INDEX)
+				.setTypes(TYPE)
+				.setSearchType(SearchType.QUERY_THEN_FETCH)
+				.setQuery(QueryBuilders.termQuery("name", keyword))
+				.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
 
-		SearchHits hits = response.getHits();
+			SearchHits hits = response.getHits();
 
-		for (SearchHit hit : hits.getHits()) {
-			int brandId = (Integer)hit.getSource().get("brandId");
-			String name = (String)hit.getSource().get("name");
-			String description = (String)hit.getSource().get("description");
-			String imagePath = (String)hit.getSource().get("imagePath");
+			for (SearchHit hit : hits.getHits()) {
+				int brandId = (Integer)hit.getSource().get("brandId");
+				String name = (String)hit.getSource().get("name");
+				String description = (String)hit.getSource().get("description");
+				String imagePath = (String)hit.getSource().get("imagePath");
 
-			Brand brand = new Brand();
+				Brand brand = new Brand();
 
-			brand.setBrandId(brandId);
-			brand.setName(name);
-			brand.setDescription(description);
-			brand.setImagePath(imagePath);
+				brand.setBrandId(brandId);
+				brand.setName(name);
+				brand.setDescription(description);
+				brand.setImagePath(imagePath);
 
-			brands.add(brand);
+				brands.add(brand);
+
+				logger.debug("[INDEX SEARCH] Brand - keyword : " + keyword + ", result counts : " + hits.getTotalHits());
+			}
 		}
-
-		logger.debug("[INDEX SEARCH] Brand - keyword : " + keyword + ", result counts : " + hits.getTotalHits());
+		catch (SearchPhaseExecutionException e) {
+			logger.error("[INDEX SEARCH] Content - keyword : " + keyword + ", error : " + e.getMessage());
+		}
 
 		return brands;
 	}

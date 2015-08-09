@@ -104,27 +104,7 @@ public class BaseFrontendController {
 	}
 
 	public Site getSite(HttpServletRequest request) {
-		Site site = (Site)request.getSession().getAttribute(WebKeys.SITE);
-
-		if (Validator.isNull(site)) {
-			site = PortalUtil.getSite(request);
-
-			request.getSession().setAttribute(WebKeys.SITE, site);
-		}
-
-		if (site == null) {
-			logger.error("Unable to find site definition. ServerName = " + request.getServerName() + ", ServerPort = " + request.getServerPort());
-
-//			modelMap.put("errorMessage", "error.setup.site");
-//
-//			return new ModelAndView("global/message", modelMap);
-
-			site = PortalUtil.getSite(request);
-
-//			throw new NoValidSiteException();
-		}
-
-		return site;
+		return PortalUtil.getSiteFromSession(request);
 	}
 
 	public SiteInfo getSite(Site site) {

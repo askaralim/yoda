@@ -568,14 +568,3 @@ header .intro-text .name {
 	background: transparent;
 	color: #999;
 }
-
-/* Footer */
-footer {
-	color: #fff;
-	font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-footer .footer-below {
-	padding: 25px 0;
-	background-color: #233140;
-}

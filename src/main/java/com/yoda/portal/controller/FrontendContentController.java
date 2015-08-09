@@ -35,6 +35,8 @@ import com.yoda.portal.content.data.PageInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.util.StringPool;
+import com.yoda.util.Utility;
+import com.yoda.util.Validator;
 
 @Controller
 @RequestMapping(value="/content/{contentId}")
@@ -57,6 +59,10 @@ public class FrontendContentController extends BaseFrontendController {
 		catch (HibernateObjectRetrievalFailureException e) {
 			logger.error(e.getMessage());
 
+			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
+		}
+
+		if (Validator.isNull(content)) {
 			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
 		}
 
@@ -91,28 +97,28 @@ public class FrontendContentController extends BaseFrontendController {
 
 		ContentInfo contentInfo = getContent(site.getSiteId(), content, checkExpiry, updateStatistics);
 
-		List<Comment> comments = getComments(content.getContentId());
-
 		Map<String, Object> model = new HashMap<String, Object>();
-
-		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
-
-		if (csrfToken != null) {
-			model.put("_csrf", csrfToken);
-		}
-
-		model.put("contentInfo", contentInfo);
-		model.put("comments", comments);
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			model.put("userLogin", true);
-		}
 
 		String text = StringPool.BLANK;
 
 		if (contentInfo != null) {
+			List<Comment> comments = getComments(content.getContentId());
+
+			CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
+
+			if (csrfToken != null) {
+				model.put("_csrf", csrfToken);
+			}
+
+			model.put("contentInfo", contentInfo);
+			model.put("comments", comments);
+
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+			if (!(auth instanceof AnonymousAuthenticationToken)) {
+				model.put("userLogin", true);
+			}
+
 			text = DefaultTemplateEngine.getTemplate(request, response, "content/content.vm", model);
 
 			pageInfo.setPageTitle(site.getSiteName() + " - " + contentInfo.getPageTitle());

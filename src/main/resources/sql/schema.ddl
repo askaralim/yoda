@@ -257,7 +257,7 @@
     ) comment='';
 
 	create table release_ (
-		release_id bigint not null,
+		release_id INT not null AUTO_INCREMENT,
 		create_date datetime,
 		modified_date datetime,
 		build_number INTEGER,

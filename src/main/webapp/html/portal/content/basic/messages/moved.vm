@@ -1,3 +1,11 @@
-<span class="jc_detail_title_text">Sorry, the page you were looking for is not available.</span>
-<br><br>
-<span class="jc_detail_text">The page may have moved or expired from our site. If you were trying to access a bookmarked page, please update your links.</span>
+<div class="section">
+	<div class="container">
+		<div class="col-lg-8 col-lg-offset-2">
+			<div class="alert alert-danger" role="alert">
+				#springMessage('page-not-available-content-may-moved-or-expired')
+			</div>
+
+			<a class="btn btn-primary" href='<c:url value="/" />' role="button">#springMessage('go-to-home-page')</a>
+		</div>
+	</div>
+</div>

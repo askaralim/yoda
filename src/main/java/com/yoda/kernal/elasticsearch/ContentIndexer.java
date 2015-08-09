@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -167,32 +168,37 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 	public List<Content> search(String keyword) {
 		List<Content> contents = new ArrayList<Content>();
 
-		SearchResponse response = getClient()
-			.prepareSearch(INDEX)
-			.setTypes(TYPE)
-			.setSearchType(SearchType.QUERY_THEN_FETCH)
-//			.setQuery(QueryBuilders.termQuery("title", keyword))
-			.setQuery(QueryBuilders.queryStringQuery(keyword).field("title").analyzer("ik"))
-			.setQuery(QueryBuilders.queryStringQuery(keyword).field("description").analyzer("ik"))
-			.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
+		try {
+			SearchResponse response = getClient()
+				.prepareSearch(INDEX)
+				.setTypes(TYPE)
+				.setSearchType(SearchType.QUERY_THEN_FETCH)
+//					.setQuery(QueryBuilders.termQuery("title", keyword))
+				.setQuery(QueryBuilders.queryStringQuery(keyword).field("title").analyzer("ik"))
+				.setQuery(QueryBuilders.queryStringQuery(keyword).field("description").analyzer("ik"))
+				.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
 
-		SearchHits hits = response.getHits();
+			SearchHits hits = response.getHits();
 
-		for (SearchHit hit : hits.getHits()) {
-			long contentId = (Integer)hit.getSource().get("contentId");
-			String title = (String)hit.getSource().get("title");
-			String shortDescription = (String)hit.getSource().get("shortDescription");
+			for (SearchHit hit : hits.getHits()) {
+				long contentId = (Integer)hit.getSource().get("contentId");
+				String title = (String)hit.getSource().get("title");
+				String shortDescription = (String)hit.getSource().get("shortDescription");
 
-			Content content = new Content();
+				Content content = new Content();
 
-			content.setContentId(contentId);
-			content.setTitle(title);
-			content.setShortDescription(shortDescription);
+				content.setContentId(contentId);
+				content.setTitle(title);
+				content.setShortDescription(shortDescription);
 
-			contents.add(content);
+				contents.add(content);
+			}
+
+			logger.debug("[INDEX SEARCH] Content - keyword : " + keyword + ", result counts : " + hits.getTotalHits());
 		}
-
-		logger.debug("[INDEX SEARCH] Content - keyword : " + keyword + ", result counts : " + hits.getTotalHits());
+		catch (SearchPhaseExecutionException e) {
+			logger.error("[INDEX SEARCH] Content - keyword : " + keyword + ", error : " + e.getMessage());
+		}
 
 		return contents;
 	}

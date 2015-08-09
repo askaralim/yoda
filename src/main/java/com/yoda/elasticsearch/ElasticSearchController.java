@@ -19,7 +19,6 @@ import com.yoda.content.service.ContentService;
 import com.yoda.exception.BulkRequestException;
 import com.yoda.kernal.elasticsearch.BrandIndexer;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
-import com.yoda.kernal.elasticsearch.ElasticSearchIndexer;
 import com.yoda.kernal.util.PortalUtil;
 
 @Controller

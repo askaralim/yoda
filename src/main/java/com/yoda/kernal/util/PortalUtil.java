@@ -17,28 +17,14 @@ import com.yoda.util.Validator;
 
 public class PortalUtil {
 	public static Site getSite(HttpServletRequest request) {
-		int siteId = getSiteId(request);
-
-		if (siteId <= 0) {
-			return null;
-		}
-
-		Site site = (Site)request.getAttribute(WebKeys.SITE);
-
-		if (site == null) {
-			site = PortalInstances.getSite(siteId);
-
-			request.setAttribute(WebKeys.SITE, site);
-		}
-
-		return site;
+		return PortalInstances.getSite(request);
 	}
 
 	public static Site getSiteFromSession(HttpServletRequest request) {
 		Site site = (Site)request.getSession().getAttribute(WebKeys.SITE);
 
 		if (Validator.isNull(site)) {
-			site = PortalUtil.getSite(request);
+			site = getSite(request);
 
 			request.getSession().setAttribute(WebKeys.SITE, site);
 		}
@@ -47,7 +33,7 @@ public class PortalUtil {
 	}
 
 	public static int getSiteId(HttpServletRequest request) {
-		return PortalInstances.getSiteId(request);
+		return getSiteFromSession(request).getSiteId();
 	}
 
 	public int[] getSiteIds() {

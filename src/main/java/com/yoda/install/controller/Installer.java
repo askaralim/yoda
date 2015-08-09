@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.hibernate.cfg.Environment;
@@ -62,21 +64,40 @@ public class Installer {
 		properties.store(out, null);
 	}
 
-	static boolean isDatabaseCreated(InstallationCommand installationInfo) {
-		Release release;
+	static boolean isDatabaseCreated(InstallationCommand installationInfo)
+		throws SQLException {
+		Connection connection = null;
 
 		try {
-			release = getService().getRelease(ReleaseInfo.getBuildNumber());
-		}
-		catch (InvalidDataAccessResourceUsageException e) {
-			return false;
-		}
+			connection = DriverManager.getConnection(
+				installationInfo.getUrl(), installationInfo.getUsername(),
+				installationInfo.getPassword());
 
-		if (Validator.isNotNull(release)) {
-			return true;
-		}
+			String sql = "select count(*) from site";
 
-		return false;
+			ResultSet result = connection.createStatement().executeQuery(sql);
+
+			result.next();
+
+			int count = result.getInt(1);
+
+			if (count > 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (SQLException e) {
+			// Object does not exist error
+			if (e.getSQLState().equals("42S02")) {
+				return false;
+			}
+			throw e;
+		}
+		finally {
+			connection.close();
+		}
 	}
 
 	static void setInstallCompleted() {

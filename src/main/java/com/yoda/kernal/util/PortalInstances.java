@@ -18,8 +18,8 @@ public class PortalInstances {
 		_instance._addSiteId(siteId);
 	}
 
-	public static int getSiteId(HttpServletRequest request) {
-		return _instance._getSiteId(request);
+	public static Site getSite(HttpServletRequest request) {
+		return _instance._getSite(request);
 	}
 
 	public static Site getSite(int siteId) {
@@ -46,65 +46,28 @@ public class PortalInstances {
 		return getService().getSite(siteId);
 	}
 
-	private int _getSiteId(HttpServletRequest request) {
+	private Site _getSite(HttpServletRequest request) {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Get site id");
 		}
 
-		Integer siteIdObj = (Integer)request.getAttribute(WebKeys.SITE_ID);
+		Site site = _getSiteByVirtualHosts(request);
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Site id from request " + siteIdObj);
-		}
-
-		if (siteIdObj != null) {
-			return siteIdObj;
-		}
-
-		int siteId = _getSiteIdByVirtualHosts(request);
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Site id from host " + siteId);
-		}
-
-//		if (siteId <= 0) {
-//			long cookieSiteId = GetterUtil.getLong(
-//				CookieKeys.getCookie(request, CookieKeys.SITE_ID, false));
-//
-//			if (cookieSiteId > 0) {
-//				try {
-//					Site site = siteService.getSite(siteId);
-//
-//					if (Validator.isNotNull(site)) {
-//						siteId = cookieSiteId;
-//
-//						if (_log.isDebugEnabled()) {
-//							_log.debug("Site id from cookie " + siteId);
-//						}
-//					}
-//
-//				}
-//				catch (Exception e) {
-//					_log.error(e, e);
-//				}
-//			}
-//		}
-
-		if (siteId <= 0) {
-			siteId = _getDefaultSiteId();
+		if (Validator.isNull(site)) {
+			int siteId = _getDefaultSiteId();
 
 			if (_log.isDebugEnabled()) {
 				_log.debug("Default site id " + siteId);
 			}
+
+			site = _getSite(siteId);
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Set site id " + siteId);
+			_log.debug("Set site id " + site.getSiteId());
 		}
 
-		request.setAttribute(WebKeys.SITE_ID, new Integer(siteId));
-
-		return siteId;
+		return site;
 	}
 
 	private void _addSiteId(int siteId) {
@@ -123,7 +86,7 @@ public class PortalInstances {
 		_siteIds = siteIds;
 	}
 
-	private int _getSiteIdByVirtualHosts(HttpServletRequest request) {
+	private Site _getSiteByVirtualHosts(HttpServletRequest request) {
 		String host = PortalUtil.getHost(request);
 
 		if (_log.isDebugEnabled()) {
@@ -131,20 +94,20 @@ public class PortalInstances {
 		}
 
 		if (Validator.isNull(host)) {
-			return 0;
+			return null;
 		}
 
 		try {
 			Site site = getService().getSite(
 				host, request.getServerPort(), request.isSecure());
 
-			return site.getSiteId();
+			return site;
 		}
 		catch (Exception e) {
 			_log.error(e, e);
 		}
 
-		return 0;
+		return null;
 	}
 
 	private int[] _getSiteIds() {

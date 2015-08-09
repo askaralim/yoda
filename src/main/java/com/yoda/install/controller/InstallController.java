@@ -87,6 +87,8 @@ public class InstallController {
 			if (Installer.isDatabaseCreated(command)) {
 				command.setDatabaseExist(true);
 
+				Installer.setInstallCompleted();
+
 				result.reject("dbcreated");
 
 				return "/install/complete";
@@ -102,7 +104,7 @@ public class InstallController {
 			command.setDetailLog(
 				command.getDetailLog()+ "<br>" + errorInfo);
 
-			return "/install/complete";
+			return "/install/form";
 		}
 
 		Connection connection = null;
@@ -117,8 +119,6 @@ public class InstallController {
 			loadCreate(connection, ddl, command);
 			loadData(connection, command);
 			loadIndex(connection, ddl, command);
-
-//			Installer.setDatabaseCreated(installationInfo);
 
 			Installer.setInstallCompleted();
 		}
