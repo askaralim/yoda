@@ -1,7 +1,5 @@
 package com.yoda.item.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,25 +32,25 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
 
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_date")
-	private Date createDate;
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
 
 //	private int hitCounter;
 
 	@Column(name = "rating")
 	private int rating;
 
-	@Column(name = "create_by")
-	private Integer createBy;
+//	@Column(name = "create_by")
+//	private Integer createBy;
 
 	@Column(name = "site_id")
 	private Integer siteId;
 
-	@Column(name = "update_by")
-	private Integer updateBy;
+//	@Column(name = "update_by")
+//	private Integer updateBy;
 
 //	@Column(name = "brand")
 //	private String brand;
@@ -168,37 +166,37 @@ public class Item extends BaseEntity {
 		this.rating = rating;
 	}
 
-	public Integer getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(Integer updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Integer getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(Integer recCreateBy) {
-		this.createBy = recCreateBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public Integer getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(Integer updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public Integer getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(Integer recCreateBy) {
+//		this.createBy = recCreateBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public boolean isNew() {
 		return (this.id == null);

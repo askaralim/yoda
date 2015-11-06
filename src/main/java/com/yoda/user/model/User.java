@@ -10,117 +10,63 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
+import com.yoda.BaseEntity;
 import com.yoda.site.model.Site;
 
-@Entity
-@Table(name = "user_")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
 	//~ Instance fields ================================================================================================
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
 	private Long userId;
 
-	@Column(name = "account_non_expired")
 	private boolean accountNonExpired;
 
-	@Column(name = "account_non_locked")
 	private boolean accountNonLocked;
 
-	@Column(name = "credentials_non_expired")
 	private boolean credentialsNonExpired;
 
-	@Column(name = "enabled")
 	private boolean enabled;
 
-	@Column(name = "create_by")
-	private long createBy;
-
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "last_visit_site_id")
 	private int lastVisitSiteId;
 
 	/* Should be removed, use enabled instead. */
 //	@Column(name = "active")
 //	private Character active;
 
-	@Column(name = "last_login_date")
 	private Date lastLoginDate;
 
-	@Column(name = "create_date")
-	private Date createDate;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "address_line1")
 	private String addressLine1;
 
-	@Column(name = "address_line2")
 	private String addressLine2;
 
-	@Column(name = "city_name")
 	private String cityName;
 
-	@Column(name = "country_name")
 	private String countryName;
 
-	@Column(name = "email")
 	private String email;
 
-	@Column(name = "password")
 	private String password;
 
-	@Transient
 	private String verifyPassword;
 
-	@Column(name = "phone")
 	private String phone;
 
-	@Column(name = "state_name")
 	private String stateName;
 
-	@Column(name = "username")
 	private String username;
 
-//	@Column(name = "user_type")
 //	private String userType;
 
-	@Column(name = "zip_code")
 	private String zipCode;
 
-//	private Set<GrantedAuthority> authorities;
-
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_site", joinColumns = {@JoinColumn(name ="user_id" )}, inverseJoinColumns = {@JoinColumn(name = "site_id") })
 	private Set<Site> sites = new HashSet<Site>();
 
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_id")
 	private Set<UserAuthority> authorities = new HashSet<UserAuthority>();
 
 	//~ Constructors ===================================================================================================
@@ -128,7 +74,7 @@ public class User implements UserDetails {
 	}
 
 	public User(
-			Long userId, boolean enabled, long createBy, long updateBy,
+			Long userId, boolean enabled, User createBy, User updateBy,
 			int lastVisitSiteId, Character active, Date lastLoginDate,
 			Date createDate, Date updateDate, Set<UserAuthority> authorities,
 			Set<Site> sites, String addressLine1, String addressLine2,
@@ -145,8 +91,8 @@ public class User implements UserDetails {
 
 	public User(
 			Long userId, boolean accountNonExpired, boolean accountNonLocked,
-			boolean credentialsNonExpired, boolean enabled, long createBy,
-			long updateBy, int lastVisitSiteId, Character active,
+			boolean credentialsNonExpired, boolean enabled, User createBy,
+			User updateBy, int lastVisitSiteId, Character active,
 			Date lastLoginDate, Date createDate, Date updateDate,
 			Set<UserAuthority> authorities, Set<Site> sites,
 			String addressLine1, String addressLine2, String cityName,
@@ -162,12 +108,12 @@ public class User implements UserDetails {
 		this.accountNonLocked = accountNonLocked;
 		this.credentialsNonExpired = credentialsNonExpired;
 		this.enabled = enabled;
-		this.createBy = createBy;
-		this.updateBy = updateBy;
+//		this.createBy = createBy;
+//		this.updateBy = updateBy;
 		this.lastVisitSiteId = lastVisitSiteId;
 		this.lastLoginDate = lastLoginDate;
-		this.createDate = createDate;
-		this.updateDate = updateDate;
+//		this.createDate = createDate;
+//		this.updateDate = updateDate;
 		this.authorities =
 			Collections.unmodifiableSet(sortAuthorities(authorities));
 		this.sites = sites;
@@ -397,37 +343,37 @@ public class User implements UserDetails {
 		this.lastVisitSiteId = lastVisitSiteId;
 	}
 
-	public long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public User getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(User updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public User getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(User createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public Set<UserAuthority> getAuthorities() {
 		return this.authorities;

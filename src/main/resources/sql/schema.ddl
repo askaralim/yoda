@@ -156,13 +156,13 @@
 	CREATE TABLE brand (
 		brand_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		country varchar(30),
-		create_by bigint NOT NULL,
-		create_date DATETIME NOT NULL,
 		name VARCHAR(30),
 		description VARCHAR(2000),
 		kind VARCHAR(30),
 		image_path VARCHAR(50),
 		score INT,
+		create_by bigint NOT NULL,
+		create_date DATETIME NOT NULL,
 		update_by bigint NOT NULL,
 		update_date DATETIME NOT NULL,
 		INDEX(name)
@@ -174,6 +174,10 @@
 		brand_id INT not null,
 		brand_name VARCHAR(30),
 		description VARCHAR(2000),
+		create_by bigint NOT NULL,
+		create_date DATETIME NOT NULL,
+		update_by bigint NOT NULL,
+		update_date DATETIME NOT NULL,
 		INDEX(content_brand_id)
 	);
 
@@ -230,7 +234,7 @@
         update_date datetime not null comment '',
         create_by bigint not null comment '',
         create_date datetime not null comment '',
-        primary key (id)
+        primary key (category_id)
     ) comment='';
 
     create table feedback (
@@ -351,6 +355,7 @@
         listing_page_size VARCHAR(4),
         section_page_size VARCHAR(4),
         theme_id INT(4),
+        title varchar(100) NOT NULL,
         primary key (site_id)
     ) comment='';
 

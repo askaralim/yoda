@@ -94,7 +94,9 @@ public class HomePageController {
 
 //		site.getSiteParams().add(siteParam);
 
-		siteService.updateSite(site);
+		site.setTitle(command.getPageTitle());
+
+		siteService.update(site);
 
 //		SiteCache.removeSite(site.getSiteId());
 
@@ -122,11 +124,11 @@ public class HomePageController {
 
 			HomePage homePage = new HomePage();
 
-			homePage = homePageService.getHomePage(siteId, id);
+			homePage = homePageService.getHomePage(id);
 
 			homePage.setSeqNum(seqNum);
 
-			homePageService.updateHomePage(homePage);
+			homePageService.update(homePage);
 		}
 
 		initListInfo(command, siteId);
@@ -146,7 +148,8 @@ public class HomePageController {
 		String featureData = command.getFeatureData();
 
 		if (featureData != null) {
-			HomePage homePage = homePageService.getHomePage(siteId, Format.getLong(featureData));
+//			HomePage homePage = homePageService.getHomePage(siteId, Format.getLong(featureData));
+			HomePage homePage = homePageService.getHomePage(Format.getLong(featureData));
 
 			List<HomePage> featureHomePages = homePageService.getHomePagesBySiteIdAndFeatureData(siteId);
 
@@ -159,16 +162,16 @@ public class HomePageController {
 			}
 
 			if (featureHomePage != null) {
-				if (featureHomePage.getId() != homePage.getId()) {
+				if (featureHomePage.getHomePageId() != homePage.getHomePageId()) {
 					featureHomePage.setFeatureData(false);
 
-					homePageService.updateHomePage(featureHomePage);
+					homePageService.update(featureHomePage);
 				}
 			}
 
 			homePage.setFeatureData(true);
 
-			homePageService.updateHomePage(homePage);
+			homePageService.update(homePage);
 		}
 
 		initListInfo(command, siteId);
@@ -179,7 +182,8 @@ public class HomePageController {
 	private void initListInfo(HomePageEditCommand command, int siteId)
 			throws Exception {
 
-		List<HomePage> homePages = homePageService.getHomePages(siteId, "seqNum");
+//		List<HomePage> homePages = homePageService.getHomePages(siteId, "seqNum");
+		List<HomePage> homePages = homePageService.getHomePagesBySiteIdOrderBySeqNum(siteId);
 
 		Vector<HomePageDisplayCommand> vector = new Vector<HomePageDisplayCommand>();
 
@@ -187,11 +191,11 @@ public class HomePageController {
 
 			HomePageDisplayCommand homePageDisplayCommand = new HomePageDisplayCommand();
 
-			homePageDisplayCommand.setHomePageId(homePage.getId());
+			homePageDisplayCommand.setHomePageId(homePage.getHomePageId());
 			homePageDisplayCommand.setSeqNum(Format.getInt(homePage.getSeqNum()));
 
 			if (homePage.getFeatureData()) {
-				homePageDisplayCommand.setFeatureData(homePage.getId());
+				homePageDisplayCommand.setFeatureData(homePage.getHomePageId());
 			}
 
 			if (homePage.getContent() != null) {
@@ -201,10 +205,10 @@ public class HomePageController {
 				homePageDisplayCommand.setDescription(content.getTitle());
 				homePageDisplayCommand.setSectionName("");
 
-				if (content.getSection() != null) {
-					homePageDisplayCommand.setSectionName(
-						sectionService.formatSectionName(siteId, content.getSection().getSectionId()));
-				}
+//				if (content.getSection() != null) {
+//					homePageDisplayCommand.setSectionName(
+//						sectionService.formatSectionName(siteId, content.getSection().getSectionId()));
+//				}
 
 				homePageDisplayCommand.setPublished(content.isPublished());
 				homePageDisplayCommand.setDataPublishOn(Format.getFullDate(content.getPublishDate()));

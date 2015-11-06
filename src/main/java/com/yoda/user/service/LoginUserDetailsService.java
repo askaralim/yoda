@@ -6,14 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.yoda.user.dao.UserDAO;
 import com.yoda.user.model.User;
+import com.yoda.user.persistence.UserMapper;
 import com.yoda.util.Validator;
 
 @Service("loginUserDetailsService")
 public class LoginUserDetailsService implements UserDetailsService {
 	@Autowired
-	private UserDAO userDAO;
+	private UserMapper userMapper;
 
 //	public UserDetails loadUserByUsername(String username)
 //			throws UsernameNotFoundException {
@@ -48,7 +48,7 @@ public class LoginUserDetailsService implements UserDetailsService {
 			throws UsernameNotFoundException {
 //		User user = userDAO.getByUserName(username);
 
-		User user = userDAO.getByEmail(username);
+		User user = userMapper.getUserByEmail(username);
 
 		if (Validator.isNotNull(user)) {
 			user.setAccountNonExpired(true);

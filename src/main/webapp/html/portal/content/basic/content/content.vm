@@ -65,7 +65,7 @@
 								#foreach ($item in $contentInfo.items)
 									<div class="row content-preview-wrapper-row">
 										<div class="col-sm-4 content-preview-item">
-											<img src="$item.imagePath" alt="$item.name" style="width: 200px; height: 200px;">
+											<img src="$item.imagePath" alt="$item.name" style="width: 200px;">
 										</div>
 										<div class="col-sm-8 content-preview-item">
 											<p>#springMessage('name') : $item.name</p>
@@ -133,7 +133,7 @@
 						</div>
 					#else
 						<p class="text-muted">
-							#springMessage("please-login-to-make-comments")
+							#springMessage("please-login-to-make-comments")<a href='#springUrl("/user/register")'>#springMessage("register")</a>
 						</p>
 					#end
 				</div>

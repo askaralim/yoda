@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.yoda.BaseEntity;
@@ -56,17 +57,17 @@ public class Menu extends BaseEntity {
 	@Column(name = "published")
 	private boolean published;
 
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_by")
-	private long createBy;
-
-	@Column(name = "create_date")
-	private Date createDate;
+//	@Column(name = "update_by")
+//	private long updateBy;
+//
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_by")
+//	private long createBy;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
 
 	@ManyToOne
 	@JoinColumn(name = "section_id")
@@ -174,37 +175,37 @@ public class Menu extends BaseEntity {
 		this.published = published;
 	}
 
-	public long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public long getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(long updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public long getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public Section getSection() {
 		return this.section;

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.brand.persistence.BrandMapper">
+	<cache />
+
+	<sql id="brandColumns">
+		b.brand_id AS brandId,
+		b.country,
+		b.name,
+		b.description,
+		b.kind,
+		b.image_path AS imagePath,
+		b.score,
+		b.create_by AS "createBy.userId",
+		b.create_date AS createDate,
+		b.update_by AS "updateBy.userId",
+		b.update_date AS updateDate
+	</sql>
+
+	<select id="getById" resultType="Brand">
+		SELECT 
+			<include refid="brandColumns"/>
+		FROM brand b
+		WHERE b.brand_id = #{brandId}
+	</select>
+
+	<select id="getBrands" resultType="Brand">
+		SELECT 
+			<include refid="brandColumns"/>
+		FROM brand b 
+		ORDER BY b.brand_id DESC
+	</select>
+
+	<insert id="insert" parameterType="Brand" useGeneratedKeys="true" keyProperty="brandId">
+		INSERT INTO brand(country, name, description, kind, image_path, score, create_by, create_date, update_by, update_date)
+		VALUES(#{country}, #{name}, #{description}, #{kind}, #{imagePath}, #{score}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="Brand">
+		UPDATE brand SET
+			country = #{country},
+			name = #{name},
+			description = #{description},
+			kind = #{kind},
+			image_path = #{imagePath},
+			score = #{score}
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+		WHERE brand_id = #{brandId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM brand WHERE brand_id = #{brandId}
+	</delete>
+</mapper>

@@ -17,7 +17,7 @@ public interface SiteService {
 
 	List<Site> getByQuery(String hql);
 
-	void updateSite(Site site);
+//	void updateSite(Site site);
 
 //	public String getPublicURLPrefix(Site site);
 
@@ -29,9 +29,9 @@ public interface SiteService {
 
 	Site getSite(String serverName, int serverPort, boolean secure);
 
-	Site addSite(String siteName, boolean active, long userId, String siteDomainName, String googleAnalyticsId, String publicPort, String securePort, boolean secureConnectionEnabled);
+	Site addSite(Site site);
 
-	Site updataSite(Site site, long userId);
+	void update(Site site);
 
 	void deleteSite(Site site);
 

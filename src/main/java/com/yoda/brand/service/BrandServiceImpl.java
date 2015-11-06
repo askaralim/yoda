@@ -1,6 +1,5 @@
 package com.yoda.brand.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,55 +7,47 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yoda.brand.dao.BrandDAO;
 import com.yoda.brand.model.Brand;
+import com.yoda.brand.persistence.BrandMapper;
 import com.yoda.kernal.elasticsearch.BrandIndexer;
 import com.yoda.kernal.util.FileUploader;
-import com.yoda.kernal.util.PortalUtil;
-import com.yoda.user.model.User;
 
 @Transactional
 @Service
 public class BrandServiceImpl implements BrandService {
 	@Autowired
-	BrandDAO brandDAO;
+	BrandMapper brandMapper;
 
 	public void addBrand(Brand brand) {
-		User user = PortalUtil.getAuthenticatedUser();
+		brand.preInsert();
 
-		brand.setCreateBy(user.getUserId());
-		brand.setCreateDate(new Date());
-		brand.setUpdateBy(user.getUserId());
-		brand.setUpdateDate(new Date());
+		brandMapper.insert(brand);
 
 		new BrandIndexer().createIndex(brand);
-
-		brandDAO.save(brand);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Brand> getBrands() {
-		return brandDAO.getAll();
+		return brandMapper.getBrands();
 	}
 
 	@Transactional(readOnly = true)
 	public Brand getBrand(int id) {
-		return brandDAO.getById(id);
+		return brandMapper.getById(id);
 	}
 
 	public void deleteBrand(Integer brandId) {
-		Brand brand = brandDAO.getById(brandId);
+		Brand brand = brandMapper.getById(brandId);
 
 		new BrandIndexer().deleteIndex(brandId);
 
-		brandDAO.delete(brand);
+		brandMapper.delete(brand);
 	}
 
 	public Brand update(Brand brand) {
-		brand.setUpdateBy(PortalUtil.getAuthenticatedUser().getUserId());
-		brand.setUpdateDate(new Date());
+		brand.preUpdate();
 
-		brandDAO.update(brand);
+		brandMapper.update(brand);
 
 		new BrandIndexer().updateIndex(brand);
 

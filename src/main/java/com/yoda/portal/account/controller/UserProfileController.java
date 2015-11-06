@@ -39,7 +39,7 @@ public class UserProfileController extends BaseFrontendController {
 			return new ModelAndView("/404", "requestURL", username);
 		}
 
-		List<Content> contents = contentService.getContent(user.getUserId());
+		List<Content> contents = contentService.getContentByUserId(user.getUserId());
 
 		model.put("user", user);
 		model.put("contents", contents);

@@ -47,20 +47,20 @@ public class SiteController {
 		return "controlpanel/site/list";
 	}
 
-	@RequestMapping(value="/controlpanel/site/list/remove", method = RequestMethod.DELETE)
-	public void removeContents(
+	@RequestMapping(value="/controlpanel/site/list/remove")
+	public String removeSites(
 			@RequestParam("siteIds") String siteIds,
 			HttpServletRequest request) {
-		User user = PortalUtil.getAuthenticatedUser();
-
 		String[] arrIds = siteIds.split(",");
 
 		Site site = new Site();
 
 		for (int i = 0; i < arrIds.length; i++) {
-			siteService.getSite(user.getLastVisitSiteId());
+			site = siteService.getSite(Integer.valueOf(arrIds[i]));
 
 			siteService.deleteSite(site);
 		}
+
+		return "redirect:/controlpanel/site/list";
 	}
 }

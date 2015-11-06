@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.content.persistence.CommentMapper">
+	<cache />
+
+	<sql id="commentColumns">
+		c.id,
+		c.content_id AS contentId,
+		c.user_id AS "user.userId",
+		c.create_date AS createDate,
+		c.description,
+		c.rating,
+		c.site_id AS siteId
+	</sql>
+
+	<select id="getById" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+		WHERE c.id = #{id}
+	</select>
+
+	<select id="getCommentsByContentId" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+		WHERE c.content_id = #{contentId} ORDER BY create_date DESC
+	</select>
+
+	<select id="getCommentsBySiteId" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+		WHERE c.site_id = #{siteId} ORDER BY create_date DESC
+	</select>
+
+	<select id="getCommentsByUserId" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+		WHERE c.user_id = #{userId} ORDER BY create_date DESC
+	</select>
+
+	<insert id="insert" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO content(id, content_id, user_id, create_date, description, rating, site_id)
+		VALUES(#{id}, #{contentId}, #{user.userId}, #{createDate}, #{description}, #{rating}, #{siteId})
+	</insert>
+
+	<update id="update" parameterType="Comment">
+	</update>
+
+	<delete id="delete">
+		DELETE FROM comment WHERE id = #{id}
+	</delete>
+</mapper>

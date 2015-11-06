@@ -52,48 +52,6 @@
 				<button class="btn btn-block"><spring:message code="register" /></button>
 			</div>
 		</form>
-
 	</div>
-
-	<%-- <div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<a href='<c:url value="/"/>'>
-						<i class="glyphicon glyphicon-home"></i>
-					</a>
-					<h1 class="text-center"><spring:message code="register" /></h1>
-				</div>
-				<div class="modal-body">
-					<form action="<c:url value='/user/register'/>" class="form col-md-12 center-block" method="POST" name="fm">
-						<c:if test="${error != null}">
-							<p class="alert alert-danger" role="alert"><spring:message code="${error}" /></p>
-						</c:if>
-
-						<div class="form-group">
-							<input id="username" name="username" type="text" class="form-control input-lg" placeholder='<spring:message code="username" />' required autofocus>
-						</div>
-						<div class="form-group">
-							<input id="email" name="email" type="email" class="form-control input-lg" placeholder='<spring:message code="email" />' required>
-						</div>
-						<div class="form-group">
-							<input id="password" name="password" type="password" class="form-control input-lg" placeholder='<spring:message code="password" />' required>
-						</div>
-						<div class="form-group">
-							<button class="btn btn-primary btn-lg btn-block"><spring:message code="register" /></button>
-							<span><a href="#">Need help?</a></span>
-						</div>
-
-						<input type="hidden" name="<c:out value="${_csrf.parameterName}"/>" value="<c:out value="${_csrf.token}"/>"/>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<div class="col-md-12">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> --%>
 </body>
 </html>

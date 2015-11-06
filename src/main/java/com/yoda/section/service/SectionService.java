@@ -39,7 +39,7 @@ public interface SectionService {
 
 	void updateSection(Section section);
 
-	public void addSection(int siteId, long userId,  int sectionId, String title, String shortTitle, String description, boolean published)
+	public void addSection(int siteId, int sectionId, String title, String shortTitle, String description, boolean published)
 		throws UnsupportedEncodingException, SectionShortTitleException;
 
 	public List<Section> getBySectionParentId(int parentId);
@@ -50,7 +50,7 @@ public interface SectionService {
 
 	public void updateSeqNum(int siteId, int parentId, int seqNum);
 
-	public Section addSection(int siteId, long userId, int sectionParentId, int seqNum, String shortTitle, String title, String description, boolean published);
+	public Section addSection(int siteId, int sectionParentId, int seqNum, String shortTitle, String title, String description, boolean published);
 
 	public List<Section> search(String sql, String sortBy);
 }

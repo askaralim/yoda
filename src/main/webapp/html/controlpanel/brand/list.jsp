@@ -18,7 +18,7 @@ function submitRemove() {
 	var ids = getSelectedBrandIds();
 
 	if(ids){
-		var url = '<c:url value="/controlpanel/brand/remove"/>?brandIds='+brandIds+'';
+		var url = '<c:url value="/controlpanel/brand/remove"/>?brandIds='+ids+'';
 		location.href = url;
 	}
 

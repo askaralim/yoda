@@ -82,7 +82,7 @@ public class UserRegisterController {
 		try {
 			User user = userService.addUser(
 				username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true, 0);
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true);
 		}
 		catch (PortalException e) {
 			e.printStackTrace();

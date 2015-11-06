@@ -15,12 +15,12 @@ public interface ContactUsService {
 	void deleteContactUs(int siteId, int valueOf) throws SecurityException, Exception;
 
 	ContactUs addContactUs(
-			int siteId, long userId, boolean active, String name, String email,
+			int siteId, boolean active, String name, String email,
 			String phone, String addressLine1, String addressLine2,
 			String cityName, String zipCode, String seqNum, String description);
 
 	ContactUs updateContactUs(
-			int contactUsId, int siteId, long userId, boolean active,
+			int contactUsId, int siteId, boolean active,
 			String name, String email, String phone, String addressLine1,
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception;

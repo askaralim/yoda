@@ -33,9 +33,9 @@ public interface MenuService {
 
 	DropDownMenu[] makeDdmMenu(int siteId, String menuSetName, int menuParentId) throws Exception;
 
-	Menu addMenu(long userId, int siteId, String menuSetName, String menuName);
+	Menu addMenu(int siteId, String menuSetName, String menuName);
 
-	void addMenu(long userId, int siteId, int menuId, String menuTitle, String menuName,
+	void addMenu(int siteId, int menuId, String menuTitle, String menuName,
 				String menuUrl, String menuWindowTarget, String menuWindowMode,
 				boolean published, String menuType, long contentId, int itemId, int sectionId) throws SecurityException, Exception;
 
@@ -49,8 +49,7 @@ public interface MenuService {
 
 	Menu addMenu(int siteId, int menuParentId, int seqNum,
 				 String menuSetName, String menuTitle, String menuName, String menuType, String menuUrl,
-				 String menuWindowTarget, String menuWindowMode, boolean published, long recUpdateBy,
-				 long recCreateBy);
+				 String menuWindowTarget, String menuWindowMode, boolean published);
 
 	void updateMenu(Menu menu);
 

@@ -1,7 +1,5 @@
 package com.yoda.category.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,18 +17,6 @@ public class Category extends BaseEntity {
 	@Column(name = "category_id")
 	private Integer categoryId;
 
-	@Column(name = "create_date")
-	private Date createDate;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "create_by")
-	private long createBy;
-
 	@Column(name = "description")
 	private String description;
 
@@ -46,38 +32,6 @@ public class Category extends BaseEntity {
 
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
 	}
 
 	public String getName() {

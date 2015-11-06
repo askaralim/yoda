@@ -39,7 +39,7 @@ public class UserAddController {
 		User user = new User();
 
 		user.setEnabled(true);
-		user.getAuthorities().add(new UserAuthority(user, "ROLE_USER"));
+		user.getAuthorities().add(new UserAuthority(user.getUserId(), "ROLE_USER"));
 
 		model.put("user", user);
 		model.put("sites", siteService.getSites());
@@ -53,15 +53,13 @@ public class UserAddController {
 			SessionStatus status, HttpServletRequest request)
 		throws Throwable {
 
-		User signinUser = PortalUtil.getAuthenticatedUser();
-
 		new UserAddValidator().validate(user, result);
 
 		ModelMap model = new ModelMap();
 
 		if(result.hasErrors()) {
 			user.setEnabled(true);
-			user.getAuthorities().add(new UserAuthority(user, "ROLE_USER"));
+			user.getAuthorities().add(new UserAuthority(user.getUserId(), "ROLE_USER"));
 
 			model.put("sites", siteService.getSites());
 			model.put("errors", "errors");
@@ -91,7 +89,7 @@ public class UserAddController {
 		User userDb = userService.addUser(user.getUsername(), user.getPassword(),
 			user.getEmail(), user.getPhone(), role, user.getAddressLine1(),
 			user.getAddressLine2(), user.getCityName(), siteIds,
-			user.isEnabled(), signinUser.getUserId());
+			user.isEnabled());
 
 		return new ModelAndView("redirect:/controlpanel/user/" + userDb.getUserId() + "/edit", model);
 	}

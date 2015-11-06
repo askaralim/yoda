@@ -52,17 +52,17 @@ public class Section extends BaseEntity {
 	@Column(name = "published")
 	private boolean published;
 
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "create_by")
-	private long createBy;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_date")
-	private Date createDate;
+//	@Column(name = "update_by")
+//	private long updateBy;
+//
+//	@Column(name = "create_by")
+//	private long createBy;
+//
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
 
 	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "section_id")
@@ -134,37 +134,37 @@ public class Section extends BaseEntity {
 		this.published = published;
 	}
 
-	public long getUpdateBy() {
-		return updateBy;
-	}
-
-	public void setUpdateBy(long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public long getCreateBy() {
-		return createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public long getUpdateBy() {
+//		return updateBy;
+//	}
+//
+//	public void setUpdateBy(long updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public long getCreateBy() {
+//		return createBy;
+//	}
+//
+//	public void setCreateBy(long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public Date getCreateDate() {
+//		return createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;

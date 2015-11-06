@@ -106,10 +106,10 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 				.field("description", brand.getDescription())
 				.field("imagePath", brand.getImagePath())
 				.field("kind", brand.getKind())
-				.field("createBy", brand.getCreateBy())
-				.field("createDate", brand.getCreateDate())
-				.field("updateBy", brand.getUpdateBy())
-				.field("updateDate", brand.getUpdateDate())
+//				.field("createBy", brand.getCreateBy())
+//				.field("createDate", brand.getCreateDate())
+//				.field("updateBy", brand.getUpdateBy())
+//				.field("updateDate", brand.getUpdateDate())
 				.endObject();
 
 			createIndex(builder, TYPE, brand.getBrandId().toString());
@@ -147,8 +147,8 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 				.field("description", brand.getDescription())
 				.field("imagePath", brand.getImagePath())
 				.field("kind", brand.getKind())
-				.field("createBy", brand.getCreateBy())
-				.field("createDate", brand.getCreateDate())
+				.field("updateBy", brand.getUpdateBy())
+				.field("updateDate", brand.getUpdateDate())
 				.endObject();
 
 			updateIndex(builder, TYPE, brand.getBrandId().toString());

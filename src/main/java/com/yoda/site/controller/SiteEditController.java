@@ -47,9 +47,10 @@ public class SiteEditController {
 	public String initUpdateForm(
 			@PathVariable("siteId") int siteId, Map<String, Object> model)
 		throws Throwable {
-		User signinUser = PortalUtil.getAuthenticatedUser();
+//		User signinUser = PortalUtil.getAuthenticatedUser();
 
-		Site site = siteService.getSite(siteId, signinUser);
+//		Site site = siteService.getSite(siteId, signinUser);
+		Site site = siteService.getSite(siteId);
 
 //		copyProperties(command, site);
 
@@ -72,7 +73,8 @@ public class SiteEditController {
 
 		Site siteDb = new Site();
 
-		siteDb = siteService.getSite(site.getSiteId(), user);
+//		siteDb = siteService.getSite(site.getSiteId(), user);
+		siteDb = siteService.getSite(site.getSiteId());
 
 		validate(site, result);
 
@@ -83,7 +85,7 @@ public class SiteEditController {
 			return "redirect:/controlpanel/site/" + site.getSiteId() + "/edit";
 		}
 
-		siteDb = siteService.updataSite(site, user.getUserId());
+		siteService.update(site);
 
 //		String listingPageSize = site.getListingPageSize();
 //		String listingPageSize = Utility.getParam(

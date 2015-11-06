@@ -13,6 +13,7 @@ import com.yoda.content.dao.ContentDAO;
 import com.yoda.content.model.Content;
 import com.yoda.item.dao.ItemDAO;
 import com.yoda.item.model.Item;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
 import com.yoda.section.dao.SectionDAO;
@@ -37,8 +38,7 @@ public class MenuServiceImpl implements MenuService {
 	@Autowired
 	private SectionDAO sectionDAO;
 
-	public Menu addMenu(
-		long userId, int siteId, String menuSetName, String menuName) {
+	public Menu addMenu(int siteId, String menuSetName, String menuName) {
 		Menu menuSet = new Menu();
 
 		menuSet.setSiteId(siteId);
@@ -50,8 +50,8 @@ public class MenuServiceImpl implements MenuService {
 		menuSet.setMenuUrl("");
 		menuSet.setMenuWindowTarget("");
 		menuSet.setMenuWindowMode("");
-		menuSet.setUpdateBy(userId);
-		menuSet.setCreateBy(userId);
+		menuSet.setUpdateBy(PortalUtil.getAuthenticatedUser());
+		menuSet.setCreateBy(PortalUtil.getAuthenticatedUser());
 		menuSet.setUpdateDate(new Date(System.currentTimeMillis()));
 		menuSet.setCreateDate(new Date(System.currentTimeMillis()));
 
@@ -63,8 +63,7 @@ public class MenuServiceImpl implements MenuService {
 	public Menu addMenu(
 			int siteId, int menuParentId, int seqNum, String menuSetName,
 			String menuTitle, String menuName, String menuType, String menuUrl,
-			String menuWindowTarget, String menuWindowMode, boolean published,
-			long recUpdateBy, long recCreateBy) {
+			String menuWindowTarget, String menuWindowMode, boolean published) {
 		Menu menu = new Menu();
 
 		menu.setSiteId(siteId);
@@ -78,8 +77,8 @@ public class MenuServiceImpl implements MenuService {
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
 		menu.setPublished(published);
-		menu.setUpdateBy(recUpdateBy);
-		menu.setCreateBy(recCreateBy);
+		menu.setUpdateBy(PortalUtil.getAuthenticatedUser());
+		menu.setCreateBy(PortalUtil.getAuthenticatedUser());
 		menu.setUpdateDate(new Date(System.currentTimeMillis()));
 		menu.setCreateDate(new Date(System.currentTimeMillis()));
 
@@ -89,7 +88,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	public void addMenu(
-			long userId, int siteId, int menuId, String menuTitle, String menuName,
+			int siteId, int menuId, String menuTitle, String menuName,
 			String menuUrl, String menuWindowTarget, String menuWindowMode,
 			boolean published, String menuType, long contentId, int itemId,
 			int sectionId)
@@ -107,7 +106,7 @@ public class MenuServiceImpl implements MenuService {
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
 		menu.setPublished(published);
-		menu.setUpdateBy(userId);
+		menu.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		menu.setUpdateDate(new Date(System.currentTimeMillis()));
 		menu.setContent(null);
 //		menu.setItem(null);
@@ -115,8 +114,7 @@ public class MenuServiceImpl implements MenuService {
 		menu.setSeqNum(0);
 		menu.setSiteId(siteId);
 		menu.setMenuType(menuType);
-		menu.setUpdateBy(userId);
-		menu.setCreateBy(userId);
+		menu.setCreateBy(PortalUtil.getAuthenticatedUser());
 		menu.setUpdateDate(new Date(System.currentTimeMillis()));
 		menu.setCreateDate(new Date(System.currentTimeMillis()));
 

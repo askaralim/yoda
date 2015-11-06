@@ -37,14 +37,14 @@ public class ContentDAO extends BaseDAO<Content> {
 		return contents;
 	}
 
-	public Content getContent(int siteId, String title) {
-		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE, siteId, title);
-
-		if (contents.size() == 0) {
-			return null;
-		}
-		else return contents.get(0);
-	}
+//	public Content getContent(int siteId, String title) {
+//		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENT_BY_SITEID_AND_CONTENT_TITLE, siteId, title);
+//
+//		if (contents.size() == 0) {
+//			return null;
+//		}
+//		else return contents.get(0);
+//	}
 
 	public List<Content> getContents(int siteId, String title) {
 		List<Content> contents = (List<Content>) getHibernateTemplate().find(GET_CONTENTS_BY_SITEID_AND_CONTENT_TITLE, siteId, StringPool.PERCENT + title + StringPool.PERCENT);

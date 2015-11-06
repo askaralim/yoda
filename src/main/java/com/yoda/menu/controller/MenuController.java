@@ -93,7 +93,7 @@ public class MenuController {
 		Menu menu = menuService.addMenu(
 			siteId, menuParentId, seqNum, referenceMenu.getSetName(),
 			"New Menu", "New Menu", Constants.MENU_HOME, StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, true, user.getUserId(), user.getUserId());
+			StringPool.BLANK, true);
 
 		menuEditCommand.setMenuId(menu.getMenuId());
 		menuEditCommand.setMenuParentId(menuParentId);
@@ -246,7 +246,7 @@ public class MenuController {
 		}
 
 		menuService.addMenu(
-			user.getUserId(), siteId, menuEditCommand.getCreateMenuSetName(),
+			siteId, menuEditCommand.getCreateMenuSetName(),
 			menuEditCommand.getCreateMenuSetName());
 
 		menuEditCommand.setCreateMenuSetName("");
@@ -330,7 +330,7 @@ public class MenuController {
 		}
 
 		menuService.addMenu(
-			user.getUserId(), user.getLastVisitSiteId(), menuEditCommand.getMenuId(),
+			user.getLastVisitSiteId(), menuEditCommand.getMenuId(),
 			menuEditCommand.getMenuTitle(), menuEditCommand.getMenuName(), menuEditCommand.getMenuUrl(),
 			menuEditCommand.getMenuWindowTarget(),
 			menuEditCommand.getMenuWindowMode(),

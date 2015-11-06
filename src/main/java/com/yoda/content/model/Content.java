@@ -22,7 +22,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.yoda.BaseEntity;
 import com.yoda.category.model.Category;
 import com.yoda.menu.model.Menu;
-import com.yoda.section.model.Section;
 
 @Entity
 @Table(name = "content")
@@ -36,7 +35,7 @@ public class Content extends BaseEntity {
 	private boolean published;
 
 	@Transient
-	private boolean isHomePage;
+	private boolean homePage;
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -50,11 +49,11 @@ public class Content extends BaseEntity {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date expireDate;
 
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_date")
-	private Date createDate;
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
 
 	@Column(name = "hit_counter")
 	private int hitCounter;
@@ -65,11 +64,11 @@ public class Content extends BaseEntity {
 	@Column(name = "site_id")
 	private int siteId;
 
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "create_by")
-	private long createBy;
+//	@Column(name = "update_by")
+//	private long updateBy;
+//
+//	@Column(name = "create_by")
+//	private long createBy;
 
 //	@Column(name = "section_id")
 //	private int sectionId;
@@ -92,9 +91,9 @@ public class Content extends BaseEntity {
 	@Column(name = "featured_image")
 	private String featuredImage;
 
-	@ManyToOne
-	@JoinColumn(name = "section_id")
-	private Section section;
+//	@ManyToOne
+//	@JoinColumn(name = "section_id")
+//	private Section section;
 
 	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "content_id")
@@ -213,11 +212,11 @@ public class Content extends BaseEntity {
 	}
 
 	public boolean isHomePage() {
-		return isHomePage;
+		return homePage;
 	}
 
-	public void setHomePage(boolean isHomePage) {
-		this.isHomePage = isHomePage;
+	public void setHomePage(boolean homePage) {
+		this.homePage = homePage;
 	}
 
 	public Category getCategory() {
@@ -228,37 +227,37 @@ public class Content extends BaseEntity {
 		this.category = category;
 	}
 
-	public long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public long getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(long updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public long getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 //	public int getSectionId() {
 //		return this.sectionId;
@@ -268,13 +267,13 @@ public class Content extends BaseEntity {
 //		this.sectionId = sectionId;
 //	}
 
-	public Section getSection() {
-		return this.section;
-	}
-
-	public void setSection(Section section) {
-		this.section = section;
-	}
+//	public Section getSection() {
+//		return this.section;
+//	}
+//
+//	public void setSection(Section section) {
+//		this.section = section;
+//	}
 
 	public Set<Menu> getMenus() {
 		return this.menus;

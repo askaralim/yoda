@@ -85,7 +85,7 @@ public class SectionController {
 		}
 
 		Section section = sectionService.addSection(
-			siteId, user.getUserId(), sectionParentId, seqNum, "New section",
+			siteId, sectionParentId, seqNum, "New section",
 			StringPool.BLANK, StringPool.BLANK, true);
 
 		sectionEditCommand.setSectionId(section.getSectionId());
@@ -159,7 +159,7 @@ public class SectionController {
 
 		try {
 			sectionService.addSection(
-				user.getLastVisitSiteId(), user.getUserId(), sectionEditCommand.getSectionId(),
+				user.getLastVisitSiteId(), sectionEditCommand.getSectionId(),
 				sectionEditCommand.getSectionTitle(),
 				sectionEditCommand.getSectionShortTitle(),
 				sectionEditCommand.getSectionDesc(),

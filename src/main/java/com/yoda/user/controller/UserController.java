@@ -53,12 +53,10 @@ public class UserController {
 	public String removeUsers(
 			@RequestParam("userIds") String userIds,
 			HttpServletRequest request) {
-		User signinUser = PortalUtil.getAuthenticatedUser();
-
 		String[] arrIds = userIds.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
-			userService.deleteUser(Long.valueOf(arrIds[i]), signinUser);
+			userService.deleteUser(Long.valueOf(arrIds[i]));
 		}
 
 		return "redirect:/controlpanel/user/list";

@@ -20,6 +20,39 @@ function submitRemove() {
 	document.fm.submit();
 	return false;
 }
+
+function submitRemove() {
+	var ids = getSelectedContentIds();
+
+	if(ids){
+		var url = '<c:url value="/controlpanel/site/list/remove"/>?siteIds='+ids+'';
+		location.href = url;
+	}
+
+	return false;
+}
+
+function getSelectedContentIds(){
+	var selectBoxs = document.all("siteIds");
+
+	if(!selectBoxs) return null;
+
+	if(typeof(selectBoxs.length) == "undefined" && selectBoxs.checked){
+		return selectBoxs.value;
+	}
+	else{//many checkbox ,so is a array 
+		var ids = "";
+		var split = "";
+		for(var i = 0 ; i < selectBoxs.length ; i++){
+			if(selectBoxs[i].checked){
+				ids += split+selectBoxs[i].value;
+				split = ",";
+			}
+		}
+
+		return ids;
+	}
+}
 </script>
 
 <ol class="breadcrumb">
@@ -47,19 +80,19 @@ function submitRemove() {
 						<label for="title">Active</label>
 						<div class="radio">
 							<label>
-								<input type="radio" name="active" id="active" value="Y">
+								<input type="radio" name="active" id="active" value="1">
 								Active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<input type="radio" name="active" id="active" value="N">
+								<input type="radio" name="active" id="active" value="0">
 								In-active
 							</label>
 						</div>
 						<div class="radio">
 							<label>
-								<input type="radio" name="active" id="active" value="*" checked>
+								<input type="radio" name="active" id="active" value="all" checked>
 								All
 							</label>
 						</div>

@@ -50,7 +50,7 @@ public class ContentBrandController {
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
-			@ModelAttribute("contentBrand") ContentBrand contentBrand, 
+			@ModelAttribute("contentBrand") ContentBrand contentBrand,
 			@RequestParam("brandId") Integer brandId, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {

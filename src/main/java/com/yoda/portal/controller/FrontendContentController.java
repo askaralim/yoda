@@ -35,7 +35,6 @@ import com.yoda.portal.content.data.PageInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.util.StringPool;
-import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
 @Controller
@@ -54,7 +53,7 @@ public class FrontendContentController extends BaseFrontendController {
 		Content content = new Content();
 
 		try {
-			content = contentService.getContent(site.getSiteId(), Long.valueOf(contentId));
+			content = contentService.getContent(Long.valueOf(contentId));
 		}
 		catch (HibernateObjectRetrievalFailureException e) {
 			logger.error(e.getMessage());
@@ -143,9 +142,9 @@ public class FrontendContentController extends BaseFrontendController {
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
-		Site site = getSite(request);
+//		Site site = getSite(request);
 
-		Content content = contentService.getContent(site.getSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 		int score = 0;
 

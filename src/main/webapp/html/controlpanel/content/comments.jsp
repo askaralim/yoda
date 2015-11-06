@@ -79,7 +79,7 @@ function getSelectedIds(){
 						<tr>
 							<th></th>
 							<th><spring:message code="id" /></th>
-							<th><spring:message code="content" /></th>
+							<%-- <th><spring:message code="content" /></th> --%>
 							<th><spring:message code="create-date" /></th>
 							<th><spring:message code="action" /></th>
 						</tr>
@@ -93,9 +93,9 @@ function getSelectedIds(){
 								<td>
 									<c:out value="${comment.id}" />
 								</td>
-								<td>
+								<%-- <td>
 									<c:out value="${comment.content.title}" />
-								</td>
+								</td> --%>
 								<td>
 									<c:out value="${comment.createDate}" />
 								</td>

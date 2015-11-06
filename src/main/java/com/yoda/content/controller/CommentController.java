@@ -57,7 +57,7 @@ public class CommentController {
 
 		contentService.addComment(comment);
 
-		return "redirect:/content/" + comment.getContent().getContentId();
+		return "redirect:/content/" + comment.getContentId();
 	}
 
 	@RequestMapping(value = "/controlpanel/comment/remove")

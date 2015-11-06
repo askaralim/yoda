@@ -17,7 +17,7 @@ public class HomePageDAO extends BaseDAO<HomePage> {
 
 	private static final String GET_HOME_PAGE_BY_SITEID_AND_FEATUREDATA = "from HomePage homePage where siteId = ? and featureData = true";
 
-	private static final String GET_HOME_PAGE_BY_SITEID_AND_FEATUREDATA_NOT_Y = "from HomePage homePage where siteId = ? and featureData = false";
+	private static final String GET_HOME_PAGE_BY_SITEID_AND_FEATUREDATA_NOT_Y = "from HomePage homePage where siteId = ? and featureData = false order by update_date desc";
 
 	public HomePage getBySiteId_HomePageId(int siteId, long homePageId) {
 		List<HomePage> homePages = (List<HomePage>)getHibernateTemplate().find(GET_HOME_PAGE_BY_SITEID_AND_HOMEPAGEID, siteId, homePageId);

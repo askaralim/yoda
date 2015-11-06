@@ -12,12 +12,13 @@ public interface ItemService {
 
 	Item getItem(int itemId);
 
-	Item getItem(int siteId, int itemId);
-
-	Item getItem(int siteId, String itemNaturalKey);
+//	Item getItem(int siteId, int itemId);
+//
+//	Item getItem(int siteId, String itemNaturalKey);
 
 	Item update(Item item);
 
+	@Deprecated
 	Item update(int id, Brand brand, Integer categoryId, Long contentId, String description, String level, String name, int price);
 
 	List<Item> getItems(int siteId);

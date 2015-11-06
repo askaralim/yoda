@@ -57,14 +57,12 @@ public class ContentController {
 	public String removeContents(
 			@RequestParam("contentIds") String contentIds,
 			HttpServletRequest request) {
-		User user = PortalUtil.getAuthenticatedUser();
-
 		String[] arrIds = contentIds.split(",");
 
 		Content content = new Content();
 
 		for (int i = 0; i < arrIds.length; i++) {
-			content = contentService.getContent(user.getLastVisitSiteId(), Long.valueOf(arrIds[i]));
+			content = contentService.getContent(Long.valueOf(arrIds[i]));
 
 			contentService.deleteContent(content);
 		}

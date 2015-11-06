@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.item.persistence.ItemMapper">
+	<cache />
+
+	<resultMap id="itemResult" type="Item">
+		<id property="id" column="id" />
+		<result property="categoryId" column="category_id" />
+		<result property="contentId" column="content_id" />
+		<result property="createDate" column="create_date" />
+		<result property="updateDate" column="update_date" />
+		<result property="description" column="description" />
+		<result property="level" column="level" />
+		<result property="name" column="name" />
+		<result property="imagePath" column="image_path" />
+		<result property="price" column="price" />
+		<result property="rating" column="rating" />
+		<result property="siteId" column="site_id" />
+		<association property="brand" column="brand_id" javaType="Brand" resultMap="brandResult" />
+		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+	</resultMap>
+
+	<resultMap id="brandResult" type="Brand">
+		<id property="brandId" column="brand_id" />
+		<result property="name" column="brand_name" />
+	</resultMap>
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+	</resultMap>
+
+	<sql id="itemColumns">
+		i.id AS id,
+		i.site_id AS site_id,
+		i.content_id AS content_id,
+		i.category_id AS category_id,
+		i.name,
+		i.level,
+		i.price,
+		i.rating,
+		i.create_date AS create_date,
+		i.update_date AS update_date,
+		i.image_path AS image_path,
+		i.description,
+		b.brand_id,
+		b.name AS brand_name,
+		u.user_id,
+		u.username,
+		uu.user_id AS u_user_id,
+		uu.username AS u_username
+	</sql>
+
+	<sql id="itemJoins">
+		LEFT OUTER JOIN brand b on i.brand_id = b.brand_id
+		LEFT OUTER JOIN user_ u on i.create_by = u.user_id
+		LEFT OUTER JOIN user_ uu on i.update_by = uu.user_id
+	</sql>
+
+	<select id="getById" resultMap="itemResult">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		WHERE i.id = #{id}
+	</select>
+
+	<select id="getItemsBySiteId" resultMap="itemResult">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		WHERE i.site_id = #{siteId}
+	</select>
+
+	<select id="getItemsByContentId" resultType="Item">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		WHERE i.title like CONCAT('%', #{title}, '%')
+	</select>
+
+	<select id="search" resultType="Item">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		<where>
+			i.site_id  = #{param1}
+		</where>
+		order by i.id
+	</select>
+
+	<insert id="insert" parameterType="Item" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, description, image_path, level, name, price, rating, site_id)
+		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{description}, #{imagePath}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
+	</insert>
+
+	<update id="update" parameterType="Item">
+		UPDATE item SET
+			brand_id = #{brand.brandId},
+			category_id = #{categoryId},
+			content_id = #{contentId},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+			description = #{description},
+			image_path = #{imagePath},
+			level = #{level},
+			name = #{name},
+			price = #{price},
+			rating = #{rating},
+			site_id = #{siteId}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM item WHERE id = #{id}
+	</delete>
+</mapper>

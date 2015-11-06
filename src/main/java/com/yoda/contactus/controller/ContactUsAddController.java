@@ -78,7 +78,7 @@ public class ContactUsAddController {
 		}
 
 		ContactUs contactUs = contactUsService.addContactUs(
-			user.getLastVisitSiteId(), user.getUserId(), command.isActive(),
+			user.getLastVisitSiteId(), command.isActive(),
 			command.getContactUsName(), command.getContactUsEmail(),
 			command.getContactUsPhone(), command.getContactUsAddressLine1(),
 			command.getContactUsAddressLine2(), command.getContactUsCityName(),

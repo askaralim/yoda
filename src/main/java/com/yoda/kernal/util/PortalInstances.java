@@ -115,9 +115,7 @@ public class PortalInstances {
 	}
 
 	private void _initSites(ServletContext servletContext) {
-
 		// Begin initializing site
-
 		if (_log.isDebugEnabled()) {
 			_log.debug("Begin initializing site");
 		}

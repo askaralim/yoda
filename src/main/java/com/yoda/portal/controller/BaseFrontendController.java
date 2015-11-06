@@ -41,6 +41,7 @@ import com.yoda.portal.content.frontend.MenuFactory;
 import com.yoda.section.model.Section;
 import com.yoda.section.service.SectionService;
 import com.yoda.site.model.Site;
+import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
@@ -70,6 +71,9 @@ public class BaseFrontendController {
 
 	@Autowired
 	private ContactUsService contactUsService;
+
+	@Autowired
+	private SiteService siteService;
 
 	Logger logger = Logger.getLogger(BaseFrontendController.class);
 
@@ -131,13 +135,13 @@ public class BaseFrontendController {
 		return processContent(siteId, content, checkExpiry, updateStatistics);
 	}
 
-	public ContentInfo getContent(
-			int siteId, String contentNaturalKey, boolean checkExpiry,
-			boolean updateStatistics) {
-		Content content = contentService.getContent(siteId, contentNaturalKey);
-
-		return processContent(siteId, content, checkExpiry, updateStatistics);
-	}
+//	public ContentInfo getContent(
+//			int siteId, String contentNaturalKey, boolean checkExpiry,
+//			boolean updateStatistics) {
+//		Content content = contentService.getContent(siteId, contentNaturalKey);
+//
+//		return processContent(siteId, content, checkExpiry, updateStatistics);
+//	}
 
 	public List<Comment> getComments(long contentId) {
 		return contentService.getComments(contentId);
@@ -188,7 +192,8 @@ public class BaseFrontendController {
 		contentInfo.setContentBrands(content.getContentBrands());
 		contentInfo.setCategory(content.getCategory());
 
-		User user = userService.getUser(content.getCreateBy());
+//		User user = userService.getUser(content.getCreateBy());
+		User user = content.getCreateBy();
 
 		contentInfo.setUpdateDate(Format.getDate(content.getUpdateDate()));
 		contentInfo.setCreateBy(user.getUsername());
@@ -274,11 +279,11 @@ public class BaseFrontendController {
 //		homeInfo.setHomePageDatas(homePageDatas);
 		homeInfo.setHomePageDatas(dataInfos);
 
-//		Site site = siteService.getSite(siteId);
+		Site site = siteService.getSite(siteId);
 
 //		String pageTitle = Utility.getParam(site, Constants.HOME_TITLE);
-//
-//		homeInfo.setPageTitle(pageTitle);
+
+		homeInfo.setPageTitle(site.getTitle());
 
 		return homeInfo;
 	}
@@ -384,7 +389,7 @@ public class BaseFrontendController {
 //					vector.add(itemInfo);
 				}
 				else {
-					Content content = contentService.getContent(siteId, Format.getLong(objectId));
+					Content content = contentService.getContent(Format.getLong(objectId));
 
 					ContentInfo contentInfo = formatContent(content);
 

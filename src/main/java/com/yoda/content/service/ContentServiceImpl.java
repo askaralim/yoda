@@ -2,26 +2,23 @@ package com.yoda.content.service;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yoda.category.dao.CategoryDAO;
 import com.yoda.category.model.Category;
-import com.yoda.content.dao.CommentDAO;
-import com.yoda.content.dao.ContentBrandDAO;
-import com.yoda.content.dao.ContentDAO;
+import com.yoda.category.persistence.CategoryMapper;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
-import com.yoda.homepage.dao.HomePageDAO;
+import com.yoda.content.persistence.CommentMapper;
+import com.yoda.content.persistence.ContentBrandMapper;
+import com.yoda.content.persistence.ContentMapper;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
@@ -29,7 +26,7 @@ import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
-import com.yoda.user.model.User;
+import com.yoda.site.model.Site;
 import com.yoda.util.Format;
 import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
@@ -38,20 +35,26 @@ import com.yoda.util.Validator;
 @Service
 @Transactional
 public class ContentServiceImpl implements ContentService {
+//	@Autowired
+//	private CategoryDAO categoryDAO;
 	@Autowired
-	private CategoryDAO categoryDAO;
+	private CategoryMapper categoryMapper;
+
+//	@Autowired
+//	private ContentDAO contentDAO;
+
+//	@Autowired
+//	private ContentBrandDAO contentBrandDAO;
 
 	@Autowired
-	private ContentDAO contentDAO;
+	private ContentBrandMapper contentBrandMapper;
 
 	@Autowired
-	private ContentBrandDAO contentBrandDAO;
+//	private CommentDAO commentDAO;
+	private CommentMapper commentMapper;
 
-	@Autowired
-	private CommentDAO commentDAO;
-
-	@Autowired
-	private HomePageDAO homePageDAO;
+//	@Autowired
+//	private HomePageDAO homePageDAO;
 
 	@Autowired
 	private MenuDAO menuDAO;
@@ -59,9 +62,13 @@ public class ContentServiceImpl implements ContentService {
 	@Autowired
 	HomePageService homePageService;
 
-	public void addContent(int siteId, Content content, Integer categoryId) {
-		User user = PortalUtil.getAuthenticatedUser();
+//	@Autowired
+//	HomePageMapper homePageMapper;
 
+	@Autowired
+	ContentMapper contentMapper;
+
+	public void addContent(int siteId, Content content, Integer categoryId) {
 		try {
 			content.setNaturalKey(Utility.encode(content.getTitle()));
 		}
@@ -69,32 +76,36 @@ public class ContentServiceImpl implements ContentService {
 			e.printStackTrace();
 		}
 
-		content.setCreateBy(user.getUserId().intValue());
-		content.setCreateDate(new Date());
+//		content.setCreateBy(user);
+//		content.setCreateDate(new Date());
 		content.setHitCounter(0);
 		content.setSiteId(siteId);
 		content.setScore(0);
-		content.setUpdateBy(user.getUserId().intValue());
-		content.setUpdateDate(new Date());
+//		content.setUpdateBy(user);
+//		content.setUpdateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
-			Category category = categoryDAO.getById(categoryId);
+			Category category = categoryMapper.getById(categoryId);
 
 			content.setCategory(category);
 		}
 
-		contentDAO.save(content);
+//		contentDAO.save(content);
+
+		content.preInsert();
+
+		contentMapper.insert(content);
 
 		HomePage homePage = getHomePage(siteId, content.getContentId());
 
 		if (content.isHomePage()) {
 			if (homePage == null) {
-				homePageService.addHomePage(siteId, user.getUserId(), false, content);
+				homePageService.add(siteId, false, content);
 			}
 		}
 		else {
 			if (homePage != null) {
-				homePageService.deleteHomePage(homePage);
+				homePageService.delete(homePage);
 			}
 		}
 
@@ -102,10 +113,10 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content addContent(
-			int siteId, Long userId, String naturalKey,
+			int siteId, String naturalKey,
 			String title, String shortDescription, String description,
 			String pageTitle, Integer categoryId, String publishDate, String expireDate,
-			Long updateBy, boolean isPublished) throws Exception {
+			boolean isPublished) throws Exception {
 		Content content = new Content();
 
 		content.setSiteId(siteId);
@@ -116,21 +127,24 @@ public class ContentServiceImpl implements ContentService {
 		content.setPageTitle(pageTitle);
 		content.setPublishDate(Format.getDate(publishDate));
 		content.setExpireDate(Format.getDate(expireDate));
-		content.setUpdateBy(updateBy);
-		content.setUpdateDate(new Date());
+//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
 		content.setHitCounter(0);
 		content.setScore(0);
-		content.setCreateBy(userId);
-		content.setCreateDate(new Date());
+//		content.setCreateBy(PortalUtil.getAuthenticatedUser());
+//		content.setCreateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
-			Category category = categoryDAO.getById(categoryId);
+			Category category = categoryMapper.getById(categoryId);
 
 			content.setCategory(category);
 		}
 
-		contentDAO.save(content);
+		content.preUpdate();
+
+//		contentDAO.save(content);
+		contentMapper.insert(content);
 
 		new ContentIndexer().createIndex(content);
 
@@ -138,11 +152,15 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void addComment(Comment comment) {
-		commentDAO.save(comment);
+		comment.preInsert();
+
+		commentMapper.insert(comment);
 	}
 
 	public void addContentBrand(ContentBrand contentBrand) {
-		contentBrandDAO.save(contentBrand);
+		contentBrand.preInsert();
+
+		contentBrandMapper.insert(contentBrand);
 	}
 
 	public void deleteContent(Content content) {
@@ -159,12 +177,13 @@ public class ContentServiceImpl implements ContentService {
 //			contentImageDAO.delete(contentImage);
 //		}
 
-		List<HomePage> homePages = homePageDAO.getBySiteId(content.getSiteId());
+		List<HomePage> homePages = homePageService.getHomePages(content.getSiteId());
 
 		for (HomePage homePage : homePages) {
 			if (homePage.getContent() != null) {
 				if (content.getContentId() == homePage.getContent().getContentId()) {
-					homePageDAO.delete(homePage);
+//					homePageDAO.delete(homePage);
+					homePageService.delete(homePage);
 				}
 			}
 		}
@@ -181,33 +200,35 @@ public class ContentServiceImpl implements ContentService {
 
 		new ContentIndexer().deleteIndex(content.getContentId());
 
-		contentDAO.delete(content);
+//		contentDAO.delete(content);
+		contentMapper.delete(content);
 	}
 
-	public void deleteContent(Long contentId) {
-		Content content = contentDAO.getById(contentId);
-
-		deleteContent(content);
-	}
+//	public void deleteContent(Long contentId) {
+//		Content content = contentDAO.getById(contentId);
+//
+//		deleteContent(content);
+//	}
 
 	public void deleteComment(int commentId) {
-		Comment comment = commentDAO.getById(commentId);
+		Comment comment = commentMapper.getById(commentId);
 
-		commentDAO.delete(comment);
+		commentMapper.delete(comment);
 	}
 
-	public void deleteContentImage(int siteId, Long userId, Long contentId) {
-		Content content = getContent(siteId, contentId);
+	@Deprecated
+	public void deleteContentImage(int siteId, Long contentId) {
+		Content content = getContent(contentId);
 
 		FileUploader fileUpload = FileUploader.getInstance();
 
 		fileUpload.deleteFile(content.getFeaturedImage());
 
 		content.setFeaturedImage(StringPool.BLANK);
-		content.setUpdateBy(userId);
+		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		content.setUpdateDate(new Date());
 
-		contentDAO.update(content);
+		contentMapper.update(content);
 	}
 
 //	public Content deleteContentImage(
@@ -238,53 +259,57 @@ public class ContentServiceImpl implements ContentService {
 //	}
 
 	@Transactional(readOnly = true)
-	public List<Content> getContent(Long userId) {
-		return contentDAO.getByUserId(userId);
+	public List<Content> getContentByUserId(Long userId) {
+//		return contentDAO.getByUserId(userId);
+		return contentMapper.getContentsByUserId(userId);
 	}
 
 	@Transactional(readOnly = true)
-	public Content getContent(int siteId, Long contentId) {
-		return contentDAO.getContentById(siteId, contentId);
+	public Content getContent(Long contentId) {
+//		return contentDAO.getContentById(siteId, contentId);
+		return contentMapper.getById(contentId);
 	}
 
-	@Transactional(readOnly = true)
-	public Content getContent(int siteId, String contentNaturalKey) {
-		return contentDAO.getContentBySiteId_NaturalKey(siteId, contentNaturalKey);
-	}
+//	@Transactional(readOnly = true)
+//	public Content getContent(int siteId, String contentNaturalKey) {
+//		return contentDAO.getContentBySiteId_NaturalKey(siteId, contentNaturalKey);
+//	}
 
 	@Transactional(readOnly = true)
 	public ContentBrand getContentBrand(long contentBrandId) {
-		return contentBrandDAO.getById(contentBrandId);
+		return contentBrandMapper.getById(contentBrandId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Content> getContents(int siteId) {
-		return contentDAO.getContents(siteId);
+//		return contentDAO.getContents(siteId);
+		return contentMapper.getContentsBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<Content> getContents(int siteId, String contentTitle) {
-		return contentDAO.getContents(siteId, contentTitle);
+	public List<Content> getContents(String title) {
+//		return contentDAO.getContents(siteId, contentTitle);
+		return contentMapper.getContentsByTitle(title);
 	}
 
 	@Transactional(readOnly = true)
 	public Comment getComment(int commentId) {
-		return commentDAO.getById(commentId);
+		return commentMapper.getById(commentId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Comment> getComments(long contentId) {
-		return commentDAO.getCommentsByContentId(contentId);
+		return commentMapper.getCommentsByContentId(contentId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Comment> getCommentsBySiteId(int siteId) {
-		return commentDAO.getCommentsBySiteId(siteId);
+		return commentMapper.getCommentsBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Comment> getCommentsByUserId(long userId) {
-		return commentDAO.getCommentsByUserId(userId);
+		return commentMapper.getCommentsByUserId(userId);
 	}
 
 	@Transactional(readOnly = true)
@@ -293,114 +318,120 @@ public class ContentServiceImpl implements ContentService {
 			String updateBy, String createBy, String publishDateStart,
 			String publishDateEnd, String expireDateStart, String expireDateEnd)
 		throws ParseException {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		return contentMapper.search(
+			siteId, title, published, createBy, updateBy, publishDateStart,
+			publishDateEnd, expireDateStart, expireDateEnd);
 
-		Query query = null;
-
-		title = title.trim();
-
-		String sql = "select content from Content content where siteId = :siteId ";
-
-		if (Validator.isNotNull(title) && title.length() > 0) {
-			sql += "and title like :title ";
-		}
-
-		if (Validator.isNotNull(published)) {
-			sql += "and published = :published ";
-		}
-
-		sql += "and publishDate between :publishDateStart and :publishDateEnd ";
-		sql += "and expireDate between :expireDateStart and :expireDateEnd ";
-
-		if (Validator.isNotNull(updateBy)) {
-			sql += "and updateBy = :updateBy ";
-		}
-
-		if (Validator.isNotNull(createBy)) {
-			sql += "and createBy = :createBy ";
-		}
-
-		query = contentDAO.getSession().createQuery(sql);
-
-		Date highDate = dateFormat.parse("31-12-2999");
-		Date lowDate = dateFormat.parse("01-01-1900");
-		Date date = null;
-
-		query.setLong("siteId", siteId);
-
-		if (Validator.isNotNull(title) && title.length() > 0) {
-			query.setString("title", "%" + title + "%");
-		}
-
-		if (Validator.isNotNull(published)) {
-			query.setBoolean("published", published);
-		}
-
-		if (publishDateStart.length() > 0) {
-			date = dateFormat.parse(publishDateStart);
-			query.setDate("publishDateStart", date);
-		}
-		else {
-			query.setDate("publishDateStart", lowDate);
-		}
-
-		if (publishDateEnd.length() > 0) {
-			date = dateFormat.parse(publishDateEnd);
-			query.setDate("publishDateEnd", date);
-		}
-		else {
-			query.setDate("publishDateEnd", highDate);
-		}
-
-		if (expireDateStart.length() > 0) {
-			date = dateFormat.parse(expireDateStart);
-			query.setDate("expireDateStart", date);
-		}
-		else {
-			query.setDate("expireDateStart", lowDate);
-		}
-
-		if (expireDateEnd.length() > 0) {
-			date = dateFormat.parse(expireDateEnd);
-			query.setDate("expireDateEnd", date);
-		}
-		else {
-			query.setDate("expireDateEnd", highDate);
-		}
-
-		if (Validator.isNotNull(updateBy)) {
-			query.setString("updateBy", updateBy);
-		}
-
-		if (Validator.isNotNull(createBy)) {
-			query.setString("createBy", createBy);
-		}
-//		if (selectedSections != null) {
-//			int index = 0;
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 //
-//			for (int i = 0; i < selectedSections.length; i++) {
-//				Long sectionIds[] = sectionService.getSectionIdTreeList(
-//					siteId, Format.getLong(selectedSections[i]));
+//		Query query = null;
 //
-//				for (int j = 0; j < sectionIds.length; j++) {
-//					query.setLong(
-//						"selectedSection" + index++, sectionIds[j].longValue());
-//				}
-//			}
+//		title = title.trim();
+//
+//		String sql = "select content from Content content where siteId = :siteId ";
+//
+//		if (Validator.isNotNull(title) && title.length() > 0) {
+//			sql += "and title like :title ";
 //		}
-
-		return query.list();
+//
+//		if (Validator.isNotNull(published)) {
+//			sql += "and published = :published ";
+//		}
+//
+//		sql += "and publishDate between :publishDateStart and :publishDateEnd ";
+//		sql += "and expireDate between :expireDateStart and :expireDateEnd ";
+//
+//		if (Validator.isNotNull(updateBy)) {
+//			sql += "and updateBy = :updateBy ";
+//		}
+//
+//		if (Validator.isNotNull(createBy)) {
+//			sql += "and createBy = :createBy ";
+//		}
+//
+//		query = contentDAO.getSession().createQuery(sql);
+//
+//		Date highDate = dateFormat.parse("31-12-2999");
+//		Date lowDate = dateFormat.parse("01-01-1900");
+//		Date date = null;
+//
+//		query.setLong("siteId", siteId);
+//
+//		if (Validator.isNotNull(title) && title.length() > 0) {
+//			query.setString("title", "%" + title + "%");
+//		}
+//
+//		if (Validator.isNotNull(published)) {
+//			query.setBoolean("published", published);
+//		}
+//
+//		if (publishDateStart.length() > 0) {
+//			date = dateFormat.parse(publishDateStart);
+//			query.setDate("publishDateStart", date);
+//		}
+//		else {
+//			query.setDate("publishDateStart", lowDate);
+//		}
+//
+//		if (publishDateEnd.length() > 0) {
+//			date = dateFormat.parse(publishDateEnd);
+//			query.setDate("publishDateEnd", date);
+//		}
+//		else {
+//			query.setDate("publishDateEnd", highDate);
+//		}
+//
+//		if (expireDateStart.length() > 0) {
+//			date = dateFormat.parse(expireDateStart);
+//			query.setDate("expireDateStart", date);
+//		}
+//		else {
+//			query.setDate("expireDateStart", lowDate);
+//		}
+//
+//		if (expireDateEnd.length() > 0) {
+//			date = dateFormat.parse(expireDateEnd);
+//			query.setDate("expireDateEnd", date);
+//		}
+//		else {
+//			query.setDate("expireDateEnd", highDate);
+//		}
+//
+//		if (Validator.isNotNull(updateBy)) {
+//			query.setString("updateBy", updateBy);
+//		}
+//
+//		if (Validator.isNotNull(createBy)) {
+//			query.setString("createBy", createBy);
+//		}
+////		if (selectedSections != null) {
+////			int index = 0;
+////
+////			for (int i = 0; i < selectedSections.length; i++) {
+////				Long sectionIds[] = sectionService.getSectionIdTreeList(
+////					siteId, Format.getLong(selectedSections[i]));
+////
+////				for (int j = 0; j < sectionIds.length; j++) {
+////					query.setLong(
+////						"selectedSection" + index++, sectionIds[j].longValue());
+////				}
+////			}
+////		}
+//
+//		return query.list();
 	}
 
 	public void updateContent(Content content) {
-		contentDAO.update(content);
+//		contentDAO.update(content);
+
+		contentMapper.update(content);
 	}
 
 	public Content updateContent(int siteId, Content content, Integer categoryId)
 		throws Exception {
-		User user = PortalUtil.getAuthenticatedUser();
+//		User user = PortalUtil.getAuthenticatedUser();
 
-		Content contentDb = this.getContent(siteId, content.getContentId());
+		Content contentDb = this.getContent(content.getContentId());
 
 		contentDb.setNaturalKey(Utility.encode(content.getTitle()));
 		contentDb.setTitle(content.getTitle());
@@ -411,27 +442,31 @@ public class ContentServiceImpl implements ContentService {
 		contentDb.setExpireDate(content.getExpireDate());
 		contentDb.setPublished(content.isPublished());
 //		contentDb.setHomePage(content.isHomePage());
-		contentDb.setUpdateBy(user.getUserId());
-		contentDb.setUpdateDate(new Date());
+//		contentDb.setUpdateBy(user);
+//		contentDb.setUpdateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
-			Category category = categoryDAO.getById(categoryId);
+			Category category = categoryMapper.getById(categoryId);
 
 			contentDb.setCategory(category);
 		}
 
-		contentDAO.update(contentDb);
+		contentDb.preUpdate();
+
+//		contentDAO.update(contentDb);
+		contentMapper.update(contentDb);
 
 		HomePage homePage = getHomePage(siteId, content.getContentId());
 
 		if (content.isHomePage()) {
 			if (homePage == null) {
-				homePageService.addHomePage(siteId, user.getUserId(), false, content);
+//				homePageMapper.
+				homePageService.add(siteId, false, content);
 			}
 		}
 		else {
 			if (homePage != null) {
-				homePageService.deleteHomePage(homePage);
+				homePageService.delete(homePage);
 			}
 		}
 
@@ -441,22 +476,22 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content updateContent(
-		int siteId, Long userId, Long contentId, String title,
+		int siteId, Long contentId, String title,
 		String shortDescription, String description) throws Exception {
-		Content content = getContent(siteId, contentId);
+		Content content = getContent(contentId);
 
 		return this.updateContent(
 			contentId, siteId, content.getNaturalKey(), title, shortDescription,
 			description, content.getPageTitle(), null, String.valueOf(content.getPublishDate()),
-			String.valueOf(content.getExpireDate()), userId, content.isPublished());	
+			String.valueOf(content.getExpireDate()), content.isPublished());	
 	}
 
 	public Content updateContent(
 		Long contentId, int siteId, String naturalKey,
 		String title, String shortDescription, String description,
 		String pageTitle, Integer categoryId, String publishDate, String expireDate,
-		Long updateBy, boolean isPublished) throws Exception {
-		Content content = contentDAO.getContentById(siteId, contentId);
+		boolean isPublished) throws Exception {
+		Content content = contentMapper.getById(contentId);
 
 		content.setContentId(contentId);
 		content.setSiteId(siteId);
@@ -467,17 +502,21 @@ public class ContentServiceImpl implements ContentService {
 		content.setPageTitle(pageTitle);
 		content.setPublishDate(Format.getDate(publishDate));
 		content.setExpireDate(Format.getDate(expireDate));
-		content.setUpdateBy(updateBy);
-		content.setUpdateDate(new Date());
+//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
 
 		if (Validator.isNotNull(categoryId)) {
-			Category category = categoryDAO.getById(categoryId);
+			Category category = categoryMapper.getById(categoryId);
 
 			content.setCategory(category);
 		}
 
-		contentDAO.update(content);
+//		contentDAO.update(content);
+
+		content.preUpdate();
+
+		contentMapper.update(content);
 
 		new ContentIndexer().updateIndex(content);
 
@@ -485,8 +524,8 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content updateContentImage(
-			int siteId, Long userId, Long contentId, MultipartFile image) {
-		Content content = getContent(siteId, contentId);
+			int siteId, Long contentId, MultipartFile image) {
+		Content content = getContent(contentId);
 
 		FileUploader fileUpload = FileUploader.getInstance();
 
@@ -495,16 +534,22 @@ public class ContentServiceImpl implements ContentService {
 		String imagePath = fileUpload.saveFile(image);
 
 		content.setFeaturedImage(imagePath);
-		content.setUpdateBy(userId);
-		content.setUpdateDate(new Date());
+//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		content.setUpdateDate(new Date());
 
-		contentDAO.update(content);
+//		contentDAO.update(content);
+
+		content.preUpdate();
+
+		contentMapper.update(content);
 
 		return content;
 	}
 
 	public ContentBrand updateContentBrand(ContentBrand contentBrand) {
-		contentBrandDAO.update(contentBrand);
+		contentBrand.preUpdate();
+
+		contentBrandMapper.update(contentBrand);
 
 		return contentBrand;
 	}
@@ -516,7 +561,7 @@ public class ContentServiceImpl implements ContentService {
 			Content homePageContent = homePage.getContent();
 
 			if (homePageContent != null) {
-				if (homePageContent.getContentId() == contentId) {
+				if (homePageContent.getContentId().longValue() == contentId.longValue()) {
 					return homePage;
 				}
 			}

@@ -1,7 +1,5 @@
 package com.yoda.site.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +20,8 @@ public class Site extends BaseEntity {
 	@Column(name = "site_name")
 	private String siteName;
 
+	private String title;
+
 	@Column(name = "logo_path")
 	private String logoPath;
 
@@ -31,17 +31,17 @@ public class Site extends BaseEntity {
 	@Column(name = "active")
 	private boolean active;
 
-	@Column(name = "update_by")
-	private long updateBy;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_by")
-	private long createBy;
-
-	@Column(name = "create_date")
-	private Date createDate;
+//	@Column(name = "update_by")
+//	private long updateBy;
+//
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_by")
+//	private long createBy;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
 
 	@Column(name = "public_port")
 	private String publicPort;
@@ -90,6 +90,14 @@ public class Site extends BaseEntity {
 		this.siteName = siteName;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getLogoPath() {
 		return this.logoPath;
 	}
@@ -114,37 +122,37 @@ public class Site extends BaseEntity {
 		this.active = active;
 	}
 
-	public long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(Long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public long getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(Long updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public long getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public String getListingPageSize() {
 		return listingPageSize;

@@ -12,13 +12,13 @@ public interface HomePageService {
 
 	List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId);
 
-	List<HomePage> getHomePages(int siteId, String orderBy);
+	List<HomePage> getHomePagesBySiteIdOrderBySeqNum(int siteId);
 
-	HomePage getHomePage(int siteId, long homePageId);
+	HomePage getHomePage(long homePageId);
 
-	void addHomePage(int siteId, long userId, boolean featureData, Content content);
+	void add(int siteId, boolean featureData, Content content);
 
-	void deleteHomePage(HomePage homePage);
+	void delete(HomePage homePage);
 
-	void updateHomePage(HomePage homePage);
+	void update(HomePage homePage);
 }

@@ -11,5 +11,5 @@ public interface ContentImageService {
 
 	ContentImage getContentImage(int siteId, Long contentImageId);
 
-	ContentImage addContentImage(int siteId, Long userId, String imageName, String contentType, byte[] imageValue, int height, int width);
+	ContentImage addContentImage(int siteId, String imageName, String contentType, byte[] imageValue, int height, int width);
 }

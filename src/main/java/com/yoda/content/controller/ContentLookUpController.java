@@ -39,7 +39,7 @@ public class ContentLookUpController {
 		List<Content> contents = new ArrayList<Content>();
 
 		if (Validator.isNotNull(contentTitle)) {
-			contents = contentService.getContents(user.getLastVisitSiteId(), contentTitle);
+			contents = contentService.getContents(contentTitle);
 		}
 		else {
 			contents = contentService.getContents(user.getLastVisitSiteId());

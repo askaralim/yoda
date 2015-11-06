@@ -24,10 +24,6 @@ public class SiteDAO extends BaseDAO<Site> {
 	}
 
 	public Site getByS_U(int siteId, User signinUser) throws SecurityException{
-		if (!PortalUtil.isAdminRole(signinUser)) {
-			throw new SecurityException();
-		}
-
 		return this.getBySiteId(siteId);
 	}
 

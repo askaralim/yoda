@@ -89,11 +89,11 @@ public class FrontendContentAddController extends BaseFrontendController {
 		Date expireDate = calendar.getTime();
 
 		content = contentService.addContent(
-			site.getSiteId(), currentUser.getUserId(),
+			site.getSiteId(),
 			StringPool.BLANK, content.getTitle(),
 			content.getShortDescription(), content.getDescription(),
 			StringPool.BLANK, null, Format.getFullDatetime(publishDate),
-			Format.getFullDatetime(expireDate), currentUser.getUserId(), false);
+			Format.getFullDatetime(expireDate), false);
 
 		return new ModelAndView("redirect:/content/" + content.getContentId() + "/edit", model);
 	}

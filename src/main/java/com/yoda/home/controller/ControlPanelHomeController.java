@@ -30,7 +30,6 @@ import com.yoda.state.model.State;
 import com.yoda.state.service.StateService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
-import com.yoda.util.Constants;
 import com.yoda.util.Format;
 import com.yoda.util.Validator;
 
@@ -314,7 +313,7 @@ public class ControlPanelHomeController {
 		user.setStateName(state.getStateName());
 		user.setCountryName(country.getCountryName());
 		user.setZipCode(homePageCommand.getZipCode());
-		user.setUpdateBy(user.getUserId());
+		user.setUpdateBy(user);
 		user.setUpdateDate(new Date());
 
 		userService.update(user);

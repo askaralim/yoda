@@ -5,7 +5,7 @@
         #if ($itemInfo.itemDefaultImageUrl)
         <div style="float: left; padding-right: 5px; padding-bottom: 5px">
           <p>
-          <div style="padding-right: 1em; width:200px; height:200px; text-align: center; ">
+          <div style="padding-right: 1em; width:200px; text-align: center; ">
             <img name="jc_image_preview" src="$itemInfo.itemDefaultImageUrl&maxsize=200">
           </div>
           </p>

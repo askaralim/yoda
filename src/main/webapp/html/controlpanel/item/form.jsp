@@ -145,7 +145,7 @@
 					<div class="panel-body">
 						<div class="form-group">
 							<label for="createBy"><spring:message code="create-by" /></label>
-							<p class="form-control-static"><c:out value="${item.createBy}" /></p>
+							<p class="form-control-static"><c:out value="${item.createBy.username}" /></p>
 						</div>
 						<div class="form-group">
 							<label for="createDate"><spring:message code="create-date" /></label>
@@ -153,7 +153,7 @@
 						</div>
 						<div class="form-group">
 							<label for="updateBy"><spring:message code="update-by" /></label>
-							<p class="form-control-static"><c:out value="${item.updateBy}" /></p>
+							<p class="form-control-static"><c:out value="${item.updateBy.username}" /></p>
 						</div>
 						<div class="form-group">
 							<label for="updateDate"><spring:message code="update-date" /></label>
@@ -198,7 +198,7 @@
 
 <script type="text/javascript">
 function submitBackForm(type) {
-	location.href='<spring:url value="/controlpanel/item/list" />';
+	location.href='<spring:url value="/controlpanel/item" />';
 	return false;
 }
 </script>

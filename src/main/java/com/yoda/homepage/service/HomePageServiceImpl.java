@@ -1,6 +1,5 @@
 package com.yoda.homepage.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,60 +7,59 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yoda.content.model.Content;
-import com.yoda.homepage.dao.HomePageDAO;
 import com.yoda.homepage.model.HomePage;
+import com.yoda.homepage.persistence.HomePageMapper;
 
 @Transactional
 @Service
 public class HomePageServiceImpl implements HomePageService {
 	@Autowired
-	private HomePageDAO homePageDAO;
+	private HomePageMapper homePageMapper;
 
-	public void addHomePage(
-			int siteId, long userId, boolean featureData, Content content) {
+	public void add(int siteId, boolean featureData, Content content) {
 		HomePage homePage = new HomePage();
 
 		homePage.setSiteId(siteId);
 		homePage.setFeatureData(featureData);
 		homePage.setContent(content);
-		homePage.setUpdateBy(userId);
-		homePage.setUpdateDate(new Date());
-		homePage.setCreateBy(userId);
-		homePage.setCreateDate(new Date());
 
-		homePageDAO.save(homePage);
+		homePage.preInsert();
+
+		homePageMapper.insert(homePage);
 	}
 
-	public void deleteHomePage(HomePage homePage) {
-		homePageDAO.delete(homePage);
+	public void delete(HomePage homePage) {
+		homePageMapper.delete(homePage);
 	}
 
 	@Transactional(readOnly = true)
-	public HomePage getHomePage(int siteId, long homePageId) {
-		return homePageDAO.getBySiteId_HomePageId(siteId, homePageId);
+	public HomePage getHomePage(long homePageId) {
+		return homePageMapper.getById(homePageId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<HomePage> getHomePages(int siteId) {
-		return homePageDAO.getBySiteId(siteId);
+		return homePageMapper.getBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
-	public List<HomePage> getHomePages(int siteId, String orderBy) {
-		return homePageDAO.getBySiteId(siteId, orderBy);
+	public List<HomePage> getHomePagesBySiteIdOrderBySeqNum(int siteId) {
+		return homePageMapper.getBySiteIdOrderBySeqNum(siteId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<HomePage> getHomePagesBySiteIdAndFeatureData(int siteId) {
-		return homePageDAO.getBySiteId_featureData(siteId);
+		return homePageMapper.getBySiteIdAndFeatureData(siteId, true);
 	}
 
 	@Transactional(readOnly = true)
 	public List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId) {
-		return homePageDAO.getBySiteId_featureData_NotY(siteId);
+		return homePageMapper.getBySiteIdAndFeatureData(siteId, false);
 	}
 
-	public void updateHomePage(HomePage homePage) {
-		homePageDAO.update(homePage);
+	public void update(HomePage homePage) {
+		homePage.preUpdate();
+
+		homePageMapper.update(homePage);
 	}
 }

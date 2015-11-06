@@ -4,6 +4,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="Keywords" content="$pageInfo.keywords">
 		<meta name="Description" content="$siteInfo.siteName">
+		<meta property="wb:webmaster" content="a680e5302e30bee6" />
 
 		<title>$pageInfo.pageTitle</title>
 

@@ -35,7 +35,6 @@ import com.yoda.item.service.ItemService;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.util.Format;
-import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
 @Controller
@@ -98,10 +97,9 @@ public class ItemEditController {
 //				brandName = brand.getName();
 			}
 
-			Item itemDb = itemService.update(
-				item.getId(), brand, item.getCategoryId(), item.getContentId(),
-				item.getDescription(), item.getLevel(), item.getName(),
-				item.getPrice());
+			item.setBrand(brand);
+
+			Item itemDb = itemService.update(item);
 
 			List<Brand> brands = brandService.getBrands();
 

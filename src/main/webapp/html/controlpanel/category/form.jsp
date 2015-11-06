@@ -76,7 +76,7 @@ function submitCancel() {
 					<div class="panel-body">
 						<div class="form-group">
 							<label for="createBy"><spring:message code="create-by" /></label>
-							<p class="form-control-static"><c:out value="${category.createBy}" /></p>
+							<p class="form-control-static"><c:out value="${category.createBy.userId}" /></p>
 						</div>
 						<div class="form-group">
 							<label for="createDate"><spring:message code="create-date" /></label>
@@ -84,7 +84,7 @@ function submitCancel() {
 						</div>
 						<div class="form-group">
 							<label for="updateBy"><spring:message code="update-by" /></label>
-							<p class="form-control-static"><c:out value="${category.updateBy}" /></p>
+							<p class="form-control-static"><c:out value="${category.updateBy.userId}" /></p>
 						</div>
 						<div class="form-group">
 							<label for="updateDate"><spring:message code="update-date" /></label>

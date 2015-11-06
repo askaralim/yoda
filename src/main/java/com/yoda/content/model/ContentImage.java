@@ -43,21 +43,21 @@ public class ContentImage extends BaseEntity {
 	@Column(name = "width")
 	private int width;
 
-	@Column(name = "update_by")
-	private Long updateBy;
-
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_by")
-	private Long createBy;
-
-	@Column(name = "create_date")
-	private Date createDate;
-
-//	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//	@JoinColumn(name = "content_id")
-//	private Content content;
+////	@Column(name = "update_by")
+////	private Long updateBy;
+////
+////	@Column(name = "update_date")
+////	private Date updateDate;
+////
+////	@Column(name = "create_by")
+////	private Long createBy;
+////
+////	@Column(name = "create_date")
+////	private Date createDate;
+//
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name = "content_id")
+	private Content content;
 
 	public Long getImageId() {
 		return this.imageId;
@@ -122,44 +122,44 @@ public class ContentImage extends BaseEntity {
 	public void setWidth(int width) {
 		this.width = width;
 	}
-
-	public Long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(Long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(Long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createBy) {
-		this.createDate = createBy;
-	}
-
-//	public Content getContent() {
-//		return this.content;
+//
+//	public Long getUpdateBy() {
+//		return this.updateBy;
 //	}
 //
-//	public void setContent(Content content) {
-//		this.content = content;
+//	public void setUpdateBy(Long updateBy) {
+//		this.updateBy = updateBy;
 //	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public Long getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(Long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createBy) {
+//		this.createDate = createBy;
+//	}
+
+	public Content getContent() {
+		return this.content;
+	}
+
+	public void setContent(Content content) {
+		this.content = content;
+	}
 }

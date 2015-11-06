@@ -118,15 +118,14 @@ public class FrontendController extends BaseFrontendController {
 
 		pageInfo.setPageBody(text);
 
-//		String pageTitle = homeInfo.getPageTitle();
+		String pageTitle = homeInfo.getPageTitle();
 
-//		if (Format.isNullOrEmpty(pageTitle)) {
-//			pageTitle = "Home";
-//		}
-
-//		pageInfo.setPageTitle(site.getSiteName() + " - " + pageTitle);
-
-		pageInfo.setPageTitle(site.getSiteName());
+		if (Validator.isNotNull(pageTitle)) {
+			pageInfo.setPageTitle(site.getSiteName() + " - " + pageTitle);
+		}
+		else {
+			pageInfo.setPageTitle(site.getSiteName());
+		}
 
 		return pageInfo;
 	}

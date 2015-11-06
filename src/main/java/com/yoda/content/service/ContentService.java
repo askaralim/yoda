@@ -13,9 +13,9 @@ public interface ContentService {
 	void addContent(int siteId, Content content, Integer categoryId);
 
 	Content addContent(
-			int siteId, Long userId, String naturalKey, String title,
+			int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			Integer categoryId, String publishDate, String expireDate, Long updateBy,
+			Integer categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception;
 
 	void addComment(Comment comment);
@@ -24,7 +24,7 @@ public interface ContentService {
 
 	void deleteContent(Content content);
 
-	void deleteContent(Long contentId);
+//	void deleteContent(Long contentId);
 
 	void deleteComment(int commentId);
 
@@ -35,18 +35,18 @@ public interface ContentService {
 	Content updateContent(
 			Long contentId, int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			Integer categoryId, String publishDate, String expireDate, Long updateBy,
+			Integer categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception;
 
-	Content getContent(int siteId, Long contentId);
+	Content getContent(Long contentId);
 
-	Content getContent(int siteId, String naturalKey);
+//	Content getContent(String naturalKey);
 
 	ContentBrand getContentBrand(long contentBrandId);
 
 	Comment getComment(int commentId);
 
-	List<Content> getContents(int siteId, String title);
+	List<Content> getContents(String title);
 
 	List<Content> getContents(int siteId);
 
@@ -60,13 +60,13 @@ public interface ContentService {
 
 //	Content updateContentImage(int siteId, Long userId, Long contentId, ContentImage contentImage);
 
-	Content updateContentImage(int siteId, Long userId, Long contentId, MultipartFile featureImage);
+	Content updateContentImage(int siteId, Long contentId, MultipartFile featureImage);
 
 //	Content updateDefaultContentImage(int siteId, Long userId, Long contentId, Long defaultImageId);
 
-	List<Content> getContent(Long userId);
+	List<Content> getContentByUserId(Long userId);
 
-	Content updateContent(int siteId, Long contentId, Long userId, String title, String shortDescription, String description) throws Exception;
+	Content updateContent(int siteId, Long contentId, String title, String shortDescription, String description) throws Exception;
 
 	ContentBrand updateContentBrand(ContentBrand contentBrand);
 }

@@ -81,10 +81,10 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 					.field("description", content.getDescription())
 					.field("publishDate", content.getPublishDate())
 					.field("published", content.isPublished())
-					.field("createBy", content.getCreateBy())
-					.field("createDate", content.getCreateDate())
-					.field("updateBy", content.getUpdateBy())
-					.field("updateDate", content.getUpdateDate())
+//					.field("createBy", content.getCreateBy())
+//					.field("createDate", content.getCreateDate())
+//					.field("updateBy", content.getUpdateBy())
+//					.field("updateDate", content.getUpdateDate())
 					.endObject();
 
 				builders.put(content.getContentId().toString(), builder);
@@ -108,10 +108,10 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 				.field("description", content.getDescription())
 				.field("publishDate", content.getPublishDate())
 				.field("published", content.isPublished())
-				.field("createBy", content.getCreateBy())
-				.field("createDate", content.getCreateDate())
-				.field("updateBy", content.getUpdateBy())
-				.field("updateDate", content.getUpdateDate())
+//				.field("createBy", content.getCreateBy())
+//				.field("createDate", content.getCreateDate())
+//				.field("updateBy", content.getUpdateBy())
+//				.field("updateDate", content.getUpdateDate())
 				.endObject();
 
 			createIndex(builder, TYPE, content.getContentId().toString());

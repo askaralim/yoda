@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.kernal.persistence.ReleaseMapper">
+	<cache />
+
+	<select id="getReleaseByBuildNumber" resultType="Release">
+		SELECT
+			release_id as releaseId,
+			create_date as createDate,
+			modified_date as modifiedDate,
+			build_number as buildNumber,
+			verified
+		FROM release_
+		WHERE release_.build_number = #{buildNumber}
+	</select>
+
+	<insert id="insertRelease" parameterType="Release" useGeneratedKeys="true" keyProperty="releaseId">
+		INSERT INTO release_(release_id, create_date, modified_date, build_number, verified)
+		VALUES(#{releaseId}, #{createDate}, #{modifiedDate}, #{buildNumber}, #{verified})
+	</insert>
+</mapper>

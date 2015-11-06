@@ -1,15 +1,10 @@
 package com.yoda.homepage.model;
 
-import java.util.Date;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.yoda.BaseEntity;
@@ -21,22 +16,22 @@ public class HomePage extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Column(name = "home_page_id")
-	private Integer id;
+	private Integer homePageId;
 
-	@Column(name = "update_date")
-	private Date updateDate;
-
-	@Column(name = "create_date")
-	private Date createDate;
-
-	@Column(name = "create_by")
-	private long createBy;
+//	@Column(name = "update_date")
+//	private Date updateDate;
+//
+//	@Column(name = "create_date")
+//	private Date createDate;
+//
+//	@Column(name = "create_by")
+//	private long createBy;
 
 	@Column(name = "site_id")
 	private int siteId;
 
-	@Column(name = "update_by")
-	private long updateBy;
+//	@Column(name = "update_by")
+//	private long updateBy;
 
 	@Column(name = "seq_num")
 	private int seqNum;
@@ -46,16 +41,16 @@ public class HomePage extends BaseEntity {
 
 //	private Item item;
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinColumn(name = "content_id")
+//	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//	@JoinColumn(name = "content_id")
 	private Content content;
 
-	public Integer getId() {
-		return this.id;
+	public Integer getHomePageId() {
+		return this.homePageId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setHomePageId(Integer homePageId) {
+		this.homePageId = homePageId;
 	}
 
 	public int getSiteId() {
@@ -82,37 +77,37 @@ public class HomePage extends BaseEntity {
 		this.featureData = featureData;
 	}
 
-	public Long getUpdateBy() {
-		return this.updateBy;
-	}
-
-	public void setUpdateBy(Long updateBy) {
-		this.updateBy = updateBy;
-	}
-
-	public Date getUpdateDate() {
-		return this.updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Long getCreateBy() {
-		return this.createBy;
-	}
-
-	public void setCreateBy(Long createBy) {
-		this.createBy = createBy;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+//	public Long getUpdateBy() {
+//		return this.updateBy;
+//	}
+//
+//	public void setUpdateBy(Long updateBy) {
+//		this.updateBy = updateBy;
+//	}
+//
+//	public Date getUpdateDate() {
+//		return this.updateDate;
+//	}
+//
+//	public void setUpdateDate(Date updateDate) {
+//		this.updateDate = updateDate;
+//	}
+//
+//	public Long getCreateBy() {
+//		return this.createBy;
+//	}
+//
+//	public void setCreateBy(Long createBy) {
+//		this.createBy = createBy;
+//	}
+//
+//	public Date getCreateDate() {
+//		return this.createDate;
+//	}
+//
+//	public void setCreateDate(Date createDate) {
+//		this.createDate = createDate;
+//	}
 
 	public Content getContent() {
 		return this.content;
@@ -123,6 +118,6 @@ public class HomePage extends BaseEntity {
 	}
 
 	public boolean isNew() {
-		return (this.id == null);
+		return (this.homePageId == null);
 	}
 }

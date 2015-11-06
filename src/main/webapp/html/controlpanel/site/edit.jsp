@@ -57,6 +57,11 @@ function submitBackForm() {
 						<p class="help-block">The name of the site and is feed to the template.</p>
 					</div>
 					<div class="form-group">
+						<label for="title"><spring:message code="site-title" /></label>
+						<form:input path="title" cssClass="form-control" />
+						<p class="help-block">Page title.</p>
+					</div>
+					<div class="form-group">
 						<label for="domainName">Site Public Domain Name</label>
 						<form:input path="domainName" cssClass="form-control" />
 						<p class="help-block">Domain name for the public site and is important for

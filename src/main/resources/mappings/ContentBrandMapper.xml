@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.content.persistence.ContentBrandMapper">
+	<cache />
+
+	<sql id="contentBrandColumns">
+		c.content_brand_id AS contentBrandId,
+		c.content_id AS contentId,
+		c.brand_id AS brandId,
+		c.brand_name AS brandName,
+		c.description,
+		c.create_by AS "createBy.userId",
+		c.create_date AS createDate,
+		c.update_by AS "updateBy.userId",
+		c.update_date AS updateDate
+	</sql>
+
+	<select id="getById" resultType="ContentBrand">
+		SELECT 
+			<include refid="contentBrandColumns"/>
+		FROM content_brand c
+		WHERE c.content_brand_id = #{contentBrandId}
+	</select>
+
+	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
+		INSERT INTO content_brand(content_brand_id, content_id, brand_id, brand_name, description, create_by, create_date, update_by, update_date)
+		VALUES(#{contentBrandId}, #{contentId}, #{brandId}, #{brandName}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="ContentBrand">
+		UPDATE content_brand SET
+			brand_id = #{brandId},
+			brand_name = #{brandName},
+			description = #{description},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+		WHERE content_id = #{contentId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM content_brand WHERE content_brand_id = #{contentBrandId}
+	</delete>
+</mapper>

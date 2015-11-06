@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.UserEditValidator;
 import com.yoda.user.model.User;
@@ -45,8 +44,6 @@ public class UserEditController {
 			@ModelAttribute User user, BindingResult result,
 			SessionStatus status, HttpServletRequest request)
 		throws Throwable {
-		User signinUser = PortalUtil.getAuthenticatedUser();
-
 		new UserEditValidator().validate(user, result);
 
 		ModelMap model = new ModelMap();
@@ -79,7 +76,7 @@ public class UserEditController {
 			user.getUserId(), user.getUsername(), user.getPassword(),
 			user.getEmail(), user.getPhone(), user.getAddressLine1(),
 			user.getAddressLine2(), user.getCityName(), siteIds,
-			user.isEnabled(), signinUser.getUserId());
+			user.isEnabled());
 
 		model.put("sites", siteService.getSites());
 		model.put("success", "success");

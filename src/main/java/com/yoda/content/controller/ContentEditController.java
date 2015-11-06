@@ -78,7 +78,7 @@ public class ContentEditController {
 			Map<String, Object> model, HttpServletRequest request) {
 		Site site = PortalUtil.getSiteFromSession(request);
 
-		Content content = contentService.getContent(site.getSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 //		copyProperties(command, content);
 
@@ -129,7 +129,7 @@ public class ContentEditController {
 //		uploadImage(content.getContentId(), contentImage, request, response);
 
 		if (getHomePage(site.getSiteId(), content.getContentId()) != null) {
-			content.setHomePage(true);
+			contentDb.setHomePage(true);
 		}
 
 		List<Category> categories = categoryService.getCategories();
@@ -149,11 +149,11 @@ public class ContentEditController {
 			HttpServletRequest request) {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		int siteId = user.getLastVisitSiteId();
+//		int siteId = user.getLastVisitSiteId();
 
 		long contentId = content.getContentId();
 
-		Content contentDb = contentService.getContent(siteId, contentId);
+		Content contentDb = contentService.getContent(contentId);
 
 //		ContentImage contentImage = content.getImage();
 //
@@ -190,10 +190,10 @@ public class ContentEditController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 		content.setHitCounter(0);
-		content.setUpdateBy(user.getUserId());
+		content.setUpdateBy(user);
 		content.setUpdateDate(new Date());
 
 		contentService.updateContent(content);
@@ -224,15 +224,15 @@ public class ContentEditController {
 
 		User user = PortalUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 		Section section = null;
 
 		if (Validator.isNotNull(sectionId)) {
 			section = sectionService.getSectionBySiteId_SectionId(user.getLastVisitSiteId(), sectionId);
 
-			content.setSection(section);
-			content.setUpdateBy(user.getUserId());
+//			content.setSection(section);
+			content.setUpdateBy(user);
 			content.setUpdateDate(new Date());
 
 			contentService.updateContent(content);
@@ -265,10 +265,10 @@ public class ContentEditController {
 
 		Content content = new Content();
 
-		content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+		content = contentService.getContent(contentId);
 
-		content.setSection(null);
-		content.setUpdateBy(user.getUserId());
+//		content.setSection(null);
+		content.setUpdateBy(user);
 		content.setUpdateDate(new Date());
 
 		contentService.updateContent(content);
@@ -324,7 +324,7 @@ public class ContentEditController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 		if (menuIds != null) {
 			for (int i = 0; i < menuIds.length; i++) {
@@ -338,7 +338,7 @@ public class ContentEditController {
 			}
 		}
 
-		content.setUpdateBy(user.getUserId());
+		content.setUpdateBy(user);
 		content.setUpdateDate(new Date());
 
 		contentService.updateContent(content);
@@ -369,7 +369,7 @@ public class ContentEditController {
 		throws Throwable {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(user.getLastVisitSiteId(), contentId);
+		Content content = contentService.getContent(contentId);
 
 		if (addMenus != null) {
 			for (int i = 0; i < addMenus.length; i++) {
@@ -379,7 +379,7 @@ public class ContentEditController {
 			}
 		}
 
-		content.setUpdateBy(user.getUserId());
+		content.setUpdateBy(user);
 		content.setUpdateDate(new Date());
 
 		contentService.updateContent(content);
@@ -406,7 +406,7 @@ public class ContentEditController {
 			@PathVariable("contentId") long contentId,
 			HttpServletRequest request)
 		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
+//		User user = PortalUtil.getAuthenticatedUser();
 
 		Site site = PortalUtil.getSiteFromSession(request);
 
@@ -419,7 +419,7 @@ public class ContentEditController {
 		}
 
 		contentService.updateContentImage(
-			site.getSiteId(), user.getUserId(), contentId, file);
+			site.getSiteId(), contentId, file);
 
 //		ImageScaler scaler = null;
 //
@@ -615,7 +615,7 @@ public class ContentEditController {
 		for (HomePage homePage : homePages) {
 			Content homePageContent = homePage.getContent();
 			if (homePageContent != null) {
-				if (homePageContent.getContentId() == contentId) {
+				if (homePageContent.getContentId().longValue() == contentId.longValue()) {
 					return homePage;
 				}
 			}

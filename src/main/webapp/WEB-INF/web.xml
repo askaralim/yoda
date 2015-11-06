@@ -12,7 +12,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath:/yoda-persistance.xml
+			classpath:/yoda-context.xml
 			classpath:/yoda-security.xml
 		</param-value>
 	</context-param>
@@ -157,6 +157,12 @@
 		<session-timeout>30</session-timeout>
 	</session-config>
 
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+		</jsp-property-group>
+	</jsp-config>
 	<!-- <jsp-config>
 		<taglib>
 			<taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>

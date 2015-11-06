@@ -16,7 +16,7 @@
 	</dl>
 	<dl>
 		<dt><spring:message code="content" /></dt>
-		<dd>${comment.content.title}</dd>
+		<dd>${comment.contentId}</dd>
 	</dl>
 	<dl>
 		<dt><spring:message code="username" /></dt>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.content.persistence.ContentMapper">
+	<cache />
+
+	<resultMap id="contentResult" type="Content">
+		<id property="contentId" column="content_id" />
+		<result property="siteId" column="site_id" />
+		<result property="naturalKey" column="natural_key" />
+		<result property="title" column="title" />
+		<result property="createDate" column="create_date" />
+		<result property="updateDate" column="update_date" />
+		<result property="publishDate" column="publish_date" />
+		<result property="expireDate" column="expire_date" />
+		<result property="shortDescription" column="short_description" />
+		<result property="description" column="description" />
+		<result property="pageTitle" column="page_title" />
+		<result property="hitCounter" column="hit_counter" />
+		<result property="published" column="published" />
+		<!-- <result property="sectionId" column="section_id" /> -->
+		<result property="featuredImage" column="featured_image" />
+		<result property="score" column="score" />
+		<association property="category" column="category_id" javaType="Category" resultMap="categoryResult" />
+		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+		<collection property="contentBrands" ofType="ContentBrand">
+			<id property="contentBrandId" column="content_brand_id" />
+			<result property="contentId" column="content_brand_content_id" />
+			<result property="brandId" column="content_brand_brand_id" />
+			<result property="description" column="content_brand_description" />
+			<result property="brandName" column="content_brand_brand_name" />
+		</collection>
+	</resultMap>
+
+	<resultMap id="categoryResult" type="Category">
+		<id property="categoryId" column="category_id" />
+		<result property="name" column="name" />
+		<result property="parent" column="parent" />
+	</resultMap>
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+	</resultMap>
+
+	<sql id="contentColumns">
+		c.content_id AS content_id,
+		<!-- c.category_id AS "category.categoryId", -->
+		c.site_id AS site_id,
+		c.natural_key AS natural_key,
+		c.title,
+		<!-- c.create_by AS "createBy.userId", -->
+		c.create_date AS create_date,
+		<!-- c.update_by AS "updateBy.userId", -->
+		c.update_date AS update_date,
+		c.publish_date AS publish_date,
+		c.expire_date AS expire_date,
+		c.short_description AS short_description,
+		c.description,
+		c.page_title AS page_title,
+		c.hit_counter AS hit_counter,
+		c.published,
+		<!-- c.section_id AS section_id, -->
+		c.featured_image AS featured_image,
+		c.score,
+		cb.content_brand_id AS content_brand_id,
+		cb.content_id AS content_brand_content_id,
+		cb.brand_id AS content_brand_brand_id,
+		cb.description AS content_brand_description,
+		cb.brand_name AS content_brand_brand_name,
+		ca.category_id,
+		ca.name,
+		ca.parent,
+		u.user_id,
+		u.username,
+		uu.user_id AS u_user_id,
+		uu.username AS u_username
+	</sql>
+
+	<sql id="contentJoins">
+		LEFT OUTER JOIN content_brand cb ON c.content_id = cb.content_id
+		LEFT OUTER JOIN category ca on c.category_id = ca.category_id
+		LEFT OUTER JOIN user_ u on c.create_by = u.user_id
+		LEFT OUTER JOIN user_ uu on c.update_by = uu.user_id
+	</sql>
+
+	<select id="getById" resultMap="contentResult">
+		SELECT 
+			<include refid="contentColumns"/>
+		FROM content c
+		<include refid="contentJoins"/>
+		WHERE c.content_id = #{contentId}
+	</select>
+
+	<select id="getContentsBySiteId" resultMap="contentResult">
+		SELECT 
+			<include refid="contentColumns"/>
+		FROM content c
+		<include refid="contentJoins"/>
+		WHERE c.site_id = #{siteId}
+	</select>
+
+	<select id="getContentsByTitle" resultType="Content">
+		SELECT 
+			<include refid="contentColumns"/>
+		FROM content c
+		<include refid="contentJoins"/>
+		WHERE c.title like CONCAT('%', #{title}, '%')
+	</select>
+
+	<select id="getContentsByUserId" resultType="Content">
+		SELECT 
+			<include refid="contentColumns"/>
+		FROM content c
+		<include refid="contentJoins"/>
+		WHERE c.create_by = #{userId}
+	</select>
+
+	<select id="search" resultType="Content">
+		SELECT 
+			<include refid="contentColumns"/>
+		FROM content c
+		<include refid="contentJoins"/>
+		<where>
+			c.site_id  = #{param1}
+			<!-- <if test="{param2} != null and {param2} != ''">
+				AND c.title like CONCAT('%', #{param2}, '%')
+			</if>
+			<if test="{param3} != null and {param3} != ''">
+				AND c.published = #{param3}
+			</if> -->
+			<!-- <if test="{param4} != null and {param4} != ''">
+				AND c.create_by = #{param4}
+			</if>
+			<if test="{param5} != null and {param5} != ''">
+				AND c.update_by = #{param5}
+			</if>
+			<if test="{param6} != null and {param6} != '' and {param7} != null and {param7} != ''">
+				AND c.publish_date between #{param6} and #{param7}
+			</if>
+			<if test="{param8} != null and {param8} != '' and {param9} != null and {param9} != ''">
+				AND c.expire_date between #{param8} and #{param9}
+			</if> -->
+		</where>
+		order by c.content_id
+	</select>
+
+	<insert id="insert" parameterType="Content" useGeneratedKeys="true" keyProperty="contentId">
+		INSERT INTO content(content_id, category_id, site_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, featured_image, score)
+		VALUES(#{contentId}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featuredImage}, #{score})
+	</insert>
+
+	<update id="update" parameterType="Content">
+		UPDATE content SET
+			category_id = #{category.categoryId},
+			natural_key = #{naturalKey},
+			title = #{title},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+			publish_date = #{publishDate},
+			expire_date = #{expireDate},
+			short_description = #{shortDescription},
+			description = #{description},
+			page_title = #{pageTitle},
+			hit_counter = #{hitCounter},
+			published = #{published},
+			featured_image = #{featuredImage},
+			score = #{score}
+		WHERE content_id = #{contentId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM content WHERE content_id = #{contentId}
+	</delete>
+</mapper>

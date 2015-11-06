@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.yoda.contactus.dao.ContactUsDAO;
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.country.dao.CountryDAO;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.state.dao.StateDAO;
 import com.yoda.util.Format;
 import com.yoda.util.Validator;
@@ -26,13 +27,13 @@ public class ContactUsServiceImpl implements ContactUsService {
 	private CountryDAO countryDAO;
 
 	public ContactUs addContactUs(
-			int siteId, long userId, boolean active, String name, String email,
+			int siteId, boolean active, String name, String email,
 			String phone, String addressLine1, String addressLine2,
 			String cityName, String zipCode, String seqNum, String description) {
 		ContactUs contactUs = new ContactUs();
 
 		contactUs.setSiteId(siteId);
-		contactUs.setCreateBy(userId);
+		contactUs.setCreateBy(PortalUtil.getAuthenticatedUser());
 		contactUs.setCreateDate(new Date(System.currentTimeMillis()));
 		contactUs.setActive(active);
 		contactUs.setName(name);
@@ -51,7 +52,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setUpdateBy(userId);
+		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
 		contactUsDAO.save(contactUs);
@@ -60,7 +61,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 	}
 
 	public ContactUs updateContactUs(
-			int contactUsId, int siteId, long userId, boolean active,
+			int contactUsId, int siteId, boolean active,
 			String name, String email, String phone, String addressLine1,
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception {
@@ -83,7 +84,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setUpdateBy(userId);
+		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
 		contactUsDAO.update(contactUs);

@@ -13,6 +13,7 @@ import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.service.MenuService;
 import com.yoda.section.dao.SectionDAO;
@@ -37,7 +38,7 @@ public class SectionServiceImpl implements SectionService {
 	private MenuService menuService;
 
 	public Section addSection(
-			int siteId, long userId, int parentId,
+			int siteId, int parentId,
 			int seqNum, String shortTitle, String title,
 			String description, boolean published) {
 		Section section = new Section();
@@ -49,8 +50,8 @@ public class SectionServiceImpl implements SectionService {
 		section.setTitle(title);
 		section.setDescription(description);
 		section.setPublished(published);
-		section.setUpdateBy(userId);
-		section.setCreateBy(userId);
+		section.setUpdateBy(PortalUtil.getAuthenticatedUser());
+		section.setCreateBy(PortalUtil.getAuthenticatedUser());
 		section.setUpdateDate(new Date(System.currentTimeMillis()));
 		section.setCreateDate(new Date(System.currentTimeMillis()));
 		section.setNaturalKey(getFullSectionPath(section, siteId));
@@ -61,7 +62,7 @@ public class SectionServiceImpl implements SectionService {
 	}
 
 	public void addSection(
-			int siteId, long userId, int sectionId, String title,
+			int siteId, int sectionId, String title,
 			String shortTitle, String description, boolean published)
 		throws UnsupportedEncodingException, SectionShortTitleException {
 		boolean update = false;
@@ -89,7 +90,7 @@ public class SectionServiceImpl implements SectionService {
 		section.setTitle(title);
 		section.setDescription(description);
 		section.setPublished(published);
-		section.setUpdateBy(userId);
+		section.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		section.setUpdateDate(new Date(System.currentTimeMillis()));
 
 		section.setNaturalKey(fullSectionPath);
@@ -144,7 +145,7 @@ public class SectionServiceImpl implements SectionService {
 		Section section = getSectionBySiteId_SectionId(siteId, sectionId);
 
 		for (Content content : section.getContents()) {
-			content.setSection(null);
+//			content.setSection(null);
 
 			contentService.updateContent(content);
 		}

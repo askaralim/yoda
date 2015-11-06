@@ -3,10 +3,10 @@ package com.yoda.content.service;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.yoda.content.dao.ContentImageDAO;
 import com.yoda.content.model.ContentImage;
+import com.yoda.kernal.util.PortalUtil;
 
 @Deprecated
 public class ContentImageServiceImpl implements ContentImageService {
@@ -32,7 +32,7 @@ public class ContentImageServiceImpl implements ContentImageService {
 	}
 
 	public ContentImage addContentImage(
-			int siteId, Long userId, String imageName, String contentType,
+			int siteId, String imageName, String contentType,
 			byte[] imageValue, int height, int width) {
 		ContentImage contentImage = new ContentImage();
 
@@ -42,9 +42,9 @@ public class ContentImageServiceImpl implements ContentImageService {
 		contentImage.setImageValue(imageValue);
 		contentImage.setHeight(height);
 		contentImage.setWidth(width);
-		contentImage.setUpdateBy(userId);
+		contentImage.setUpdateBy(PortalUtil.getAuthenticatedUser());
 		contentImage.setUpdateDate(new Date());
-		contentImage.setCreateBy(userId);
+		contentImage.setCreateBy(PortalUtil.getAuthenticatedUser());
 		contentImage.setCreateDate(new Date());
 
 		contentImageDAO.save(contentImage);

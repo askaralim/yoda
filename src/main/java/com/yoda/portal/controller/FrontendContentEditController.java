@@ -36,7 +36,7 @@ public class FrontendContentEditController extends BaseFrontendController {
 		Content content = new Content();
 
 		try {
-			content = contentService.getContent(site.getSiteId(), Long.valueOf(contentId));
+			content = contentService.getContent(Long.valueOf(contentId));
 		}
 		catch (HibernateObjectRetrievalFailureException e) {
 			logger.error(e.getMessage());
@@ -46,7 +46,7 @@ public class FrontendContentEditController extends BaseFrontendController {
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
-		if ((currentUser == null) || (currentUser.getUserId() != content.getCreateBy()) ) {
+		if ((currentUser == null) || (currentUser.getUserId() != content.getCreateBy().getUserId()) ) {
 			return new ModelAndView("redirect:/login");
 		}
 
@@ -80,10 +80,10 @@ public class FrontendContentEditController extends BaseFrontendController {
 			return new ModelAndView("portal/user/contentEdit", model);
 		}
 
-		User currentUser = PortalUtil.getAuthenticatedUser();
+//		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		contentService.updateContent(
-			site.getSiteId(), currentUser.getUserId(),
+			site.getSiteId(),
 			content.getContentId(), content.getTitle(),
 			content.getShortDescription(), content.getDescription());
 

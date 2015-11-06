@@ -44,8 +44,6 @@ public class SiteAddController {
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request)
 		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
-
 		validate(site, result);
 
 //		Site site = new Site();
@@ -56,11 +54,7 @@ public class SiteAddController {
 			return "controlpanel/site/edit";
 		}
 
-		siteService.addSite(
-			site.getSiteName(), site.isActive(), user.getUserId(),
-			site.getDomainName(), site.getGoogleAnalyticsId(),
-			site.getPublicPort(), site.getSecurePort(),
-			site.isSecureConnectionEnabled());
+		siteService.addSite(site);
 
 //		SiteLoader siteLoader = new SiteLoader(command.getSiteId(), user.getUserId());
 

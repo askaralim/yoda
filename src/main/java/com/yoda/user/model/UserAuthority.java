@@ -1,39 +1,24 @@
 package com.yoda.user.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
-@Entity
-@Table(name = "authority")
-public class UserAuthority implements GrantedAuthority {
+import com.yoda.BaseEntity;
+
+public class UserAuthority extends BaseEntity implements GrantedAuthority {
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	private Long userId;
 
-	@Column(name = "authority_name")
 	private String authorityName;
 
 	public UserAuthority() {
 	}
 
-	public UserAuthority(User user, String authorityName) {
-		this.user = user;
+	public UserAuthority(Long userId, String authorityName) {
+		this.userId = userId;
 		this.authorityName = authorityName;
 	}
 
@@ -61,12 +46,12 @@ public class UserAuthority implements GrantedAuthority {
 		this.id = userId;
 	}
 
-	public User getUser() {
-		return user;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public String getAuthorityName() {
