@@ -75,7 +75,7 @@ public class FrontendController extends BaseFrontendController {
 			modelMap.put("pageInfo", pageInfo);
 		}
 		catch (Exception e) {
-			logger.error(e.getCause());
+			logger.error(e.getMessage());
 		}
 
 		return new ModelAndView("template", modelMap);

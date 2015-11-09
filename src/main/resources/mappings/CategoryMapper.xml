@@ -40,7 +40,7 @@
 			parent = #{parent},
 			description = #{description},
 			update_by = #{updateBy.userId},
-			update_date = #{updateDate},
+			update_date = #{updateDate}
 		WHERE category_id = #{categoryId}
 	</update>
 

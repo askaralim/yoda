@@ -56,7 +56,9 @@
 												<th><spring:message code="title" /></th>
 												<th><spring:message code="create-date" /></th>
 												<th><spring:message code="hit-counter" /></th>
-												<th><spring:message code="edit" /></th>
+												<c:if test="${currentUser != null && currentUser.userId == content.createBy}">
+													<th><spring:message code="edit" /></th>
+												</c:if>
 											</tr>
 										</thead>
 										<c:forEach var="content" items="${contents}" step="1" varStatus="s">

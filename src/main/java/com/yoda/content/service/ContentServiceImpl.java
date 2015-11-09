@@ -152,8 +152,6 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void addComment(Comment comment) {
-		comment.preInsert();
-
 		commentMapper.insert(comment);
 	}
 
@@ -181,7 +179,7 @@ public class ContentServiceImpl implements ContentService {
 
 		for (HomePage homePage : homePages) {
 			if (homePage.getContent() != null) {
-				if (content.getContentId() == homePage.getContent().getContentId()) {
+				if (content.getContentId().longValue() == homePage.getContent().getContentId().longValue()) {
 //					homePageDAO.delete(homePage);
 					homePageService.delete(homePage);
 				}

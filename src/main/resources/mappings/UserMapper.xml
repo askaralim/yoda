@@ -138,7 +138,7 @@
 		WHERE u.user_id = #{userId}
 	</select>
 
-	<select id="getUserByUsername" resultType="User">
+	<select id="getUserByUsername" resultMap="userResult">
 		SELECT
 			<include refid="userColumns"/>
 		FROM user_ u

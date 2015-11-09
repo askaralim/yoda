@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.content.model.Content;
+import com.yoda.content.service.ContentService;
 import com.yoda.homepage.HomePageDisplayCommand;
 import com.yoda.homepage.HomePageEditCommand;
 import com.yoda.homepage.model.HomePage;
@@ -30,7 +31,6 @@ import com.yoda.util.Format;
 
 @Controller
 public class HomePageController {
-
 	@Autowired
 	UserService userService;
 
@@ -42,6 +42,9 @@ public class HomePageController {
 
 	@Autowired
 	HomePageService homePageService;
+
+	@Autowired
+	ContentService contentService;
 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
@@ -199,7 +202,7 @@ public class HomePageController {
 			}
 
 			if (homePage.getContent() != null) {
-				Content content = homePage.getContent();
+				Content content = contentService.getContent(homePage.getContent().getContentId());
 
 				homePageDisplayCommand.setDataType("Content");
 				homePageDisplayCommand.setDescription(content.getTitle());

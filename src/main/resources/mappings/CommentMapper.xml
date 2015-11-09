@@ -4,41 +4,65 @@
 <mapper namespace="com.yoda.content.persistence.CommentMapper">
 	<cache />
 
+	<resultMap id="commentResult" type="Comment">
+		<id property="id" column="id" />
+		<result property="contentId" column="content_id" />
+		<result property="createDate" column="create_date" />
+		<result property="description" column="description" />
+		<result property="rating" column="rating" />
+		<result property="siteId" column="site_id" />
+		<association property="user" column="user_id" javaType="User" resultMap="userResult" />
+	</resultMap>
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+	</resultMap>
+
 	<sql id="commentColumns">
 		c.id,
-		c.content_id AS contentId,
-		c.user_id AS "user.userId",
-		c.create_date AS createDate,
+		c.content_id AS content_id,
+		c.create_date AS create_date,
 		c.description,
 		c.rating,
-		c.site_id AS siteId
+		c.site_id AS site_id,
+		u.user_id,
+		u.username
 	</sql>
 
-	<select id="getById" resultType="Comment">
+	<sql id="commentJoins">
+		LEFT OUTER JOIN user_ u on c.user_id = u.user_id
+	</sql>
+
+	<select id="getById" resultMap="commentResult">
 		SELECT 
 			<include refid="commentColumns"/>
 		FROM comment c
+			<include refid="commentJoins"/>
 		WHERE c.id = #{id}
 	</select>
 
-	<select id="getCommentsByContentId" resultType="Comment">
+	<select id="getCommentsByContentId" resultMap="commentResult">
 		SELECT 
 			<include refid="commentColumns"/>
 		FROM comment c
+			<include refid="commentJoins"/>
 		WHERE c.content_id = #{contentId} ORDER BY create_date DESC
 	</select>
 
-	<select id="getCommentsBySiteId" resultType="Comment">
+	<select id="getCommentsBySiteId" resultMap="commentResult">
 		SELECT 
 			<include refid="commentColumns"/>
 		FROM comment c
+			<include refid="commentJoins"/>
 		WHERE c.site_id = #{siteId} ORDER BY create_date DESC
 	</select>
 
-	<select id="getCommentsByUserId" resultType="Comment">
+	<select id="getCommentsByUserId" resultMap="commentResult">
 		SELECT 
 			<include refid="commentColumns"/>
 		FROM comment c
+			<include refid="commentJoins"/>
 		WHERE c.user_id = #{userId} ORDER BY create_date DESC
 	</select>
 

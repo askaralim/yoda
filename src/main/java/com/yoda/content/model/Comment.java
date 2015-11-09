@@ -10,8 +10,6 @@ public class Comment extends BaseEntity {
 
 	private Long contentId;
 
-	private Date createDate;
-
 	private int rating;
 
 	private User user;
@@ -66,14 +64,6 @@ public class Comment extends BaseEntity {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Date getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
 	}
 
 	public boolean isNew() {

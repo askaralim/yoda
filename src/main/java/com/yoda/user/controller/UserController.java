@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.UserSearchForm;
 import com.yoda.user.model.User;

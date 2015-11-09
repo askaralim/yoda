@@ -75,12 +75,12 @@
 		WHERE i.site_id = #{siteId}
 	</select>
 
-	<select id="getItemsByContentId" resultType="Item">
+	<select id="getItemsByContentId" resultMap="itemResult">
 		SELECT 
 			<include refid="itemColumns"/>
 		FROM item i
 		<include refid="itemJoins"/>
-		WHERE i.title like CONCAT('%', #{title}, '%')
+		WHERE i.content_id = #{contentId}
 	</select>
 
 	<select id="search" resultType="Item">
