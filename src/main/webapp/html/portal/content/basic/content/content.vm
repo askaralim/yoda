@@ -127,7 +127,7 @@
 								</div>
 								<div class="clearfix"></div>
 
-								<input type="hidden" name="content.contentId" value="$contentInfo.contentId"/>
+								<input type="hidden" name="contentId" value="$contentInfo.contentId"/>
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							</form>
 						</div>
@@ -192,7 +192,7 @@ $(function(){
 function itemThumbUp(id){
 	$.ajax({
 		type: "POST",
-		url: '#springUrl("/items/")' + id + '/rating?thumb=up',
+		url: '#springUrl("/item/")' + id + '/rating?thumb=up',
 		data:'${_csrf.parameterName}=${_csrf.token}', 
 		dataType: "json",
 		success: function(data){
@@ -212,7 +212,7 @@ function itemThumbUp(id){
 function itemThumbDown(id){
 	$.ajax({
 		type: "POST",
-		url: '#springUrl("/items/")' + id + '/rating?thumb=down',
+		url: '#springUrl("/item/")' + id + '/rating?thumb=down',
 		data:'${_csrf.parameterName}=${_csrf.token}', 
 		dataType: "json",
 		success: function(data){

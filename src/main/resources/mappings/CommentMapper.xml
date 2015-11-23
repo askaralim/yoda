@@ -67,7 +67,7 @@
 	</select>
 
 	<insert id="insert" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO content(id, content_id, user_id, create_date, description, rating, site_id)
+		INSERT INTO comment(id, content_id, user_id, create_date, description, rating, site_id)
 		VALUES(#{id}, #{contentId}, #{user.userId}, #{createDate}, #{description}, #{rating}, #{siteId})
 	</insert>
 

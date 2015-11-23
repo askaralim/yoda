@@ -150,8 +150,8 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 				.field("description", content.getDescription())
 				.field("publishDate", content.getPublishDate())
 				.field("published", content.isPublished())
-				.field("updateBy", content.getUpdateBy())
-				.field("updateDate", content.getUpdateDate())
+//				.field("updateBy", content.getUpdateBy())
+//				.field("updateDate", content.getUpdateDate())
 				.endObject();
 
 			updateIndex(builder, TYPE, content.getContentId().toString());

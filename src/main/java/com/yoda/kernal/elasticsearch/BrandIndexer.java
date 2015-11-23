@@ -147,8 +147,8 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 				.field("description", brand.getDescription())
 				.field("imagePath", brand.getImagePath())
 				.field("kind", brand.getKind())
-				.field("updateBy", brand.getUpdateBy())
-				.field("updateDate", brand.getUpdateDate())
+//				.field("updateBy", brand.getUpdateBy())
+//				.field("updateDate", brand.getUpdateDate())
 				.endObject();
 
 			updateIndex(builder, TYPE, brand.getBrandId().toString());

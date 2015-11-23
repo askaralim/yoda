@@ -44,9 +44,9 @@
 			description = #{description},
 			kind = #{kind},
 			image_path = #{imagePath},
-			score = #{score}
+			score = #{score},
 			update_by = #{updateBy.userId},
-			update_date = #{updateDate},
+			update_date = #{updateDate}
 		WHERE brand_id = #{brandId}
 	</update>
 
