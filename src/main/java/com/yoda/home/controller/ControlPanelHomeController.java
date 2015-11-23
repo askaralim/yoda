@@ -37,14 +37,14 @@ import com.yoda.util.Validator;
 @RequestMapping("/controlpanel/home")
 public class ControlPanelHomeController {
 
-	@Autowired
-	CountryService countryService;
+//	@Autowired
+//	CountryService countryService;
 
 	@Autowired
 	SiteService siteService;
 
-	@Autowired
-	StateService stateService;
+//	@Autowired
+//	StateService stateService;
 
 	@Autowired
 	UserService userService;
@@ -180,14 +180,14 @@ public class ControlPanelHomeController {
 			homePageCommand.setSites(sites);
 		}
 
-		List<Country> countries = countryService.getBySiteId(
-			userSite.getSiteId());
-
-		homePageCommand.setCountries(countries);
-
-		List<State> states = stateService.getBySiteId(userSite.getSiteId());
-
-		homePageCommand.setStates(states);
+//		List<Country> countries = countryService.getBySiteId(
+//			userSite.getSiteId());
+//
+//		homePageCommand.setCountries(countries);
+//
+//		List<State> states = stateService.getBySiteId(userSite.getSiteId());
+//
+//		homePageCommand.setStates(states);
 	}
 
 	public void password(
@@ -294,13 +294,13 @@ public class ControlPanelHomeController {
 			return;
 		}
 
-		State state = stateService.getState(
-			homePageCommand.getSiteId(),
-			homePageCommand.getStateCode());
-
-		Country country = countryService.getCountry(
-			homePageCommand.getSiteId(),
-			homePageCommand.getCountryCode());
+//		State state = stateService.getState(
+//			homePageCommand.getSiteId(),
+//			homePageCommand.getStateCode());
+//
+//		Country country = countryService.getCountry(
+//			homePageCommand.getSiteId(),
+//			homePageCommand.getCountryCode());
 
 		User user = userService.getUser(homePageCommand.getUserId());
 
@@ -310,8 +310,8 @@ public class ControlPanelHomeController {
 		user.setAddressLine1(homePageCommand.getAddressLine1());
 		user.setAddressLine2(homePageCommand.getAddressLine2());
 		user.setCityName(homePageCommand.getCityName());
-		user.setStateName(state.getStateName());
-		user.setCountryName(country.getCountryName());
+//		user.setStateName(state.getStateName());
+//		user.setCountryName(country.getCountryName());
 		user.setZipCode(homePageCommand.getZipCode());
 		user.setUpdateBy(user);
 		user.setUpdateDate(new Date());

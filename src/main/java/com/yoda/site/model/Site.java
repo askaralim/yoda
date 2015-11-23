@@ -1,73 +1,36 @@
 package com.yoda.site.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "site")
 public class Site extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "site_id")
 	private Integer siteId;
 
-	@Column(name = "site_name")
 	private String siteName;
 
 	private String title;
 
-	@Column(name = "logo_path")
 	private String logoPath;
 
-	@Column(name = "logo_content_type")
 	private String logoContentType;
 
-	@Column(name = "active")
 	private boolean active;
 
-//	@Column(name = "update_by")
-//	private long updateBy;
-//
-//	@Column(name = "update_date")
-//	private Date updateDate;
-//
-//	@Column(name = "create_by")
-//	private long createBy;
-//
-//	@Column(name = "create_date")
-//	private Date createDate;
-
-	@Column(name = "public_port")
 	private String publicPort;
 
-	@Column(name = "secure_port")
 	private String securePort;
 
-	@Column(name = "domain_name")
 	private String domainName;
 
-	@Column(name = "google_analytics_id")
 	private String googleAnalyticsId;
 
-	@Column(name = "secure_connection_enabled")
 	private boolean secureConnectionEnabled;
 
-	@Column(name = "footer")
 	private String footer;
 
-	@Column(name = "listing_page_size")
 	private String listingPageSize;
 
-	@Column(name = "section_page_size")
 	private String sectionPageSize;
 
-	@Column(name = "theme_id")
 	private Integer themeId;
 
 	public Site() {

@@ -2,45 +2,25 @@ package com.yoda.poll.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "poll_detail")
 public class PollDetail extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "poll_detail_id")
 	private Long pollDetailId;
 
-	@Column(name = "site_id")
 	private String siteId;
 
-	@Column(name = "poll_option")
 	private String pollOption;
 
-	@Column(name = "seq_num")
 	private Integer seqNum;
 
-	@Column(name = "poll_vote_count")
 	private Integer pollVoteCount;
 
-	@Column(name = "rec_update_by")
 	private String recUpdateBy;
 
-	@Column(name = "rec_update_datetime")
 	private Date recUpdateDatetime;
 
-	@Column(name = "rec_create_by")
 	private String recCreateBy;
 
-	@Column(name = "rec_create_datetime")
 	private Date recCreateDatetime;
 
 	public Long getPollDetailId() {

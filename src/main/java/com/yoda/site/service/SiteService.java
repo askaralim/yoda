@@ -15,6 +15,7 @@ public interface SiteService {
 
 //	void initialize(Site site);
 
+	@Deprecated
 	List<Site> getByQuery(String hql);
 
 //	void updateSite(Site site);

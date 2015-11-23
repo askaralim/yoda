@@ -1,53 +1,30 @@
 package com.yoda.contactus.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "contact_us")
 public class ContactUs extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "contact_us_id")
 	private Integer contactUsId;
 
-	@Column(name = "site_id")
 	private int siteId;
 
-	@Column(name = "name")
 	private String name;
 
-	@Column(name = "address_line1")
 	private String addressLine1;
 
-	@Column(name = "address_line2")
 	private String addressLine2;
 
-	@Column(name = "city_name")
 	private String cityName;
 
-	@Column(name = "zip_code")
 	private String zipCode;
 
-	@Column(name = "email")
 	private String email;
 
-	@Column(name = "phone")
 	private String phone;
 
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "seq_num")
 	private int seqNum;
 
-	@Column(name = "active")
 	private boolean active;
 
 //	@Column(name = "update_by")

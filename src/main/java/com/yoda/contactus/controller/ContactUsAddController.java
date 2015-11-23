@@ -1,7 +1,5 @@
 package com.yoda.contactus.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,22 +17,17 @@ import com.yoda.contactus.ContactUsEditCommand;
 import com.yoda.contactus.ContactUsEditValidator;
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.contactus.service.ContactUsService;
-import com.yoda.country.model.Country;
-import com.yoda.country.service.CountryService;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.state.model.State;
-import com.yoda.state.service.StateService;
 import com.yoda.user.model.User;
-import com.yoda.util.Constants;
 
 @Controller
 @RequestMapping("/controlpanel/contactus/add")
 public class ContactUsAddController {
-	@Autowired
-	CountryService countryService;
+//	@Autowired
+//	CountryService countryService;
 
-	@Autowired
-	StateService stateService;
+//	@Autowired
+//	StateService stateService;
 
 	@Autowired
 	ContactUsService contactUsService;
@@ -93,12 +86,12 @@ public class ContactUsAddController {
 	}
 
 	public void initSearchInfo(ContactUsEditCommand command, long siteId) {
-		List<Country> countries = countryService.getBySiteId(siteId);
+//		List<Country> countries = countryService.getBySiteId(siteId);
+//
+//		command.setCountries(countries);
 
-		command.setCountries(countries);
-
-		List<State> states = stateService.getBySiteId(siteId);
-
-		command.setStates(states);
+//		List<State> states = stateService.getBySiteId(siteId);
+//
+//		command.setStates(states);
 	}
 }

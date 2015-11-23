@@ -45,8 +45,8 @@ public class MenuController {
 	@Autowired
 	ItemService itemService;
 
-	@Autowired
-	SectionService sectionService;
+//	@Autowired
+//	SectionService sectionService;
 
 	@RequestMapping(value = "/controlpanel/menu/create", method = RequestMethod.POST)
 	public String create(

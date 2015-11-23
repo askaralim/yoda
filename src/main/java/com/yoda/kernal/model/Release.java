@@ -2,33 +2,17 @@ package com.yoda.kernal.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "release_")
 public class Release extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "release_id")
 	private Long releaseId;
 
-	@Column(name = "create_date")
 	private Date createDate;
 
-	@Column(name = "modified_date")
 	private Date modifiedDate;
 
-	@Column(name = "build_number")
 	private int buildNumber;
 
-	@Column(name = "verified")
 	private boolean verified;
 
 	public Long getReleaseId() {

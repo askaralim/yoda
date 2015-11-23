@@ -12,9 +12,9 @@ import com.yoda.exception.PortalException;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.site.persistence.SiteMapper;
-import com.yoda.user.dao.AuthorityDAO;
 import com.yoda.user.model.User;
 import com.yoda.user.model.UserAuthority;
+import com.yoda.user.persistence.UserAuthorityMapper;
 import com.yoda.user.persistence.UserMapper;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
@@ -26,7 +26,7 @@ import com.yoda.util.Validator;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private AuthorityDAO authorityDAO;
+	private UserAuthorityMapper authorityMapper;
 
 //	@Autowired
 //	private SiteDAO siteDAO;
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 		userMapper.delete(user);
 
 		for (UserAuthority ua : user.getAuthorities()) {
-			authorityDAO.delete(ua);
+			authorityMapper.delete(ua);
 		}
 	}
 
@@ -216,8 +216,8 @@ public class UserServiceImpl implements UserService {
 
 	private void saveUserRole(User user, String role) {
 		if (role.equals(Constants.USER_ROLE_ADMINISTRATOR)) {
-			authorityDAO.save(new UserAuthority(user.getUserId(), "ROLE_ADMIN"));
-			authorityDAO.save(new UserAuthority(user.getUserId(), "ROLE_USER"));
+			authorityMapper.insert(new UserAuthority(user.getUserId(), "ROLE_ADMIN"));
+			authorityMapper.insert(new UserAuthority(user.getUserId(), "ROLE_USER"));
 
 			user.getAuthorities().clear();
 
@@ -225,14 +225,14 @@ public class UserServiceImpl implements UserService {
 			user.getAuthorities().add(new UserAuthority(user.getUserId(), "ROLE_USER"));
 		}
 		else if (role.equals(Constants.USER_ROLE_SUPERUSER)) {
-			authorityDAO.save(new UserAuthority(user.getUserId(), "ROLE_SUPERUSER"));
+			authorityMapper.insert(new UserAuthority(user.getUserId(), "ROLE_SUPERUSER"));
 
 			user.getAuthorities().clear();
 
 			user.getAuthorities().add(new UserAuthority(user.getUserId(), "ROLE_SUPERUSER"));
 		}
 		else {
-			authorityDAO.save(new UserAuthority(user.getUserId(), "ROLE_USER"));
+			authorityMapper.insert(new UserAuthority(user.getUserId(), "ROLE_USER"));
 
 			user.getAuthorities().clear();
 

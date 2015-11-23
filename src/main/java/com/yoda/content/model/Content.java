@@ -4,107 +4,53 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.yoda.BaseEntity;
 import com.yoda.category.model.Category;
 import com.yoda.menu.model.Menu;
 
-@Entity
-@Table(name = "content")
 public class Content extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "content_id")
 	private Long contentId;
 
-	@Column(name = "published")
 	private boolean published;
 
-	@Transient
 	private boolean homePage;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
 	private Category category;
 
-	@Column(name = "publish_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date publishDate;
 
-	@Column(name = "expire_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date expireDate;
 
-//	@Column(name = "update_date")
-//	private Date updateDate;
-//
-//	@Column(name = "create_date")
-//	private Date createDate;
-
-	@Column(name = "hit_counter")
 	private int hitCounter;
 
-	@Column(name = "score")
 	private int score;
 
-	@Column(name = "site_id")
 	private int siteId;
 
-//	@Column(name = "update_by")
-//	private long updateBy;
-//
-//	@Column(name = "create_by")
-//	private long createBy;
-
-//	@Column(name = "section_id")
 //	private int sectionId;
 
-	@Column(name = "natural_key")
 	private String naturalKey;
 
-	@Column(name = "title")
 	private String title;
 
-	@Column(name = "short_description")
 	private String shortDescription;
 
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "page_title")
 	private String pageTitle;
 
-	@Column(name = "featured_image")
 	private String featuredImage;
 
-//	@ManyToOne
-//	@JoinColumn(name = "section_id")
 //	private Section section;
 
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-	@JoinColumn(name = "content_id")
 	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
 
-//	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-//	@JoinColumn(name = "content_id")
 //	private Set<Item> items = new HashSet<Item>();
 
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-	@JoinColumn(name = "content_id")
 	private Set<Menu> menus = new HashSet<Menu>();
 
 	public Long getContentId() {

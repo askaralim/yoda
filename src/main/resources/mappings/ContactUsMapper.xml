@@ -42,7 +42,7 @@
 		SELECT 
 			<include refid="contactUsColumns"/>
 		FROM contact_us c
-		WHERE siteId = #{param1} and active = #{param2}
+		WHERE c.site_id = #{param1} and c.active = #{param2}
 		ORDER BY c.seq_num
 	</select>
 

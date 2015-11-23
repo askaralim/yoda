@@ -30,7 +30,7 @@
 	</bean>
 
 	<!-- ========================= HIBERNATE ========================= -->
-	<import resource="classpath:yoda-hibernate.xml"/>
+	<!-- <import resource="classpath:yoda-hibernate.xml"/> -->
 
 	<!-- ========================= MYBATIS ========================= -->
 	<import resource="classpath:yoda-mybatis.xml"/>

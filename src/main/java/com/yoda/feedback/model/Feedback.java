@@ -2,36 +2,19 @@ package com.yoda.feedback.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "feedback")
 public class Feedback extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "create_date")
 	private Date createDate;
 
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "email")
 	private String email;
 
-	@Column(name = "phone")
 	private String phone;
 
-	@Column(name = "username")
 	private String username;
 
 	public Long getId() {

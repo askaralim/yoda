@@ -17,7 +17,6 @@ import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.service.MenuService;
-import com.yoda.section.service.SectionService;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
@@ -31,8 +30,8 @@ public class ContentController {
 	@Autowired
 	SiteService siteService;
 
-	@Autowired
-	SectionService sectionService;
+//	@Autowired
+//	SectionService sectionService;
 
 	@Autowired
 	ContentService contentService;

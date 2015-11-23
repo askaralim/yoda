@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.site.dao.SiteDAO;
 import com.yoda.site.model.Site;
 import com.yoda.site.persistence.SiteMapper;
 import com.yoda.site.service.SiteService;
@@ -20,9 +19,6 @@ import com.yoda.util.Validator;
 @Transactional
 @Service
 public class SiteServiceImpl implements SiteService {
-
-	@Autowired
-	private SiteDAO siteDAO;
 
 	@Autowired
 	private SiteMapper siteMapper;
@@ -62,11 +58,12 @@ public class SiteServiceImpl implements SiteService {
 		siteMapper.delete(site);
 	}
 
-	@Deprecated
-	@Transactional(readOnly = true)
-	@SuppressWarnings("unchecked")
+//	@Deprecated
+//	@Transactional(readOnly = true)
+//	@SuppressWarnings("unchecked")
 	public List<Site> getByQuery(String hql) {
-		return (List<Site>)siteDAO.find(hql);
+//		return (List<Site>)siteDAO.find(hql);
+		return null;
 	}
 
 	@Transactional(readOnly = true)

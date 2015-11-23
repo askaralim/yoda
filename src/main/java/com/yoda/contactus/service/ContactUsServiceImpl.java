@@ -7,21 +7,18 @@ import org.springframework.stereotype.Service;
 
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.contactus.persistence.ContactUsMapper;
-import com.yoda.country.dao.CountryDAO;
-import com.yoda.state.dao.StateDAO;
 import com.yoda.util.Format;
 
 @Service
 public class ContactUsServiceImpl implements ContactUsService {
 	@Autowired
-//	private ContactUsDAO contactUsDAO;
 	private ContactUsMapper contactUsMapper;
 
-	@Autowired
-	private StateDAO stateDAO;
+//	@Autowired
+//	private StateDAO stateDAO;
 
-	@Autowired
-	private CountryDAO countryDAO;
+//	@Autowired
+//	private CountryDAO countryDAO;
 
 	public ContactUs addContactUs(
 			int siteId, boolean active, String name, String email,

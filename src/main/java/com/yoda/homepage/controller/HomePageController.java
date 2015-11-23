@@ -22,7 +22,6 @@ import com.yoda.homepage.HomePageEditCommand;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.section.service.SectionService;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
@@ -34,8 +33,8 @@ public class HomePageController {
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	SectionService sectionService;
+//	@Autowired
+//	SectionService sectionService;
 
 	@Autowired
 	SiteService siteService;

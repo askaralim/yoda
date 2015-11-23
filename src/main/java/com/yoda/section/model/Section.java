@@ -20,58 +20,33 @@ import com.yoda.content.model.Content;
 import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 
-@Entity
-@Table(name = "section")
 public class Section extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "section_id")
 	private Integer sectionId;
 
-	@Column(name = "site_id")
 	private int siteId;
 
-	@Column(name = "natural_key")
 	private String naturalKey;
 
-	@Column(name = "title")
 	private String title;
 
-	@Column(name = "seq_num")
 	private int seqNum;
 
-	@Column(name = "parent_id")
 	private int parentId;
 
-	@Column(name = "short_title")
 	private String shortTitle;
 
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "published")
 	private boolean published;
 
-//	@Column(name = "update_by")
-//	private long updateBy;
-//
-//	@Column(name = "create_by")
-//	private long createBy;
-//
-//	@Column(name = "update_date")
-//	private Date updateDate;
-//
-//	@Column(name = "create_date")
-//	private Date createDate;
-
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-	@JoinColumn(name = "section_id")
+//	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+//	@JoinColumn(name = "section_id")
 	private Set<Menu> menus = new HashSet<Menu>();
 
 //	private Set<Item> items = new HashSet<Item>(0);
 
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-	@JoinColumn(name = "section_id")
+//	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+//	@JoinColumn(name = "section_id")
 	private Set<Content> contents = new HashSet<Content>();
 
 	public Integer getSectionId() {
@@ -133,38 +108,6 @@ public class Section extends BaseEntity {
 	public void setPublished(boolean published) {
 		this.published = published;
 	}
-
-//	public long getUpdateBy() {
-//		return updateBy;
-//	}
-//
-//	public void setUpdateBy(long updateBy) {
-//		this.updateBy = updateBy;
-//	}
-//
-//	public long getCreateBy() {
-//		return createBy;
-//	}
-//
-//	public void setCreateBy(long createBy) {
-//		this.createBy = createBy;
-//	}
-//
-//	public Date getUpdateDate() {
-//		return updateDate;
-//	}
-//
-//	public void setUpdateDate(Date updateDate) {
-//		this.updateDate = updateDate;
-//	}
-//
-//	public Date getCreateDate() {
-//		return createDate;
-//	}
-//
-//	public void setCreateDate(Date createDate) {
-//		this.createDate = createDate;
-//	}
 
 	public void setSiteId(int siteId) {
 		this.siteId = siteId;

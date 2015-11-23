@@ -24,9 +24,8 @@ import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
-import com.yoda.site.model.Site;
+import com.yoda.menu.persistence.MenuMapper;
 import com.yoda.util.Format;
 import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
@@ -57,7 +56,8 @@ public class ContentServiceImpl implements ContentService {
 //	private HomePageDAO homePageDAO;
 
 	@Autowired
-	private MenuDAO menuDAO;
+//	private MenuDAO menuDAO;
+	private MenuMapper menuMapper;
 
 	@Autowired
 	HomePageService homePageService;
@@ -193,7 +193,7 @@ public class ContentServiceImpl implements ContentService {
 
 			menu.setContent(null);
 
-			menuDAO.update(menu);
+			menuMapper.update(menu);
 		}
 
 		new ContentIndexer().deleteIndex(content.getContentId());

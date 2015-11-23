@@ -30,11 +30,11 @@ import com.yoda.user.model.User;
 @Controller
 @RequestMapping("/controlpanel/contactus/{contactUsId}/edit")
 public class ContactUsEditController {
-	@Autowired
-	CountryService countryService;
-
-	@Autowired
-	StateService stateService;
+//	@Autowired
+//	CountryService countryService;
+//
+//	@Autowired
+//	StateService stateService;
 
 	@Autowired
 	ContactUsService contactUsService;
@@ -122,12 +122,12 @@ public class ContactUsEditController {
 	}
 
 	public void initSearchInfo(ContactUsEditCommand command, long siteId) {
-		List<Country> countries = countryService.getBySiteId(siteId);
-
-		command.setCountries(countries);
-
-		List<State> states = stateService.getBySiteId(siteId);
-
-		command.setStates(states);
+//		List<Country> countries = countryService.getBySiteId(siteId);
+//
+//		command.setCountries(countries);
+//
+//		List<State> states = stateService.getBySiteId(siteId);
+//
+//		command.setStates(states);
 	}
 }

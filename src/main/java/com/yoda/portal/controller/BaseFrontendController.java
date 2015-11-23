@@ -51,8 +51,8 @@ import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
 public class BaseFrontendController {
-	@Autowired
-	private SectionService sectionService;
+//	@Autowired
+//	private SectionService sectionService;
 
 	@Autowired
 	protected ContentService contentService;
@@ -289,215 +289,215 @@ public class BaseFrontendController {
 		return homeInfo;
 	}
 
-	public SectionInfo getSection(
-			int siteId, String sectionNaturalKey, String topSectionNaturalKey, int pageSize,
-			int pageNavCount, int pageNum, String sortBy)
-		throws Exception {
-		String contextPath = ServletContextUtil.getContextPath();
-
-		SectionInfo sectionInfo = new SectionInfo();
-
-		String key = Utility.reEncode(sectionNaturalKey);
-		String topKey = Utility.reEncode(topSectionNaturalKey);
-
-		Section section = sectionService.getSectionBySiteId_NaturalKey(siteId, key);
-
-		if (section == null) {
-			return null;
-		}
-
-		sectionInfo.setSectionNaturalKey(sectionNaturalKey);
-		sectionInfo.setSectionId(section.getSectionId());
-		sectionInfo.setTopSectionId(0);
-		sectionInfo.setTopSectionNaturalKey(topSectionNaturalKey);
-		sectionInfo.setSectionShortTitle(section.getShortTitle());
-		sectionInfo.setSectionTitle(section.getTitle());
-		sectionInfo.setSectionDesc(section.getDescription());
-
-//		String url = "/" + ApplicationGlobal.getContextPath()
-		String url = contextPath + StringPool.SLASH
-			+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
-			+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH + topSectionNaturalKey + // topSection
-			StringPool.SLASH + section.getNaturalKey(); // section
-
-		sectionInfo.setSectionUrl(url);
-		sectionInfo.setSortBy(sortBy == null ? "" : sortBy);
-
-		List<Section> childSections = sectionService.getSectionBySiteId_SectionParentId_Published(siteId, section.getSectionId(), true);
-
-		Vector<Object> vector = new Vector<Object>();
-
-		for (Section childSection : childSections) {
-			SectionInfo childSectionInfo = new SectionInfo();
-
-			childSectionInfo.setSectionId(childSection.getSectionId());
-			childSectionInfo.setSectionShortTitle(childSection.getShortTitle());
-			childSectionInfo.setSectionTitle(childSection.getTitle());
-			childSectionInfo.setSectionDesc(childSection.getDescription());
-
-//			url = "/" + ApplicationGlobal.getContextPath()
-			url = contextPath + StringPool.SLASH
-				+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
-				+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
-				+ topSectionNaturalKey + // topSection
-				StringPool.SLASH + childSection.getNaturalKey(); // section
-
-			childSectionInfo.setSectionUrl(url);
-
-			vector.add(childSectionInfo);
-		}
-
-		SectionInfo childSectionInfos[] = new SectionInfo[vector.size()];
-
-		vector.copyInto(childSectionInfos);
-
-		sectionInfo.setChildSectionInfos(childSectionInfos);
-		sectionInfo.setChildCount(childSectionInfos.length);
-
-		int itemStart = (pageNum - 1) * pageSize;
-		int itemEnd = itemStart + pageSize - 1;
-		int index = 0;
-
-		String sql = "select type, objectId, description, price " +
-			"from (select 'I' type, item_id objectId, item_short_desc description, item_price price " +
-				"from item where site_id = '" + siteId + "' and section_id = " + section.getSectionId() + " and published = 'Y' and now() between item_publish_on and item_expire_on " +
-					"union select 'C' type, content_id objectId, content_title description, 0 price from content where site_id = '" + siteId + "' and section_id = " + section.getSectionId() +
-					" and published = 'Y'and now() between content_publish_on and content_expire_on) as mytable ";
-
-		List<Section> list = sectionService.search(sql, sortBy);
-
-		int totalCount = list.size();
-
-		Iterator sqlIterator = list.iterator();
-
-		vector = new Vector<Object>();
-
-		while (sqlIterator.hasNext()) {
-			Object object = sqlIterator.next();
-
-			if (index >= itemStart && index <= itemEnd) {
-				Object results[] = (Object[]) object;
-
-				String type = (String) results[0];
-
-				String objectId = (String) results[1];
-
-				if (type.equals("I")) {
-//					Item item = itemService.getItem(siteId, Format.getLong(objectId));
+//	public SectionInfo getSection(
+//			int siteId, String sectionNaturalKey, String topSectionNaturalKey, int pageSize,
+//			int pageNavCount, int pageNum, String sortBy)
+//		throws Exception {
+//		String contextPath = ServletContextUtil.getContextPath();
 //
-//					ItemInfo itemInfo = formatItem(item);
+//		SectionInfo sectionInfo = new SectionInfo();
 //
-//					vector.add(itemInfo);
-				}
-				else {
-					Content content = contentService.getContent(Format.getLong(objectId));
-
-					ContentInfo contentInfo = formatContent(content);
-
-					vector.add(contentInfo);
-				}
-
-				if (index > itemEnd) {
-					break;
-				}
-			}
-
-			index++;
-		}
-
-		int midpoint = pageNavCount / 2;
-		int recordCount = totalCount;
-		int pageTotal = recordCount / pageSize;
-
-		if (recordCount % pageSize > 0) {
-			pageTotal++;
-		}
-
-		sectionInfo.setPageTotal(pageTotal);
-		sectionInfo.setPageNum(pageNum);
-
-		int pageStart = pageNum - midpoint;
-
-		if (pageStart < 1) {
-			pageStart = 1;
-		}
-
-		int pageEnd = pageStart + pageNavCount - 1;
-
-		if (pageEnd > pageTotal) {
-			pageEnd = pageTotal;
-
-			if (pageEnd - pageStart + 1 < pageNavCount) {
-				pageStart = pageEnd - pageNavCount + 1;
-				if (pageStart < 1) {
-					pageStart = 1;
-				}
-			}
-		}
-
-		sectionInfo.setPageStart(pageStart);
-		sectionInfo.setPageEnd(pageEnd);
-
-		Object sectionDatas[] = new Object[vector.size()];
-
-		vector.copyInto(sectionDatas);
-		sectionInfo.setSectionDatas(sectionDatas);
-
-		Vector<SectionInfo> titleSectionVector = new Vector<SectionInfo>();
-
-		int sectionParentId = section.getParentId();
-
-		while (true) {
-			key = Utility.reEncode(section.getNaturalKey());
-
-			if (key.equals(topKey)) {
-				break;
-			}
-
-			section = sectionService.getSectionBySiteId_SectionId(siteId, sectionParentId);
-
-			if (section.getParentId() == 0) {
-				break;
-			}
-
-			SectionInfo titleSectionInfo = new SectionInfo();
-
-			titleSectionInfo.setSectionNaturalKey(section.getNaturalKey());
-			titleSectionInfo.setSectionId(section.getSectionId());
-			titleSectionInfo.setSectionShortTitle(section.getShortTitle());
-			titleSectionInfo.setSectionTitle(section.getTitle());
-			titleSectionInfo.setSectionDesc(section.getDescription());
-
-//			url = "/" + ApplicationGlobal.getContextPath()
-			url = contextPath + StringPool.SLASH
-					+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
-					+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
-					+ topSectionNaturalKey + // topSection
-					StringPool.SLASH + section.getNaturalKey(); // section
-
-			titleSectionInfo.setSectionUrl(url);
-
-			titleSectionVector.add(titleSectionInfo);
-
-			sectionParentId = section.getParentId();
-		}
-
-		// Reverse sequence order
-		SectionInfo titleSectionInfos[] = new SectionInfo[titleSectionVector.size()];
-
-		int pos = 0;
-
-		for (int i = titleSectionVector.size() - 1; i >= 0; i--) {
-			titleSectionInfos[pos++] = (SectionInfo) titleSectionVector.get(i);
-		}
-
-		sectionInfo.setTitleSectionInfos(titleSectionInfos);
-
-		// TODO need to be implemented
-		Object sectionFeatureDatas[] = new Object[0];
-
-		sectionInfo.setSectionFeatureDatas(sectionFeatureDatas);
-
-		return sectionInfo;
-	}
+//		String key = Utility.reEncode(sectionNaturalKey);
+//		String topKey = Utility.reEncode(topSectionNaturalKey);
+//
+//		Section section = sectionService.getSectionBySiteId_NaturalKey(siteId, key);
+//
+//		if (section == null) {
+//			return null;
+//		}
+//
+//		sectionInfo.setSectionNaturalKey(sectionNaturalKey);
+//		sectionInfo.setSectionId(section.getSectionId());
+//		sectionInfo.setTopSectionId(0);
+//		sectionInfo.setTopSectionNaturalKey(topSectionNaturalKey);
+//		sectionInfo.setSectionShortTitle(section.getShortTitle());
+//		sectionInfo.setSectionTitle(section.getTitle());
+//		sectionInfo.setSectionDesc(section.getDescription());
+//
+////		String url = "/" + ApplicationGlobal.getContextPath()
+//		String url = contextPath + StringPool.SLASH
+//			+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
+//			+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH + topSectionNaturalKey + // topSection
+//			StringPool.SLASH + section.getNaturalKey(); // section
+//
+//		sectionInfo.setSectionUrl(url);
+//		sectionInfo.setSortBy(sortBy == null ? "" : sortBy);
+//
+//		List<Section> childSections = sectionService.getSectionBySiteId_SectionParentId_Published(siteId, section.getSectionId(), true);
+//
+//		Vector<Object> vector = new Vector<Object>();
+//
+//		for (Section childSection : childSections) {
+//			SectionInfo childSectionInfo = new SectionInfo();
+//
+//			childSectionInfo.setSectionId(childSection.getSectionId());
+//			childSectionInfo.setSectionShortTitle(childSection.getShortTitle());
+//			childSectionInfo.setSectionTitle(childSection.getTitle());
+//			childSectionInfo.setSectionDesc(childSection.getDescription());
+//
+////			url = "/" + ApplicationGlobal.getContextPath()
+//			url = contextPath + StringPool.SLASH
+//				+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
+//				+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
+//				+ topSectionNaturalKey + // topSection
+//				StringPool.SLASH + childSection.getNaturalKey(); // section
+//
+//			childSectionInfo.setSectionUrl(url);
+//
+//			vector.add(childSectionInfo);
+//		}
+//
+//		SectionInfo childSectionInfos[] = new SectionInfo[vector.size()];
+//
+//		vector.copyInto(childSectionInfos);
+//
+//		sectionInfo.setChildSectionInfos(childSectionInfos);
+//		sectionInfo.setChildCount(childSectionInfos.length);
+//
+//		int itemStart = (pageNum - 1) * pageSize;
+//		int itemEnd = itemStart + pageSize - 1;
+//		int index = 0;
+//
+//		String sql = "select type, objectId, description, price " +
+//			"from (select 'I' type, item_id objectId, item_short_desc description, item_price price " +
+//				"from item where site_id = '" + siteId + "' and section_id = " + section.getSectionId() + " and published = 'Y' and now() between item_publish_on and item_expire_on " +
+//					"union select 'C' type, content_id objectId, content_title description, 0 price from content where site_id = '" + siteId + "' and section_id = " + section.getSectionId() +
+//					" and published = 'Y'and now() between content_publish_on and content_expire_on) as mytable ";
+//
+//		List<Section> list = sectionService.search(sql, sortBy);
+//
+//		int totalCount = list.size();
+//
+//		Iterator sqlIterator = list.iterator();
+//
+//		vector = new Vector<Object>();
+//
+//		while (sqlIterator.hasNext()) {
+//			Object object = sqlIterator.next();
+//
+//			if (index >= itemStart && index <= itemEnd) {
+//				Object results[] = (Object[]) object;
+//
+//				String type = (String) results[0];
+//
+//				String objectId = (String) results[1];
+//
+//				if (type.equals("I")) {
+////					Item item = itemService.getItem(siteId, Format.getLong(objectId));
+////
+////					ItemInfo itemInfo = formatItem(item);
+////
+////					vector.add(itemInfo);
+//				}
+//				else {
+//					Content content = contentService.getContent(Format.getLong(objectId));
+//
+//					ContentInfo contentInfo = formatContent(content);
+//
+//					vector.add(contentInfo);
+//				}
+//
+//				if (index > itemEnd) {
+//					break;
+//				}
+//			}
+//
+//			index++;
+//		}
+//
+//		int midpoint = pageNavCount / 2;
+//		int recordCount = totalCount;
+//		int pageTotal = recordCount / pageSize;
+//
+//		if (recordCount % pageSize > 0) {
+//			pageTotal++;
+//		}
+//
+//		sectionInfo.setPageTotal(pageTotal);
+//		sectionInfo.setPageNum(pageNum);
+//
+//		int pageStart = pageNum - midpoint;
+//
+//		if (pageStart < 1) {
+//			pageStart = 1;
+//		}
+//
+//		int pageEnd = pageStart + pageNavCount - 1;
+//
+//		if (pageEnd > pageTotal) {
+//			pageEnd = pageTotal;
+//
+//			if (pageEnd - pageStart + 1 < pageNavCount) {
+//				pageStart = pageEnd - pageNavCount + 1;
+//				if (pageStart < 1) {
+//					pageStart = 1;
+//				}
+//			}
+//		}
+//
+//		sectionInfo.setPageStart(pageStart);
+//		sectionInfo.setPageEnd(pageEnd);
+//
+//		Object sectionDatas[] = new Object[vector.size()];
+//
+//		vector.copyInto(sectionDatas);
+//		sectionInfo.setSectionDatas(sectionDatas);
+//
+//		Vector<SectionInfo> titleSectionVector = new Vector<SectionInfo>();
+//
+//		int sectionParentId = section.getParentId();
+//
+//		while (true) {
+//			key = Utility.reEncode(section.getNaturalKey());
+//
+//			if (key.equals(topKey)) {
+//				break;
+//			}
+//
+//			section = sectionService.getSectionBySiteId_SectionId(siteId, sectionParentId);
+//
+//			if (section.getParentId() == 0) {
+//				break;
+//			}
+//
+//			SectionInfo titleSectionInfo = new SectionInfo();
+//
+//			titleSectionInfo.setSectionNaturalKey(section.getNaturalKey());
+//			titleSectionInfo.setSectionId(section.getSectionId());
+//			titleSectionInfo.setSectionShortTitle(section.getShortTitle());
+//			titleSectionInfo.setSectionTitle(section.getTitle());
+//			titleSectionInfo.setSectionDesc(section.getDescription());
+//
+////			url = "/" + ApplicationGlobal.getContextPath()
+//			url = contextPath + StringPool.SLASH
+//					+ Constants.FRONTEND_URL_PREFIX + StringPool.SLASH
+//					+ Constants.FRONTEND_URL_SECTION + StringPool.SLASH
+//					+ topSectionNaturalKey + // topSection
+//					StringPool.SLASH + section.getNaturalKey(); // section
+//
+//			titleSectionInfo.setSectionUrl(url);
+//
+//			titleSectionVector.add(titleSectionInfo);
+//
+//			sectionParentId = section.getParentId();
+//		}
+//
+//		// Reverse sequence order
+//		SectionInfo titleSectionInfos[] = new SectionInfo[titleSectionVector.size()];
+//
+//		int pos = 0;
+//
+//		for (int i = titleSectionVector.size() - 1; i >= 0; i--) {
+//			titleSectionInfos[pos++] = (SectionInfo) titleSectionVector.get(i);
+//		}
+//
+//		sectionInfo.setTitleSectionInfos(titleSectionInfos);
+//
+//		// TODO need to be implemented
+//		Object sectionFeatureDatas[] = new Object[0];
+//
+//		sectionInfo.setSectionFeatureDatas(sectionFeatureDatas);
+//
+//		return sectionInfo;
+//	}
 }

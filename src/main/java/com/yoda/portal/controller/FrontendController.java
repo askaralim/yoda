@@ -85,9 +85,10 @@ public class FrontendController extends BaseFrontendController {
 			HttpServletRequest request, HttpServletResponse response, Menu menu)
 		throws Exception {
 		if (menu.getMenuType().equals(Constants.MENU_SECTION)) {
-			Section section = menu.getSection();
+//			Section section = menu.getSection();
 
-			return getSection(request, response, section);
+//			return getSection(request, response, section);
+			return null;
 		}
 		else if (menu.getMenuType().equals(Constants.MENU_CONTACTUS)) {
 			return getContactUs(request, response);
@@ -165,42 +166,42 @@ public class FrontendController extends BaseFrontendController {
 		return pageInfo;
 	}
 
-	public PageInfo getSection(
-			HttpServletRequest request, HttpServletResponse response,
-			Section section) throws Exception {
-		Site site = getSite(request);
-
-		PageInfo pageInfo = new PageInfo();
-
-		String topSectionNaturalKey = section.getNaturalKey();
-		String sectionNaturalKey = section.getNaturalKey();
-
-		String value = getCategoryParameter(request, 4);
-
-		if (value == null) {
-			value = "1";
-		}
-
-		int pageNum = Format.getInt(value);
-
-		String sortBy = getCategoryParameter(request, 5);
-
-		SectionInfo sectionInfo =
-			getSection(site.getSiteId(),
-				sectionNaturalKey, topSectionNaturalKey, Integer.valueOf(site.getListingPageSize()),
-				Constants.PAGE_NAV_COUNT, pageNum, sortBy);
-
-		Map<String, Object> model = new HashMap<String, Object>();
-
-		model.put("sectionInfo", sectionInfo);
-
-		String text = DefaultTemplateEngine.getTemplate(request, response, "section/section.vm", model);
-
-		pageInfo.setPageBody(text);
-		pageInfo.setPageTitle(site.getSiteName() + " - " + sectionInfo.getSectionTitle());
-
-		return pageInfo;
-	}
+//	public PageInfo getSection(
+//			HttpServletRequest request, HttpServletResponse response,
+//			Section section) throws Exception {
+//		Site site = getSite(request);
+//
+//		PageInfo pageInfo = new PageInfo();
+//
+//		String topSectionNaturalKey = section.getNaturalKey();
+//		String sectionNaturalKey = section.getNaturalKey();
+//
+//		String value = getCategoryParameter(request, 4);
+//
+//		if (value == null) {
+//			value = "1";
+//		}
+//
+//		int pageNum = Format.getInt(value);
+//
+//		String sortBy = getCategoryParameter(request, 5);
+//
+//		SectionInfo sectionInfo =
+//			getSection(site.getSiteId(),
+//				sectionNaturalKey, topSectionNaturalKey, Integer.valueOf(site.getListingPageSize()),
+//				Constants.PAGE_NAV_COUNT, pageNum, sortBy);
+//
+//		Map<String, Object> model = new HashMap<String, Object>();
+//
+//		model.put("sectionInfo", sectionInfo);
+//
+//		String text = DefaultTemplateEngine.getTemplate(request, response, "section/section.vm", model);
+//
+//		pageInfo.setPageBody(text);
+//		pageInfo.setPageTitle(site.getSiteName() + " - " + sectionInfo.getSectionTitle());
+//
+//		return pageInfo;
+//	}
 
 	public PageInfo getContactUs(
 			HttpServletRequest request, HttpServletResponse response) {

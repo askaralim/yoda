@@ -1,7 +1,5 @@
 package com.yoda.content.model;
 
-import java.util.Date;
-
 import com.yoda.BaseEntity;
 import com.yoda.user.model.User;
 

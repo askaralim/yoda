@@ -1,38 +1,20 @@
 package com.yoda.brand.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "brand")
 public class Brand extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "brand_id")
 	private Integer brandId;
 
-	@Column(name = "country")
 	private String country;
 
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "kind")
 	private String kind;
 
-	@Column(name = "image_path")
 	private String imagePath;
 
-	@Column(name = "name")
 	private String name;
 
-	@Column(name = "score")
 	private int score;
 
 //	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)

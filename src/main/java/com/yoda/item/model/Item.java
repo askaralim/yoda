@@ -1,73 +1,31 @@
 package com.yoda.item.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 import com.yoda.brand.model.Brand;
 
-@Entity
-@Table(name = "item")
 public class Item extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
 	private Integer id;
 
-	@Column(name = "category_id")
 	private Integer categoryId;
 
-	//	@ManyToOne
-//	@JoinColumn(name = "content_id")
-	@Column(name = "content_id")
 	private Long contentId;
 
-	@ManyToOne
-	@JoinColumn(name = "brand_id")
 	private Brand brand;
-
-//	@Column(name = "update_date")
-//	private Date updateDate;
-//
-//	@Column(name = "create_date")
-//	private Date createDate;
 
 //	private int hitCounter;
 
-	@Column(name = "rating")
 	private int rating;
 
-//	@Column(name = "create_by")
-//	private Integer createBy;
-
-	@Column(name = "site_id")
 	private Integer siteId;
 
-//	@Column(name = "update_by")
-//	private Integer updateBy;
-
-//	@Column(name = "brand")
-//	private String brand;
-
-	@Column(name = "description")
 	private String description;
 
-	@Column(name = "image_path")
 	private String imagePath;
 
-	@Column(name = "level")
 	private String level;
 
-	@Column(name = "name")
 	private String name;
 
-	@Column(name = "price")
 	private int price;
 
 	public Integer getId() {

@@ -57,8 +57,8 @@ public class ContentEditController {
 	@Autowired
 	MenuService menuService;
 
-	@Autowired
-	SectionService sectionService;
+//	@Autowired
+//	SectionService sectionService;
 
 	@Autowired
 	CategoryService categoryService;
@@ -229,7 +229,7 @@ public class ContentEditController {
 		Section section = null;
 
 		if (Validator.isNotNull(sectionId)) {
-			section = sectionService.getSectionBySiteId_SectionId(user.getLastVisitSiteId(), sectionId);
+//			section = sectionService.getSectionBySiteId_SectionId(user.getLastVisitSiteId(), sectionId);
 
 //			content.setSection(section);
 			content.setUpdateBy(user);
@@ -241,7 +241,7 @@ public class ContentEditController {
 		JSONObject jsonResult = new JSONObject();
 
 		jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
-		jsonResult.put("selectedSection", sectionService.formatSectionName(user.getLastVisitSiteId(), section.getSectionId()));
+//		jsonResult.put("selectedSection", sectionService.formatSectionName(user.getLastVisitSiteId(), section.getSectionId()));
 		jsonResult.put("updateBy", content.getUpdateBy());
 		jsonResult.put("updateDate", Format.getFullDatetime(content.getUpdateDate()));
 

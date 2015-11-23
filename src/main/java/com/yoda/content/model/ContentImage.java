@@ -1,46 +1,23 @@
 package com.yoda.content.model;
 
-import java.util.Date;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.yoda.BaseEntity;
 
-@Entity
-@Table(name = "content_image")
+@Deprecated
 public class ContentImage extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "image_d")
 	private Long imageId;
 
-	@Column(name = "site_id")
 	private int siteId;
 
-	@Column(name = "seq_num")
 	private int seqNum;
 
-	@Column(name = "content_type")
 	private String contentType;
 
-	@Column(name = "image_name")
 	private String imageName;
 
-	@Column(name = "image_value")
 	private byte[] imageValue;
 
-	@Column(name = "height")
 	private int height;
 
-	@Column(name = "width")
 	private int width;
 
 ////	@Column(name = "update_by")
@@ -55,8 +32,6 @@ public class ContentImage extends BaseEntity {
 ////	@Column(name = "create_date")
 ////	private Date createDate;
 //
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinColumn(name = "content_id")
 	private Content content;
 
 	public Long getImageId() {
