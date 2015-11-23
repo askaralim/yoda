@@ -16,6 +16,7 @@ public class MenuDAO extends BaseDAO<Menu>{
 
 	private static final String GET_MENU_BY_SITEID_MENUNAME = "from Menu menu where siteId = ? and name = ?";
 
+//	
 	private static final String GET_MENU_BY_SITEID_MENUSETNAME = "from Menu menu where siteId = ? and setName = ? and parentId = 0 order by seqNum";
 
 	private static final String GET_MENU_BY_SITEID_MENUSETNAME_ORDERBY_MENUSETNAME = "from Menu menu where siteId = ? and menu.parentId = 0 order by setName";

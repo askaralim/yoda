@@ -8,27 +8,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
 
-import com.yoda.feedback.dao.FeedbackDAO;
 import com.yoda.feedback.model.Feedback;
+import com.yoda.feedback.persistence.FeedbackMapper;
 
 @Transactional
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
 	@Autowired
-	FeedbackDAO feedbackDAO;
+	FeedbackMapper feedbackMapper;
+//	FeedbackDAO feedbackDAO;
 
 	@Transactional(readOnly = true)
 	public List<Feedback> getFeedbacks() {
-		return feedbackDAO.getAll();
+		return feedbackMapper.getFeedbacks();
 	}
 
 	@Transactional(readOnly = true)
 	public Feedback getFeedback(long id) {
-		return feedbackDAO.getById(id);
+		return feedbackMapper.getById(id);
 	}
 
 	public void deleteFeedback(Feedback feedback) {
-		feedbackDAO.delete(feedback);
+		feedbackMapper.delete(feedback);
 	}
 
 	public void addFeedback(Feedback feedback) {
@@ -39,6 +40,6 @@ public class FeedbackServiceImpl implements FeedbackService {
 		feedback.setPhone(HtmlUtils.htmlEscape(feedback.getPhone()));
 		feedback.setUsername(HtmlUtils.htmlEscape(feedback.getUsername()));
 
-		feedbackDAO.save(feedback);
+		feedbackMapper.insert(feedback);
 	}
 }

@@ -1,7 +1,5 @@
 <%@ include file="/html/common/init.jsp"%>
 
-<jsp:useBean id="contactUsListCommand" type="com.yoda.contactus.ContactUsListCommand" scope="request" />
-
 <script type="text/javascript">
 function submitNewForm() {
 	location.href = '<c:url value="/controlpanel/contactus/add"/>';
@@ -44,6 +42,7 @@ function getSelectedContactUsIds(){
 
 function submitSearch() {
 	document.fm.action = '<c:url value="/controlpanel/contactus/list/search"/>';
+	document.fm.method="POST";
 	//document.forms[0].srPageNo.value = page;
 	document.fm.submit();
 
@@ -63,9 +62,9 @@ function submitResequence() {
 	<li><a href="<spring:url value="/controlpanel/contactus/list" htmlEscape="true" />">Contact Us Listing</a></li>
 </ol>
 
-<form:form name="fm" modelAttribute="contactUsListCommand" method="post">
+<%-- <form:form name="fm" modelAttribute="searchForm" method="post"> --%>
 	<!-- <html:hidden property="process" value="list" /> -->
-	<form:hidden path="srPageNo" />
+	<%-- <form:hidden path="srPageNo" /> --%>
 
 	<div class="row">
 		<div class="col-md-3">
@@ -74,13 +73,11 @@ function submitResequence() {
 					<spring:message code="search" />
 				</div>
 				<div class="panel-body">
-					<!-- <input type="button" value="New" class="jc_submit_button" onclick="return submitNewForm();"> -->
-
 					<div class="form-group">
-						<label for="srContactUsName">Contact Us Name</label>
-						<form:input path="srContactUsName" cssClass="form-control" />
+						<label for="name"><spring:message code="name" /></label>
+						<input id="name" name="name" type="text" class="form-control" />
 					</div>
-					<div class="form-group">
+					<%-- <div class="form-group">
 						<div class="radio">
 							<label>
 								<form:radiobutton path="srActive" value="Y"/>
@@ -99,7 +96,7 @@ function submitResequence() {
 								All
 							</label>
 						</div>
-					</div>
+					</div> --%>
 
 					<input type="submit" value='<spring:message code="search" />' class="btn btn-sm btn-primary" role="button" onclick="return submitSearch();">
 				</div>
@@ -109,51 +106,47 @@ function submitResequence() {
 			<div class="page-header">
 				<h4>Contact Us Listing Result</h4>
 			</div>
+			<div class="text-right">
+				<input type="submit" value="<spring:message code="new" />" class="btn btn-sm btn-primary" role="button" onclick="return submitNewForm();">
+				<input type="submit" value="<spring:message code="remove" />" class="btn btn-sm btn-default" role="button" onclick="return submitRemove();">
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
-					<c:if test="${contactUsListCommand.contactUsCommands != null}">
-						<div class="text-right">
-							<input type="submit" value="<spring:message code="new" />" class="btn btn-sm btn-primary" role="button" onclick="return submitNewForm();">
-							<input type="submit" value="<spring:message code="remove" />" class="btn btn-sm btn-default" role="button" onclick="return submitRemove();">
-						</div>
-					</c:if>
 					<thead>
 						<tr>
 							<th></th>
-							<th>ID</th>
-							<th><a class="jc_submit_link" href="javascript:submitResequence()">Resequence</a></th>
-							<th>Contact Us Name</th>
-							<th>Active</th>
+							<th><spring:message code="id" /></th>
+							<th><a class="jc_submit_link" href="javascript:submitResequence()"><spring:message code="resequence" /></a></th>
+							<th><spring:message code="name" /></th>
+							<th><spring:message code="resequence" /></th>
+							<th><spring:message code="action" /></th>
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="contactUs" items="${contactUsListCommand.contactUsCommands}">
-							<spring:url value="/controlpanel/contactus/{contactUsId}/edit" var="editContactUsUrl">
-								<spring:param name="contactUsId" value="${contactUs.contactUsId}"/>
-							</spring:url>
+						<c:forEach var="contactUs" items="${contactUsList}">
 							<tr>
 								<td>
 									<input type="checkbox" id="contantUsIds" value="${contactUs.contactUsId}">
 								</td>
 								<td>
-									<a href="${fn:escapeXml(editContactUsUrl)}">
-										<c:out value="${contactUs.contactUsId}" />
-									</a>
+									<c:out value="${contactUs.contactUsId}" />
 								</td>
 								<td>
-									<div class="col-md-2">
-										<input class="form-control" name="seqNum" value="${contactUs.seqNum}">
-									</div>
+									<input class="form-control" name="seqNum" value="${contactUs.seqNum}">
 								</td>
 								<td>
-									<a href="${fn:escapeXml(editContactUsUrl)}">
-										<c:out value="${contactUs.contactUsName}" />
-									</a>
+									<c:out value="${contactUs.name}" />
 								</td>
 								<td>
-									<input type="hidden" value="${contactUs.active}">
-									<!-- <html:hidden indexed="true" name="contactUs" property="active" /> -->
 									<c:out value="${contactUs.active}" />
+								</td>
+								<td>
+									<spring:url value="/controlpanel/contactus/{contactUsId}/edit" var="editContactUsUrl">
+										<spring:param name="contactUsId" value="${contactUs.contactUsId}"/>
+									</spring:url>
+									<a href="${fn:escapeXml(editContactUsUrl)}">
+										<spring:message code="edit" />
+									</a>
 								</td>
 							</tr>
 						</c:forEach>
@@ -207,4 +200,4 @@ function submitResequence() {
 								<td>&nbsp;&nbsp;</td>
 							</tr>
 						</table> --%>
-</form:form>
+<%-- </form:form> --%>

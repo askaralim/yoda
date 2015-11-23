@@ -125,7 +125,7 @@ public class BaseFrontendController {
 	}
 
 	public List<ContactUs> getContactUs(int siteId) {
-		return contactUsService.getContent(siteId, true);
+		return contactUsService.getContactUs(siteId, true);
 	}
 
 	/******************************************************************************************************/

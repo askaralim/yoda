@@ -50,7 +50,7 @@ public class ContactUsEditController {
 		ContactUs contactUs = new ContactUs();
 
 		try {
-			contactUs = contactUsService.getContactUsById(user.getLastVisitSiteId(), contactUsId);
+			contactUs = contactUsService.getContactUsById(contactUsId);
 		}
 		catch (SecurityException e) {
 			e.printStackTrace();

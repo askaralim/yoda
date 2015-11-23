@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.contactus.persistence.ContactUsMapper">
+	<cache />
+
+	<sql id="contactUsColumns">
+		c.contact_us_id AS contactUsId,
+		c.site_id AS siteId,
+		c.name,
+		c.address_line1 AS addressLine1,
+		c.address_line2 AS addressLine2,
+		c.city_name AS cityName,
+		c.zip_code AS zipCode,
+		c.email,
+		c.phone,
+		c.description,
+		c.seq_num AS seqNum,
+		c.active,
+		c.create_by AS "createBy.userId",
+		c.create_date AS createDate,
+		c.update_by AS "updateBy.userId",
+		c.update_date AS updateDate
+	</sql>
+
+	<select id="getById" resultType="ContactUs">
+		SELECT 
+			<include refid="contactUsColumns"/>
+		FROM contact_us c
+		WHERE c.contact_us_id = #{contactUsId}
+	</select>
+
+	<select id="getContactUsBySiteId" resultType="ContactUs">
+		SELECT 
+			<include refid="contactUsColumns"/>
+		FROM contact_us c
+		WHERE c.site_id = #{siteId}
+		ORDER BY c.contact_us_id DESC
+	</select>
+
+	<select id="getContactUsBySiteIdAndIsActive" resultType="ContactUs">
+		SELECT 
+			<include refid="contactUsColumns"/>
+		FROM contact_us c
+		WHERE siteId = #{param1} and active = #{param2}
+		ORDER BY c.seq_num
+	</select>
+
+	<insert id="insert" parameterType="ContactUs" useGeneratedKeys="true" keyProperty="categoryId">
+		INSERT INTO contact_us(contact_us_id, site_id, name, address_line1, address_line2, city_name, zip_code, email, phone, description, seq_num, active, create_by, create_date, update_by, update_date)
+		VALUES(#{contactUsId}, #{siteId}, #{name}, #{addressLine1}, #{addressLine2}, #{cityName}, #{zipCode}, #{email}, #{phone}, #{description}, #{seqNum}, #{active}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="ContactUs">
+		UPDATE contact_us SET
+			name = #{name},
+			address_line1 = #{address_line1},
+			address_line2 = #{address_line2},
+			city_name = #{cityName},
+			zip_code = #{zipCode},
+			email = #{email},
+			phone = #{phone},
+			description = #{description},
+			seq_num = #{seqNum},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate}
+		WHERE contact_us_id = #{contactUsId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM contact_us WHERE contact_us_id = #{contactUsId}
+	</delete>
+</mapper>

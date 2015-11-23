@@ -1,24 +1,21 @@
 package com.yoda.contactus.service;
 
-import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yoda.contactus.dao.ContactUsDAO;
 import com.yoda.contactus.model.ContactUs;
+import com.yoda.contactus.persistence.ContactUsMapper;
 import com.yoda.country.dao.CountryDAO;
-import com.yoda.kernal.util.PortalUtil;
 import com.yoda.state.dao.StateDAO;
 import com.yoda.util.Format;
-import com.yoda.util.Validator;
 
 @Service
 public class ContactUsServiceImpl implements ContactUsService {
 	@Autowired
-	private ContactUsDAO contactUsDAO;
+//	private ContactUsDAO contactUsDAO;
+	private ContactUsMapper contactUsMapper;
 
 	@Autowired
 	private StateDAO stateDAO;
@@ -33,8 +30,8 @@ public class ContactUsServiceImpl implements ContactUsService {
 		ContactUs contactUs = new ContactUs();
 
 		contactUs.setSiteId(siteId);
-		contactUs.setCreateBy(PortalUtil.getAuthenticatedUser());
-		contactUs.setCreateDate(new Date(System.currentTimeMillis()));
+//		contactUs.setCreateBy(PortalUtil.getAuthenticatedUser());
+//		contactUs.setCreateDate(new Date(System.currentTimeMillis()));
 		contactUs.setActive(active);
 		contactUs.setName(name);
 		contactUs.setEmail(email);
@@ -52,10 +49,12 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
+//		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
-		contactUsDAO.save(contactUs);
+		contactUs.preInsert();
+
+		contactUsMapper.insert(contactUs);
 
 		return contactUs;
 	}
@@ -65,7 +64,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 			String name, String email, String phone, String addressLine1,
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception {
-		ContactUs contactUs = getContactUsById(siteId, contactUsId);
+		ContactUs contactUs = getContactUsById(contactUsId);
 
 		contactUs.setActive(active);
 		contactUs.setName(name);
@@ -84,61 +83,70 @@ public class ContactUsServiceImpl implements ContactUsService {
 		}
 
 		contactUs.setDescription(description);
-		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
+//		contactUs.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		contactUs.setUpdateDate(new Date(System.currentTimeMillis()));
 
-		contactUsDAO.update(contactUs);
+		contactUs.preUpdate();
+
+		update(contactUs);
 
 		return contactUs;
 	}
 
-	public ContactUs getContactUsById(int siteId, int contactUsId)
+	public ContactUs getContactUsById(int contactUsId)
 			throws SecurityException, Exception {
-		return contactUsDAO.getContactUsById(siteId, contactUsId);
+		return contactUsMapper.getById(contactUsId);
 	}
 
-	public List<ContactUs> getContent(int siteId, boolean isActive) {
-		return contactUsDAO.getContentBySiteIdIsActive(siteId, isActive);
+	public List<ContactUs> getContactUs(int siteId) {
+		return contactUsMapper.getContactUsBySiteId(siteId);
+	}
+
+	public List<ContactUs> getContactUs(int siteId, boolean isActive) {
+		return contactUsMapper.getContactUsBySiteIdAndIsActive(siteId, isActive);
 	}
 
 	public List<ContactUs> search(int siteId, String name, Boolean srActive) {
-		Query query = null;
-
-		String sql = "select contactUs from ContactUs contactUs where siteId = :siteId ";
-
-		if (Validator.isNotNull(name) && name.length() > 0) {
-			sql += "and name like :name ";
-		}
-
-		if (srActive != null) {
-			sql += "and active = :active ";
-		}
-
-		sql += "order by seq_num";
-
-		query = contactUsDAO.getSession().createQuery(sql);
-
-		query.setInteger("siteId", siteId);
-
-		if (Validator.isNotNull(name) && name.length() > 0) {
-			query.setString("name", "%" + name + "%");
-		}
-
-		if (srActive != null) {
-			query.setBoolean("active", srActive);
-		}
-
-		return query.list();
+//		Query query = null;
+//
+//		String sql = "select contactUs from ContactUs contactUs where siteId = :siteId ";
+//
+//		if (Validator.isNotNull(name) && name.length() > 0) {
+//			sql += "and name like :name ";
+//		}
+//
+//		if (srActive != null) {
+//			sql += "and active = :active ";
+//		}
+//
+//		sql += "order by seq_num";
+//
+//		query = contactUsDAO.getSession().createQuery(sql);
+//
+//		query.setInteger("siteId", siteId);
+//
+//		if (Validator.isNotNull(name) && name.length() > 0) {
+//			query.setString("name", "%" + name + "%");
+//		}
+//
+//		if (srActive != null) {
+//			query.setBoolean("active", srActive);
+//		}
+//
+//		return query.list();
+		return null;
 	}
 
 	public void update(ContactUs contactUs) {
-		contactUsDAO.update(contactUs);
+		contactUs.preUpdate();
+
+		contactUsMapper.update(contactUs);
 	}
 
 	public void deleteContactUs(int siteId, int contactUsId)
 			throws SecurityException, Exception {
-		ContactUs contactUs = getContactUsById(siteId, contactUsId);
+		ContactUs contactUs = getContactUsById(contactUsId);
 
-		contactUsDAO.delete(contactUs);
+		contactUsMapper.delete(contactUs);
 	}
 }

@@ -39,18 +39,18 @@ public class ContactUsController {
 	@RequestMapping(value="/controlpanel/contactus/list", method = RequestMethod.GET)
 	public ModelAndView showPanel(
 		HttpServletRequest request, HttpServletResponse response) {
-		ContactUsListCommand command = new ContactUsListCommand();
+		List<ContactUs> contactUsList = contactUsService.getContactUs(PortalUtil.getSiteId(request));
 
-		User user = PortalUtil.getAuthenticatedUser();
-
-		initSearchInfo(command);
-
-		extract(command, user);
-
-		command.setEmpty(false);
+//		ContactUsListCommand command = new ContactUsListCommand();
+//
+//		initSearchInfo(command);
+//
+//		extract(command, user);
+//
+//		command.setEmpty(false);
 
 		return new ModelAndView(
-			"controlpanel/contactus/list", "contactUsListCommand", command);
+			"controlpanel/contactus/list", "contactUsList", contactUsList);
 	}
 
 	@RequestMapping(value="/controlpanel/contactus/list/resequence", method = RequestMethod.GET)
@@ -58,13 +58,11 @@ public class ContactUsController {
 			@ModelAttribute ContactUsListCommand command,
 			HttpServletRequest request, HttpServletResponse response)
 		throws Throwable {
-		User user = PortalUtil.getAuthenticatedUser();
-
 		ContactUsDisplayCommand contactUsCommands[] = command.getContactUsCommands();
 
 		for (int i = 0; i < contactUsCommands.length; i++) {
 			int seqNum = Format.getInt(contactUsCommands[i].getSeqNum());
-			ContactUs contactUs = contactUsService.getContactUsById(user.getLastVisitSiteId(), contactUsCommands[i].getContactUsId());
+			ContactUs contactUs = contactUsService.getContactUsById(contactUsCommands[i].getContactUsId());
 
 			contactUs.setSeqNum(seqNum);
 

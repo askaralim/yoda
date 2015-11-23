@@ -17,11 +17,11 @@ public interface MenuService {
 
 	Menu getMenuBySiteIdMenuName(int siteId, String menuName);
 
-	Menu getMenu(int siteId, int menuId) throws SecurityException, Exception;
+//	Menu getMenu(int siteId, int menuId) throws SecurityException, Exception;
 
-	List<Menu> getMenu(int siteId, String menuSetName, int menuParentId);
+	List<Menu> getMenus(int siteId, String menuSetName, int menuParentId);
 
-	List<Menu> getBySiteIdMenuParentId(int siteId, int menuParentId);
+//	List<Menu> getBySiteIdMenuParentId(int siteId, int menuParentId);
 
 	String formatMenuName(int siteId, int menuId) throws Exception;
 
@@ -39,9 +39,9 @@ public interface MenuService {
 				String menuUrl, String menuWindowTarget, String menuWindowMode,
 				boolean published, String menuType, long contentId, int itemId, int sectionId) throws SecurityException, Exception;
 
-	void deleteMenu(int siteId, int menuId);
+	void deleteMenu(int menuId);
 
-	List<Menu> getByMenuParentId(int parentMenuId);
+	List<Menu> getMenus(int siteId, int parentMenuId);
 
 	int selectMaxSeqNumByMenuId_SiteId(int siteId, int parentMenuId);
 

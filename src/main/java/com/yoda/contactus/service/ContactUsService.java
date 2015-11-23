@@ -8,7 +8,7 @@ public interface ContactUsService {
 
 	List<ContactUs> search(int siteId, String srContactUsName, Boolean srActive);
 
-	public ContactUs getContactUsById(int siteId, int contactUsId) throws SecurityException, Exception;
+	public ContactUs getContactUsById(int contactUsId) throws SecurityException, Exception;
 
 	void update(ContactUs contactUs);
 
@@ -25,5 +25,7 @@ public interface ContactUsService {
 			String addressLine2, String cityName, String zipCode, String seqNum,
 			String description) throws SecurityException, Exception;
 
-	List<ContactUs> getContent(int siteId, boolean isActive);
+	List<ContactUs> getContactUs(int siteId, boolean isActive);
+
+	List<ContactUs> getContactUs(int siteId);
 }

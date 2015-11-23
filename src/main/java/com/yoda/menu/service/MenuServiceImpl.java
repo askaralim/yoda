@@ -1,6 +1,5 @@
 package com.yoda.menu.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -9,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yoda.content.dao.ContentDAO;
 import com.yoda.content.model.Content;
-import com.yoda.item.dao.ItemDAO;
+import com.yoda.content.persistence.ContentMapper;
 import com.yoda.item.model.Item;
-import com.yoda.kernal.util.PortalUtil;
-import com.yoda.menu.dao.MenuDAO;
 import com.yoda.menu.model.Menu;
-import com.yoda.section.dao.SectionDAO;
+import com.yoda.menu.persistence.MenuMapper;
 import com.yoda.section.model.DropDownMenu;
 import com.yoda.section.model.Section;
 import com.yoda.util.Constants;
@@ -27,16 +23,19 @@ import com.yoda.util.Validator;
 public class MenuServiceImpl implements MenuService {
 
 	@Autowired
-	private ContentDAO contentDAO;
+//	private ContentDAO contentDAO;
+	private ContentMapper contentMapper;
+
+//	@Autowired
+//	private ItemDAO itemDAO;
+//	private ItemDAO itemMapper;
 
 	@Autowired
-	private ItemDAO itemDAO;
+//	private MenuDAO menuDAO;
+	private MenuMapper menuMapper;
 
-	@Autowired
-	private MenuDAO menuDAO;
-
-	@Autowired
-	private SectionDAO sectionDAO;
+//	@Autowired
+//	private SectionDAO sectionDAO;
 
 	public Menu addMenu(int siteId, String menuSetName, String menuName) {
 		Menu menuSet = new Menu();
@@ -50,12 +49,10 @@ public class MenuServiceImpl implements MenuService {
 		menuSet.setMenuUrl("");
 		menuSet.setMenuWindowTarget("");
 		menuSet.setMenuWindowMode("");
-		menuSet.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		menuSet.setCreateBy(PortalUtil.getAuthenticatedUser());
-		menuSet.setUpdateDate(new Date(System.currentTimeMillis()));
-		menuSet.setCreateDate(new Date(System.currentTimeMillis()));
 
-		menuDAO.save(menuSet);
+		menuSet.preInsert();
+
+		menuMapper.insert(menuSet);
 
 		return menuSet;
 	}
@@ -77,12 +74,10 @@ public class MenuServiceImpl implements MenuService {
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
 		menu.setPublished(published);
-		menu.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		menu.setCreateBy(PortalUtil.getAuthenticatedUser());
-		menu.setUpdateDate(new Date(System.currentTimeMillis()));
-		menu.setCreateDate(new Date(System.currentTimeMillis()));
 
-		menuDAO.save(menu);
+		menu.preInsert();
+
+		menuMapper.insert(menu);
 
 		return menu;
 	}
@@ -96,7 +91,7 @@ public class MenuServiceImpl implements MenuService {
 		Menu menu = new Menu();
 
 		if (menuId != 0) {
-			menu = menuDAO.getByMenuId_SiteId(siteId, menuId);
+			menu = menuMapper.getById(menuId);
 		}
 
 		menu.setTitle(menuTitle);
@@ -106,21 +101,16 @@ public class MenuServiceImpl implements MenuService {
 		menu.setMenuWindowTarget(menuWindowTarget);
 		menu.setMenuWindowMode(menuWindowMode);
 		menu.setPublished(published);
-		menu.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		menu.setUpdateDate(new Date(System.currentTimeMillis()));
 		menu.setContent(null);
 //		menu.setItem(null);
 		menu.setSection(null);
 		menu.setSeqNum(0);
 		menu.setSiteId(siteId);
 		menu.setMenuType(menuType);
-		menu.setCreateBy(PortalUtil.getAuthenticatedUser());
-		menu.setUpdateDate(new Date(System.currentTimeMillis()));
-		menu.setCreateDate(new Date(System.currentTimeMillis()));
 
 		if (menuType.equals(Constants.MENU_CONTENT)) {
 			if (Validator.isNotNull(contentId)) {
-				Content content = contentDAO.getContentById(siteId, contentId);
+				Content content = contentMapper.getById(contentId);
 				menu.setContent(content);
 			}
 		}
@@ -132,58 +122,60 @@ public class MenuServiceImpl implements MenuService {
 //			}
 //		}
 
-		if (menuType.equals(Constants.MENU_SECTION)) {
-			if (Validator.isNotNull(sectionId)) {
-				Section section = sectionDAO.getSectionBySiteId_SectionId(siteId, sectionId);
-				menu.setSection(section);
-			}
-		}
+//		if (menuType.equals(Constants.MENU_SECTION)) {
+//			if (Validator.isNotNull(sectionId)) {
+//				Section section = sectionDAO.getSectionBySiteId_SectionId(siteId, sectionId);
+//				menu.setSection(section);
+//			}
+//		}
 
-		menuDAO.update(menu);
+		menu.preInsert();
+
+		menuMapper.update(menu);
 	}
 
-	public void deleteMenu(int siteId, int menuId) {
-		menuDAO.delete(siteId, menuId);
+	public void deleteMenu(int menuId) {
+		menuMapper.delete(menuId);
 	}
 
 	@Transactional(readOnly = true)
 	public Menu getMenu(int menuId) {
-		return menuDAO.getByMenuId(menuId);
+		return menuMapper.getById(menuId);
 	}
 
 	@Transactional(readOnly = true)
 	public Menu getMenuBySiteIdMenuName(int siteId, String menuName) {
-		return menuDAO.getMenuBySiteIdMenuName(siteId, menuName);
+		return menuMapper.getMenuBySiteIdAndName(siteId, menuName);
 	}
 
 	@Transactional(readOnly = true)
 	public Menu getMenu(int siteId, String menuSetName) {
-		return menuDAO.getMenu(siteId, menuSetName);
+		return menuMapper.getMenuRootBySiteIdAndSetNameOrderBySetName(siteId, menuSetName);
+	}
+
+//	@Transactional(readOnly = true)
+//	public Menu getMenu(int siteId, int menuId) throws SecurityException, Exception {
+//		return menuMapper.getById(menuId);
+//	}
+
+	@Transactional(readOnly = true)
+	public List<Menu> getMenus(int siteId, String menuSetName, int menuParentId) {
+		return menuMapper.getMenusBySiteIdAndSetNameAndParentId(siteId, menuSetName, menuParentId);
 	}
 
 	@Transactional(readOnly = true)
-	public Menu getMenu(int siteId, int menuId) throws SecurityException, Exception {
-		return menuDAO.getByMenuId_SiteId(siteId, menuId);
+	public List<Menu> getMenus(int site, int parentMenuId) {
+		return menuMapper.getMenusBySiteIdAndParentId(site, parentMenuId);
 	}
 
-	@Transactional(readOnly = true)
-	public List<Menu> getMenu(int siteId, String menuSetName, int menuParentId) {
-		return menuDAO.getMenu(siteId, menuSetName, menuParentId);
-	}
-
-	@Transactional(readOnly = true)
-	public List<Menu> getByMenuParentId(int parentMenuId) {
-		return menuDAO.getByParentMenuId(parentMenuId);
-	}
-
-	@Transactional(readOnly = true)
-	public List<Menu> getBySiteIdMenuParentId(int siteId, int menuParentId) {
-		return menuDAO.getBySiteId_MenuParentId(siteId, menuParentId);
-	}
+//	@Transactional(readOnly = true)
+//	public List<Menu> getMenus(int siteId, int menuParentId) {
+//		return menuMapper.getBySiteId_MenuParentId(siteId, menuParentId);
+//	}
 
 	@Transactional(readOnly = true)
 	public int selectMaxSeqNumByMenuId_SiteId(int siteId, int parentMenuId) {
-		return menuDAO.selectMaxSeqNumBySiteIdParentMenuId(siteId, parentMenuId);
+		return menuMapper.selectMaxSeqNumBySiteIdParentMenuId(siteId, parentMenuId);
 	}
 
 	public Menu updateMenu(
@@ -191,7 +183,7 @@ public class MenuServiceImpl implements MenuService {
 			Section section, String menuUrl, String menuWindowMode,
 			String menuWindowTarget, String menuType)
 		throws SecurityException, Exception {
-		Menu menu = getMenu(siteId, menuId);
+		Menu menu = getMenu(menuId);
 
 		menu.setContent(content);
 //		menu.setItem(item);
@@ -207,11 +199,13 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	public void updateMenu(Menu menu) {
-		menuDAO.update(menu);
+		menu.preUpdate();
+
+		menuMapper.update(menu);
 	}
 
 	public void updateSeqNum(int siteId, int menuParentId, int seqNum) {
-		menuDAO.updateSeqNum(siteId, menuParentId, seqNum);
+		menuMapper.updateSeqNum(siteId, menuParentId, seqNum);
 	}
 
 	public String formatMenuName(int siteId, int menuId)
@@ -252,7 +246,7 @@ public class MenuServiceImpl implements MenuService {
 		menuVector.add(makeMenuTree(siteId, Constants.MENUSET_MAIN));
 //		menuVector.add(makeMenuTree(siteId, Constants.MENUSET_SECONDARY));
 
-		List<Menu> menus = menuDAO.getBySiteId(siteId);
+		List<Menu> menus = menuMapper.getMenusBySiteId(siteId);
 
 		for (Menu menu : menus) {
 			if (menu.getSetName().equals(Constants.MENUSET_MAIN)) {
@@ -281,7 +275,7 @@ public class MenuServiceImpl implements MenuService {
 	@Transactional(readOnly = true)
 	public DropDownMenu makeMenuTree(int siteId, String menuSetName)
 			throws Exception {
-		Menu menu = menuDAO.getMenu(siteId, menuSetName);
+		Menu menu = menuMapper.getMenuRootBySiteIdAndSetNameOrderBySetName(siteId, menuSetName);
 
 		DropDownMenu menus[] = makeMenu(siteId, menuSetName, menu.getMenuId());
 		DropDownMenu ddm = new DropDownMenu();
@@ -300,7 +294,7 @@ public class MenuServiceImpl implements MenuService {
 		DropDownMenu menuArr[] = null;
 		Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
 
-		List<Menu> menus = menuDAO.getMenu(siteId, menuSetName, menuParentId);
+		List<Menu> menus = menuMapper.getMenusBySiteIdAndSetNameAndParentId(siteId, menuSetName, menuParentId);
 
 		for (Menu menu : menus) {
 			DropDownMenu ddm = new DropDownMenu();
@@ -328,7 +322,7 @@ public class MenuServiceImpl implements MenuService {
 		DropDownMenu menuArr[] = null;
 		Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
 
-		List<Menu> menus = menuDAO.getMenu(siteId, menuSetName, menuParentId);
+		List<Menu> menus = menuMapper.getMenusBySiteIdAndSetNameAndParentId(siteId, menuSetName, menuParentId);
 
 		for (Menu menu : menus) {
 			DropDownMenu ddm = new DropDownMenu();
@@ -355,7 +349,7 @@ public class MenuServiceImpl implements MenuService {
 	public JSONObject makeJSONMenuTree(int siteId) throws Exception {
 		JSONObject object = new JSONObject();
 
-		List<Menu> menus = menuDAO.getBySiteId_MenuParentId_orderBy_MenuSetName(siteId);
+		List<Menu> menus = menuMapper.getMenusRootBySiteIdOrderBySetName(siteId);
 
 		Vector<JSONObject> menuSetVector = new Vector<JSONObject>();
 
@@ -375,7 +369,7 @@ public class MenuServiceImpl implements MenuService {
 			throws Exception {
 		JSONObject jsonObject = new JSONObject();
 
-		Menu menu = menuDAO.getByMenuId_SiteId(siteId, menuId);
+		Menu menu = menuMapper.getById(menuId);
 
 		if (menu.getParentId() == 0) {
 			jsonObject.put("menuSetName", menu.getSetName());
@@ -385,7 +379,7 @@ public class MenuServiceImpl implements MenuService {
 			jsonObject.put("menuName", menu.getName());
 		}
 
-		List<Menu> menus = menuDAO.getBySiteId_MenuParentId(siteId, menuId);
+		List<Menu> menus = menuMapper.getMenusBySiteIdAndParentId(siteId, menuId);
 
 		Vector<JSONObject> vector = new Vector<JSONObject>();
 

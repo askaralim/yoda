@@ -57,7 +57,7 @@ public class MenuController {
 
 		int siteId = user.getLastVisitSiteId();
 
-		Menu referenceMenu = menuService.getMenu(siteId, menuEditCommand.getCreateMenuId());
+		Menu referenceMenu = menuService.getMenu(menuEditCommand.getCreateMenuId());
 
 		int menuParentId = 0;
 
@@ -129,7 +129,7 @@ public class MenuController {
 
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 
-		Menu menu  = menuService.getMenu(user.getLastVisitSiteId(), menuId);
+		Menu menu  = menuService.getMenu(menuId);
 
 		menuEditCommand.setMenuId(menuId);
 
@@ -268,7 +268,7 @@ public class MenuController {
 
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 
-		Menu menu = menuService.getMenu(user.getLastVisitSiteId(), menuId);
+		Menu menu = menuService.getMenu(menuId);
 
 		menuEditCommand.setMenuId(menuEditCommand.getMenuId());
 
@@ -357,7 +357,7 @@ public class MenuController {
 
 //		Menu menu = menuService.getMenu(user.getLastVisitSiteId(), removeMenuId);
 
-		menuService.deleteMenu(user.getLastVisitSiteId(), removeMenuId);
+		menuService.deleteMenu(removeMenuId);
 
 		menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 		menuEditCommand.setMenuId(0);
@@ -382,18 +382,18 @@ public class MenuController {
 	}
 
 	public void cascadeRemoveMenu(int menuId, int siteId) throws Exception {
-		List<Menu> menus = menuService.getByMenuParentId(menuId);
+		List<Menu> menus = menuService.getMenus(siteId, menuId);
 
 		for (Menu childMenu : menus) {
 			cascadeRemoveMenu(childMenu.getMenuId(), siteId);
 		}
 
-		menuService.deleteMenu(siteId, menuId);
+		menuService.deleteMenu(menuId);
 	}
 
 	protected void initListInfo(MenuEditCommand command, int siteId)
 			throws Exception {
-		List<Menu> menus = menuService.getBySiteIdMenuParentId(siteId, command.getMenuId());
+		List<Menu> menus = menuService.getMenus(siteId, command.getMenuId());
 
 		Vector<MenuDisplayCommand> vector = new Vector<MenuDisplayCommand>();
 

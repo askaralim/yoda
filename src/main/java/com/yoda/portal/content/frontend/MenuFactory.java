@@ -84,7 +84,7 @@ public class MenuFactory {
 		{
 		List<MenuInfo> menuInfos = new ArrayList<MenuInfo>();
 
-		List<Menu> menus = getMenuService().getMenu(site.getSiteId(), menuSetName, menuParentId);
+		List<Menu> menus = getMenuService().getMenus(site.getSiteId(), menuSetName, menuParentId);
 
 		for (Menu menu : menus) {
 			MenuInfo menuInfo = new MenuInfo();

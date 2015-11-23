@@ -328,7 +328,7 @@ public class ContentEditController {
 
 		if (menuIds != null) {
 			for (int i = 0; i < menuIds.length; i++) {
-				Menu menu = menuService.getMenu(user.getLastVisitSiteId(), menuIds[i]);
+				Menu menu = menuService.getMenu(menuIds[i]);
 
 				menu.setContent(null);
 				menu.setMenuUrl("");
