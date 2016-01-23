@@ -2,8 +2,6 @@
 
 <%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
 
-<%-- <jsp:useBean id="siteEditCommand" type="com.yoda.site.SiteEditCommand" scope="request" /> --%>
-
 <script type="text/javascript">
 function submitBackForm() {
 	location.href='<spring:url value="/controlpanel/site/list" htmlEscape="true" />';

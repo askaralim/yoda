@@ -34,7 +34,7 @@
 			brand_name = #{brandName},
 			description = #{description},
 			update_by = #{updateBy.userId},
-			update_date = #{updateDate},
+			update_date = #{updateDate}
 		WHERE content_id = #{contentId}
 	</update>
 

@@ -121,6 +121,7 @@ public class SiteEditController {
 		if (Format.isNullOrEmpty(site.getSiteName())) {
 			result.rejectValue("siteName", "error.string.required");
 		}
+
 		List<Site> sites = siteService.getSites();
 
 		for (Site siteDb : sites) {
@@ -136,12 +137,12 @@ public class SiteEditController {
 
 			String dbPortNum = Constants.PORTNUM_PUBLIC;
 
-			if (Validator.isNotNull(site.getPublicPort())) {
-				dbPortNum = site.getPublicPort();
+			if (Validator.isNotNull(siteDb.getPublicPort())) {
+				dbPortNum = siteDb.getPublicPort();
 			}
 
-			if (site.getDomainName().equals(site.getDomainName()) && formPortNum == dbPortNum) {
-				result.rejectValue("siteDomainName", "error.domain.duplicate");
+			if (site.getDomainName().equals(siteDb.getDomainName()) && formPortNum == dbPortNum) {
+				result.rejectValue("domainName", "error.domain.duplicate");
 			}
 
 			formPortNum = Constants.PORTNUM_SECURE;
@@ -150,15 +151,15 @@ public class SiteEditController {
 				formPortNum = site.getSecurePort();
 			}
 
-			dbPortNum = Constants.PORTNUM_SECURE;
-
-			if (Validator.isNotNull(site.getSecurePort())) {
-				dbPortNum = site.getSecurePort();
-			}
-
-			if (site.getDomainName().equals(site.getDomainName()) && formPortNum == dbPortNum) {
-				result.rejectValue("siteSecureDomainName", "error.domain.duplicate");
-			}
+//			dbPortNum = Constants.PORTNUM_SECURE;
+//
+//			if (Validator.isNotNull(site.getSecurePort())) {
+//				dbPortNum = site.getSecurePort();
+//			}
+//
+//			if (site.getDomainName().equals(site.getDomainName()) && formPortNum == dbPortNum) {
+//				result.rejectValue("secureDomainName", "error.domain.duplicate");
+//			}
 		}
 	}
 }
