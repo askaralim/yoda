@@ -109,7 +109,7 @@
 		WHERE c.title like CONCAT('%', #{title}, '%')
 	</select>
 
-	<select id="getContentsByUserId" resultType="Content">
+	<select id="getContentsByUserId" resultMap="contentResult">
 		SELECT 
 			<include refid="contentColumns"/>
 		FROM content c
