@@ -290,7 +290,7 @@ header .intro-text .name {
 	border-radius: 5px;
 	bottom: 0;
 	/* box-shadow: 0 0 8px #999999; */
-	max-width: 80%;
+	/* max-width: 80%; */
 	vertical-align: bottom;
 }
 
@@ -338,6 +338,11 @@ header .intro-text .name {
 	-moz-box-shadow: inset 0 1px #fff, 0 0 8px #c8cfe6;
 	box-shadow: inset 0 1px #fff, 0 0 8px #c8cfe6;
 	color: inset 0 1px #fff, 0 0 8px #c8cfe6;
+}
+
+.content-post .nav-tabs-custom .tab-content .tab-pane p img {
+	max-width: 100%;
+	height: auto;
 }
 
 .comments {
