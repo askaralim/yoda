@@ -16,6 +16,7 @@
 	<properties>
 		<!-- <springframework.version>3.2.11.RELEASE</springframework.version> -->
 		<springframework.version>4.1.2.RELEASE</springframework.version>
+		<imgscalr.version>4.2</imgscalr.version>
 	</properties>
 
 	<build>
@@ -188,6 +189,11 @@
 			<artifactId>hsqldb</artifactId>
 			<version>2.2.8</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.imgscalr</groupId>
+			<artifactId>imgscalr-lib</artifactId>
+			<version>${imgscalr.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>

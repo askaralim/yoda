@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -27,8 +28,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.yoda.fckeditor.uploader.SimpleUploaderServlet;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.user.model.User;
+import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
 /**
@@ -50,6 +53,9 @@ import com.yoda.util.Validator;
 @Controller
 @RequestMapping("/FCKeditor/editor/filemanager/browser/default/connectors/jsp/connector")
 public class ConnectorController {
+	Logger logger = Logger.getLogger(ConnectorController.class);
+
+	private static final String UPLOAD_FOLDER = "/uploads/";
 
 	private static String baseDir;
 	private static boolean debug = false;
@@ -90,9 +96,7 @@ public class ConnectorController {
 	public void setup(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		baseDir = "/uploads/";
-
-		String realBaseDir = ServletContextUtil.getServletContext().getRealPath(baseDir);
+		String realBaseDir = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
 
 		File baseFile = new File(realBaseDir);
 
@@ -100,10 +104,11 @@ public class ConnectorController {
 			baseFile.mkdir();
 		}
 
-		String fckBaseDir;
+		String fckBaseDir = StringPool.BLANK;
 
-		if (debug)
-			System.out.println("--- BEGIN DOGET ---");
+		if (logger.isDebugEnabled()) {
+			logger.debug("--- BEGIN DOGET ---");
+		}
 
 		try {
 			fckBaseDir = this.getBaseDir(request);
@@ -196,14 +201,14 @@ public class ConnectorController {
 
 			transformer.transform(source, result);
 
-			if (debug) {
+			if (logger.isDebugEnabled()) {
 				StreamResult dbgResult = new StreamResult(System.out);
 
 				transformer.transform(source, dbgResult);
 
-				System.out.println("");
-				System.out.println("--- END DOGET ---");
+				logger.debug("--- END DOGET ---");
 			}
+
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -230,8 +235,9 @@ public class ConnectorController {
 			throws ServletException, IOException {
 
 		String fckBaseDir;
-		if (debug)
-			System.out.println("--- BEGIN DOPOST ---");
+		if (logger.isDebugEnabled()) {
+			logger.debug("--- BEGIN DOPOST ---");
+		}
 
 		try {
 			fckBaseDir = this.getBaseDir(request);
@@ -252,8 +258,9 @@ public class ConnectorController {
 
 		String currentDirPath = fckBaseDir + currentFolderStr;
 
-		if (debug)
-			System.out.println(currentDirPath);
+		if (logger.isDebugEnabled()) {
+			logger.debug(currentDirPath);
+		}
 
 		String retVal = "0";
 		String newName = "";
@@ -317,8 +324,9 @@ public class ConnectorController {
 		out.flush();
 		out.close();
 
-		if (debug)
-			System.out.println("--- END DOPOST ---");
+		if (logger.isDebugEnabled()) {
+			logger.debug("--- END DOPOST ---");
+		}
 	}
 
 	private void setCreateFolderResponse(String retValue, Node root,
@@ -404,7 +412,7 @@ public class ConnectorController {
 			user = (User)auth.getPrincipal();
 		}
 
-		String prefix = ServletContextUtil.getServletContext().getRealPath(baseDir);
+		String prefix = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
 
 		if (Validator.isNotNull(user)) {
 			prefix = prefix.concat("/" + user.getUserId());
@@ -429,7 +437,7 @@ public class ConnectorController {
 			user = (User)auth.getPrincipal();
 		}
 
-		String urlPrefix = ServletContextUtil.getContextPath() + "/uploads/";
+		String urlPrefix = ServletContextUtil.getContextPath() + UPLOAD_FOLDER;
 
 		if (Validator.isNotNull(user)) {
 			urlPrefix = urlPrefix.concat("" + user.getUserId());

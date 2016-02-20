@@ -18,11 +18,15 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
 
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.util.Utility;
 
+@Deprecated
 public class SimpleUploaderServlet extends HttpServlet {
+
+	Logger logger = Logger.getLogger(SimpleUploaderServlet.class);
 
 	public SimpleUploaderServlet() {
 	}
@@ -30,8 +34,10 @@ public class SimpleUploaderServlet extends HttpServlet {
 	public void init() throws ServletException {
 		debug = (new Boolean(getInitParameter("debug"))).booleanValue();
 		enabled = (new Boolean(getInitParameter("enabled"))).booleanValue();
-		if (debug)
-			System.out.println("\r\n---- SimpleUploaderServlet initialization started ----");
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("\r\n---- SimpleUploaderServlet initialization started ----");
+		}
 
 /*		baseDir = getInitParameter("baseDir");
 		enabled = (new Boolean(getInitParameter("enabled"))).booleanValue();
@@ -55,55 +61,64 @@ public class SimpleUploaderServlet extends HttpServlet {
 		allowedExtensions.put("Flash", stringToArrayList(getInitParameter("AllowedExtensionsFlash")));
 		deniedExtensions.put("Flash", stringToArrayList(getInitParameter("DeniedExtensionsFlash")));
 
-		if (debug) {
-			System.out.println("---- SimpleUploaderServlet initialization completed ----\r\n");
+		if (logger.isDebugEnabled()) {
+			logger.debug("---- SimpleUploaderServlet initialization completed ----\r\n");
 		}
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 //			throws ServletException, IOException {
 		{
-//		Session session = null;
 		try {
-//			session = HibernateConnection.getInstance().getCurrentSession();
-//			session.beginTransaction();
-			if (debug)
-				System.out.println("--- BEGIN DOPOST ---");
+			if (logger.isDebugEnabled()) {
+				logger.debug("--- BEGIN DOPOST ---");
+			}
+
 			response.setContentType("text/html; charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");
+
 			PrintWriter out = response.getWriter();
+
 			String typeStr = request.getParameter("Type");
-			String currentPath = null;
-			currentPath = this.getBaseDir(request) + typeStr;
+			String currentPath = getBaseDir(request) + typeStr;
+
 			File file = new File(currentPath);
+
 			if (!file.exists()) {
 				file.mkdir();
 			}
 
-			// String currentDirPath =
-			// getServletContext().getRealPath(currentPath);
+			// String currentDirPath = getServletContext().getRealPath(currentPath);
 			String currentDirPath = currentPath;
 			// currentPath = request.getContextPath() + currentPath;
-			if (debug)
-				System.out.println(currentDirPath);
+
+			if (logger.isDebugEnabled()) {
+				logger.debug(currentDirPath);
+			}
+
 			String retVal = "0";
 			String newName = "";
 			String fileUrl = "";
 			String errorMessage = "";
+
 			if (enabled) {
 				FileItemFactory factory = new DiskFileItemFactory();
 				ServletFileUpload upload = new ServletFileUpload(factory);
+
 				try {
-					List items = upload.parseRequest(request);
+					List<FileItem> items = upload.parseRequest(request);
 
-					Map fields = new HashMap();
+					Map<String, Object> fields = new HashMap<String, Object>();
 
-					for (Iterator iter = items.iterator(); iter.hasNext();) {
-						FileItem item = (FileItem) iter.next();
-						if (item.isFormField())
+					for (Iterator<FileItem> iter = items.iterator(); iter.hasNext();) {
+						FileItem item = iter.next();
+
+						if (item.isFormField()) {
 							fields.put(item.getFieldName(), item.getString());
-						else
+						}
+						else {
 							fields.put(item.getFieldName(), item);
+						}
 					}
 
 					FileItem uplFile = (FileItem) fields.get("NewFile");
@@ -123,41 +138,49 @@ public class SimpleUploaderServlet extends HttpServlet {
 
 					if (extIsAllowed(typeStr, ext)) {
 						for (int counter = 1; pathToSave.exists(); counter++) {
-							newName = nameWithoutExt + "(" + counter + ")"
-									+ "." + ext;
-							fileUrl = getUrlPrefix(request) + typeStr + "/"
-									+ newName;
+							newName = nameWithoutExt + "(" + counter + ")" + "." + ext;
+							fileUrl = getUrlPrefix(request) + typeStr + "/" + newName;
 							retVal = "201";
+
 							pathToSave = new File(currentDirPath, newName);
 						}
 
 						uplFile.write(pathToSave);
-					} else {
+					}
+					else {
 						retVal = "202";
 						errorMessage = "";
-						if (debug)
-							System.out.println("Invalid file type: " + ext);
+
+						if (logger.isDebugEnabled()) {
+							logger.debug("Invalid file type: " + ext);
+						}
 					}
-				} catch (Exception ex) {
-					if (debug)
-						ex.printStackTrace();
+				}
+				catch (Exception ex) {
+					if (logger.isDebugEnabled()) {
+						logger.debug(ex.getMessage());
+					}
+
 					retVal = "203";
 				}
-			} else {
+			}
+			else {
 				retVal = "1";
 				errorMessage = "This file uploader is disabled. Please check the WEB-INF/web.xml file";
 			}
+
 			out.println("<script type=\"text/javascript\">");
-			out.println("window.parent.OnUploadCompleted(" + retVal + ",'"
-					+ fileUrl + "','" + newName + "','" + errorMessage + "');");
+			out.println("window.parent.OnUploadCompleted(" + retVal + ",'" + fileUrl + "','" + newName + "','" + errorMessage + "');");
 			out.println("</script>");
 			out.flush();
 			out.close();
-			if (debug)
-				System.out.println("--- END DOPOST ---");
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("--- END DOPOST ---");
+			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			logger.info(e.getMessage());
 		}
 //		finally {
 //			if (session.isOpen()) {

@@ -49,7 +49,7 @@ import com.yoda.user.model.User;
  * 
  * @author Simone Chiaretta (simo@users.sourceforge.net)
  */
-
+@Deprecated
 public class CustomConnectorServlet extends HttpServlet {
 
 	private static String baseDir;

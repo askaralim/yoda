@@ -2,10 +2,8 @@ package com.yoda.portal.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,17 +27,13 @@ import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.kernal.util.WebKeys;
 import com.yoda.menu.service.MenuService;
 import com.yoda.portal.content.data.ContentInfo;
 import com.yoda.portal.content.data.DataInfo;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.HomeInfo;
-import com.yoda.portal.content.data.SectionInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.portal.content.frontend.MenuFactory;
-import com.yoda.section.model.Section;
-import com.yoda.section.service.SectionService;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;

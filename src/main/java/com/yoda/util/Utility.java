@@ -787,6 +787,7 @@ public class Utility {
 
 	static public String getResourcePrefix(long siteId) {
 		String prefix = getWorkingDirectory() + "p/" + siteId + "/resource/";
+
 		return prefix;
 	}
 

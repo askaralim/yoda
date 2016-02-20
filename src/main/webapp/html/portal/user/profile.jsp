@@ -25,17 +25,17 @@
 	${horizontalMenu}
 
 	<div class="container pt">
-		<%-- <div class="row">
+		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
 				<div class="page-header">
-					<h3><i class="fa fa-user"></i> ${user.username}</h3>
-					<i class="fa fa-envelope"></i> ${user.email}&nbsp&nbsp&nbsp
+					<h3>${user.username}</h3>
+					${user.email}&nbsp&nbsp&nbsp
 					<c:if test="${user.phone}">
 						<i class="fa fa-phone"></i> ${user.phone}
 					</c:if>
 				</div>
 			</div>
-		</div> --%>
+		</div>
 
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
@@ -84,7 +84,7 @@
 													<c:out value="${content.hitCounter}" />
 												</td>
 												<td>
-													<c:if test="${currentUser != null && currentUser.userId == content.createBy}">
+													<c:if test="${currentUser != null && currentUser.userId == content.createBy.userId}">
 														<spring:url value="/content/{contentId}/edit" var="editContentUrl">
 															<spring:param name="contentId" value="${content.contentId}"/>
 														</spring:url>
