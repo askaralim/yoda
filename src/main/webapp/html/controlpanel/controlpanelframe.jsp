@@ -22,7 +22,8 @@
 
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />'>
 		<link rel="stylesheet" href='<c:url value="/resources/css/main.css" />' />
-		<link rel="stylesheet" href='<c:url value="/resources/css/bootstrap-fileupload.min.css" />' />
+		<%-- <link rel="stylesheet" href='<c:url value="/resources/css/bootstrap-fileupload.min.css" />' /> --%>
+		<link rel="stylesheet" href='<c:url value="/resources/css/fileinput.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/datepicker.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/chosen.min.css" />' />
 
@@ -120,7 +121,8 @@
 		<%-- <script src='<c:url value="/resources/js/jquery-2.0.3.min.js" />'></script> --%>
 		<script src='<c:url value="/resources/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
 		<%-- <script src='<c:url value="/resources/js/modernizr-2.6.2-respond-1.1.0.min.js" />'></script> --%>
-		<script src='<c:url value="/resources/js/fileupload/bootstrap-fileupload.js" />'></script>
+		<%-- <script src='<c:url value="/resources/js/fileupload/bootstrap-fileupload.js" />'></script> --%>
+		<script type="text/javascript" src='<c:url value="/resources/js/fileupload/fileinput.js" />'></script>
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<script src='<c:url value="/resources/js/ie10-viewport-bug-workaround.js" />'></script>
 	</body>

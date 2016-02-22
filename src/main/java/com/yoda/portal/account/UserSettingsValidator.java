@@ -24,7 +24,8 @@ public class UserSettingsValidator implements Validator {
 		}
 
 		if (com.yoda.util.Validator.isNotNull(user.getPassword())) {
-			if (!user.getPassword().equals(user.getVerifyPassword())) {
+			if (com.yoda.util.Validator.isNotNull(user.getVerifyPassword())
+				&& !user.getPassword().equals(user.getVerifyPassword())) {
 				errors.rejectValue("password", "password-not-match");
 			}
 			if (!com.yoda.util.Validator.isValidPassword(user.getPassword())) {

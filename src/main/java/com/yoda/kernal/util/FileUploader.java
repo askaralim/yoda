@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.user.model.User;
+import com.yoda.util.CharPool;
 import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
@@ -32,15 +33,15 @@ public class FileUploader {
 
 		String originalFilename = file.getOriginalFilename();
 
-		originalFilename = originalFilename.replace('\\', '/');
+		originalFilename = originalFilename.replace(CharPool.BACK_SLASH, CharPool.FORWARD_SLASH);
 
-		String[] paths = originalFilename.split("/");
+		String[] paths = originalFilename.split(StringPool.FORWARD_SLASH);
 
 		String fileName = paths[paths.length - 1];
 
-		String fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf("."));
+		String fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf(StringPool.PERIOD));
 
-		String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+		String ext = fileName.substring(fileName.lastIndexOf(StringPool.PERIOD) + 1);
 
 		String currentDirPath = StringPool.BLANK;
 
@@ -52,7 +53,7 @@ public class FileUploader {
 			int counter = 1;
 
 			while (pathToSave.exists()) {
-				newName = fileNameWithoutExt + "(" + counter + ")" + "." + ext;
+				newName = fileNameWithoutExt + StringPool.OPEN_PARENTHESIS + counter + StringPool.CLOSE_PARENTHESIS + StringPool.PERIOD + ext;
 
 				pathToSave = new File(currentDirPath, newName);
 
@@ -108,7 +109,7 @@ public class FileUploader {
 		String prefix = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
 
 		if (Validator.isNotNull(user)) {
-			prefix = prefix.concat("/" + user.getUserId());
+			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getUserId());
 		}
 
 		File baseFile = new File(prefix);
@@ -125,7 +126,7 @@ public class FileUploader {
 		String urlPrefix = ServletContextUtil.getContextPath() + UPLOAD_FOLDER;
 
 		if (Validator.isNotNull(user)) {
-			urlPrefix = urlPrefix.concat(user.getUserId() + "/");
+			urlPrefix = urlPrefix.concat(user.getUserId() + StringPool.FORWARD_SLASH);
 		}
 
 		return urlPrefix;

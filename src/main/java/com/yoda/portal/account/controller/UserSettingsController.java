@@ -13,7 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.kernal.util.PortalUtil;
@@ -57,6 +59,7 @@ public class UserSettingsController extends BaseFrontendController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView update(
 			@ModelAttribute User user,
+			@RequestParam("photo") MultipartFile photo,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request, HttpServletResponse response)
 		throws Throwable {
@@ -83,13 +86,14 @@ public class UserSettingsController extends BaseFrontendController {
 
 		User userDb = userService.updateUser(
 			site.getSiteId(), user.getUserId(), user.getUsername(),
-			user.getPassword(), user.getEmail());
+			user.getPassword(), user.getEmail(), photo);
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		model.addObject("success", "success");
+		model.addObject("user", userDb);
 
 		model.setViewName("/portal/user/settings");
 

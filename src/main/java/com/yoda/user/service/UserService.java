@@ -2,6 +2,8 @@ package com.yoda.user.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.yoda.exception.PortalException;
 import com.yoda.user.model.User;
 
@@ -30,7 +32,7 @@ public interface UserService {
 
 	void deleteUser(long userId);
 
-	User updateUser(long userId, String userName, String userPassword, String userEmail, String userPhone, String userAddressLine1, String userAddressLine2, String userCityName, Integer[] selectedSiteIds, boolean enabled) throws PortalException;
+	User updateUser(long userId, String userName, String userPassword, String userEmail, String userPhone, MultipartFile profilePhoto, String userAddressLine1, String userAddressLine2, String userCityName, Integer[] selectedSiteIds, boolean enabled) throws PortalException;
 
-	User updateUser(int siteId, Long userId, String username, String password, String email);
+	User updateUser(int siteId, Long userId, String username, String password, String email, MultipartFile profilePhoto);
 }

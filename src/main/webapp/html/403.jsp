@@ -24,7 +24,7 @@
 	<!-- Main content -->
 	<div class="container">
 		<div class="error-page">
-			<h2 class="headline text-info">404</h2>
+			<h2 class="headline text-info">403</h2>
 			<div class="error-content">
 				<h3>
 					<i class="fa fa-warning text-yellow"></i><spring:message code="http-Status-403-access-is-denied" />
@@ -42,7 +42,7 @@
 					</c:otherwise>
 				</c:choose>
 				<p>
-					<a href="<c:url value="/" />">return to home</a>.
+					<a href="<c:url value="/" />"><spring:message code="go-to-home-page" /></a>.
 				</p>
 			</div>
 			<!-- /.error-content -->

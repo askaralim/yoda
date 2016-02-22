@@ -17,10 +17,6 @@
 		</param-value>
 	</context-param>
 
-	<!-- <filter>
-		<filter-name>MultipartFilter</filter-name>
-		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
-	</filter> -->
 	<!-- DelegatingFilterProxy is a Spring Framework class
 	which delegates to a filter implementation which is defined as a Spring bean
 	in your application context -->
@@ -36,6 +32,20 @@
 			<param-value>true</param-value>
 		</init-param>
 	</filter>
+		<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>MultipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MultipartFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -44,18 +54,12 @@
 		<filter-name>openSessionInViewFilter</filter-name>  
 		<filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
 	</filter> -->
-
-	<!-- <filter-mapping>
-		<filter-name>MultipartFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping> -->
-	<filter-mapping>
-		<filter-name>characterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>ERROR</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 	<!-- <filter-mapping>
 		<filter-name>openSessionInViewFilter</filter-name>

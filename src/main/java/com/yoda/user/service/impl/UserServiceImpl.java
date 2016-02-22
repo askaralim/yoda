@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.exception.PortalException;
+import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.site.persistence.SiteMapper;
@@ -158,18 +160,18 @@ public class UserServiceImpl implements UserService {
 
 	public User updateUser(
 		int siteId, Long userId, String username, String password,
-		String email) {
+		String email, MultipartFile profilePhoto) {
 		User user = this.getUser(userId);
 
 		return this.updateUser(
 			user.getUserId(), username, password, email, user.getPhone(),
-			user.getAddressLine1(), user.getAddressLine2(),
+			profilePhoto, user.getAddressLine1(), user.getAddressLine2(),
 			user.getCityName(), new Integer[]{siteId}, user.isEnabled());
 	}
 
 	public User updateUser(
-			long userId, String userName, String password,
-			String userEmail, String userPhone,
+			long userId, String username, String password,
+			String userEmail, String phone, MultipartFile profilePhoto,
 			String userAddressLine1, String userAddressLine2,
 			String userCityName, Integer[] selectedSiteIds, boolean enabled) {
 		User user = getUser(userId);
@@ -186,10 +188,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		user.setPassword(hashedPassword);
-		user.setUsername(userName);
+		user.setUsername(username);
 		user.setEmail(userEmail);
 		user.setEnabled(enabled);
-		user.setPhone(userPhone);
+		user.setPhone(phone);
 		user.setAddressLine1(userAddressLine1);
 		user.setAddressLine2(userAddressLine2);
 //		user.setUpdateBy(PortalUtil.getAuthenticatedUser());
@@ -205,6 +207,16 @@ public class UserServiceImpl implements UserService {
 
 				user.getSites().add(site);
 			}
+		}
+
+		if (!profilePhoto.isEmpty()) {
+			FileUploader fileUpload = FileUploader.getInstance();
+
+			fileUpload.deleteFile(user.getProfilePhoto());
+
+			String imagePath = fileUpload.saveFile(profilePhoto);
+
+			user.setProfilePhoto(imagePath);
 		}
 
 		user.preUpdate();

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.site.service.SiteService;
 import com.yoda.user.UserEditValidator;
@@ -41,8 +43,10 @@ public class UserEditController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(
-			@ModelAttribute User user, BindingResult result,
-			SessionStatus status, HttpServletRequest request)
+			@ModelAttribute User user,
+			@RequestParam("profilePhoto") MultipartFile profilePhoto,
+			BindingResult result, SessionStatus status,
+			HttpServletRequest request)
 		throws Throwable {
 		new UserEditValidator().validate(user, result);
 
@@ -74,9 +78,9 @@ public class UserEditController {
 
 		userService.updateUser(
 			user.getUserId(), user.getUsername(), user.getPassword(),
-			user.getEmail(), user.getPhone(), user.getAddressLine1(),
-			user.getAddressLine2(), user.getCityName(), siteIds,
-			user.isEnabled());
+			user.getEmail(), user.getPhone(), profilePhoto,
+			user.getAddressLine1(), user.getAddressLine2(),
+			user.getCityName(), siteIds, user.isEnabled());
 
 		model.put("sites", siteService.getSites());
 		model.put("success", "success");

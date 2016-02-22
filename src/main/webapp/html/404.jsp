@@ -35,8 +35,7 @@
 					<spring:message code="the-requested-resource-is-not-available" />
 				</p>
 				<p>
-					<a href="<c:url value="/" />">return to home</a> or try using the
-					search form.
+					<a href="<c:url value="/" />">return to home</a> or try using the search form.
 				</p>
 				<form class='search-form'>
 					<div class='input-group'>

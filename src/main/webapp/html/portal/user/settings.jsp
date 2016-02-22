@@ -15,6 +15,7 @@
 	<link rel="icon" type="image/x-icon" href="<c:url value="/resources/images/favicon.ico" />" />
 
 	<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />' type="text/css">
+	<link rel="stylesheet" href='<c:url value="/resources/css/fileinput.css" />' />
 	<link rel="stylesheet" href='<c:url value="/template/basic/main.css" />' type="text/css" />
 
 	<link href="http://fonts.useso.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
@@ -28,18 +29,18 @@
 		<hr> -->
 		<div class="row">
 			<!-- left column -->
-			<%-- <div class="col-md-3">
+			<!-- <div class="col-lg-2">
 				<div class="text-center">
 					<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
 					<h6>Upload a different photo...</h6>
 
 					<input type="file" class="form-control">
 				</div>
-			</div> --%>
+			</div> -->
 
 			<!-- edit form column -->
 			<div class="col-lg-8 col-lg-offset-2">
-				<form:form method="post" modelAttribute="user" cssClass="form-horizontal" role="form">
+				<form:form method="post" modelAttribute="user" cssClass="form-horizontal" role="form" enctype="multipart/form-data">
 					<c:if test="${success != null}">
 						<div class="alert alert-success" role="alert">
 							<a class="panel-close close" data-dismiss="alert">×</a>
@@ -64,6 +65,35 @@
 						</ul>
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab-basic">
+								<div class="form-group">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-8">
+										<div class="fileinput fileinput-new" data-provides="fileinput">
+											<div class="fileinput-new thumbnail" style="width: 100px; height: 100px;">
+												<%-- <c:if test="${success != null}">
+													<img src='<c:url value="/resources/images/defaultAvatar.png" />' class="img-responsive" alt="avatar" />
+												</c:if> --%>
+												<c:choose>
+													<c:when test="${user.profilePhoto != null}">
+														<img src="${user.profilePhoto}" class="img-responsive" alt="${user.username}" />
+													</c:when>
+													<c:otherwise>
+														<img src='<c:url value="/resources/images/defaultAvatar.png" />' class="img-responsive" alt="avatar" />
+													</c:otherwise>
+												</c:choose>
+											</div>
+											<div class="fileinput-preview fileinput-exists thumbnail img-rounded" style="width: 100px; height: 100px;"></div>
+											<div>
+												<span class="btn btn-sm btn-default btn-file">
+													<span class="fileinput-new"><spring:message code="select-image" /></span>
+													<span class="fileinput-exists"><spring:message code="change" /></span>
+													<input type="file" name="photo" value="">
+												</span>
+												<a href="#" class="btn btn-sm btn-default fileinput-exists" data-dismiss="fileinput"><spring:message code="delete" /></a>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label"><spring:message code="username" /></label>
 									<div class="col-md-8">
@@ -112,7 +142,6 @@
 					</div>
 				</form:form>
 			</div>
-
 			<!-- Custom Tabs -->
 		</div>
 	</div>
@@ -120,6 +149,7 @@
 	<p class="small text-muted text-center">${siteInfo.siteFooter}</p>
 
 	<script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>
+	<script type="text/javascript" src='<c:url value="/resources/js/fileupload/fileinput.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/template/basic/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
 </body>
 </html>

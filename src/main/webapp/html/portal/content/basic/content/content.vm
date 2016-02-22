@@ -98,7 +98,11 @@
 						#foreach ($comment in $comments)
 							<li class="left clearfix">
 								<span class="comments-img pull-left">
-									<img src='#springUrl("/resources/images/defaultAvatar.png")' alt="$comment.user.username" class="img-rounded" width="32" height="32" />
+									#if ($comment.user.profilePhoto)
+										<img src="$comment.user.profilePhoto" alt="$comment.user.username" class="img-rounded" width="32" height="32" />
+									#else
+										<img src='#springUrl("/resources/images/defaultAvatar.png")' alt="$comment.user.username" class="img-rounded" width="32" height="32" />
+									#end
 								</span>
 								<div class="comments-body clearfix">
 									<div class="header">

@@ -28,7 +28,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.yoda.fckeditor.uploader.SimpleUploaderServlet;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.user.model.User;
 import com.yoda.util.StringPool;
@@ -57,7 +56,7 @@ public class ConnectorController {
 
 	private static final String UPLOAD_FOLDER = "/uploads/";
 
-	private static String baseDir;
+//	private static String baseDir;
 	private static boolean debug = false;
 
 	/**
@@ -96,13 +95,13 @@ public class ConnectorController {
 	public void setup(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String realBaseDir = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
-
-		File baseFile = new File(realBaseDir);
-
-		if(!baseFile.exists()){
-			baseFile.mkdir();
-		}
+//		String realBaseDir = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
+//
+//		File baseFile = new File(realBaseDir);
+//
+//		if(!baseFile.exists()){
+//			baseFile.mkdir();
+//		}
 
 		String fckBaseDir = StringPool.BLANK;
 
