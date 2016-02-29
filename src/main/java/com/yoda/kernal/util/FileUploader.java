@@ -25,7 +25,6 @@ public class FileUploader {
 
 	private static final String UPLOAD_FOLDER = "/uploads/";
 	private static final String THUMBNAIL_SMALL = "-25-";
-	private static final String THUMBNAIL_NORMAL = "-100-";
 	private static final String THUMBNAIL_EXTENSION = "png";
 	private static final int THUMBNAIL_SIZE_S = 25;
 	private static final int THUMBNAIL_SIZE_M = 75;
@@ -103,12 +102,10 @@ public class FileUploader {
 			return null;
 		}
 
+		BufferedImage image = null;
+
 		try {
 			String currentDirPath = getRealPath();
-
-			BufferedImage image = ImageIO.read(file.getInputStream());
-
-			BufferedImage scaledImg = Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, maxSize, Scalr.OP_ANTIALIAS);
 
 			String randomFileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize +  StringPool.PERIOD + THUMBNAIL_EXTENSION;
 
@@ -120,6 +117,22 @@ public class FileUploader {
 				thumbnail = new File(currentDirPath, randomFileName);
 			}
 
+			image = ImageIO.read(file.getInputStream());
+
+			BufferedImage scaledImg = null;
+
+			int height = image.getHeight();
+			int width = image.getWidth();
+
+			if (height > width) {
+				image = Scalr.crop(image, 0, (height - width) / 2, width, width);
+			}
+			else if (height < width) {
+				image = Scalr.crop(image, (width - height) / 2, 0, height, height);
+			}
+
+			scaledImg = Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, maxSize, Scalr.OP_ANTIALIAS);
+
 			ImageIO.write(scaledImg, THUMBNAIL_EXTENSION, thumbnail);
 
 			return getUrlPrefix() + thumbnail.getName();
@@ -128,9 +141,11 @@ public class FileUploader {
 			logger.error(e.getMessage());
 
 			return null;
-			}
 		}
-
+		finally {
+			image.flush();
+		}
+	}
 
 	private String createThumbnail(File file) throws IOException {
 //		BufferedImage image = ImageIO.read(new File(path));
