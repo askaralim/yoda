@@ -17,7 +17,7 @@
 	<resultMap id="userResult" type="User">
 		<id property="userId" column="user_id" />
 		<result property="username" column="username" />
-		<result property="profilePhoto" column="profile_photo" />
+		<result property="profilePhotoSmall" column="profile_photo_small" />
 	</resultMap>
 
 	<sql id="commentColumns">
@@ -29,7 +29,7 @@
 		c.site_id AS site_id,
 		u.user_id,
 		u.username,
-		u.profile_photo
+		u.profile_photo_small
 	</sql>
 
 	<sql id="commentJoins">

@@ -59,6 +59,8 @@ public class User extends BaseEntity implements UserDetails {
 
 	private String profilePhoto;
 
+	private String profilePhotoSmall;
+
 	private String stateName;
 
 	private String username;
@@ -81,14 +83,14 @@ public class User extends BaseEntity implements UserDetails {
 			Date createDate, Date updateDate, Set<UserAuthority> authorities,
 			Set<Site> sites, String addressLine1, String addressLine2,
 			String cityName, String countryName, String email, String password,
-			String phone, String profilePhoto, String stateName, String username,
-			String userType, String zipCode) {
+			String phone, String profilePhoto, String profilePhotoSmall,
+			String stateName, String username, String userType, String zipCode) {
 		this(
 			userId, true, true, true, enabled, createBy, updateBy,
 			lastVisitSiteId, active, lastLoginDate, createDate, updateDate,
 			authorities, sites, addressLine1, addressLine2, cityName,
-			countryName, email, password, phone, profilePhoto, stateName,
-			username, userType, zipCode);
+			countryName, email, password, phone, profilePhoto, profilePhotoSmall,
+			stateName, username, userType, zipCode);
 	}
 
 	public User(
@@ -99,8 +101,8 @@ public class User extends BaseEntity implements UserDetails {
 			Set<UserAuthority> authorities, Set<Site> sites,
 			String addressLine1, String addressLine2, String cityName,
 			String countryName, String email, String password, String phone,
-			String profilePhoto, String stateName, String username,
-			String userType, String zipCode) {
+			String profilePhoto, String profilePhotoSmall, String stateName,
+			String username, String userType, String zipCode) {
 		if (((username == null) || "".equals(username)) || (password == null)) {
 			throw new IllegalArgumentException(
 				"Cannot pass null or empty values to constructor");
@@ -128,6 +130,7 @@ public class User extends BaseEntity implements UserDetails {
 		this.password = password;
 		this.phone = phone;
 		this.profilePhoto = profilePhoto;
+		this.profilePhotoSmall = profilePhotoSmall;
 		this.stateName = stateName;
 		this.username = username;
 		this.zipCode = zipCode;
@@ -337,6 +340,14 @@ public class User extends BaseEntity implements UserDetails {
 
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
+	}
+
+	public String getProfilePhotoSmall() {
+		return profilePhotoSmall;
+	}
+
+	public void setProfilePhotoSmall(String profilePhotoSmall) {
+		this.profilePhotoSmall = profilePhotoSmall;
 	}
 
 	public Date getLastLoginDate() {

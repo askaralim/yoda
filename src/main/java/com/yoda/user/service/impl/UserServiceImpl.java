@@ -213,10 +213,12 @@ public class UserServiceImpl implements UserService {
 			FileUploader fileUpload = FileUploader.getInstance();
 
 			fileUpload.deleteFile(user.getProfilePhoto());
+			fileUpload.deleteFile(user.getProfilePhotoSmall());
 
-			String imagePath = fileUpload.saveFile(profilePhoto);
+//			String imagePath = fileUpload.saveFile(profilePhoto);
 
-			user.setProfilePhoto(imagePath);
+			user.setProfilePhoto(fileUpload.saveThumbnailLarge(profilePhoto));
+			user.setProfilePhotoSmall(fileUpload.saveThumbnailMedium(profilePhoto));
 		}
 
 		user.preUpdate();

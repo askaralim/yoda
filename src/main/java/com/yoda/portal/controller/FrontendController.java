@@ -23,12 +23,9 @@ import com.yoda.portal.content.data.ContentInfo;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.HomeInfo;
 import com.yoda.portal.content.data.PageInfo;
-import com.yoda.portal.content.data.SectionInfo;
 import com.yoda.portal.content.data.SiteInfo;
-import com.yoda.section.model.Section;
 import com.yoda.site.model.Site;
 import com.yoda.util.Constants;
-import com.yoda.util.Format;
 import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 

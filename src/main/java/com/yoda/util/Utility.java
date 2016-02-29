@@ -794,24 +794,29 @@ public class Utility {
 	static public String getResourceUrlPrefix(long siteId) {
 		return "/p/" + siteId + "/resource/";
 	}
-//
-//	static public boolean isImage(String filename) {
-//		int index = filename.lastIndexOf('.');
-//		if (index == -1) {
-//			return false;
-//		}
-//		if (filename.length() - 1 == index) {
-//			return false;
-//		}
-//		String extension = filename.substring(index + 1);
-//		for (int i = 0; i < Constants.IMAGE_MIME.length; i++) {
-//			if (extension.toLowerCase().trim().equals(Constants.IMAGE_MIME[i])) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
+
+	static public boolean isImage(String filename) {
+		int index = filename.lastIndexOf('.');
+
+		if (index == -1) {
+			return false;
+		}
+
+		if (filename.length() - 1 == index) {
+			return false;
+		}
+
+		String extension = filename.substring(index + 1);
+
+		for (int i = 0; i < Constants.IMAGE_MIME.length; i++) {
+			if (extension.toLowerCase().trim().equals(Constants.IMAGE_MIME[i])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 //	// TODO - http://www.sitepoint.com/article/card-validation-class-php
 //	static public boolean isValidCreditCard(int creditCardType,
 //			String creditCardNum) {

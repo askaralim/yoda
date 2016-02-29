@@ -49,6 +49,10 @@ public class Constants {
 
 	public static final String IMAGEPROVIDER_URL = "U";
 
+	public static final String IMAGE_MIME[] = { "bmp", "gif", "jpeg", "jpg",
+		"jpe", "png", "tiff", "tif", "wbmp", "ras", "pnm", "pbm", "pgm",
+		"ppm", "rgb", "xbm", "xpm", "xwd" };
+
 	public static final String LOGIN_PAGE_URL = "/login";
 
 	public static final String MENU_HOME = "HOME";

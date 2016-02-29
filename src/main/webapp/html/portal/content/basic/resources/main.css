@@ -370,6 +370,12 @@ header .intro-text .name {
 	color: #777777;
 }
 
+.comments .profile_photo_img {
+	position: absolute;
+	width: 40px;
+	height: 40px;
+}
+
 .content-actions {
 	text-align: right;
 	/* opacity: 0.6; */
