@@ -113,6 +113,7 @@
 		u.email,
 		u.phone,
 		u.profile_photo AS profile_photo,
+		u.profile_photo_small AS profile_photo_small,
 		u.last_login_date AS last_login_date,
 		u.last_visit_site_id AS last_visit_site_id,
 		<!-- au.id AS "authorities.id",
