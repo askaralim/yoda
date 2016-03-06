@@ -24,7 +24,7 @@ public class BaseEntity implements Serializable {
 	public void preInsert(){
 		User user = PortalUtil.getAuthenticatedUser();
 
-		if (user.getUserId() != null){
+		if ((user != null) && (user.getUserId() != null)){
 			this.updateBy = user;
 			this.createBy = user;
 		}

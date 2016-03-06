@@ -236,7 +236,7 @@ public class SimpleUploaderServlet extends HttpServlet {
 
 //		long siteId = user.getLastVisitSiteId();
 
-		long siteId = PortalUtil.getSiteId(request);
+		long siteId = PortalUtil.getSiteIdFromSession(request);
 
 		String baseDir = Utility.getResourcePrefix(siteId);
 
@@ -257,7 +257,7 @@ public class SimpleUploaderServlet extends HttpServlet {
 //		Site site = adminBean.getSite();
 
 //		long siteId = user.getLastVisitSiteId();
-		long siteId = PortalUtil.getSiteId(request);
+		long siteId = PortalUtil.getSiteIdFromSession(request);
 
 		String baseDir = Utility.getResourceUrlPrefix(siteId);
 

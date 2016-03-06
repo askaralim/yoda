@@ -61,29 +61,29 @@ public class LoginController {
 
 	@RequestMapping(value = "/login/success", method = RequestMethod.GET)
 	public String loginSuccess(HttpServletRequest request) throws Exception {
-		User userDb = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		Site site = null;
 
-		if (!Validator.isNull(userDb.getLastVisitSiteId())) {
+		if (!Validator.isNull(currentUser.getLastVisitSiteId())) {
 			try {
-				site = siteService.getSite(userDb.getLastVisitSiteId());
+				site = siteService.getSite(currentUser.getLastVisitSiteId());
 			}
 			catch (ObjectNotFoundException e) {
-				logger.info("Site " + userDb.getLastVisitSiteId()
-					+ " not found for use " + userDb.getUserId());
+				logger.info("Site " + currentUser.getLastVisitSiteId()
+					+ " not found for use " + currentUser.getUserId());
 
 			}
 		}
 
 		if (site == null) {
-			site = siteService.getDefaultSite(userDb);
+			site = siteService.getDefaultSite(currentUser);
 		}
 
-		userDb.setLastVisitSiteId(site.getSiteId());
-		userDb.setLastLoginDate(new Date());
+		currentUser.setLastVisitSiteId(site.getSiteId());
+		currentUser.setLastLoginDate(new Date());
 
-		userService.update(userDb);
+		userService.update(currentUser);
 
 		HttpSession session = request.getSession();
 

@@ -32,7 +32,7 @@ public class PortalUtil {
 		return site;
 	}
 
-	public static int getSiteId(HttpServletRequest request) {
+	public static int getSiteIdFromSession(HttpServletRequest request) {
 		return getSiteFromSession(request).getSiteId();
 	}
 

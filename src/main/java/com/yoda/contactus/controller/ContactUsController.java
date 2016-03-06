@@ -39,7 +39,7 @@ public class ContactUsController {
 	@RequestMapping(value="/controlpanel/contactus/list", method = RequestMethod.GET)
 	public ModelAndView showPanel(
 		HttpServletRequest request, HttpServletResponse response) {
-		List<ContactUs> contactUsList = contactUsService.getContactUs(PortalUtil.getSiteId(request));
+		List<ContactUs> contactUsList = contactUsService.getContactUs(PortalUtil.getSiteIdFromSession(request));
 
 //		ContactUsListCommand command = new ContactUsListCommand();
 //

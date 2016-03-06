@@ -402,7 +402,7 @@ public class CustomConnectorServlet extends HttpServlet {
 
 //		long siteId = user.getLastVisitSiteId();
 
-		long siteId = PortalUtil.getSiteId(request);
+		long siteId = PortalUtil.getSiteIdFromSession(request);
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -429,7 +429,7 @@ public class CustomConnectorServlet extends HttpServlet {
 //		Admin admin = (Admin)request.getSession().getAttribute("admin");
 
 //		long siteId = user.getLastVisitSiteId();
-		long siteId = PortalUtil.getSiteId(request);
+		long siteId = PortalUtil.getSiteIdFromSession(request);
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

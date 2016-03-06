@@ -120,6 +120,6 @@ public class ElasticSearchController {
 	}
 
 	private List<Content> getContents(HttpServletRequest request) {
-		return contentService.getContents(PortalUtil.getSiteId(request));
+		return contentService.getContents(PortalUtil.getSiteIdFromSession(request));
 	}
 }

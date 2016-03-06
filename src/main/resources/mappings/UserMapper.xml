@@ -191,7 +191,7 @@
 
 	<insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
 		INSERT INTO user_(user_id, account_non_expired, account_non_locked, credentials_non_expired, address_line1, address_line2, username, password, city_name, create_by, create_date, update_by, update_date, enabled, state_name, country_name, zip_code, email, phone, profile_photo, profile_photo_small, last_login_date, last_visit_site_id)
-		VALUES(#{userId}, #{accountNonExpired}, #{accountNonLocked}, #{credentialsNonExpired}, #{address_line1}, #{address_line2}, #{username}, #{password}, #{cityName}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{enabled}, #{stateName}, #{countryName}, #{zipCode}, #{email}, #{phone}, #{profilePhoto}, #{profilePhotoSmall}, #{lastLoginDate}, #{lastVisitSiteId})
+		VALUES(#{userId}, #{accountNonExpired}, #{accountNonLocked}, #{credentialsNonExpired}, #{addressLine1}, #{addressLine2}, #{username}, #{password}, #{cityName}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{enabled}, #{stateName}, #{countryName}, #{zipCode}, #{email}, #{phone}, #{profilePhoto}, #{profilePhotoSmall}, #{lastLoginDate}, #{lastVisitSiteId})
 	</insert>
 
 	<update id="update" parameterType="User">

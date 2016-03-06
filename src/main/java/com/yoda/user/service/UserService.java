@@ -28,7 +28,7 @@ public interface UserService {
 
 	User addUser(String userName, String password, String email, String phone, String role, String addressLine1, String addressLine2, String cityName, int siteId, boolean enabled) throws PortalException;
 
-	User addUser(String userName, String userPassword, String userEmail, String phone, String role, String userAddressLine1, String userAddressLine2, String userCityName, Integer[] selectedSiteIds, boolean enabled) throws PortalException;
+	User addUser(String userName, String userPassword, String userEmail, String phone, String role, String userAddressLine1, String userAddressLine2, String userCityName, Integer[] selectedSiteIds, int lastVisitSiteId, boolean enabled) throws PortalException;
 
 	void deleteUser(long userId);
 

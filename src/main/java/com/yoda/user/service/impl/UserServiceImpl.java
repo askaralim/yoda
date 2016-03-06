@@ -49,13 +49,14 @@ public class UserServiceImpl implements UserService {
 					throws PortalException {
 		return addUser(
 			userName, password, email, phone, role, addressLine1,
-			addressLine2, cityName, new Integer[]{siteId}, enabled);
+			addressLine2, cityName, new Integer[]{siteId}, siteId, enabled);
 	}
 
 	public User addUser(
 			String userName, String password, String email, String phone,
 			String role, String addressLine1, String addressLine2,
-			String cityName, Integer[] selectedSiteIds, boolean enabled)
+			String cityName, Integer[] selectedSiteIds, int lastVisitSiteId,
+			boolean enabled)
 		throws PortalException {
 		User user = new User();
 
@@ -76,8 +77,9 @@ public class UserServiceImpl implements UserService {
 		user.setStateName(StringPool.BLANK);
 		user.setCountryName(StringPool.BLANK);
 		user.setZipCode(StringPool.BLANK);
-		user.setUpdateBy(PortalUtil.getAuthenticatedUser());
-		user.setUpdateDate(new Date());
+		user.setLastVisitSiteId(lastVisitSiteId);
+//		user.setUpdateBy(PortalUtil.getAuthenticatedUser());
+//		user.setUpdateDate(new Date());
 
 		user.getSites().clear();
 
@@ -94,7 +96,21 @@ public class UserServiceImpl implements UserService {
 
 //		userDAO.save(user);
 
-		user.preInsert();
+		User currentUser = PortalUtil.getAuthenticatedUser();
+
+		if ((user != null) && (user.getUserId() != null)){
+			user.setCreateBy(currentUser);
+			user.setUpdateBy(currentUser);
+		}
+		else {
+			currentUser = this.getDefaultUser();
+
+			user.setCreateBy(currentUser);
+			user.setUpdateBy(currentUser);
+		}
+
+		user.setCreateDate(new Date());
+		user.setUpdateDate(new Date());
 
 		userMapper.insert(user);
 
@@ -112,6 +128,11 @@ public class UserServiceImpl implements UserService {
 		for (UserAuthority ua : user.getAuthorities()) {
 			authorityMapper.delete(ua);
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public User getDefaultUser() {
+		return userMapper.getById(1);
 	}
 
 	@Transactional(readOnly = true)

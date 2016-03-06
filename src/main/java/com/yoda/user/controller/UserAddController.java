@@ -89,7 +89,7 @@ public class UserAddController {
 		User userDb = userService.addUser(user.getUsername(), user.getPassword(),
 			user.getEmail(), user.getPhone(), role, user.getAddressLine1(),
 			user.getAddressLine2(), user.getCityName(), siteIds,
-			user.isEnabled());
+			PortalUtil.getSiteIdFromSession(request), user.isEnabled());
 
 		return new ModelAndView("redirect:/controlpanel/user/" + userDb.getUserId() + "/edit", model);
 	}
