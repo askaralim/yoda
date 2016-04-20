@@ -142,7 +142,7 @@
 		description VARCHAR(2000),
 		image_path VARCHAR(50),
 		level VARCHAR(20),
-		name VARCHAR(30),
+		name VARCHAR(100),
 		price INT,
 		rating INT,
 		site_id INT(4) NOT NULL,

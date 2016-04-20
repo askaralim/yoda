@@ -340,7 +340,7 @@ header .intro-text .name {
 	color: inset 0 1px #fff, 0 0 8px #c8cfe6;
 }
 
-.content-post .nav-tabs-custom .tab-content .tab-pane p img {
+.content-post .nav-tabs-custom .tab-content div img {
 	max-width: 100%;
 	height: auto;
 }

@@ -98,21 +98,21 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public Item update(Item item) {
-		Item itemDB = this.getItem(item.getId());
+//		Item itemDB = this.getItem(item.getId());
+//
+//		itemDB.setBrand(item.getBrand());
+//		itemDB.setCategoryId(item.getCategoryId());
+//		itemDB.setContentId(item.getContentId());
+//		itemDB.setDescription(item.getDescription());
+//		itemDB.setLevel(item.getLevel());
+//		itemDB.setName(item.getName());
+//		itemDB.setPrice(item.getPrice());
 
-		itemDB.setBrand(item.getBrand());
-		itemDB.setCategoryId(item.getCategoryId());
-		itemDB.setContentId(item.getContentId());
-		itemDB.setDescription(item.getDescription());
-		itemDB.setLevel(item.getLevel());
-		itemDB.setName(item.getName());
-		itemDB.setPrice(item.getPrice());
+		item.preUpdate();
 
-		itemDB.preUpdate();
+		itemMapper.update(item);
 
-		itemMapper.update(itemDB);
-
-		return itemDB;
+		return item;
 	}
 
 	public void remove(int itemId) {

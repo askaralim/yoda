@@ -44,7 +44,7 @@ public class UserEditController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(
 			@ModelAttribute User user,
-			@RequestParam("profilePhoto") MultipartFile profilePhoto,
+			@RequestParam("photo") MultipartFile photo,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request)
 		throws Throwable {
@@ -78,7 +78,7 @@ public class UserEditController {
 
 		userService.updateUser(
 			user.getUserId(), user.getUsername(), user.getPassword(),
-			user.getEmail(), user.getPhone(), profilePhoto,
+			user.getEmail(), user.getPhone(), photo,
 			user.getAddressLine1(), user.getAddressLine2(),
 			user.getCityName(), siteIds, user.isEnabled());
 

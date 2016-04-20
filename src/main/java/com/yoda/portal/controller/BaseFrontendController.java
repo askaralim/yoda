@@ -75,15 +75,14 @@ public class BaseFrontendController {
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> model = new HashMap<String, Object>();
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User loginUser = PortalUtil.getAuthenticatedUser();
 
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			UserDetails userDetail = (UserDetails)auth.getPrincipal();
-
+		if (loginUser != null) {
 			model.put("userLogin", true);
-			model.put("username", userDetail.getUsername());
+			model.put("userId", loginUser.getUserId());
+			model.put("username", loginUser.getUsername());
 
-			if (PortalUtil.isAdminRole(userDetail)) {
+			if (PortalUtil.isAdminRole(loginUser)) {
 				model.put("roleAdmin", true);
 			}
 		}

@@ -28,6 +28,16 @@
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2">
 				<div class="page-header">
+					<div class="thumbnail" style="width: 100px; height: 100px;">
+						<c:choose>
+							<c:when test="${user.profilePhoto != null}">
+								<img src="${user.profilePhoto}" class="img-responsive" alt="${user.username}" />
+							</c:when>
+							<c:otherwise>
+								<img src='<c:url value="/resources/images/defaultAvatar.png" />' class="img-responsive" alt="avatar" />
+							</c:otherwise>
+						</c:choose>
+					</div>
 					<h3>${user.username}</h3>
 					${user.email}&nbsp&nbsp&nbsp
 					<c:if test="${user.phone}">

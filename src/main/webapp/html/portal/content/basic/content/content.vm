@@ -107,7 +107,7 @@
 								<div class="comments-body clearfix">
 									<div class="header">
 										<strong class="primary-font">
-											<a href='#springUrl("/user/$comment.user.username")'>$comment.user.username</a>
+											<a href='#springUrl("/user/$comment.user.userId")'>$comment.user.username</a>
 										</strong>
 										<small class="pull-right text-muted label label-danger">
 											<i class="icon-time"></i> $comment.createDate

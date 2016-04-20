@@ -13,7 +13,7 @@ function submitCancel(type) {
 	<li>User Maintenance</li>
 </ol>
 
-<form:form method="post" modelAttribute="user">
+<form:form method="post" modelAttribute="user" role="form" enctype="multipart/form-data">
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
 			<a class="panel-close close" data-dismiss="alert">×</a>
@@ -64,6 +64,29 @@ function submitCancel(type) {
 		</div>
 
 		<div class="col-md-6">
+			<div class="form-group">
+				<div class="fileinput fileinput-new" data-provides="fileinput">
+					<div class="fileinput-new thumbnail" style="width: 100px; height: 100px;">
+						<c:choose>
+							<c:when test="${user.profilePhoto != null}">
+								<img src="${user.profilePhoto}" class="img-responsive" alt="${user.username}" />
+							</c:when>
+							<c:otherwise>
+								<img src='<c:url value="/resources/images/defaultAvatar.png" />' class="img-responsive" alt="avatar" />
+							</c:otherwise>
+						</c:choose>
+					</div>
+					<div class="fileinput-preview fileinput-exists thumbnail img-rounded" style="width: 100px; height: 100px;"></div>
+					<div>
+						<span class="btn btn-sm btn-default btn-file">
+							<span class="fileinput-new"><spring:message code="select-image" /></span>
+							<span class="fileinput-exists"><spring:message code="change" /></span>
+							<input type="file" name="photo" value="">
+						</span>
+						<a href="#" class="btn btn-sm btn-default fileinput-exists" data-dismiss="fileinput"><spring:message code="delete" /></a>
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label class="control-label"><spring:message code="site" /></label>
 				<c:forEach var="site" items="${user.sites}">

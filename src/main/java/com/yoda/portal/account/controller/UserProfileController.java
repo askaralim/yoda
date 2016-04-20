@@ -22,21 +22,21 @@ import com.yoda.user.model.User;
 import com.yoda.util.Validator;
 
 @Controller
-@RequestMapping("/user/{username}")
+@RequestMapping("/user/{userId}")
 public class UserProfileController extends BaseFrontendController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView setupForm(
-			@PathVariable("username") String username,
+			@PathVariable("userId") long userId,
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 
 		Site site = getSite(request);
 
-		User user = userService.getUserByUserName(username);
+		User user = userService.getUser(userId);
 
 		if (Validator.isNull(user)) {
-			return new ModelAndView("/404", "requestURL", username);
+			return new ModelAndView("/404", "requestURL", userId);
 		}
 
 		List<Content> contents = contentService.getContentByUserId(user.getUserId());

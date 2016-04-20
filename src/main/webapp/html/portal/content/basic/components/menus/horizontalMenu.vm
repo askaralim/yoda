@@ -36,7 +36,7 @@
 								<li><a href='#springUrl("/controlpanel/home")'>#springMessage('control-panel')</a></li>
 								<li class="divider"></li>
 							#end
-							<li><a href='#springUrl("/user/$username")'>#springMessage('profile')</a></li>
+							<li><a href='#springUrl("/user/$userId")'>#springMessage('profile')</a></li>
 							<li><a href='#springUrl("/user/settings")'>#springMessage('settings')</a></li>
 							<li class="divider"></li>
 							<li><a href='#springUrl("/logout")'>#springMessage('logout')</a></li>

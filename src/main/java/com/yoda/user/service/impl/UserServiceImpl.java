@@ -3,6 +3,7 @@ package com.yoda.user.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(hashedPassword);
 //		user.setCreateBy(PortalUtil.getAuthenticatedUser());
 //		user.setCreateDate(new Date());
-		user.setUsername(userName);
+		user.setUsername(StringEscapeUtils.escapeHtml4(userName));
 		user.setEnabled(enabled);
 		user.setEmail(email);
 		user.setPhone(phone);
