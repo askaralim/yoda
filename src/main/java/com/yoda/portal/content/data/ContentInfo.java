@@ -8,6 +8,7 @@ import java.util.Set;
 import com.yoda.category.model.Category;
 import com.yoda.content.model.ContentBrand;
 import com.yoda.item.model.Item;
+import com.yoda.user.model.User;
 
 public class ContentInfo extends DataInfo {
 	String infoType = "content";
@@ -32,11 +33,11 @@ public class ContentInfo extends DataInfo {
 
 	String defaultImageUrl;
 
-	String updateBy;
+	User updateBy;
 
 	String updateDate;
 
-	String createBy;
+	User createBy;
 
 	String createDate;
 
@@ -172,11 +173,11 @@ public class ContentInfo extends DataInfo {
 		this.naturalKey = naturalKey;
 	}
 
-	public String getCreateBy() {
+	public User getCreateBy() {
 		return createBy;
 	}
 
-	public void setCreateBy(String createBy) {
+	public void setCreateBy(User createBy) {
 		this.createBy = createBy;
 	}
 
@@ -188,11 +189,11 @@ public class ContentInfo extends DataInfo {
 		this.createDate = createDate;
 	}
 
-	public String getUpdateBy() {
+	public User getUpdateBy() {
 		return updateBy;
 	}
 
-	public void setUpdateBy(String updateBy) {
+	public void setUpdateBy(User updateBy) {
 		this.updateBy = updateBy;
 	}
 

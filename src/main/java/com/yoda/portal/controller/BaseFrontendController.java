@@ -189,7 +189,7 @@ public class BaseFrontendController {
 		User user = content.getCreateBy();
 
 		contentInfo.setUpdateDate(Format.getDate(content.getUpdateDate()));
-		contentInfo.setCreateBy(user.getUsername());
+		contentInfo.setCreateBy(user);
 		contentInfo.setCreateDate(Format.getDate(content.getCreateDate()));
 
 		if (Format.isNullOrEmpty(content.getPageTitle())) {

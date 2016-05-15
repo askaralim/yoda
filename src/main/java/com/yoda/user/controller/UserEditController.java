@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.site.service.SiteService;
 import com.yoda.user.UserEditValidator;
@@ -42,7 +43,7 @@ public class UserEditController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String update(
+	public ModelAndView update(
 			@ModelAttribute User user,
 			@RequestParam("photo") MultipartFile photo,
 			BindingResult result, SessionStatus status,
@@ -56,7 +57,7 @@ public class UserEditController {
 			model.put("sites", siteService.getSites());
 			model.put("errors", "errors");
 
-			return "controlpanel/user/edit/{userId}";
+			return new ModelAndView("controlpanel/user/edit/{userId}", model);
 		}
 
 		String role = request.getParameter("userRole");
@@ -76,7 +77,7 @@ public class UserEditController {
 			}
 		}
 
-		userService.updateUser(
+		User userDb = userService.updateUser(
 			user.getUserId(), user.getUsername(), user.getPassword(),
 			user.getEmail(), user.getPhone(), photo,
 			user.getAddressLine1(), user.getAddressLine2(),
@@ -84,8 +85,9 @@ public class UserEditController {
 
 		model.put("sites", siteService.getSites());
 		model.put("success", "success");
+		model.put("user", userDb);
 
-		return "controlpanel/user/edit";
+		return new ModelAndView("controlpanel/user/edit", model);
 	}
 
 //	@RequestMapping(value = "/remove", method = RequestMethod.GET)

@@ -35,7 +35,7 @@
 			description = #{description},
 			update_by = #{updateBy.userId},
 			update_date = #{updateDate}
-		WHERE content_id = #{contentId}
+		WHERE content_brand_id = #{contentBrandId}
 	</update>
 
 	<delete id="delete">

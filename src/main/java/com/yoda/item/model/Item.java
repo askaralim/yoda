@@ -16,7 +16,7 @@ public class Item extends BaseEntity {
 
 	private int rating;
 
-	private Integer siteId;
+	private int siteId;
 
 	private String description;
 
@@ -52,11 +52,11 @@ public class Item extends BaseEntity {
 		this.contentId = contentId;
 	}
 
-	public Integer getSiteId() {
+	public int getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(Integer siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 
