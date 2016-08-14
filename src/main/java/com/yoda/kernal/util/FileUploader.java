@@ -241,7 +241,7 @@ public class FileUploader {
 			}
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage() + " - File Path:" + path);
 		}
 	}
 

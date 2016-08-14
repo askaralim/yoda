@@ -155,7 +155,6 @@ function removeContent() {
 						</div>
 					</div>
 				</div>
-
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<spring:message code="brand" />
@@ -316,9 +315,9 @@ function removeContent() {
 <!-- Multiple Select -->
 <script src='<c:url value="/resources/js/chosen.jquery.min.js" />'></script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	$(".chosen-select").chosen();
-</script>
+</script> -->
 
 <script type="text/javascript">
 $('#publishDate').datepicker({

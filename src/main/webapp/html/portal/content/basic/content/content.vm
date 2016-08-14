@@ -146,11 +146,77 @@
 	</div>
 </div>
 
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title text-center" id="registerLabel">#springMessage("join") taklip</h4>
+			</div>
+			<form>
+				<div class="modal-body">
+					<p id="modalError" class="alert alert-danger" role="alert" hidden="true"></p>
+					<div class="form-group">
+						<input id="username" name="username" type="text" class="form-control" placeholder='#springMessage("username")' required autofocus>
+					</div>
+					<div class="form-group">
+						<input id="email" name="email" type="email" class="form-control" placeholder='#springMessage("email")' required>
+					</div>
+					<div class="form-group">
+						<input id="password" name="password" type="password" class="form-control" placeholder='#springMessage("password")' required>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary btn-block" id="modalRegister">#springMessage('register')</a>
+
+					#springMessage("have-a-account")
+					<a class="text-center" href='#springUrl("/login")'>#springMessage('login')</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript" src='#springUrl("/template/basic/jquery-1.11.1.min.js")'></script>
 
 <script type="text/javascript">
 $(function(){
+	$('#modalRegister').click(function(){
+		$.ajax({
+			type: "POST",
+			url: '#springUrl("/user/register/ajax")',
+			data:{
+				'${_csrf.parameterName}':'${_csrf.token}',
+				username:$("#username").val(),
+				email:$("#email").val(),
+				password:$("#password").val()
+			},
+			dataType: "json",
+			success: function(data){
+				var modalError = $('#modalError');
+				modalError.hide();
+
+				if (data.error) {
+					modalError.show();
+					modalError.html(data.error);
+				}
+				else {
+					location.reload();
+				}
+			}
+		});
+	});
+});
+
+$(function(){
 	$('#thumbUp').click(function(){
+		if (!$userLogin) {
+			$('#loginModal').modal('show')
+
+			return;
+		}
 		$.ajax({
 			type: "POST",
 			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=up',
@@ -173,6 +239,11 @@ $(function(){
 
 $(function(){
 	$('#thumbDown').click(function(){
+		if (!$userLogin) {
+			$('#loginModal').modal('show')
+
+			return;
+		}
 		$.ajax({
 			type: "POST",
 			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=down',
@@ -194,6 +265,11 @@ $(function(){
 });
 
 function itemThumbUp(id){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+
+		return;
+	}
 	$.ajax({
 		type: "POST",
 		url: '#springUrl("/item/")' + id + '/rating?thumb=up',
@@ -214,6 +290,11 @@ function itemThumbUp(id){
 }
 
 function itemThumbDown(id){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+
+		return;
+	}
 	$.ajax({
 		type: "POST",
 		url: '#springUrl("/item/")' + id + '/rating?thumb=down',

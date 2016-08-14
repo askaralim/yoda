@@ -117,6 +117,9 @@ public class FrontendContentController extends BaseFrontendController {
 			if (!(auth instanceof AnonymousAuthenticationToken)) {
 				model.put("userLogin", true);
 			}
+			else {
+				model.put("userLogin", false);
+			}
 
 			text = DefaultTemplateEngine.getTemplate(request, response, "content/content.vm", model);
 

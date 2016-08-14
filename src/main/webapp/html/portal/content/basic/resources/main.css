@@ -283,8 +283,8 @@ header .intro-text .name {
 }
 
 .content-preview-wrapper-row .content-preview-image img {
-    border-radius: 5px;
-    box-shadow: 0 1px #fff inset, 0 0 8px #c8cfe6;
+	border-radius: 5px;
+	box-shadow: 0 1px #fff inset, 0 0 8px #c8cfe6;
 	background-clip: padding-box;
 	/* border: 7px solid #FFFFFF; */
 	border-radius: 5px;

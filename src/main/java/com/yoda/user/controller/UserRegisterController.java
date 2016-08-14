@@ -1,9 +1,15 @@
 package com.yoda.user.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.hsqldb.lib.StringUtil;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
 
 import com.yoda.exception.PortalException;
 import com.yoda.kernal.util.PortalUtil;
@@ -80,12 +87,12 @@ public class UserRegisterController {
 		int siteId = PortalUtil.getSiteIdFromSession(request);
 
 		try {
-			User user = userService.addUser(
+			userService.addUser(
 				username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true);
 		}
 		catch (PortalException e) {
-			e.printStackTrace();
+			logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
 		}
 
 		try {
@@ -108,6 +115,83 @@ public class UserRegisterController {
 		model.setViewName("redirect:/");
 
 		return model;
+	}
+
+	@RequestMapping(value = "/ajax", method = RequestMethod.POST)
+	public void ajaxRegister(
+			@RequestParam("username") String username,
+			@RequestParam("email") String email,
+			@RequestParam("password") String password,
+			HttpServletRequest request, HttpServletResponse response) {
+		User userDb = userService.getUserByUserName(username);
+
+		RequestContext requestContext = new RequestContext(request);
+
+		JSONObject jsonResult = new JSONObject();
+
+		try {
+			if (Validator.isNotNull(userDb)) {
+				jsonResult.put("error", requestContext.getMessage("duplicate-username"));
+			}
+
+			if (!Validator.isEmailAddress(email)) {
+				jsonResult.put("error", requestContext.getMessage("invalid-email"));
+			}
+
+			userDb = userService.getUserByEmail(email);
+
+			if (Validator.isNotNull(userDb)) {
+				jsonResult.put("error", requestContext.getMessage("duplicate-email"));
+			}
+		}
+		catch (JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		if (jsonResult.length() == 0) {
+			int siteId = PortalUtil.getSiteIdFromSession(request);
+
+			try {
+				userService.addUser(
+					username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true);
+			}
+			catch (PortalException e) {
+				logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
+			}
+
+			try {
+				UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
+
+				Authentication result = authenticationManager.authenticate(authResult);
+
+				// redirect into secured main page if authentication successful
+				if (result.isAuthenticated()) {
+					SecurityContextHolder.getContext().setAuthentication(result);
+				}
+			}
+			catch (Exception e) {
+				logger.debug("Problem authenticating user" + username, e);
+			}
+		}
+
+		String jsonString = jsonResult.toString();
+
+		PrintWriter printWriter = null;
+
+		try {
+			printWriter = response.getWriter();
+			printWriter.print(jsonString);
+		}
+		catch (IOException ex) {
+			logger.error(ex.getMessage());
+		}
+		finally {
+			if (null != printWriter) {
+				printWriter.flush();
+				printWriter.close();
+			}
+		}
 	}
 
 	Logger logger = Logger.getLogger(UserRegisterController.class);
