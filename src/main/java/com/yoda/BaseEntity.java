@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,10 +16,12 @@ public class BaseEntity implements Serializable {
 
 	private User updateBy;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
 	private Date updateDate;
 
 	private User createBy;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
 	private Date createDate;
 
 	public void preInsert(){

@@ -266,7 +266,7 @@ function removeContent() {
 						</div>
 						<div class="form-group">
 							<label for="createDate"><spring:message code="create-date" /></label>
-							<p class="form-control-static"><c:out value="${content.createDate}" /></p>
+							<p class="form-control-static"><fmt:formatDate value="${content.createDate}" pattern="yyyy-MM-dd" /></p>
 						</div>
 						<div class="form-group">
 							<label for="updateBy"><spring:message code="update-by" /></label>
@@ -274,7 +274,7 @@ function removeContent() {
 						</div>
 						<div class="form-group">
 							<label for="updateDate"><spring:message code="update-date" /></label>
-							<p class="form-control-static"><c:out value="${content.updateDate}" /></p>
+							<p class="form-control-static"><fmt:formatDate value="${content.updateDate}" pattern="yyyy-MM-dd" /></p>
 						</div>
 					</div>
 				</div>

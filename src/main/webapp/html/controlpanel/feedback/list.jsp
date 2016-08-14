@@ -105,7 +105,7 @@ function getSelectedIds(){
 									<c:out value="${feedback.phone}" />
 								</td>
 								<td>
-									<c:out value="${feedback.createDate}" />
+									<fmt:formatDate value="${feedback.createDate}" pattern="yyyy-MM-dd" />
 								</td>
 								<td>
 									<spring:url value="/controlpanel/feedback/{id}" var="viewFeedbackUrl">

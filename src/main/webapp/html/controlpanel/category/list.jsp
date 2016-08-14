@@ -107,7 +107,7 @@ function getSelectedCategoryIds(){
 									<c:out value="${category.parent}" />
 								</td>
 								<td>
-									<c:out value="${category.createDate}" />
+									<fmt:formatDate value="${category.createDate}" pattern="yyyy-MM-dd" />
 								</td>
 								<td>
 									<spring:url value="/controlpanel/category/{categoryId}/edit" var="editCategoryUrl">

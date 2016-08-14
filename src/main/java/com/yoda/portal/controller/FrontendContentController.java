@@ -1,7 +1,5 @@
 package com.yoda.portal.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.velocity.tools.generic.DateTool;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.content.model.Comment;
@@ -111,6 +111,7 @@ public class FrontendContentController extends BaseFrontendController {
 
 			model.put("contentInfo", contentInfo);
 			model.put("comments", comments);
+			model.put("date", new DateTool());
 
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -140,8 +141,9 @@ public class FrontendContentController extends BaseFrontendController {
 		return pageInfo;
 	}
 
+	@ResponseBody
 	@RequestMapping(value="/score" ,method = RequestMethod.POST)
-	public void score(
+	public String score(
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -171,21 +173,6 @@ public class FrontendContentController extends BaseFrontendController {
 			e.printStackTrace();
 		}
 
-		String jsonString = jsonResult.toString();
-
-		PrintWriter printWriter = null;
-
-		try {
-			printWriter = response.getWriter();
-			printWriter.print(jsonString);
-		}
-		catch (IOException ex) {
-		}
-		finally {
-			if (null != printWriter) {
-				printWriter.flush();
-				printWriter.close();
-			}
-		}
+		return jsonResult.toString();
 	}
 }

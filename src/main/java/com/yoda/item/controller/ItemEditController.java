@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -142,8 +143,9 @@ public class ItemEditController {
 		return "redirect:/controlpanel/item/" + id + "/edit";
 	}
 
+	@ResponseBody
 	@RequestMapping(value="/item/{id}/rating" ,method = RequestMethod.POST)
-	public void score(
+	public String score(
 			@PathVariable("id") int id,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -171,21 +173,6 @@ public class ItemEditController {
 			e.printStackTrace();
 		}
 
-		String jsonString = jsonResult.toString();
-
-		PrintWriter printWriter = null;
-
-		try {
-			printWriter = response.getWriter();
-			printWriter.print(jsonString);
-		}
-		catch (IOException ex) {
-		}
-		finally {
-			if (null != printWriter) {
-				printWriter.flush();
-				printWriter.close();
-			}
-		}
+		return jsonResult.toString();
 	}
 }

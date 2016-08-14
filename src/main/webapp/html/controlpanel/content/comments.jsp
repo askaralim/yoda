@@ -97,7 +97,7 @@ function getSelectedIds(){
 									<c:out value="${comment.content.title}" />
 								</td> --%>
 								<td>
-									<c:out value="${comment.createDate}" />
+									<fmt:formatDate value="${comment.createDate}" pattern="yyyy-MM-dd" />
 								</td>
 								<td>
 									<spring:url value="/controlpanel/comment/{id}" var="viewCommentUrl">

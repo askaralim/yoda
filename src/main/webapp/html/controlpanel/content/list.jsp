@@ -180,10 +180,10 @@ function getSelectedContentIds(){
 										<c:out value="${content.category.name}" />
 									</td>
 									<td>
-										<c:out value="${content.publishDate}" />
+										<fmt:formatDate value="${content.publishDate}" pattern="yyyy-MM-dd" />
 									</td>
 									<td>
-										<c:out value="${content.expireDate}" />
+										<fmt:formatDate value="${content.expireDate}" pattern="yyyy-MM-dd" />
 									</td>
 									<td>
 										<c:out value="${content.hitCounter}" />

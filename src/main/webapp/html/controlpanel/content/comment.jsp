@@ -24,7 +24,7 @@
 	</dl>
 	<dl>
 		<dt><spring:message code="create-date" /></dt>
-		<dd>${comment.createDate}</dd>
+		<dd><fmt:formatDate value="${comment.createDate}" pattern="yyyy-MM-dd" /></dd>
 	</dl>
 	<dl>
 		<dt><spring:message code="description" /></dt>

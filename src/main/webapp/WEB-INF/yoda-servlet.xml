@@ -78,7 +78,7 @@
 				<prop key="input.encoding">utf-8</prop>
 				<prop key="output.encoding">utf-8</prop>
 			</props>
-		</property> 
+		</property>
 	</bean>
 
 	<!-- <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">

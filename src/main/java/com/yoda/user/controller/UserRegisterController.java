@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 
@@ -117,8 +118,9 @@ public class UserRegisterController {
 		return model;
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/ajax", method = RequestMethod.POST)
-	public void ajaxRegister(
+	public String ajaxRegister(
 			@RequestParam("username") String username,
 			@RequestParam("email") String email,
 			@RequestParam("password") String password,
@@ -177,21 +179,7 @@ public class UserRegisterController {
 
 		String jsonString = jsonResult.toString();
 
-		PrintWriter printWriter = null;
-
-		try {
-			printWriter = response.getWriter();
-			printWriter.print(jsonString);
-		}
-		catch (IOException ex) {
-			logger.error(ex.getMessage());
-		}
-		finally {
-			if (null != printWriter) {
-				printWriter.flush();
-				printWriter.close();
-			}
-		}
+		return jsonString;
 	}
 
 	Logger logger = Logger.getLogger(UserRegisterController.class);

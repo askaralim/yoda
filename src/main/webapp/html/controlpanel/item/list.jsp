@@ -110,7 +110,7 @@ function getSelectedItemIds(){
 									<c:out value="${item.content.title}" />
 								</td> --%>
 								<td>
-									<c:out value="${item.createDate}" />
+									<fmt:formatDate value="${item.createDate}" pattern="yyyy-MM-dd" />
 								</td>
 								<td>
 									<spring:url value="/controlpanel/item/{id}/edit" var="editItemUrl">
