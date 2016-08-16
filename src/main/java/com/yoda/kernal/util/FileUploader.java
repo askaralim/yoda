@@ -240,7 +240,7 @@ public class FileUploader {
 				file.delete();
 			}
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			logger.error(e.getMessage() + " - File Path:" + path);
 		}
 	}

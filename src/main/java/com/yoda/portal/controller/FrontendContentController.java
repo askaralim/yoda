@@ -27,13 +27,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
+import com.yoda.content.model.ContentUserRate;
 import com.yoda.kernal.servlet.ServletContextUtil;
+import com.yoda.kernal.util.PortalUtil;
 import com.yoda.portal.content.data.ComponentInfo;
 import com.yoda.portal.content.data.ContentInfo;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.PageInfo;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
+import com.yoda.user.model.User;
 import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
@@ -113,9 +116,20 @@ public class FrontendContentController extends BaseFrontendController {
 			model.put("comments", comments);
 			model.put("date", new DateTool());
 
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User loginUser = PortalUtil.getAuthenticatedUser();
 
-			if (!(auth instanceof AnonymousAuthenticationToken)) {
+			if (loginUser != null) {
+				ContentUserRate rate = contentService.getContentUserRateByContentIdAndUserId(contentInfo.getContentId(), loginUser.getUserId());
+
+				if (rate != null) {
+					if (rate.getScore() == 1) {
+						model.put("isUserLike", true);
+					}
+					else if (rate.getScore() == -1) {
+						model.put("isUserDislike", true);
+					}
+				}
+
 				model.put("userLogin", true);
 			}
 			else {
@@ -142,27 +156,31 @@ public class FrontendContentController extends BaseFrontendController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/score" ,method = RequestMethod.POST)
+	@RequestMapping(value="/rate" ,method = RequestMethod.POST)
 	public String score(
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
 //		Site site = getSite(request);
 
-		Content content = contentService.getContent(contentId);
+//		Content content = contentService.getContent(contentId);
 
-		int score = 0;
+//		int score = 0;
 
-		if (thumb.equals("up")) {
-			score = content.getScore() + 1;
-		}
-		else if (thumb.equals("down")) {
-			score = content.getScore() - 1;
-		}
+//		if (thumb.equals("up")) {
+//			score = content.getScore() + 1;
+//		}
+//		else if (thumb.equals("down")) {
+//			score = content.getScore() - 1;
+//		}
 
-		content.setScore(score);
+		contentService.saveContentUserRate(contentId, thumb);
 
-		contentService.updateContent(content);
+		int score = contentService.getContentRate(contentId);
+
+//		content.setScore(score);
+//
+//		contentService.updateContent(content);
 
 		JSONObject jsonResult = new JSONObject();
 
@@ -170,7 +188,7 @@ public class FrontendContentController extends BaseFrontendController {
 			jsonResult.put("score", score);
 		}
 		catch (JSONException e) {
-			e.printStackTrace();
+			logger.error("JSON : " + jsonResult + ", " + e.getMessage());
 		}
 
 		return jsonResult.toString();

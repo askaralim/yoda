@@ -16,9 +16,11 @@ import com.yoda.category.persistence.CategoryMapper;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
+import com.yoda.content.model.ContentUserRate;
 import com.yoda.content.persistence.CommentMapper;
 import com.yoda.content.persistence.ContentBrandMapper;
 import com.yoda.content.persistence.ContentMapper;
+import com.yoda.content.persistence.ContentUserRateMapper;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
@@ -26,6 +28,8 @@ import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.persistence.MenuMapper;
+import com.yoda.user.model.User;
+import com.yoda.util.Constants;
 import com.yoda.util.Format;
 import com.yoda.util.StringPool;
 import com.yoda.util.Utility;
@@ -34,39 +38,26 @@ import com.yoda.util.Validator;
 @Service
 @Transactional
 public class ContentServiceImpl implements ContentService {
-//	@Autowired
-//	private CategoryDAO categoryDAO;
 	@Autowired
 	private CategoryMapper categoryMapper;
-
-//	@Autowired
-//	private ContentDAO contentDAO;
-
-//	@Autowired
-//	private ContentBrandDAO contentBrandDAO;
 
 	@Autowired
 	private ContentBrandMapper contentBrandMapper;
 
 	@Autowired
-//	private CommentDAO commentDAO;
 	private CommentMapper commentMapper;
 
-//	@Autowired
-//	private HomePageDAO homePageDAO;
-
 	@Autowired
-//	private MenuDAO menuDAO;
 	private MenuMapper menuMapper;
 
 	@Autowired
-	HomePageService homePageService;
-
-//	@Autowired
-//	HomePageMapper homePageMapper;
+	private HomePageService homePageService;
 
 	@Autowired
-	ContentMapper contentMapper;
+	private ContentMapper contentMapper;
+
+	@Autowired
+	private ContentUserRateMapper contentUserRateMapper;
 
 	public void addContent(int siteId, Content content, Integer categoryId) {
 		try {
@@ -76,21 +67,15 @@ public class ContentServiceImpl implements ContentService {
 			e.printStackTrace();
 		}
 
-//		content.setCreateBy(user);
-//		content.setCreateDate(new Date());
 		content.setHitCounter(0);
 		content.setSiteId(siteId);
 		content.setScore(0);
-//		content.setUpdateBy(user);
-//		content.setUpdateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
 			Category category = categoryMapper.getById(categoryId);
 
 			content.setCategory(category);
 		}
-
-//		contentDAO.save(content);
 
 		content.preInsert();
 
@@ -291,6 +276,21 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
+	public Integer getContentRate(Long contentId) {
+		Integer rate = contentUserRateMapper.getContentRate(contentId);
+
+		if (rate == null) {
+			return 0;
+		}
+		return rate;
+	}
+
+	@Transactional(readOnly = true)
+	public ContentUserRate getContentUserRateByContentIdAndUserId(Long contentId, Long userId) {
+		return contentUserRateMapper.getContentUserRateByContentIdAndUserId(contentId, userId);
+	}
+
+	@Transactional(readOnly = true)
 	public Comment getComment(int commentId) {
 		return commentMapper.getById(commentId);
 	}
@@ -308,6 +308,55 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(readOnly = true)
 	public List<Comment> getCommentsByUserId(long userId) {
 		return commentMapper.getCommentsByUserId(userId);
+	}
+
+	public void saveContentUserRate(Long contentId, String thumb) {
+		User loginUser = PortalUtil.getAuthenticatedUser();
+
+		if (loginUser == null) {
+			return;
+		}
+
+		ContentUserRate rate = new ContentUserRate();
+
+		rate.setContentId(contentId);
+
+		ContentUserRate rateDb = getContentUserRateByContentIdAndUserId(contentId, loginUser.getUserId());
+
+		if ((rateDb != null) && thumb.equals(Constants.USER_RATE_THUMB_NEUTRAL)) {
+			contentUserRateMapper.delete(rateDb);
+
+			return;
+		}
+		else if ((rateDb != null) && (rateDb.getScore() == 1) && thumb.equals(Constants.USER_RATE_THUMB_UP)) {
+			return;
+		}
+		else if ((rateDb != null) && (rateDb.getScore() == -1) && thumb.equals(Constants.USER_RATE_THUMB_DOWN)) {
+			return;
+		}
+		else if ((rateDb != null) && (rateDb.getScore() == -1) && thumb.equals(Constants.USER_RATE_THUMB_UP)) {
+			contentUserRateMapper.delete(rateDb);
+
+			return;
+		}
+		else if ((rateDb != null) && (rateDb.getScore() == 1) && thumb.equals(Constants.USER_RATE_THUMB_DOWN)) {
+			contentUserRateMapper.delete(rateDb);
+
+			return;
+		}
+		else if ((rateDb == null) && thumb.equals(Constants.USER_RATE_THUMB_UP)) {
+			rate.setScore(1);
+		}
+		else if ((rateDb == null) && thumb.equals(Constants.USER_RATE_THUMB_DOWN)) {
+			rate.setScore(-1);
+		}
+		else {
+			return;
+		}
+
+		rate.preInsert();
+
+		contentUserRateMapper.insert(rate);
 	}
 
 	@Transactional(readOnly = true)

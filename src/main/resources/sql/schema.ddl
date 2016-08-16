@@ -132,6 +132,15 @@
         FOREIGN KEY (category_id) REFERENCES category(category_id)
     ) comment='';
 
+	CREATE TABLE content_user_rate (
+		id INT NOT NULL AUTO_INCREMENT,
+		content_id INT,
+		score INT,
+		create_by INT NOT NULL,
+		create_date DATETIME NOT NULL,
+		PRIMARY KEY (id)
+	) engine=InnoDB;
+
 	CREATE TABLE item (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		brand_id INT,

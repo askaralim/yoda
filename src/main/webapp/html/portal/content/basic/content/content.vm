@@ -38,8 +38,16 @@
 								<p>$contentInfo.description</p>
 								<!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
 								<div class="content-actions">
-									<button id="thumbUp" class="fa fa-thumbs-o-up"></button>
-									<button id="thumbDown" class="fa fa-thumbs-o-down"></button>
+									#if ($userLogin && $isUserLike)
+										<button id="thumbUp" class="fa fa-thumbs-up"></button>
+									#else
+										<button id="thumbUp" class="fa fa-thumbs-o-up"></button>
+									#end
+									#if ($userLogin && $isUserDislike)
+										<button id="thumbDown" class="fa fa-thumbs-down"></button>
+									#else
+										<button id="thumbDown" class="fa fa-thumbs-o-down"></button>
+									#end
 									<span id="score" class="label label-success">
 										#if ($contentInfo.score > 0)
 											+$contentInfo.score
@@ -209,65 +217,187 @@ $(function(){
 		});
 	});
 });
-
 $(function(){
 	$('#thumbUp').click(function(){
 		if (!$userLogin) {
 			$('#loginModal').modal('show')
-
 			return;
 		}
+
+		var url = '#springUrl("/content/")$contentInfo.contentId/rate?thumb=';
+		var currentUpClass = $('#thumbUp').attr('class');
+		var currentDownClass = $('#thumbDown').attr('class');
+		var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
+		var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
+
+		if (currentUpClassNotActive) {
+			url = url + 'up';
+		}
+		else {
+			url = url + 'neutral';
+		}
+
 		$.ajax({
 			type: "POST",
-			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=up',
+			url: url,
 			data:'${_csrf.parameterName}=${_csrf.token}',
 			dataType: "json",
 			success: function(data){
-				var score = data.score;
+				var total = data.score;
 
 				$('#score').empty();
 
-				if (score > 0) {
-					score = "+" + score;
+				if (total > 0) {
+					total = "+" + total;
 				}
 
-				$('#score').html(score);
+				$('#score').html(total);
+				$('#thumbDown').attr('class', 'fa fa-thumbs-o-down');
+
+				if (currentUpClassNotActive && currentDownClassNotActive) {
+					$('#thumbUp').attr('class', 'fa fa-thumbs-up');
+				}
+				else {
+					$('#thumbUp').attr('class', 'fa fa-thumbs-o-up');
+				}
 			}
 		});
 	});
 });
-
 $(function(){
 	$('#thumbDown').click(function(){
 		if (!$userLogin) {
 			$('#loginModal').modal('show')
-
 			return;
 		}
+
+		var url = '#springUrl("/content/")$contentInfo.contentId/rate?thumb=';
+		var currentUpClass = $('#thumbUp').attr('class');
+		var currentDownClass = $('#thumbDown').attr('class');
+		var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
+		var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
+
+		if (currentDownClassNotActive) {
+			url = url + 'down';
+		}
+		else {
+			url = url + 'neutral';
+		}
+
 		$.ajax({
 			type: "POST",
-			url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=down',
-			data:'${_csrf.parameterName}=${_csrf.token}', 
+			url: url,
+			data:'${_csrf.parameterName}=${_csrf.token}',
 			dataType: "json",
 			success: function(data){
-				var score = data.score;
+				var total = data.score;
 
 				$('#score').empty();
 
-				if (score > 0) {
-					score = "+" + score;
+				if (total > 0) {
+					total = "+" + total;
 				}
 
-				$('#score').html(score);
+				$('#score').html(total);
+				$('#thumbUp').attr('class', 'fa fa-thumbs-o-up');
+
+				if (currentDownClassNotActive && currentUpClassNotActive) {
+					$('#thumbDown').attr('class', 'fa fa-thumbs-down');
+				}
+				else {
+					$('#thumbDown').attr('class', 'fa fa-thumbs-o-down');
+				}
 			}
 		});
 	});
 });
+function contentRate(score){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+		return;
+	}
+	$.ajax({
+		type: "POST",
+		url: '#springUrl("/content/")$contentInfo.contentId/rate?score='+score,
+		data:'${_csrf.parameterName}=${_csrf.token}',
+		dataType: "json",
+		success: function(data){
+			var total = data.score;
 
+			$('#score').empty();
+
+			if (total > 0) {
+				total = "+" + total;
+			}
+
+			$('#score').html(total);
+
+			if (score == 1) {
+				$('#thumbUp').attr('class', 'fa fa-thumbs-up active');
+				$('#thumbUp').attr('onclick', 'cancelContentRate(1)');
+			}
+			else {
+				$('#thumbDown').attr('class', 'fa fa-thumbs-down');
+			}
+		}
+	});
+}
+function cancelContentRate(score){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+		return;
+	}
+	$.ajax({
+		type: "POST",
+		url: '#springUrl("/content/")$contentInfo.contentId/rate?score='+score,
+		data:'${_csrf.parameterName}=${_csrf.token}',
+		dataType: "json",
+		success: function(data){
+			var total = data.score;
+
+			$('#score').empty();
+
+			if (total > 0) {
+				total = "+" + total;
+			}
+
+			$('#score').html(total);
+
+			if (score == 1) {
+				$('#thumbUp').class('fa fa-thumbs-up');
+			}
+			else {
+				$('#thumbDown').class('fa fa-thumbs-down');
+			}
+		}
+	});
+}
+function contentThumbDown(score){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+		return;
+	}
+	$.ajax({
+		type: "POST",
+		url: '#springUrl("/content/")$contentInfo.contentId/score?thumb=down',
+		data:'${_csrf.parameterName}=${_csrf.token}', 
+		dataType: "json",
+		success: function(data){
+			var score = data.score;
+
+			$('#score').empty();
+
+			if (score > 0) {
+				score = "+" + score;
+			}
+
+			$('#score').html(score);
+		}
+	});
+}
 function itemThumbUp(id){
 	if (!$userLogin) {
 		$('#loginModal').modal('show')
-
 		return;
 	}
 	$.ajax({
@@ -292,7 +422,6 @@ function itemThumbUp(id){
 function itemThumbDown(id){
 	if (!$userLogin) {
 		$('#loginModal').modal('show')
-
 		return;
 	}
 	$.ajax({

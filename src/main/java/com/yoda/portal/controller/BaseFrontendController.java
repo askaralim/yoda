@@ -10,10 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.csrf.CsrfToken;
 
 import com.yoda.contactus.model.ContactUs;
@@ -176,7 +172,10 @@ public class BaseFrontendController {
 		contentInfo.setShortDescription(content.getShortDescription());
 		contentInfo.setDescription(content.getDescription());
 		contentInfo.setHitCounter(content.getHitCounter());
-		contentInfo.setScore(content.getScore());
+
+		int score = contentService.getContentRate(content.getContentId());
+
+		contentInfo.setScore(score);
 
 		List<Item> items = itemService.getItemsByContentId(content.getContentId());
 

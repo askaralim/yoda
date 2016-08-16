@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
+import com.yoda.content.model.ContentUserRate;
 
 public interface ContentService {
 	void addContent(int siteId, Content content, Integer categoryId);
@@ -69,4 +70,10 @@ public interface ContentService {
 	Content updateContent(int siteId, Long contentId, String title, String shortDescription, String description) throws Exception;
 
 	ContentBrand updateContentBrand(ContentBrand contentBrand);
+
+	void saveContentUserRate(Long contentId, String thumb);
+
+	Integer getContentRate(Long contentId);
+
+	ContentUserRate getContentUserRateByContentIdAndUserId(Long contentId, Long userId);
 }

@@ -7,6 +7,12 @@ public class Constants {
 
 	public static final int ADMIN_SEARCH_MAXCOUNT = 100;
 
+	public static final String USER_RATE_THUMB_UP = "up";
+
+	public static final String USER_RATE_THUMB_DOWN = "down";
+
+	public static final String USER_RATE_THUMB_NEUTRAL = "neutral";
+
 	public static final String CONFIG_LOG4J_PROPERTY = "log4j.appender.R.File";
 
 	public static final String CONFIG_LOG4J_LOGFILENAME = "yoda.log";
