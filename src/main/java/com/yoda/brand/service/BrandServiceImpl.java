@@ -72,7 +72,7 @@ public class BrandServiceImpl implements BrandService {
 	public Brand updateImage(int id, MultipartFile file) {
 		Brand brand = getBrand(id);
 
-		FileUploader fileUpload = FileUploader.getInstance();
+		FileUploader fileUpload = new FileUploader();
 
 		fileUpload.deleteFile(brand.getImagePath());
 

@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href='<c:url value="/resources/css/fileinput.css" />' />
 	<link rel="stylesheet" href='<c:url value="/template/basic/main.css" />' type="text/css" />
 
-	<link href="http://fonts.useso.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 	<link href='<c:url value="/template/basic/font-awesome-4.1.0/css/font-awesome.min.css" />' rel="stylesheet" type="text/css">
 </head>
 

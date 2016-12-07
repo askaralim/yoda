@@ -28,6 +28,6 @@
 			</bd>
 		</p>
 		<p>$info.shortDescription</p>
-		<p><a class="btn btn-blue" href="$info.contentUrl" role="button">更多</a></p>
+		<p><a class="btn btn-blue" href="$info.contentUrl" role="button">#springMessage('more')</a></p>
 	</div>
 </div>

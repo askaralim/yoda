@@ -12,9 +12,6 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -161,26 +158,10 @@ public class FrontendContentController extends BaseFrontendController {
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
-//		Site site = getSite(request);
-
-//		Content content = contentService.getContent(contentId);
-
-//		int score = 0;
-
-//		if (thumb.equals("up")) {
-//			score = content.getScore() + 1;
-//		}
-//		else if (thumb.equals("down")) {
-//			score = content.getScore() - 1;
-//		}
 
 		contentService.saveContentUserRate(contentId, thumb);
 
 		int score = contentService.getContentRate(contentId);
-
-//		content.setScore(score);
-//
-//		contentService.updateContent(content);
 
 		JSONObject jsonResult = new JSONObject();
 

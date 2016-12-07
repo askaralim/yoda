@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.exception.PortalException;
-import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.PortalUtil;
+import com.yoda.kernal.util.ThumbnailUploader;
 import com.yoda.site.model.Site;
 import com.yoda.site.persistence.SiteMapper;
 import com.yoda.user.model.User;
@@ -31,14 +31,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserAuthorityMapper authorityMapper;
 
-//	@Autowired
-//	private SiteDAO siteDAO;
-
 	@Autowired
 	private SiteMapper siteMapper;
-
-//	@Autowired
-//	private UserDAO userDAO;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -66,8 +60,6 @@ public class UserServiceImpl implements UserService {
 		String hashedPassword = passwordEncoder.encode(password);
 
 		user.setPassword(hashedPassword);
-//		user.setCreateBy(PortalUtil.getAuthenticatedUser());
-//		user.setCreateDate(new Date());
 		user.setUsername(StringEscapeUtils.escapeHtml4(userName));
 		user.setEnabled(enabled);
 		user.setEmail(email);
@@ -79,8 +71,6 @@ public class UserServiceImpl implements UserService {
 		user.setCountryName(StringPool.BLANK);
 		user.setZipCode(StringPool.BLANK);
 		user.setLastVisitSiteId(lastVisitSiteId);
-//		user.setUpdateBy(PortalUtil.getAuthenticatedUser());
-//		user.setUpdateDate(new Date());
 
 		user.getSites().clear();
 
@@ -88,14 +78,11 @@ public class UserServiceImpl implements UserService {
 			for (int i = 0; i < selectedSiteIds.length; i++) {
 				int s = selectedSiteIds[i];
 
-//				Site site = siteDAO.getBySiteId(s);
 				Site site = siteMapper.getById(s);
 
 				user.getSites().add(site);
 			}
 		}
-
-//		userDAO.save(user);
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
@@ -123,7 +110,6 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(long userId) {
 		User user = getUser(userId);
 
-//		userDAO.delete(user);
 		userMapper.delete(user);
 
 		for (UserAuthority ua : user.getAuthorities()) {
@@ -138,43 +124,25 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly = true)
 	public User getUser(long userId) {
-//		return userDAO.getByUserId(userId);
 		return userMapper.getById(userId);
 	}
 
 	@Transactional(readOnly = true)
 	public User getUserByEmail(String email) {
-//		return userDAO.getByEmail(email);
 		return userMapper.getUserByEmail(email);
 	}
 
 	@Transactional(readOnly = true)
 	public User getUserByUserName(String username) {
-//		return userDAO.getByUserName(userName);
 		return userMapper.getUserByUsername(username);
 	}
 
-//	@Transactional(readOnly = true)
-//	@Deprecated
-//	public User getByUI_SU(long userId, User signinUser)
-//		throws SecurityException {
-//		return userDAO.getByUI_SU(userId, signinUser);
-//	}
-
-//	@Transactional(readOnly = true)
-//	public List<User> getUsers(String hql) {
-//		return userDAO.find(hql);
-//	}
-
 	@Transactional(readOnly = true)
 	public List<User> getUsers() {
-//		return userDAO.getAll();
 		return userMapper.getUsers();
 	}
 
 	public void update(User user) {
-//		userDAO.update(user);
-
 		user.preUpdate();
 
 		userMapper.update(user);
@@ -216,8 +184,6 @@ public class UserServiceImpl implements UserService {
 		user.setPhone(phone);
 		user.setAddressLine1(userAddressLine1);
 		user.setAddressLine2(userAddressLine2);
-//		user.setUpdateBy(PortalUtil.getAuthenticatedUser());
-//		user.setUpdateDate(new Date());
 
 		user.getSites().clear();
 
@@ -232,15 +198,13 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (!profilePhoto.isEmpty()) {
-			FileUploader fileUpload = FileUploader.getInstance();
+			ThumbnailUploader thumbnailUploader = new ThumbnailUploader();
 
-			fileUpload.deleteFile(user.getProfilePhoto());
-			fileUpload.deleteFile(user.getProfilePhotoSmall());
+			thumbnailUploader.deleteFile(user.getProfilePhoto());
+			thumbnailUploader.deleteFile(user.getProfilePhotoSmall());
 
-//			String imagePath = fileUpload.saveFile(profilePhoto);
-
-			user.setProfilePhoto(fileUpload.saveThumbnailLarge(profilePhoto));
-			user.setProfilePhotoSmall(fileUpload.saveThumbnailMedium(profilePhoto));
+			user.setProfilePhoto(thumbnailUploader.createThumbnailLarge(profilePhoto));
+			user.setProfilePhotoSmall(thumbnailUploader.createThumbnailMedium(profilePhoto));
 		}
 
 		user.preUpdate();

@@ -72,7 +72,8 @@
 			<include refid="itemColumns"/>
 		FROM item i
 		<include refid="itemJoins"/>
-		WHERE i.site_id = #{siteId}
+		WHERE i.site_id = #{siteId} 
+		ORDER BY i.id DESC
 	</select>
 
 	<select id="getItemsByContentId" resultMap="itemResult">

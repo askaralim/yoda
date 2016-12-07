@@ -60,7 +60,7 @@ function removeContent() {
 			<div class="form-group">
 				<label for="description"><spring:message code="text" /></label>
 				<%
-				out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", content.getDescription()));
+				out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription()));
 				%>
 			</div>
 			<%-- <div class="form-group">

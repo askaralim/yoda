@@ -112,13 +112,9 @@ public class ContentServiceImpl implements ContentService {
 		content.setPageTitle(pageTitle);
 		content.setPublishDate(Format.getDate(publishDate));
 		content.setExpireDate(Format.getDate(expireDate));
-//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
-//		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
 		content.setHitCounter(0);
 		content.setScore(0);
-//		content.setCreateBy(PortalUtil.getAuthenticatedUser());
-//		content.setCreateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
 			Category category = categoryMapper.getById(categoryId);
@@ -128,7 +124,6 @@ public class ContentServiceImpl implements ContentService {
 
 		content.preUpdate();
 
-//		contentDAO.save(content);
 		contentMapper.insert(content);
 
 		new ContentIndexer().createIndex(content);
@@ -147,25 +142,11 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void deleteContent(Content content) {
-//		ContentImage contentImage = content.getImage();
-//		if (contentImage != null) {
-//			contentImageDAO.delete(contentImage);
-//		}
-
-//		Iterator iterator = content.getImages().iterator();
-//
-//		while (iterator.hasNext()) {
-//			contentImage = (ContentImage)iterator.next();
-//
-//			contentImageDAO.delete(contentImage);
-//		}
-
 		List<HomePage> homePages = homePageService.getHomePages(content.getSiteId());
 
 		for (HomePage homePage : homePages) {
 			if (homePage.getContent() != null) {
 				if (content.getContentId().longValue() == homePage.getContent().getContentId().longValue()) {
-//					homePageDAO.delete(homePage);
 					homePageService.delete(homePage);
 				}
 			}
@@ -183,15 +164,8 @@ public class ContentServiceImpl implements ContentService {
 
 		new ContentIndexer().deleteIndex(content.getContentId());
 
-//		contentDAO.delete(content);
 		contentMapper.delete(content);
 	}
-
-//	public void deleteContent(Long contentId) {
-//		Content content = contentDAO.getById(contentId);
-//
-//		deleteContent(content);
-//	}
 
 	public void deleteComment(int commentId) {
 		Comment comment = commentMapper.getById(commentId);
@@ -203,7 +177,7 @@ public class ContentServiceImpl implements ContentService {
 	public void deleteContentImage(int siteId, Long contentId) {
 		Content content = getContent(contentId);
 
-		FileUploader fileUpload = FileUploader.getInstance();
+		FileUploader fileUpload = new FileUploader();
 
 		fileUpload.deleteFile(content.getFeaturedImage());
 
@@ -214,49 +188,15 @@ public class ContentServiceImpl implements ContentService {
 		contentMapper.update(content);
 	}
 
-//	public Content deleteContentImage(
-//			int siteId, Long userId, Long contentId, Long imageId) {
-//		Content content = getContent(siteId, contentId);
-//
-//		ContentImage defaultImage = content.getImage();
-//
-//		if (imageId != null) {
-//			if (defaultImage != null && (defaultImage.getImageId() == imageId)) {
-//
-//				content.setImage(null);
-//
-//				updateContent(content);
-//
-//				contentImageDAO.delete(defaultImage);
-//
-//				defaultImage = null;
-//			}
-//			else {
-//				ContentImage contentImage = contentImageDAO.getContentImageBySId_Id(siteId, imageId);
-//
-//				contentImageDAO.delete(contentImage);
-//			}
-//		}
-//
-//		return content;
-//	}
-
 	@Transactional(readOnly = true)
 	public List<Content> getContentByUserId(Long userId) {
-//		return contentDAO.getByUserId(userId);
 		return contentMapper.getContentsByUserId(userId);
 	}
 
 	@Transactional(readOnly = true)
 	public Content getContent(Long contentId) {
-//		return contentDAO.getContentById(siteId, contentId);
 		return contentMapper.getById(contentId);
 	}
-
-//	@Transactional(readOnly = true)
-//	public Content getContent(int siteId, String contentNaturalKey) {
-//		return contentDAO.getContentBySiteId_NaturalKey(siteId, contentNaturalKey);
-//	}
 
 	@Transactional(readOnly = true)
 	public ContentBrand getContentBrand(long contentBrandId) {
@@ -265,13 +205,11 @@ public class ContentServiceImpl implements ContentService {
 
 	@Transactional(readOnly = true)
 	public List<Content> getContents(int siteId) {
-//		return contentDAO.getContents(siteId);
 		return contentMapper.getContentsBySiteId(siteId);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Content> getContents(String title) {
-//		return contentDAO.getContents(siteId, contentTitle);
 		return contentMapper.getContentsByTitle(title);
 	}
 
@@ -469,15 +407,11 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void updateContent(Content content) {
-//		contentDAO.update(content);
-
 		contentMapper.update(content);
 	}
 
 	public Content updateContent(int siteId, Content content, Integer categoryId)
 		throws Exception {
-//		User user = PortalUtil.getAuthenticatedUser();
-
 		Content contentDb = this.getContent(content.getContentId());
 
 		contentDb.setNaturalKey(Utility.encode(content.getTitle()));
@@ -488,9 +422,6 @@ public class ContentServiceImpl implements ContentService {
 		contentDb.setPublishDate(content.getPublishDate());
 		contentDb.setExpireDate(content.getExpireDate());
 		contentDb.setPublished(content.isPublished());
-//		contentDb.setHomePage(content.isHomePage());
-//		contentDb.setUpdateBy(user);
-//		contentDb.setUpdateDate(new Date());
 
 		if (Validator.isNotNull(categoryId)) {
 			Category category = categoryMapper.getById(categoryId);
@@ -500,14 +431,12 @@ public class ContentServiceImpl implements ContentService {
 
 		contentDb.preUpdate();
 
-//		contentDAO.update(contentDb);
 		contentMapper.update(contentDb);
 
 		HomePage homePage = getHomePage(siteId, content.getContentId());
 
 		if (content.isHomePage()) {
 			if (homePage == null) {
-//				homePageMapper.
 				homePageService.add(siteId, false, content);
 			}
 		}
@@ -549,8 +478,6 @@ public class ContentServiceImpl implements ContentService {
 		content.setPageTitle(pageTitle);
 		content.setPublishDate(Format.getDate(publishDate));
 		content.setExpireDate(Format.getDate(expireDate));
-//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
-//		content.setUpdateDate(new Date());
 		content.setPublished(isPublished);
 
 		if (Validator.isNotNull(categoryId)) {
@@ -558,8 +485,6 @@ public class ContentServiceImpl implements ContentService {
 
 			content.setCategory(category);
 		}
-
-//		contentDAO.update(content);
 
 		content.preUpdate();
 
@@ -574,17 +499,13 @@ public class ContentServiceImpl implements ContentService {
 			int siteId, Long contentId, MultipartFile image) {
 		Content content = getContent(contentId);
 
-		FileUploader fileUpload = FileUploader.getInstance();
+		FileUploader fileUpload = new FileUploader();
 
 		fileUpload.deleteFile(content.getFeaturedImage());
 
 		String imagePath = fileUpload.saveFile(image);
 
 		content.setFeaturedImage(imagePath);
-//		content.setUpdateBy(PortalUtil.getAuthenticatedUser());
-//		content.setUpdateDate(new Date());
-
-//		contentDAO.update(content);
 
 		content.preUpdate();
 

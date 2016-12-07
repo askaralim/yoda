@@ -27,7 +27,8 @@
 		<link rel="stylesheet" href='<c:url value="/resources/css/datepicker.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/chosen.min.css" />' />
 
-		<link rel="stylesheet" href="http://fonts.useso.com/css?family=Montserrat:400,700" />
+		<!-- <link rel="stylesheet" href="http://fonts.useso.com/css?family=Montserrat:400,700" /> -->
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat:400,700" />
 
 		<link rel="stylesheet" href='<c:url value="/resources/font-awesome-4.1.0/css/font-awesome.min.css" />' />
 	</head>

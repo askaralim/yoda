@@ -3,6 +3,7 @@ package com.yoda.login.controller;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,10 @@ public class LogoutController{
 	public String logout(
 			HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		request.logout();
+
+		HttpSession session = request.getSession(false);
+
+		session.invalidate();
 
 		return "redirect:/";
 	}

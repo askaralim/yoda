@@ -63,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
 	public Item updateItemImage(int id, MultipartFile file) {
 		Item item = getItem(id);
 
-		FileUploader fileUpload = FileUploader.getInstance();
+		FileUploader fileUpload = new FileUploader();
 
 		fileUpload.deleteFile(item.getImagePath());
 

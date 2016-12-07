@@ -26,6 +26,7 @@ import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
+import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
 
 @Controller
@@ -93,10 +94,9 @@ public class LoginController {
 	}
 
 	private String getErrorMessage(HttpServletRequest request, String key) {
-
 		Exception exception = (Exception)request.getSession().getAttribute(key);
 
-		String error = "";
+		String error = StringPool.BLANK;
 
 		if (exception instanceof BadCredentialsException) {
 			error = "invalid-email-and-password";
@@ -113,7 +113,6 @@ public class LoginController {
 
 	@RequestMapping(value = "/403", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView accesssDenied() {
-
 		ModelAndView model = new ModelAndView();
 
 		// check if user is login
