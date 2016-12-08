@@ -263,7 +263,7 @@ header .intro-text .name {
 }
 
 .section {
-	/* padding: 100px 0; */
+	padding: 100px 0;
 	transform: translateZ(0px);
 }
 

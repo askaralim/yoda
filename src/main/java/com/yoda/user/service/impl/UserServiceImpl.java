@@ -1,9 +1,11 @@
 package com.yoda.user.service.impl;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,13 @@ import com.yoda.user.persistence.UserMapper;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
 import com.yoda.util.StringPool;
+import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
+	private Logger logger = Logger.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserAuthorityMapper authorityMapper;
@@ -203,8 +207,15 @@ public class UserServiceImpl implements UserService {
 			thumbnailUploader.deleteFile(user.getProfilePhoto());
 			thumbnailUploader.deleteFile(user.getProfilePhotoSmall());
 
-			user.setProfilePhoto(thumbnailUploader.createThumbnailLarge(profilePhoto));
-			user.setProfilePhotoSmall(thumbnailUploader.createThumbnailMedium(profilePhoto));
+			if (Utility.isImage(profilePhoto.getOriginalFilename())) {
+				try {
+					user.setProfilePhoto(thumbnailUploader.createThumbnailLarge(profilePhoto.getInputStream()));
+					user.setProfilePhotoSmall(thumbnailUploader.createThumbnailMedium(profilePhoto.getInputStream()));
+				}
+				catch (IOException e) {
+					logger.error(e.getMessage());
+				}
+			}
 		}
 
 		user.preUpdate();

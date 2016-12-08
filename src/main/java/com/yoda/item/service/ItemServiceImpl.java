@@ -1,5 +1,6 @@
 package com.yoda.item.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
 import com.yoda.item.persistence.ItemMapper;
 import com.yoda.kernal.util.FileUploader;
+import com.yoda.kernal.util.ImageUploader;
 
 @Service
 @Transactional
@@ -63,13 +65,19 @@ public class ItemServiceImpl implements ItemService {
 	public Item updateItemImage(int id, MultipartFile file) {
 		Item item = getItem(id);
 
-		FileUploader fileUpload = new FileUploader();
+		ImageUploader imageUpload = new ImageUploader();
 
-		fileUpload.deleteFile(item.getImagePath());
+		imageUpload.deleteFile(item.getImagePath());
 
-		String imagePath = fileUpload.saveFile(file);
+		String imagePath;
+		try {
+			imagePath = imageUpload.resize(file.getInputStream(), 400, file.getContentType());
 
-		item.setImagePath(imagePath);
+			item.setImagePath(imagePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		item.preUpdate();
 

@@ -4,55 +4,42 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.imgscalr.Scalr;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.util.StringPool;
-import com.yoda.util.Utility;
 
 public class ThumbnailUploader extends FileUploader {
+	private Logger logger = Logger.getLogger(ThumbnailUploader.class);
+
 	private static final String THUMBNAIL_SMALL = "-25-";
 	private static final String THUMBNAIL_EXTENSION = "png";
 	private static final int THUMBNAIL_SIZE_S = 25;
 	private static final int THUMBNAIL_SIZE_M = 75;
 	private static final int THUMBNAIL_SIZE_L = 200;
 
-	public String createThumbnailLarge(MultipartFile file) {
-		return createThumbnail(file, THUMBNAIL_SIZE_L);
+	public String createThumbnailLarge(InputStream imageInputStream) {
+		return createThumbnail(imageInputStream, THUMBNAIL_SIZE_L);
 	}
 
-	public String createThumbnailMedium(MultipartFile file) {
-		return createThumbnail(file, THUMBNAIL_SIZE_M);
+	public String createThumbnailMedium(InputStream imageInputStream) {
+		return createThumbnail(imageInputStream, THUMBNAIL_SIZE_M);
 	}
 
 	@SuppressWarnings("unused")
-	private String createThumbnailSmall(MultipartFile file) {
-		return createThumbnail(file, THUMBNAIL_SIZE_S);
+	private String createThumbnailSmall(InputStream imageInputStream) {
+		return createThumbnail(imageInputStream, THUMBNAIL_SIZE_S);
 	}
 
-	private String createThumbnail(MultipartFile file, int maxSize) {
-		if (!Utility.isImage(file.getOriginalFilename())) {
-			return null;
-		}
-
+	private String createThumbnail(InputStream imageInputStream, int maxSize) {
 		BufferedImage image = null;
 
 		try {
-			String fileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize + StringPool.PERIOD + THUMBNAIL_EXTENSION;
-
-			File thumbnail = new File(getRealPath(), fileName);
-
-			//may not happen?
-			while (thumbnail.exists()) {
-				fileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize + StringPool.PERIOD + THUMBNAIL_EXTENSION;
-
-				thumbnail = new File(getRealPath(), fileName);
-			}
-
-			image = ImageIO.read(file.getInputStream());
+			image = ImageIO.read(imageInputStream);
 
 			int height = image.getHeight();
 			int width = image.getWidth();
@@ -65,6 +52,17 @@ public class ThumbnailUploader extends FileUploader {
 			}
 
 			BufferedImage scaledImg = Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, maxSize, Scalr.OP_ANTIALIAS);
+
+			String fileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize + StringPool.PERIOD + THUMBNAIL_EXTENSION;
+
+			File thumbnail = new File(getRealPath(), fileName);
+
+			//may not happen?
+			while (thumbnail.exists()) {
+				fileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize + StringPool.PERIOD + THUMBNAIL_EXTENSION;
+
+				thumbnail = new File(getRealPath(), fileName);
+			}
 
 			ImageIO.write(scaledImg, THUMBNAIL_EXTENSION, thumbnail);
 
