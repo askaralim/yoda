@@ -67,11 +67,11 @@ public class ItemServiceImpl implements ItemService {
 
 		ImageUploader imageUpload = new ImageUploader();
 
-		imageUpload.deleteFile(item.getImagePath());
+		imageUpload.deleteImage(item.getImagePath());
 
 		String imagePath;
 		try {
-			imagePath = imageUpload.resize(file.getInputStream(), 400, file.getContentType());
+			imagePath = imageUpload.upload(file.getInputStream(), file.getOriginalFilename());
 
 			item.setImagePath(imagePath);
 		} catch (IOException e) {

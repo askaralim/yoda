@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -15,54 +13,57 @@ import org.imgscalr.Scalr;
 import com.yoda.util.StringPool;
 
 public class ImageUploader extends FileUploader {
-	static Map<String, String> contentTypeImageExtensionMap = new HashMap<String, String>();
-
-	static {
-		contentTypeImageExtensionMap.put("image/jpeg", "jpeg");
-	}
-
 	private Logger logger = Logger.getLogger(ImageUploader.class);
 
-	private static final int SIZE_M = 400;
+	private static final int SIZE_M = 600;
+	private static final String LARGE_IMAGE_SUFFIX = "_L";
 
-	public String resize(InputStream imageInputStream, int targetSize, String contentType) {
-		return this.resize(imageInputStream, targetSize, targetSize, contentType);
+	public String upload(InputStream imageInputStream, String filename) {
+		return upload(imageInputStream, SIZE_M, SIZE_M, filename);
 	}
 
-	public String resize(InputStream imageInputStream, int targetWidth, int targetHeight, String contentType) {
-		String imageExtension = contentTypeImageExtensionMap.get(contentType);
+	public String upload(InputStream imageInputStream, int targetWidth, int targetHeight, String filename) {
+		String imageExtension = getFileExtension(filename);
+		String randomFileName = getRandomFileName();
 
-		BufferedImage image = null;
+		String imageName = StringPool.BLANK;
+		String imageNameLarge = StringPool.BLANK;
 
 		try {
-			image = ImageIO.read(imageInputStream);
+			BufferedImage imageLarge = ImageIO.read(imageInputStream);
 
-			if (targetWidth != image.getWidth() || targetHeight != image.getHeight()) {
-				image = Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, targetWidth, targetHeight, Scalr.OP_ANTIALIAS);
+			imageNameLarge = randomFileName + LARGE_IMAGE_SUFFIX + StringPool.PERIOD + imageExtension;
+
+			File imageFile = new File(getRealPath(), imageNameLarge);
+
+			ImageIO.write(imageLarge, imageExtension, imageFile);
+
+			imageName = imageNameLarge;
+
+			if (targetWidth <= imageLarge.getWidth() || targetHeight <= imageLarge.getHeight()) {
+				BufferedImage imageMedium = Scalr.resize(imageLarge, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, targetWidth, targetHeight);
+
+				imageName = randomFileName +  StringPool.PERIOD + imageExtension;
+
+				imageFile = new File(getRealPath(), imageName);
+
+				ImageIO.write(imageMedium, imageExtension, imageFile);
 			}
 
-			String fileName = this.getRandomFileName() + StringPool.PERIOD + imageExtension;
-
-			File file = new File(getRealPath(), fileName);
-
-			//may not happen?
-			while (file.exists()) {
-				fileName = this.getRandomFileName() + StringPool.PERIOD + imageExtension;
-
-				file = new File(getRealPath(), fileName);
-			}
-
-			ImageIO.write(image, imageExtension, file);
-
-			return getUrlPrefix() + file.getName();
+			return getUrlPrefix() + imageFile.getName();
 		}
 		catch (IOException e) {
 			logger.error(e.getMessage());
 
 			return null;
 		}
-		finally {
-			image.flush();
-		}
+	}
+
+	public void deleteImage(String path) {
+		String imageExtension = path.substring(path.lastIndexOf(StringPool.PERIOD) + 1);
+		String largeImagePath = path.substring(0, path.lastIndexOf(StringPool.PERIOD)) + LARGE_IMAGE_SUFFIX + StringPool.PERIOD + imageExtension;
+
+		super.deleteFile(path);
+		super.deleteFile(largeImagePath);
 	}
 }

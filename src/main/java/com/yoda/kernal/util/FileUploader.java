@@ -29,9 +29,9 @@ public class FileUploader {
 
 		String fileName = paths[paths.length - 1];
 
-		String fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf(StringPool.PERIOD));
+		String fileNameWithoutExt = getFileNameWithoutExtension(fileName);
 
-		String ext = fileName.substring(fileName.lastIndexOf(StringPool.PERIOD) + 1);
+		String ext = getFileExtension(fileName);
 
 		String currentDirPath = StringPool.BLANK;
 
@@ -93,13 +93,11 @@ public class FileUploader {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private String getFileNameWithoutExtension(String fileName) {
+	public String getFileNameWithoutExtension(String fileName) {
 		return fileName.substring(0, fileName.lastIndexOf(StringPool.PERIOD));
 	}
 
-	@SuppressWarnings("unused")
-	private String getFileExtension(String fileName) {
+	public String getFileExtension(String fileName) {
 		return fileName.substring(fileName.lastIndexOf(StringPool.PERIOD) + 1);
 	}
 
