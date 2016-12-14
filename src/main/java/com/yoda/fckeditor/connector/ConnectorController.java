@@ -29,6 +29,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.yoda.kernal.servlet.ServletContextUtil;
+import com.yoda.kernal.util.FileUploader;
+import com.yoda.kernal.util.ImageUploader;
 import com.yoda.user.model.User;
 import com.yoda.util.StringPool;
 import com.yoda.util.Validator;
@@ -252,66 +254,42 @@ public class ConnectorController {
 		PrintWriter out = response.getWriter();
 
 		String commandStr = request.getParameter("Command");
-		String typeStr = request.getParameter("Type");
+//		String typeStr = request.getParameter("Type");
 		String currentFolderStr = request.getParameter("CurrentFolder");
 
-		String currentDirPath = fckBaseDir + currentFolderStr;
+		String currentDirPath = fckBaseDir;
+
+		if (currentFolderStr.length() > 1) {
+			currentDirPath += currentFolderStr;
+		}
 
 		if (logger.isDebugEnabled()) {
 			logger.debug(currentDirPath);
 		}
 
 		String retVal = "0";
-		String newName = "";
+		String newName = StringPool.BLANK;
 
 		if (!commandStr.equals("FileUpload"))
 			retVal = "203";
 		else {
-//			FileItemFactory factory = new DiskFileItemFactory();
-//			ServletFileUpload upload = new ServletFileUpload(factory);
-//
-//			upload.setSizeMax(5242880);
-
 			try {
-//				List items = upload.parseRequest(request);
+//				String fileNameLong = file.getOriginalFilename();
 
-//				Map fields = new HashMap();
+//				fileNameLong = fileNameLong.replace('\\', '/');
 
-//				Iterator iter = items.iterator();
+				ImageUploader imageUpload = new ImageUploader();
 
-//				while (iter.hasNext()) {
-//					FileItem item = (FileItem) iter.next();
-//					if (item.isFormField())
-//						fields.put(item.getFieldName(), item.getString());
-//					else
-//						fields.put(item.getFieldName(), item);
+				newName = imageUpload.uploadImage(file.getInputStream(), file.getOriginalFilename(), currentDirPath);
+
+//				while (pathToSave.exists()) {
+//					newName = nameWithoutExt + "(" + counter + ")" + "." + ext;
+//					retVal = "201";
+//					pathToSave = new File(currentDirPath, newName);
+//					counter++;
 //				}
-//				FileItem uplFile = (FileItem) fields.get("NewFile");
-
-				String fileNameLong = file.getOriginalFilename();
-
-				fileNameLong = fileNameLong.replace('\\', '/');
-
-				String[] pathParts = fileNameLong.split("/");
-				String fileName = pathParts[pathParts.length - 1];
-
-				String nameWithoutExt = getNameWithoutExtension(fileName);
-				String ext = getExtension(fileName);
-
-				File pathToSave = new File(currentDirPath, fileName);
-
-				int counter = 1;
-
-				while (pathToSave.exists()) {
-					newName = nameWithoutExt + "(" + counter + ")" + "." + ext;
-					retVal = "201";
-					pathToSave = new File(currentDirPath, newName);
-					counter++;
-				}
-
-				file.transferTo(pathToSave);
-//				uplFile.write(pathToSave);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				retVal = "203";
 			}
 
@@ -384,22 +362,6 @@ public class ConnectorController {
 
 	}
 
-	/*
-	 * This method was fixed after Kris Barnhoorn (kurioskronic) submitted SF
-	 * bug #991489
-	 */
-	private static String getNameWithoutExtension(String fileName) {
-		return fileName.substring(0, fileName.lastIndexOf("."));
-	}
-
-	/*
-	 * This method was fixed after Kris Barnhoorn (kurioskronic) submitted SF
-	 * bug #991489
-	 */
-	private String getExtension(String fileName) {
-		return fileName.substring(fileName.lastIndexOf(".") + 1);
-	}
-
 	private String getBaseDir(HttpServletRequest request) throws Exception {
 		SecurityContext context = (SecurityContext)request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
 
@@ -416,6 +378,8 @@ public class ConnectorController {
 		if (Validator.isNotNull(user)) {
 			prefix = prefix.concat("/" + user.getUserId());
 		}
+
+		prefix = prefix.concat(FileUploader.UPLOAD_CONTENT_FOLDER);
 
 		File baseFile = new File(prefix);
 
@@ -439,8 +403,10 @@ public class ConnectorController {
 		String urlPrefix = ServletContextUtil.getContextPath() + UPLOAD_FOLDER;
 
 		if (Validator.isNotNull(user)) {
-			urlPrefix = urlPrefix.concat("" + user.getUserId());
+			urlPrefix = urlPrefix.concat(StringPool.BLANK + user.getUserId());
 		}
+
+		urlPrefix = urlPrefix.concat(FileUploader.UPLOAD_CONTENT_FOLDER);
 
 		return urlPrefix;
 	}

@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
 import com.yoda.item.persistence.ItemMapper;
-import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.ImageUploader;
 
 @Service
@@ -69,13 +68,12 @@ public class ItemServiceImpl implements ItemService {
 
 		imageUpload.deleteImage(item.getImagePath());
 
-		String imagePath;
 		try {
-			imagePath = imageUpload.upload(file.getInputStream(), file.getOriginalFilename());
+			String imagePath = imageUpload.uploadItemImage(file.getInputStream(), file.getOriginalFilename());
 
 			item.setImagePath(imagePath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 

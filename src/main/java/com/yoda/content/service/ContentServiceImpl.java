@@ -1,5 +1,6 @@
 package com.yoda.content.service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.Date;
@@ -25,6 +26,7 @@ import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.kernal.util.FileUploader;
+import com.yoda.kernal.util.ImageUploader;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.persistence.MenuMapper;
@@ -499,13 +501,18 @@ public class ContentServiceImpl implements ContentService {
 			int siteId, Long contentId, MultipartFile image) {
 		Content content = getContent(contentId);
 
-		FileUploader fileUpload = new FileUploader();
+		ImageUploader imageUpload = new ImageUploader();
 
-		fileUpload.deleteFile(content.getFeaturedImage());
+		imageUpload.deleteImage(content.getFeaturedImage());
 
-		String imagePath = fileUpload.saveFile(image);
+		try {
+			String imagePath = imageUpload.uploadContentImage(image.getInputStream(), image.getOriginalFilename());
 
-		content.setFeaturedImage(imagePath);
+			content.setFeaturedImage(imagePath);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		content.preUpdate();
 

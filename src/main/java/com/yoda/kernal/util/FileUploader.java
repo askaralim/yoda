@@ -16,7 +16,10 @@ import com.yoda.util.Validator;
 public class FileUploader {
 	private Logger logger = Logger.getLogger(FileUploader.class);
 
-	private static final String UPLOAD_FOLDER = "/uploads/";
+	public static final String UPLOAD_BASE_FOLDER = "/uploads/";
+	public static final String UPLOAD_BRAND_FOLDER = "/brand/";
+	public static final String UPLOAD_ITEM_FOLDER = "/item/";
+	public static final String UPLOAD_CONTENT_FOLDER = "/content/";
 
 	public String saveFile(MultipartFile file) {
 		String newName = StringPool.BLANK;
@@ -75,8 +78,8 @@ public class FileUploader {
 				file = resource.getFile();
 			}
 			else {
-				if (!path.startsWith(UPLOAD_FOLDER)) {
-					path = path.substring(path.indexOf(UPLOAD_FOLDER), path.length());
+				if (!path.startsWith(UPLOAD_BASE_FOLDER)) {
+					path = path.substring(path.indexOf(UPLOAD_BASE_FOLDER), path.length());
 
 					resource = new ServletContextResource(ServletContextUtil.getServletContext(), path);
 
@@ -102,13 +105,19 @@ public class FileUploader {
 	}
 
 	protected String getRealPath() {
+		return this.getRealPath(StringPool.BLANK);
+	}
+
+	protected String getRealPath(String folder) {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		String prefix = ServletContextUtil.getServletContext().getRealPath(UPLOAD_FOLDER);
+		String prefix = ServletContextUtil.getServletContext().getRealPath(UPLOAD_BASE_FOLDER);
 
 		if (Validator.isNotNull(user)) {
 			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getUserId());
 		}
+
+		prefix = prefix.concat(folder);
 
 		File baseFile = new File(prefix);
 
@@ -119,13 +128,19 @@ public class FileUploader {
 	}
 
 	protected String getUrlPrefix() {
+		return this.getUrlPrefix(StringPool.BLANK);
+	}
+
+	protected String getUrlPrefix(String folder) {
 		User user = PortalUtil.getAuthenticatedUser();
 
-		String prefix = ServletContextUtil.getContextPath() + UPLOAD_FOLDER;
+		String prefix = ServletContextUtil.getContextPath() + UPLOAD_BASE_FOLDER;
 
 		if (Validator.isNotNull(user)) {
-			prefix = prefix.concat(user.getUserId() + StringPool.FORWARD_SLASH);
+			prefix = prefix.concat(StringPool.BLANK + user.getUserId());
 		}
+
+		prefix = prefix.concat(folder);
 
 		return prefix;
 	}
