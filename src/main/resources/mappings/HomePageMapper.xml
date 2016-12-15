@@ -55,10 +55,9 @@
 	<update id="update" parameterType="HomePage">
 		UPDATE home_page SET
 			seq_num = #{seqNum},
-			logo_path = #{logoPath},
 			feature_data = #{featureData},
 			update_by = #{updateBy.userId},
-			update_date = #{updateDate},
+			update_date = #{updateDate}
 		WHERE home_page_id = #{homePageId}
 	</update>
 

@@ -233,7 +233,7 @@ public class BaseFrontendController {
 
 		for (HomePage homePage : homePages) {
 			if (homePage.getContent() != null) {
-				Content content = homePage.getContent();
+				Content content = contentService.getContent(homePage.getContent().getContentId());
 
 				if (!Utility.isContentPublished(content)) {
 					break;

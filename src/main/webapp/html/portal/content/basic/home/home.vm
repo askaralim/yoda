@@ -1,4 +1,4 @@
-#if ($homeInfo.homePageFeatureData)
+<!--
 	<header>
 		<div class="container">
 			<div class="row">
@@ -18,6 +18,23 @@
 			</div>
 		</div>
 	</header>
+-->
+#if ($homeInfo.homePageFeatureData)
+<div class="section">
+	<div class="container">
+		<div class="jumbotron">
+			#if ($info.defaultImageUrl)
+				#if ($info.feature)
+					<img class="img-circle" src="$homeInfo.homePageFeatureData.defaultImageUrl" alt="$homeInfo.homePageFeatureData.title" width="300" height="300">
+				#else
+			<img class="img-circle" src="$homeInfo.homePageFeatureData.defaultImageUrl" alt="$homeInfo.homePageFeatureData.title" width="300" height="300">
+				#end
+			#end
+			<h4>$homeInfo.homePageFeatureData.title</h4>
+			<p class="lead">$homeInfo.homePageFeatureData.shortDescription</p>
+		</div>
+	</div>
+</div>
 #end
 <!--
 <header class="header">

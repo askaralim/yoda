@@ -262,15 +262,30 @@ header .intro-text .name {
 	font-size: 4.75em;
 }
 
+.jumbotron {
+	border: 1px solid #e5e5e5;
+	background-color: #ffffff;
+}
+
+.jumbotron p {
+	font-size: 15px;
+}
+
 .section {
-	padding: 100px 0;
+	padding: 10px 0;
 	transform: translateZ(0px);
+}
+
+/* Customize container */
+@media (min-width:768px) {
+.section .container {
+		max-width: 730px;
+	}
 }
 
 /* .section .container:first-child h1, .section .container:first-child h2, .section .container:first-child h3 {
 	margin-top: 0;
 } */
-
 .content-preview-item {
 	margin: 0 0 30px;
 }
