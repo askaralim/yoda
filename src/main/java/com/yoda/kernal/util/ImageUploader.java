@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.imgscalr.Scalr;
 
 import com.yoda.util.StringPool;
+import com.yoda.util.Validator;
 
 public class ImageUploader extends FileUploader {
 	private Logger logger = Logger.getLogger(ImageUploader.class);
@@ -106,6 +107,10 @@ public class ImageUploader extends FileUploader {
 	}
 
 	public void deleteImage(String path) {
+		if (Validator.isNull(path)) {
+			return;
+		}
+
 		String imageExtension = path.substring(path.lastIndexOf(StringPool.PERIOD) + 1);
 		String largeImagePath = path.substring(0, path.lastIndexOf(StringPool.PERIOD)) + LARGE_IMAGE_SUFFIX + StringPool.PERIOD + imageExtension;
 

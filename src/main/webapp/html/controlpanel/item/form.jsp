@@ -21,22 +21,7 @@
 </h2>
 
 <form:form method="post" modelAttribute="item" name="fm">
-<%-- 	<div class="form-group">
-		<label><spring:message code="content" /></label>
-
-		<spring:url value="/controlpanel/content/{contentId}/edit" var="editContentUrl">
-			<spring:param name="contentId" value="${item.content.contentId}"/>
-		</spring:url>
-
-		<p class="form-control-static">
-			<a href="${fn:escapeXml(editContentUrl)}">
-				<c:out value="${item.content.title}" />
-			</a>
-		</p>
-	</div> --%>
-
 	<form:hidden path="id" />
-	<%-- <form:hidden path="content" /> --%>
 
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
@@ -56,11 +41,11 @@
 		<div class="col-md-8">
 			<div class="form-group">
 				<label for="name"><spring:message code="name" /></label>
-				<form:input path="name" cssClass="form-control" />
+				<form:input path="name" cssClass="form-control input-sm" />
 			</div>
 			<div class="form-group">
 				<label for="brand"><spring:message code="brand" /></label>
-				<select id="brandId" name="brandId" class="form-control">
+				<select id="brandId" name="brandId" class="form-control input-sm">
 					<option value="" />
 					<c:forEach var="brand" items="${brands}">
 						<option value="${brand.brandId}" ${item.brand.brandId == brand.brandId ? "selected='selected'" : ""}>${brand.name}</option>
@@ -69,7 +54,7 @@
 			</div>
 			<div class="form-group">
 				<label for="category"><spring:message code="category" /></label>
-				<select id="categoryId" name="categoryId" class="form-control">
+				<select id="categoryId" name="categoryId" class="form-control input-sm">
 					<option value="" />
 					<c:forEach var="category" items="${categories}">
 						<option value="${category.categoryId}" ${item.categoryId == category.categoryId ? "selected='selected'" : ""}>${category.name}</option>
@@ -78,7 +63,7 @@
 			</div>
 			<div class="form-group">
 				<label for="content"><spring:message code="content" /></label>
-				<select id="contentId" name="contentId" class="form-control">
+				<select id="contentId" name="contentId" class="form-control input-sm">
 					<option value="" />
 					<c:forEach var="content" items="${contents}">
 						<option value="${content.contentId}" ${item.contentId == content.contentId ? "selected='selected'" : ""}>${content.title}</option>
@@ -87,19 +72,71 @@
 			</div>
 			<div class="form-group">
 				<label for="price"><spring:message code="price" /></label>
-				<form:input path="price" cssClass="form-control" />
+				<form:input path="price" cssClass="form-control input-sm" />
 			</div>
 			<div class="form-group">
 				<label for="level"><spring:message code="level" /></label>
-				<form:select path="level" cssClass="form-control">
+				<form:select path="level" cssClass="form-control input-sm">
 					<form:option value="low" />
 					<form:option value="medium" />
 					<form:option value="high" />
 				</form:select>
 			</div>
+			<div id="input_fields_wrap">
+				<label for="description"><spring:message code="add-extra-field" /></label>
+				<c:forEach var="extraField" items="${extraFields}" varStatus="index" step="1">
+					<div class="form-group">
+						<div class="row">
+							<div class="col-xs-3">
+								<div class="input-group">
+									<div class="input-group-addon">Key</div>
+									<input id="extraFieldKey" name="extraFieldKey${index.count}" class="form-control" type="text" value="${extraField.extraFieldKey}">
+								</div>
+							</div>
+							<div class="col-xs-7">
+								<div class="input-group">
+									<div class="input-group-addon">Value</div>
+									<input id="extraFieldValue" name="extraFieldValue${index.count}" class="form-control" type="text" value="${extraField.extraFieldValue}">
+								</div>
+							</div>
+							<c:if test="${index.count == 1}">
+								<div class="col-xs-1">
+									<button class="btn btn-default btn-sm" id="addNewField" type="button"><spring:message code="add" /></button>
+								</div>
+							</c:if>
+							<c:if test="${index.count != 1}">
+								<div class="col-xs-1">
+									<button type="button" class="btn btn-default" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>
+								</div>
+							</c:if>
+						</div>
+					</div>
+				</c:forEach>
+				<c:if test="${extraFields == null}">
+					<div class="form-group">
+						<div class="row">
+							<div class="col-xs-3">
+								<div class="input-group">
+									<div class="input-group-addon">Key</div>
+									<input id="extraFieldKey" name="extraFieldKey1" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="col-xs-7">
+								<div class="input-group">
+									<div class="input-group-addon">Value</div>
+									<input id="extraFieldValue" name="extraFieldValue1" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="col-xs-1">
+								<button class="btn btn-default btn-sm" id="addNewField" type="button"><spring:message code="add" /></button>
+							</div>
+						</div>
+					</div>
+				</c:if>
+			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
-				<form:textarea path="description" cssClass="form-control" />
+				<form:textarea path="description" cssClass="form-control input-sm" rows="5" />
 			</div>
 			<div class="form-actions">
 				<c:choose>
@@ -201,4 +238,44 @@ function submitBackForm(type) {
 	location.href='<spring:url value="/controlpanel/item" />';
 	return false;
 }
+
+$(function() {
+	var max_fields = 10;
+	var index = $('#input_fields_wrap .form-group').size() + 1;
+	var size = $('#input_fields_wrap .form-group').size() + 1;
+
+	$('#addNewField').click(function() {
+		if(size < max_fields){
+			$('#input_fields_wrap').append(
+				'<div class="form-group">'
+					+'<div class="row">'
+						+'<div class="col-xs-3">'
+							+'<div class="input-group">'
+								+'<div class="input-group-addon">Key</div>'
+								+'<input id="extraFieldKey" name="extraFieldKey' + index + '" class="form-control" type="text">'
+							+'</div>'
+						+'</div>'
+						+'<div class="col-xs-7">'
+							+'<div class="input-group">'
+								+'<div class="input-group-addon">Value</div>'
+								+'<input id="extraFieldValue" name="extraFieldValue' + index + '" class="form-control" type="text">'
+							+'</div>'
+						+'</div>'
+						+'<div class="col-xs-1">'
+							+ '<button type="button" class="btn btn-default" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>'
+						+'</div>'
+					+'</div>'
+				+'</div>'
+			);
+			index++;
+			size++
+		}
+	});
+
+	$('#input_fields_wrap').on("click","#removeField", function() {
+		$(this).parent('div').parent('div').parent('div').remove();
+		i--;
+		size--;
+	});
+});
 </script>

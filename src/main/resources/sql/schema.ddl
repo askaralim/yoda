@@ -152,6 +152,7 @@
 		image_path VARCHAR(50),
 		level VARCHAR(20),
 		name VARCHAR(100),
+		extra_fields VARCHAR(2000),
 		price INT,
 		rating INT,
 		site_id INT(4) NOT NULL,

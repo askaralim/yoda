@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +28,6 @@ import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
-import com.yoda.user.model.User;
 import com.yoda.util.Validator;
 
 @Controller
@@ -46,10 +44,8 @@ public class ItemAddController {
 	@Autowired
 	CategoryService categoryService;
 
-//	@RequestMapping(value = "/controlpanel/{contentId}/item/new", method = RequestMethod.GET)
 	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.GET)
 	public ModelAndView initCreationForm(
-//			@PathVariable("contentId") long contentId,
 			Map<String, Object> model,
 			HttpServletRequest request) {
 		Site site = PortalUtil.getSiteFromSession(request);
@@ -59,8 +55,6 @@ public class ItemAddController {
 		List<Category> categories = categoryService.getCategories();
 
 		Item item = new Item();
-
-//		content.addItem(item);
 
 		List<Brand> brands = brandService.getBrands();
 
@@ -75,7 +69,6 @@ public class ItemAddController {
 	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
 			@ModelAttribute("item") Item item, 
-//			@PathVariable("contentId") long contentId,
 			@RequestParam("brandId") Integer brandId, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -97,11 +90,7 @@ public class ItemAddController {
 				item.setBrand(brand);
 			}
 
-//			Content content = contentService.getContent(site.getSiteId(), contentId);
-//
-//			content.addItem(item);
-
-			this.itemService.save(site.getSiteId(), item);
+			itemService.save(site.getSiteId(), item);
 
 			status.setComplete();
 

@@ -1,13 +1,14 @@
 package com.yoda.item.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import com.yoda.category.service.CategoryService;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
 import com.yoda.item.ItemValidator;
+import com.yoda.item.model.ExtraField;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.util.PortalUtil;
@@ -70,6 +72,7 @@ public class ItemEditController {
 		model.put("brands", brands);
 		model.put("categories", categories);
 		model.put("contents", contents);
+		model.put("extraFields", getExtraFields(item));
 
 		return "controlpanel/item/form";
 	}
@@ -81,7 +84,6 @@ public class ItemEditController {
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request) {
 		new ItemValidator().validate(item, result);
-
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
@@ -90,15 +92,15 @@ public class ItemEditController {
 			return new ModelAndView("controlpanel/item/form", model);
 		}
 		else {
-//			String brandName = StringPool.BLANK;
 			Brand brand = null;
 
 			if (Validator.isNotNull(brandId)) {
 				brand = brandService.getBrand(brandId);
-//				brandName = brand.getName();
 			}
 
 			item.setBrand(brand);
+
+			setExtraFields(request, item);
 
 			Item itemDb = itemService.update(item);
 
@@ -114,11 +116,72 @@ public class ItemEditController {
 			model.put("brands", brands);
 			model.put("categories", categories);
 			model.put("contents", contents);
+			model.put("extraFields", getExtraFields(item));
 			model.put("success", "success");
 
 			status.setComplete();
 
 			return new ModelAndView("controlpanel/item/form", model);
+		}
+	}
+
+	private List<ExtraField> getExtraFields(Item item) {
+		List<ExtraField> extraFields = new ArrayList<ExtraField>();
+
+		String json = item.getExtraFields();
+
+		try {
+			JSONArray jsonArray = new JSONArray(json);
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject obj = jsonArray.getJSONObject(i);
+
+				ExtraField extraField = new ExtraField();
+
+				extraField.setExtraFieldKey(obj.getString("key"));
+				extraField.setExtraFieldValue(obj.getString("value"));
+
+				extraFields.add(extraField);
+			}
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return extraFields;
+	}
+
+	private void setExtraFields(HttpServletRequest request, Item item) {
+		try {
+			Enumeration<String> names = request.getParameterNames();
+			JSONArray jsonArray = new JSONArray();
+
+			while (names.hasMoreElements()) {
+				String name = (String) names.nextElement();
+				String extraFieldKey = request.getParameter(name);
+
+				int index = 0;
+
+				if (name.startsWith("extraFieldKey")) {
+					extraFieldKey = request.getParameter(name);
+
+					index = Integer.valueOf(name.substring(name.length() - 1));
+
+					String extraFieldvalue = request.getParameter("extraFieldValue" + index);
+
+					JSONObject json = new JSONObject();
+
+					json.put("key", extraFieldKey);
+					json.put("value", extraFieldvalue);
+
+					jsonArray.put(json);
+				}
+			}
+
+			item.setExtraFields(jsonArray.toString());
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 

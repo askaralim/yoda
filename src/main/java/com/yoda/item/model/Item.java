@@ -26,6 +26,8 @@ public class Item extends BaseEntity {
 
 	private String name;
 
+	private String extraFields;
+
 	private int price;
 
 	public Integer getId() {
@@ -124,39 +126,15 @@ public class Item extends BaseEntity {
 		this.rating = rating;
 	}
 
-//	public Integer getUpdateBy() {
-//		return this.updateBy;
-//	}
-//
-//	public void setUpdateBy(Integer updateBy) {
-//		this.updateBy = updateBy;
-//	}
-//
-//	public Date getUpdateDate() {
-//		return this.updateDate;
-//	}
-//
-//	public void setUpdateDate(Date updateDate) {
-//		this.updateDate = updateDate;
-//	}
-//
-//	public Integer getCreateBy() {
-//		return this.createBy;
-//	}
-//
-//	public void setCreateBy(Integer recCreateBy) {
-//		this.createBy = recCreateBy;
-//	}
-//
-//	public Date getCreateDate() {
-//		return this.createDate;
-//	}
-//
-//	public void setCreateDate(Date createDate) {
-//		this.createDate = createDate;
-//	}
-
 	public boolean isNew() {
 		return (this.id == null);
+	}
+
+	public String getExtraFields() {
+		return extraFields;
+	}
+
+	public void setExtraFields(String extraFields) {
+		this.extraFields = extraFields;
 	}
 }
