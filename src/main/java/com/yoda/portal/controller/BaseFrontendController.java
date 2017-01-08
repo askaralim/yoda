@@ -179,6 +179,7 @@ public class BaseFrontendController {
 
 		List<Item> items = itemService.getItemsByContentId(content.getContentId());
 
+//		setExtraFields
 		contentInfo.setItems(items);
 
 		contentInfo.setContentBrands(content.getContentBrands());

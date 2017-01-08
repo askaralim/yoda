@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.brand.model.Brand;
+import com.yoda.item.ExtraFieldUtil;
 import com.yoda.item.model.Item;
 import com.yoda.item.persistence.ItemMapper;
 import com.yoda.kernal.util.ImageUploader;
@@ -44,7 +45,13 @@ public class ItemServiceImpl implements ItemService {
 
 	@Transactional(readOnly = true)
 	public List<Item> getItemsByContentId(long contentId) {
-		return itemMapper.getItemsByContentId(contentId);
+		List<Item> items = itemMapper.getItemsByContentId(contentId);
+
+		for (Item item : items) {
+			item.setExtraFieldList(ExtraFieldUtil.getExtraFields(item));
+		}
+
+		return items;
 	}
 
 	public List<Item> search(
@@ -104,21 +111,22 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public Item update(Item item) {
-//		Item itemDB = this.getItem(item.getId());
-//
-//		itemDB.setBrand(item.getBrand());
-//		itemDB.setCategoryId(item.getCategoryId());
-//		itemDB.setContentId(item.getContentId());
-//		itemDB.setDescription(item.getDescription());
-//		itemDB.setLevel(item.getLevel());
-//		itemDB.setName(item.getName());
-//		itemDB.setPrice(item.getPrice());
+		Item itemDB = this.getItem(item.getId());
 
-		item.preUpdate();
+		itemDB.setBrand(item.getBrand());
+		itemDB.setCategoryId(item.getCategoryId());
+		itemDB.setContentId(item.getContentId());
+		itemDB.setDescription(item.getDescription());
+		itemDB.setLevel(item.getLevel());
+		itemDB.setName(item.getName());
+		itemDB.setPrice(item.getPrice());
+		itemDB.setExtraFields(item.getExtraFields());
 
-		itemMapper.update(item);
+		itemDB.preUpdate();
 
-		return item;
+		itemMapper.update(itemDB);
+
+		return itemDB;
 	}
 
 	public void remove(int itemId) {

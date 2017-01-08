@@ -23,6 +23,7 @@ import com.yoda.category.model.Category;
 import com.yoda.category.service.CategoryService;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
+import com.yoda.item.ExtraFieldUtil;
 import com.yoda.item.ItemValidator;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
@@ -62,6 +63,7 @@ public class ItemAddController {
 		model.put("brands", brands);
 		model.put("categories", categories);
 		model.put("contents", contents);
+		model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
 
 		return new ModelAndView("controlpanel/item/form", model);
 	}
@@ -89,6 +91,8 @@ public class ItemAddController {
 
 				item.setBrand(brand);
 			}
+
+			ExtraFieldUtil.setExtraFields(request, item);
 
 			itemService.save(site.getSiteId(), item);
 

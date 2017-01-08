@@ -1,5 +1,7 @@
 package com.yoda.item.model;
 
+import java.util.List;
+
 import com.yoda.BaseEntity;
 import com.yoda.brand.model.Brand;
 
@@ -27,6 +29,8 @@ public class Item extends BaseEntity {
 	private String name;
 
 	private String extraFields;
+
+	private List<ExtraField> extraFieldList;
 
 	private int price;
 
@@ -136,5 +140,13 @@ public class Item extends BaseEntity {
 
 	public void setExtraFields(String extraFields) {
 		this.extraFields = extraFields;
+	}
+
+	public List<ExtraField> getExtraFieldList() {
+		return extraFieldList;
+	}
+
+	public void setExtraFieldList(List<ExtraField> extraFieldList) {
+		this.extraFieldList = extraFieldList;
 	}
 }

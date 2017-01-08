@@ -22,6 +22,7 @@
 
 <form:form method="post" modelAttribute="item" name="fm">
 	<form:hidden path="id" />
+	<form:hidden path="siteId" />
 
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
@@ -90,13 +91,13 @@
 							<div class="col-xs-3">
 								<div class="input-group">
 									<div class="input-group-addon">Key</div>
-									<input id="extraFieldKey" name="extraFieldKey${index.count}" class="form-control" type="text" value="${extraField.extraFieldKey}">
+									<input id="extraFieldKey" name="extraFieldKey${index.count}" class="form-control input-sm" type="text" value="${extraField.key}">
 								</div>
 							</div>
 							<div class="col-xs-7">
 								<div class="input-group">
 									<div class="input-group-addon">Value</div>
-									<input id="extraFieldValue" name="extraFieldValue${index.count}" class="form-control" type="text" value="${extraField.extraFieldValue}">
+									<input id="extraFieldValue" name="extraFieldValue${index.count}" class="form-control input-sm" type="text" value="${extraField.value}">
 								</div>
 							</div>
 							<c:if test="${index.count == 1}">
@@ -106,25 +107,25 @@
 							</c:if>
 							<c:if test="${index.count != 1}">
 								<div class="col-xs-1">
-									<button type="button" class="btn btn-default" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>
+									<button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>
 								</div>
 							</c:if>
 						</div>
 					</div>
 				</c:forEach>
-				<c:if test="${extraFields == null}">
+				<c:if test="${extraFields.size() == 0}">
 					<div class="form-group">
 						<div class="row">
 							<div class="col-xs-3">
 								<div class="input-group">
 									<div class="input-group-addon">Key</div>
-									<input id="extraFieldKey" name="extraFieldKey1" class="form-control" type="text">
+									<input id="extraFieldKey" name="extraFieldKey1" class="form-control input-sm" type="text">
 								</div>
 							</div>
 							<div class="col-xs-7">
 								<div class="input-group">
 									<div class="input-group-addon">Value</div>
-									<input id="extraFieldValue" name="extraFieldValue1" class="form-control" type="text">
+									<input id="extraFieldValue" name="extraFieldValue1" class="form-control input-sm" type="text">
 								</div>
 							</div>
 							<div class="col-xs-1">
@@ -252,17 +253,17 @@ $(function() {
 						+'<div class="col-xs-3">'
 							+'<div class="input-group">'
 								+'<div class="input-group-addon">Key</div>'
-								+'<input id="extraFieldKey" name="extraFieldKey' + index + '" class="form-control" type="text">'
+								+'<input id="extraFieldKey" name="extraFieldKey' + index + '" class="form-control input-sm" type="text">'
 							+'</div>'
 						+'</div>'
 						+'<div class="col-xs-7">'
 							+'<div class="input-group">'
 								+'<div class="input-group-addon">Value</div>'
-								+'<input id="extraFieldValue" name="extraFieldValue' + index + '" class="form-control" type="text">'
+								+'<input id="extraFieldValue" name="extraFieldValue' + index + '" class="form-control input-sm" type="text">'
 							+'</div>'
 						+'</div>'
 						+'<div class="col-xs-1">'
-							+ '<button type="button" class="btn btn-default" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>'
+							+ '<button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>'
 						+'</div>'
 					+'</div>'
 				+'</div>'
@@ -274,7 +275,7 @@ $(function() {
 
 	$('#input_fields_wrap').on("click","#removeField", function() {
 		$(this).parent('div').parent('div').parent('div').remove();
-		i--;
+
 		size--;
 	});
 });

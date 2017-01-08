@@ -1,23 +1,37 @@
 package com.yoda.item.model;
 
-public class ExtraField {
-	private String extraFieldKey;
+public class ExtraField implements Comparable<ExtraField> {
+	private int index;
 
-	private String extraFieldValue;
+	private String key;
 
-	public String getExtraFieldKey() {
-		return extraFieldKey;
+	private String value;
+
+	public int compareTo(ExtraField extraField) {
+		return (index < extraField.index ? -1 : (index == extraField.index ? 0 : 1));
 	}
 
-	public void setExtraFieldKey(String extraFieldKey) {
-		this.extraFieldKey = extraFieldKey;
+	public int getIndex() {
+		return index;
 	}
 
-	public String getExtraFieldValue() {
-		return extraFieldValue;
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
-	public void setExtraFieldValue(String extraFieldValue) {
-		this.extraFieldValue = extraFieldValue;
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }

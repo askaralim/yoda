@@ -81,6 +81,9 @@
 												<a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a>
 											</p>
 											<p>#springMessage('price') : $item.price</p>
+											#foreach ($extraField in $item.extraFieldList)
+												<p>$extraField.key : $extraField.value</p>
+											#end
 											<p>#springMessage('description') : $item.description</p>
 											<div class="content-actions">
 												<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
