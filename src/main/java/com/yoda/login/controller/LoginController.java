@@ -137,5 +137,12 @@ public class LoginController {
 		return new ModelAndView("/404", "requestURL", requestURL);
 	}
 
+	@RequestMapping(value = "/500", method = {RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView ServerError(HttpServletRequest request) {
+		String requestURL = request.getRequestURL().toString();
+
+		return new ModelAndView("/500", "requestURL", requestURL);
+	}
+
 	Logger logger = Logger.getLogger(LoginController.class);
 }

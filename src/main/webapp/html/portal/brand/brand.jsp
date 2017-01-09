@@ -25,15 +25,19 @@
 	${horizontalMenu}
 	<div class="container pt">
 		<div class="row">
-			<div class="col-lg-8 col-lg-offset-2">
-				<div class="thumbnail col-sm-4">
+			<div class="col-lg-8 col-lg-offset-2 brand-detail">
+				<div class="thumbnail col-sm-3">
 					<img src="${brand.imagePath}" class="img-responsive" alt="">
 				</div>
-				<div class="col-sm-8">
-					<h3>${brand.name}</h3>
-					<p>${brand.country}</p>
-					<p>${brand.kind}</p>
-					<p>${brand.description}</p>
+				<div class="col-sm-9">
+					<h4>${brand.name}</h4>
+					<dl class="dl-horizontal">
+						<dt><spring:message code="brand-founded" /></dt>
+						<dd>${brand.country}</dd>
+						<dt><spring:message code="brand-products" /></dt>
+						<dd>${brand.kind}</dd>
+					</dl>
+					<div class="brand-info">${brand.description}</div>
 				</div>
 			</div>
 		</div>

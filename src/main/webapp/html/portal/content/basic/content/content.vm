@@ -60,7 +60,7 @@
 							<div class="tab-pane" id="tab-brand">
 								#foreach ($contentBrand in $contentInfo.contentBrands)
 									<div class="row content-preview-wrapper-row">
-										<div class="col-sm-12 content-preview-item">
+										<div class="col-sm-12">
 											<h4>
 												<p><a href='#springUrl("/brand/$contentBrand.brandId")'>$contentBrand.brandName</a></p>
 											</h4>
@@ -72,10 +72,10 @@
 							<div class="tab-pane" id="tab-recommend">
 								#foreach ($item in $contentInfo.items)
 									<div class="row content-preview-wrapper-row">
-										<div class="col-sm-4 content-preview-item">
+										<div class="col-sm-4">
 											<img src="$item.imagePath" alt="$item.name" style="width: 200px;">
 										</div>
-										<div class="col-sm-8 content-preview-item">
+										<div class="col-sm-8">
 											<p>#springMessage('name') : $item.name</p>
 											<p>#springMessage('brand') : 
 												<a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a>

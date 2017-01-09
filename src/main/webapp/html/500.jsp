@@ -23,17 +23,14 @@
 	<!-- Main content -->
 	<div class="container">
 		<div class="error-page">
-			<h2 class="headline text-info">404</h2>
+			<h2 class="headline text-info">500</h2>
 			<div class="error-content">
 				<h3>
-					<i class="fa fa-warning text-yellow"></i> <spring:message code="page-not-found" />
+					<i class="fa fa-warning text-yellow"></i> <spring:message code="server-error" />
 				</h3>
 				<%-- <p>
 				${requestURL}
 				</p> --%>
-				<p>
-					<spring:message code="the-requested-resource-is-not-available" />
-				</p>
 				<p>
 					<a href="<c:url value="/" />"><spring:message code="go-to-home-page" /></a> <spring:message code="or-try-using-the-search-form" />
 				</p>

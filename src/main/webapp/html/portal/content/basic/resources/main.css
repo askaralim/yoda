@@ -14,16 +14,6 @@ body {
 
 /*All form elements including input, select, textarea etc.*/
 
-a {
-	color: #3C8DBC;
-}
-
-a:hover, a:focus, a:active, a.active {
-	outline: 0;
-	color: #367fa9;
-	text-decoration: none;
-}
-
 label {
 	display: inline-block;
 	margin-bottom: 5px;
@@ -153,6 +143,7 @@ label {
 }
 
 .navbar-default .navbar-nav>li>a {
+	font-weight: 200;
 	color: #ffffff;
 }
 
@@ -268,7 +259,11 @@ header .intro-text .name {
 }
 
 .jumbotron p {
-	font-size: 15px;
+	font-size: 13px;
+}
+
+.jumbotron li {
+	font-size: 13px;
 }
 
 .section {
@@ -295,7 +290,7 @@ header .intro-text .name {
 	border-bottom: 1px solid #f6f6f6;
 }
 
-.content-preview-wrapper-row h3 {
+.content-preview-wrapper-row h4 {
 	padding-top: 15px;
 }
 
@@ -316,9 +311,26 @@ header .intro-text .name {
 	vertical-align: bottom;
 }
 
+.content-preview-item p {
+	line-height: 1.6;
+	font-size: 13px;
+	font-weight: 200;
+	color: #828a92;
+}
+
 .content-preview-item bd {
-	font-size: 14px;
+	font-size: 12px;
 	color: #d2d2d2;
+}
+
+.content-preview-item a {
+	color: #2c3e50;
+}
+
+.content-preview-item a:hover, a:focus, a:active, a.active {
+	outline: 0;
+	color: #367fa9;
+	text-decoration: none;
 }
 
 /* content */
@@ -344,7 +356,7 @@ header .intro-text .name {
 	text-decoration: underline;
 }
 
-.content-post  {
+.content-post {
 	padding: 10px 30px;
 	background: #FFF;
 	position: relative;
@@ -360,6 +372,7 @@ header .intro-text .name {
 	-moz-box-shadow: inset 0 1px #fff, 0 0 8px #c8cfe6;
 	box-shadow: inset 0 1px #fff, 0 0 8px #c8cfe6;
 	color: inset 0 1px #fff, 0 0 8px #c8cfe6;
+	line-height: 28px;
 }
 
 .content-post .nav-tabs-custom .tab-content div img {
@@ -602,4 +615,39 @@ header .intro-text .name {
 	{
 	background: transparent;
 	color: #999;
+}
+
+/* Brand */
+.brand-detail h4 {
+	font-size: 18px;
+	color: #333;
+	font-weight: 400;
+	height: 18px;
+	line-height: 18px;
+	margin-bottom: 20px;
+}
+
+.brand-detail .dl-horizontal dt {
+	text-align: left;
+	width: 80px;
+	font-weight: 400;
+	font-size: 14px;
+	color: #333;
+}
+
+.brand-detail .dl-horizontal dd {
+	margin-left: 80px;
+	font-size: 14px;
+	color: #828a92;
+}
+
+.brand-info {
+	color: #828a92;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+/* Footer */
+.footer-below {
+	font-size: 13px;
 }

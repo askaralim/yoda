@@ -11,7 +11,7 @@
 		</div>
 	</div>
 	<div class="col-sm-7 content-preview-item">
-		<h3><a href="$info.contentUrl" class="">$info.title</a></h3>
+		<h4><a href="$info.contentUrl" class="">$info.title</a></h4>
 		<p class="text-left">
 			<bd>
 				<i class="fa fa-eye"></i>
@@ -28,6 +28,5 @@
 			</bd>
 		</p>
 		<p>$info.shortDescription</p>
-		<p><a class="btn btn-blue" href="$info.contentUrl" role="button">#springMessage('more')</a></p>
 	</div>
 </div>

@@ -27,7 +27,7 @@
 			<h2 class="headline text-info">403</h2>
 			<div class="error-content">
 				<h3>
-					<i class="fa fa-warning text-yellow"></i><spring:message code="http-Status-403-access-is-denied" />
+					<i class="fa fa-warning text-yellow"></i> <spring:message code="http-Status-403-access-is-denied" />
 				</h3>
 				<c:choose>
 					<c:when test="${empty username}">
