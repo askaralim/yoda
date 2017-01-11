@@ -66,16 +66,16 @@ label {
 } */
 
 /* .btn:hover {
-	background: none repeat scroll 0 0 #3b3c41;
+	background: none repeat scroll 0 0 #828a92;
 	color: #FFF;
 	text-decoration: none;
 } */
-.btn {
+/* .btn {
 	border-radius: 3px;
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	border: 1px solid transparent;
-}
+} */
 
 .btn-primary {
 	background-color: #3c8dbc;

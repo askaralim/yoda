@@ -18,6 +18,10 @@
 		b.update_date AS updateDate
 	</sql>
 
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(*) from brand
+	</select>
+
 	<select id="getById" resultType="Brand">
 		SELECT 
 			<include refid="brandColumns"/>

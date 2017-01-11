@@ -2,9 +2,11 @@ package com.yoda.brand.service;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.brand.model.Brand;
+import com.yoda.kernal.model.Pagination;
 
 public interface BrandService {
 	void addBrand(Brand brand);
@@ -20,4 +22,6 @@ public interface BrandService {
 	Brand updateImage(int brandId, MultipartFile file);
 
 	void deleteBrand(Integer brandId);
+
+	Pagination<Brand> getBrands(RowBounds rowBounds);
 }

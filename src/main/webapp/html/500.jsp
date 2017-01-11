@@ -11,7 +11,7 @@
 
 	<link rel="icon" type="image/x-icon" href="<c:url value="/resources/images/favicon.ico" />" />
 
-	<title>404</title>
+	<title>500</title>
 
 	<link rel="stylesheet" href="<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />">
 

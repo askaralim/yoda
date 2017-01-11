@@ -17,10 +17,6 @@ public class Brand extends BaseEntity {
 
 	private int score;
 
-//	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-//	@JoinTable(name = "brand_category", joinColumns = {@JoinColumn(name ="brand_id" )}, inverseJoinColumns = {@JoinColumn(name = "category_id") })
-//	private Set<Category> categories = new HashSet<Category>();
-
 	public Integer getBrandId() {
 		return this.brandId;
 	}
@@ -76,14 +72,6 @@ public class Brand extends BaseEntity {
 	public void setScore(int score) {
 		this.score = score;
 	}
-
-//	public Set<Category> getCategories() {
-//		return categories;
-//	}
-//
-//	public void setCategories(Set<Category> categories) {
-//		this.categories = categories;
-//	}
 
 	public boolean isNew() {
 		return (this.brandId == null);
