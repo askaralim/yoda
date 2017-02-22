@@ -57,15 +57,18 @@ public class ContentBrandController {
 		ModelMap model = new ModelMap();
 
 		String brandName = StringPool.BLANK;
+		String brandLogo = StringPool.BLANK;
 
 		Brand brand = null;
 
 		if (Validator.isNotNull(brandId)) {
 			brand = brandService.getBrand(brandId);
 			brandName = brand.getName();
+			brandLogo = brand.getImagePath();
 		}
 
 		contentBrand.setBrandName(brandName);
+		contentBrand.setBrandLogo(brandLogo);
 
 		contentService.addContentBrand(contentBrand);
 
@@ -92,14 +95,17 @@ public class ContentBrandController {
 		ModelMap model = new ModelMap();
 
 		String brandName = StringPool.BLANK;
+		String brandLogo = StringPool.BLANK;
 		Brand brand = null;
 
 		if (Validator.isNotNull(brandId)) {
 			brand = brandService.getBrand(brandId);
 			brandName = brand.getName();
+			brandLogo = brand.getImagePath();
 		}
 
 		contentBrand.setBrandName(brandName);
+		contentBrand.setBrandLogo(brandLogo);
 
 		contentService.updateContentBrand(contentBrand);
 

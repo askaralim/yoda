@@ -9,6 +9,7 @@
 		c.content_id AS contentId,
 		c.brand_id AS brandId,
 		c.brand_name AS brandName,
+		c.brand_logo AS brandLogo,
 		c.description,
 		c.create_by AS "createBy.userId",
 		c.create_date AS createDate,
@@ -24,14 +25,15 @@
 	</select>
 
 	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
-		INSERT INTO content_brand(content_brand_id, content_id, brand_id, brand_name, description, create_by, create_date, update_by, update_date)
-		VALUES(#{contentBrandId}, #{contentId}, #{brandId}, #{brandName}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+		INSERT INTO content_brand(content_brand_id, content_id, brand_id, brand_name, brand_logo, description, create_by, create_date, update_by, update_date)
+		VALUES(#{contentBrandId}, #{contentId}, #{brandId}, #{brandName}, #{brandLogo}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
 	</insert>
 
 	<update id="update" parameterType="ContentBrand">
 		UPDATE content_brand SET
 			brand_id = #{brandId},
 			brand_name = #{brandName},
+			brand_logo = #{brandLogo},
 			description = #{description},
 			update_by = #{updateBy.userId},
 			update_date = #{updateDate}

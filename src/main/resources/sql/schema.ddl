@@ -183,6 +183,7 @@
 		content_id bigint not null,
 		brand_id INT not null,
 		brand_name VARCHAR(30),
+		brand_logo VARCHAR(50),
 		description VARCHAR(2000),
 		create_by bigint NOT NULL,
 		create_date DATETIME NOT NULL,

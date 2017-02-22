@@ -114,7 +114,7 @@ public class FileUploader {
 		String prefix = ServletContextUtil.getServletContext().getRealPath(UPLOAD_BASE_FOLDER);
 
 		if (Validator.isNotNull(user)) {
-			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getUserId());
+			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getUserId() + StringPool.FORWARD_SLASH);
 		}
 
 		prefix = prefix.concat(folder);
@@ -137,7 +137,7 @@ public class FileUploader {
 		String prefix = ServletContextUtil.getContextPath() + UPLOAD_BASE_FOLDER;
 
 		if (Validator.isNotNull(user)) {
-			prefix = prefix.concat(StringPool.BLANK + user.getUserId());
+			prefix = prefix.concat(user.getUserId() + StringPool.FORWARD_SLASH);
 		}
 
 		prefix = prefix.concat(folder);

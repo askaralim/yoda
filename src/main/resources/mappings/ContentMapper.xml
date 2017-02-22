@@ -30,6 +30,7 @@
 			<result property="brandId" column="content_brand_brand_id" />
 			<result property="description" column="content_brand_description" />
 			<result property="brandName" column="content_brand_brand_name" />
+			<result property="brandLogo" column="content_brand_brand_logo" />
 		</collection>
 	</resultMap>
 
@@ -69,6 +70,7 @@
 		cb.brand_id AS content_brand_brand_id,
 		cb.description AS content_brand_description,
 		cb.brand_name AS content_brand_brand_name,
+		cb.brand_logo AS content_brand_brand_logo,
 		ca.category_id,
 		ca.name,
 		ca.parent,

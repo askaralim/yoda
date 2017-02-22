@@ -13,6 +13,8 @@ public class ContentBrand extends BaseEntity {
 
 	private String brandName;
 
+	private String brandLogo;
+
 	public Long getContentBrandId() {
 		return contentBrandId;
 	}
@@ -55,5 +57,13 @@ public class ContentBrand extends BaseEntity {
 
 	public boolean isNew() {
 		return (this.brandId == null);
+	}
+
+	public String getBrandLogo() {
+		return brandLogo;
+	}
+
+	public void setBrandLogo(String brandLogo) {
+		this.brandLogo = brandLogo;
 	}
 }
