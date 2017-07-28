@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.yoda.category.model.Category;
 import com.yoda.content.model.ContentBrand;
+import com.yoda.content.model.ContentContributor;
 import com.yoda.item.model.Item;
 import com.yoda.user.model.User;
 
@@ -44,6 +45,8 @@ public class ContentInfo extends DataInfo {
 	int hitCounter;
 
 	long score;
+
+	private List<ContentContributor> contentContributors = new ArrayList<ContentContributor>();
 
 	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
 
@@ -211,6 +214,14 @@ public class ContentInfo extends DataInfo {
 
 	public void setItems(List<Item> items) {
 		this.items = items;
+	}
+
+	public List<ContentContributor> getContentContributors() {
+		return contentContributors;
+	}
+
+	public void setContentContributors(List<ContentContributor> contentContributors) {
+		this.contentContributors = contentContributors;
 	}
 
 	public Set<ContentBrand> getContentBrands() {

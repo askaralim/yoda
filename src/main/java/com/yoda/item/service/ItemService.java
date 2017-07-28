@@ -25,6 +25,10 @@ public interface ItemService {
 
 	List<Item> getItemsByContentId(long contentId);
 
+	List<Item> getItemsByBrandId(int brandId);
+
+	List<Item> getItemsByContentIdAndBrandId(long contentId, int brandId);
+
 	List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 
 	void remove(int itemId);

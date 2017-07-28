@@ -18,7 +18,8 @@
 	<link rel="stylesheet" href='<c:url value="/template/basic/main.css" />' type="text/css" />
 
 	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-	<link href='<c:url value="/template/basic/font-awesome-4.1.0/css/font-awesome.min.css" />' rel="stylesheet" type="text/css">
+	<%-- <link href='<c:url value="/template/basic/font-awesome-4.1.0/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"> --%>
+	<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.1.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -49,8 +50,10 @@
 		</c:if>
 	</div>
 
-	<script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>
-	<script type="text/javascript" src='<c:url value="/template/basic/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
+	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<%-- <script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>
+	<script type="text/javascript" src='<c:url value="/template/basic/bootstrap-3.2.0/js/bootstrap.min.js" />'></script> --%>
 	<script type="text/javascript">
 		$(function(){
 			var offset = 20;

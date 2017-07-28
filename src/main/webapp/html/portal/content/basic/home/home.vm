@@ -1,3 +1,4 @@
+<!--
 #if ($homeInfo.homePageFeatureData)
 <div class="section">
 	<div class="container">
@@ -15,7 +16,7 @@
 	</div>
 </div>
 #end
-<!--
+
 <header class="header">
 	<div class="container">
 		<div class="row">
@@ -52,19 +53,46 @@
 -->
 <div class="section">
 	<div class="container">
-		#foreach ($homePageData in $homeInfo.homePageDatas)
-			#if ($velocityCount % 2 == 1)
-				</tr>
-				<tr>
-			#end
-			#set ($info = $homePageData)
-			#if ($homePageData.infoType == "content")
-				#set ($orientation = "left")
-				#parse("common/previewContent.vm")
-			#else
-				#set ($orientation = "top")
-				#parse("common/previewItem.vm")
-			#end
-		#end
+		<div class="row">
+			<div class="col-sm-8 home-main">
+				#foreach ($homePageData in $homeInfo.homePageDatas)
+					#if ($velocityCount % 2 == 1)
+						</tr>
+						<tr>
+					#end
+					#set ($info = $homePageData)
+					#if ($homePageData.infoType == "content")
+						#set ($orientation = "left")
+						#parse("common/previewContent.vm")
+					#else
+						#set ($orientation = "top")
+						#parse("common/previewItem.vm")
+					#end
+				#end
+			</div>
+			<div class="col-sm-3 col-sm-offset-1 home-sidebar">
+				#if ($homeInfo.homePageFeatureData)
+					<div class="home-sidebar-module home-sidebar-module-inset">
+						<h5>$homeInfo.homePageFeatureData.title</h5>
+						<p>$homeInfo.homePageFeatureData.description</p>
+					</div>
+				#end
+				<div class="home-sidebar-module">
+					<h5>#springMessage('social')</h5>
+					<ol class="list-unstyled">
+						<li>
+							<a href="http://weibo.com/taklip" aria-label="weibo">
+								<i class="fa fa-weibo fa-2x fa-fw margin-bottom" aria-hidden="true"></i> taklip太离谱
+							</a>
+						</li>
+						<br>
+						<li>
+							<i class="fa fa-weixin fa-2x fa-fw margin-bottom"></i> taklip太离谱
+							<img src="/yoda/uploads/1/content/qrcode_for_gh_1306e58d35fe_860_L.jpg" width="100%">
+						</li>
+					</ol>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

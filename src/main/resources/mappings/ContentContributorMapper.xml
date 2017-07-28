@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yoda.content.persistence.ContentContributorMapper">
+	<cache />
+
+	<resultMap id="contentContributorResult" type="ContentContributor">
+		<id property="id" column="id" />
+		<result property="contentId" column="content_id" />
+		<result property="createDate" column="create_date" />
+		<result property="updateDate" column="update_date" />
+		<result property="userId" column="user_id" />
+		<result property="username" column="username" />
+		<result property="profilePhotoSmall" column="profile_photo_small" />
+		<result property="version" column="version" />
+		<result property="approved" column="approved" />
+	</resultMap>
+
+	<sql id="contentContributorColumns">
+		c.id AS id,
+		c.content_id AS contentId,
+		c.user_id AS userId,
+		c.username,
+		c.profile_photo_small AS profilePhotoSmall,
+		c.version,
+		c.approved,
+		c.create_by AS "createBy.userId",
+		c.create_date AS createDate,
+		c.update_by AS "updateBy.userId",
+		c.update_date AS updateDate
+	</sql>
+
+	<select id="getById" resultType="ContentContributor">
+		SELECT 
+			<include refid="contentContributorColumns"/>
+		FROM content_contributor c
+		WHERE c.id = #{id}
+	</select>
+
+	<select id="getByContentIdAndUserId" resultMap="contentContributorResult">
+		SELECT 
+			<include refid="contentContributorColumns"/>
+		FROM content_contributor c
+		WHERE c.content_id = #{param1} AND c.user_id = #{param2}
+	</select>
+
+	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
+		INSERT INTO content_contributor(id, content_id, user_id, username, profile_photo_small, version, approved, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{contentId}, #{userId}, #{username}, #{profilePhotoSmall}, #{version}, #{approved}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="ContentBrand">
+		UPDATE content_contributor SET
+			content_id = #{contentId}
+		WHERE content_id = #{contentId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM content_contributor WHERE id = #{id}
+	</delete>
+</mapper>

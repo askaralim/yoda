@@ -17,9 +17,11 @@ import com.yoda.category.persistence.CategoryMapper;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
+import com.yoda.content.model.ContentContributor;
 import com.yoda.content.model.ContentUserRate;
 import com.yoda.content.persistence.CommentMapper;
 import com.yoda.content.persistence.ContentBrandMapper;
+import com.yoda.content.persistence.ContentContributorMapper;
 import com.yoda.content.persistence.ContentMapper;
 import com.yoda.content.persistence.ContentUserRateMapper;
 import com.yoda.homepage.model.HomePage;
@@ -57,6 +59,9 @@ public class ContentServiceImpl implements ContentService {
 
 	@Autowired
 	private ContentMapper contentMapper;
+
+	@Autowired
+	private ContentContributorMapper contentContributorMapper;
 
 	@Autowired
 	private ContentUserRateMapper contentUserRateMapper;
@@ -203,6 +208,16 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(readOnly = true)
 	public ContentBrand getContentBrand(long contentBrandId) {
 		return contentBrandMapper.getById(contentBrandId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<ContentBrand> getContentBrandByBrandId(long brandId) {
+		return contentBrandMapper.getByBrandId(brandId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<ContentContributor> getContentContributor(long contentId, long userId) {
+		return contentContributorMapper.getByContentIdAndUserId(contentId, userId);
 	}
 
 	@Transactional(readOnly = true)
@@ -495,6 +510,12 @@ public class ContentServiceImpl implements ContentService {
 		new ContentIndexer().updateIndex(content);
 
 		return content;
+	}
+
+	public void addContentContributor(ContentContributor contentContributor) {
+		contentContributor.preInsert();
+
+		contentContributorMapper.insert(contentContributor);
 	}
 
 	public Content updateContentImage(

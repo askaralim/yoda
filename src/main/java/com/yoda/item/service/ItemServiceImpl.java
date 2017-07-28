@@ -25,7 +25,11 @@ public class ItemServiceImpl implements ItemService {
 
 	@Transactional(readOnly = true)
 	public Item getItem(int itemId) {
-		return itemMapper.getById(itemId);
+		Item item = itemMapper.getById(itemId);
+
+		item.setExtraFieldList(ExtraFieldUtil.getExtraFields(item));
+
+		return item;
 	}
 
 //	@Transactional(readOnly = true)
@@ -50,6 +54,20 @@ public class ItemServiceImpl implements ItemService {
 		for (Item item : items) {
 			item.setExtraFieldList(ExtraFieldUtil.getExtraFields(item));
 		}
+
+		return items;
+	}
+
+	@Transactional(readOnly = true)
+	public List<Item> getItemsByBrandId(int brandId) {
+		List<Item> items = itemMapper.getItemsByBrandId(brandId);
+
+		return items;
+	}
+
+	@Transactional(readOnly = true)
+	public List<Item> getItemsByContentIdAndBrandId(long contentId, int brandId) {
+		List<Item> items = itemMapper.getItemsByContentIdAndBrandId(contentId, brandId);
 
 		return items;
 	}

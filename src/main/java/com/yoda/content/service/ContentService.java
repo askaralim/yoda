@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
+import com.yoda.content.model.ContentContributor;
 import com.yoda.content.model.ContentUserRate;
 
 public interface ContentService {
@@ -22,6 +23,8 @@ public interface ContentService {
 	void addComment(Comment comment);
 
 	void addContentBrand(ContentBrand contentBrand);
+
+	void addContentContributor(ContentContributor contentContributor);
 
 	void deleteContent(Content content);
 
@@ -44,6 +47,10 @@ public interface ContentService {
 //	Content getContent(String naturalKey);
 
 	ContentBrand getContentBrand(long contentBrandId);
+
+	List<ContentBrand> getContentBrandByBrandId(long brandId);
+
+	List<ContentContributor> getContentContributor(long contentId, long userId);
 
 	Comment getComment(int commentId);
 

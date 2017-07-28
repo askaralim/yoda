@@ -86,6 +86,22 @@
 		WHERE i.content_id = #{contentId}
 	</select>
 
+	<select id="getItemsByBrandId" resultMap="itemResult">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		WHERE i.brand_id = #{brandId}
+	</select>
+
+	<select id="getItemsByContentIdAndBrandId" resultMap="itemResult">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		WHERE i.content_id = #{param1} AND i.brand_id = #{param2}
+	</select>
+
 	<select id="search" resultType="Item">
 		SELECT 
 			<include refid="itemColumns"/>

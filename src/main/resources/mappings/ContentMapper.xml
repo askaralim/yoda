@@ -24,6 +24,13 @@
 		<association property="category" column="category_id" javaType="Category" resultMap="categoryResult" />
 		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
 		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+		<collection property="contentContributors" ofType="ContentContributor">
+			<id property="id" column="content_contributor_id" />
+			<result property="contentId" column="content_contributor_content_id" />
+			<result property="userId" column="content_contributor_user_id" />
+			<result property="username" column="content_contributor_username" />
+			<result property="profilePhotoSmall" column="content_contributor_profile_photo_small" />
+		</collection>
 		<collection property="contentBrands" ofType="ContentBrand">
 			<id property="contentBrandId" column="content_brand_id" />
 			<result property="contentId" column="content_brand_content_id" />
@@ -43,6 +50,7 @@
 	<resultMap id="userResult" type="User">
 		<id property="userId" column="user_id" />
 		<result property="username" column="username" />
+		<result property="profilePhotoSmall" column="profile_photo_small" />
 	</resultMap>
 
 	<sql id="contentColumns">
@@ -65,6 +73,11 @@
 		<!-- c.section_id AS section_id, -->
 		c.featured_image AS featured_image,
 		c.score,
+		cc.id as content_contributor_id,
+		cc.content_id as content_contributor_content_id,
+		cc.user_id as content_contributor_user_id,
+		cc.username as content_contributor_username,
+		cc.profile_photo_small as content_contributor_profile_photo_small,
 		cb.content_brand_id AS content_brand_id,
 		cb.content_id AS content_brand_content_id,
 		cb.brand_id AS content_brand_brand_id,
@@ -76,12 +89,14 @@
 		ca.parent,
 		u.user_id,
 		u.username,
+		u.profile_photo_small,
 		uu.user_id AS u_user_id,
 		uu.username AS u_username
 	</sql>
 
 	<sql id="contentJoins">
 		LEFT OUTER JOIN content_brand cb ON c.content_id = cb.content_id
+		LEFT OUTER JOIN content_contributor cc ON c.content_id = cc.content_id
 		LEFT OUTER JOIN category ca on c.category_id = ca.category_id
 		LEFT OUTER JOIN user_ u on c.create_by = u.user_id
 		LEFT OUTER JOIN user_ uu on c.update_by = uu.user_id

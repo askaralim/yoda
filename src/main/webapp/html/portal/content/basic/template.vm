@@ -16,8 +16,8 @@
 		<link rel="stylesheet" href='#springUrl("/template/basic/main.css")' type="text/css" />
 		<!--<link rel="stylesheet" href='#springUrl("/resources/css/login.css")' type="text/css" />-->
 
-		<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 		<!--<link href="http://fonts.useso.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">-->
+		<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
 		<!--<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.1.0/css/font-awesome.min.css">-->
 		<link href="#springUrl("/template/basic/font-awesome-4.1.0/css/font-awesome.min.css")" rel="stylesheet" type="text/css">
@@ -27,7 +27,9 @@
 
 		$pageInfo.pageBody
 
-		<p class="small text-muted text-center">$siteInfo.siteFooter</p>
+		<footer class="footer-below">
+			<p class="small text-muted text-center">$siteInfo.siteFooter</p>
+		</footer>
 
 		<!--
 		<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>

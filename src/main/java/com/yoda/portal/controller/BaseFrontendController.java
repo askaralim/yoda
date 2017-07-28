@@ -182,6 +182,7 @@ public class BaseFrontendController {
 //		setExtraFields
 		contentInfo.setItems(items);
 
+		contentInfo.setContentContributors(content.getContentContributors());
 		contentInfo.setContentBrands(content.getContentBrands());
 		contentInfo.setCategory(content.getCategory());
 

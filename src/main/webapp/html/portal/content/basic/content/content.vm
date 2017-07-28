@@ -1,10 +1,11 @@
+<div class="section">
 <div id="content-body">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-8 col-lg-offset-2">
+			<div class="col-lg-8">
 				<div class="content-post">
 					<div class="page-header">
-						<h2>$contentInfo.title</h2>
+						<h3>$contentInfo.title</h3>
 						#if ($contentInfo.category)
 							<span class="label label-default">$contentInfo.category.name</span>
 						#end
@@ -25,9 +26,6 @@
 							<div class="tab-pane active" id="tab-should-know">
 								<p class="text-right">
 									<bd>
-										<i class="glyphicon glyphicon-user"></i>
-										<a href='#springUrl("/user/$contentInfo.createBy.userId")'>$contentInfo.createBy.username</a>
-										&nbsp
 										<i class="glyphicon glyphicon-time"></i>
 										$contentInfo.createDate
 										&nbsp
@@ -60,41 +58,58 @@
 							<div class="tab-pane" id="tab-brand">
 								#foreach ($contentBrand in $contentInfo.contentBrands)
 									<div class="row content-preview-wrapper-row">
-										<div class="col-sm-12">
-											<h4>
+										<div class="col-sm-4">
+											<a href='#springUrl("/brand/$contentBrand.brandId")'>
+												<img src="$contentBrand.brandLogo" alt="$contentBrand.brandName" style="width: 100%;">
+											</a>
+										</div>
+										<div class="col-sm-8">
+											<div id="brand-name">
 												<p><a href='#springUrl("/brand/$contentBrand.brandId")'>$contentBrand.brandName</a></p>
-											</h4>
-											<p>$contentBrand.description</p>
+											</div>
+											<div class="brand-description">
+												<p>$contentBrand.description</p>
+											</div>
 										</div>
 									</div>
 								#end
 							</div>
 							<div class="tab-pane" id="tab-recommend">
 								#foreach ($item in $contentInfo.items)
-									<div class="row content-preview-wrapper-row">
-										<div class="col-sm-4">
-											<img src="$item.imagePath" alt="$item.name" style="width: 200px;">
-										</div>
-										<div class="col-sm-8">
-											<p>#springMessage('name') : $item.name</p>
-											<p>#springMessage('brand') : 
-												<a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a>
-											</p>
-											<p>#springMessage('price') : $item.price</p>
-											#foreach ($extraField in $item.extraFieldList)
-												<p>$extraField.key : $extraField.value</p>
-											#end
-											<p>#springMessage('description') : $item.description</p>
-											<div class="content-actions">
-												<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
-												<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
-												<span id="rating$item.id" class="label label-success">
-													#if ($item.rating > 0)
-														+$item.rating
-													#else
-														$item.rating
+									<div class="content-preview-wrapper-row">
+										<div class="row">
+											<div class="col-sm-4">
+												<img src="$item.imagePath" alt="$item.name" style="width: 100%;">
+											</div>
+											<div class="col-sm-8">
+												<dl class="dl-horizontal">
+													<dt>#springMessage('name')</dt>
+													<dd>$item.name</dd>
+													<dt>#springMessage('brand')</dt>
+													<dd><a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a></dd>
+													<dt>#springMessage('price')</dt>
+													<dd>$item.price</dd>
+													#foreach ($extraField in $item.extraFieldList)
+														<dt>$extraField.key</dt>
+														<dd>$extraField.value</dd>
 													#end
-												</span>
+												</dl>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="item-description"><p>$item.description</p></div>
+												<div class="content-actions">
+													<button id="itemThumbUp$item.id" class="glyphicon glyphicon-thumbs-up" onclick="return itemThumbUp($item.id)"></button>
+													<button id="itemThumbDown$item.id" class="glyphicon glyphicon-thumbs-down" onclick="return itemThumbDown($item.id)"></button>
+													<span id="rating$item.id" class="label label-success">
+														#if ($item.rating > 0)
+															+$item.rating
+														#else
+															$item.rating
+														#end
+													</span>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -103,9 +118,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="content-post">
-					<h4>#springMessage('comments')($comments.size())</h4>
-					<ul class="comments">
+				<div class="comments">
+					<h5>#springMessage('comments')($comments.size())</h5>
+					<ul class="list-unstyled">
 						#foreach ($comment in $comments)
 							<li class="left clearfix">
 								<span class="comments-img pull-left">
@@ -120,12 +135,20 @@
 										<strong class="primary-font">
 											<a href='#springUrl("/user/$comment.user.userId")'>$comment.user.username</a>
 										</strong>
-										<small class="pull-right text-muted label label-danger">
-											<i class="icon-time"></i>$date.format("yyyy-MM-dd", $comment.createDate)
-										</small>
+										
 									</div>
-									<p>
+									<p class="comment-description">
 										$comment.description
+									</p>
+									<p class="comment-time">
+										$date.format("yyyy-MM-dd hh:mm", $comment.createDate)
+										<!--
+										<span class="pull-right primary-font">
+										#if ($userLogin)
+											<a href='#springUrl("/user/$comment.user.userId")'>#springMessage('reply')</a>
+										#end
+										</span>
+										-->
 									</p>
 								</div>
 							</li>
@@ -148,13 +171,44 @@
 						</div>
 					#else
 						<p class="text-muted">
-							#springMessage("please-login-to-make-comments")<a href='#springUrl("/user/register")'>#springMessage("register")</a>
+							#springMessage("please-login-to-make-comments")
+							<button type="button" class="btn btn-primary btn-xs" onclick="return register()">#springMessage("register")</button>
 						</p>
 					#end
 				</div>
 			</div>
+			<div class="col-sm-3 col-sm-offset-1 home-sidebar">
+				<div class="home-sidebar-module">
+					<h5>#springMessage('content-publisher')</h5>
+					#if ($contentInfo.createBy.profilePhotoSmall)
+						<img src="$contentInfo.createBy.profilePhotoSmall" alt="$contentInfo.createBy.username" class="img-rounded profile_photo_img" width="25" height="25" />
+					#else
+						<img src='#springUrl("/resources/images/defaultAvatar.png")' alt="$contentInfo.createBy.username" class="img-rounded profile_photo_img" width="32" height="32" />
+					#end
+					<a href='#springUrl("/user/$contentInfo.createBy.userId")'>$contentInfo.createBy.username</a>
+				</div>
+				#if ($contentInfo.contentContributors.size() > 0)
+					<div class="home-sidebar-module">
+						<h5>#springMessage('content-contributor')</h5>
+						<ul class="list-unstyled">
+							#foreach ($contributor in $contentInfo.contentContributors)
+								<li>
+									#if ($contributor.profilePhotoSmall)
+										<img src="$contributor.profilePhotoSmall" alt="$contributor.username" class="img-rounded profile_photo_img" width="25" height="25" />
+									#else
+										<img src='#springUrl("/resources/images/defaultAvatar.png")' alt="$contributor.username" class="img-rounded profile_photo_img" width="32" height="32" />
+									#end
+									$contributor.username
+								</li>
+								<br>
+							#end
+						</ul>
+					</div>
+				#end
+			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
@@ -220,6 +274,12 @@ $(function(){
 		});
 	});
 });
+function register(){
+	if (!$userLogin) {
+		$('#loginModal').modal('show')
+		return;
+	}
+}
 $(function(){
 	$('#thumbUp').click(function(){
 		if (!$userLogin) {

@@ -10,7 +10,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>${siteInfo.siteName} - ${brand.name}</title>
+	<title>${siteInfo.siteName} - ${item.name}</title>
 
 	<link rel="icon" type="image/x-icon" href="<c:url value="/resources/images/favicon.ico" />" />
 
@@ -28,43 +28,34 @@
 		<div class="container">
 			<div class="col-lg-10 col-lg-offset-1">
 				<h4 class="page-header">
-					${brand.name}
+					${item.name}
 				</h4>
 				<div class="row">
 					<div class="brand-detail">
 						<div class="col-sm-3">
-							<img src="${brand.imagePath}" class="img-responsive" alt="">
+							<img src="${item.imagePath}" class="img-responsive" alt="${item.name}">
 						</div>
 						<div class="col-sm-9">
 							<dl class="dl-horizontal">
-								<dt><spring:message code="brand-founded" /></dt>
-								<dd>${brand.country}</dd>
-								<dt><spring:message code="brand-products" /></dt>
-								<dd>${brand.kind}</dd>
+								<dt><spring:message code="brand" /></dt>
+								<spring:url value="/brand/{brandId}" var="brandUrl">
+									<spring:param name="brandId" value="${item.brand.brandId}"/>
+								</spring:url>
+								<dd>
+									<a href="${fn:escapeXml(brandUrl)}">
+										${item.brand.name}
+									</a>
+								</dd>
+								<dt><spring:message code="price" /></dt>
+								<dd>${item.price}</dd>
+								<c:forEach var="extraField" items="${item.extraFieldList}">
+									<dt><c:out value="${extraField.key}" /></dt>
+									<dd><c:out value="${extraField.value}" /></dd>
+								</c:forEach>
 							</dl>
-							<div class="brand-description">${brand.description}</div>
+							<div class="item-description">${item.description}</div>
 						</div>
 					</div>
-				</div>
-				<h4 class="page-header">
-					<spring:message code="recommend-product" />
-				</h4>
-				<div class="row">
-					<c:forEach var="item" items="${items}">
-						<spring:url value="/item/{itemId}" var="itemUrl">
-							<spring:param name="itemId" value="${item.id}"/>
-						</spring:url>
-						<div class="col-xs-6 col-sm-4 col-md-3">
-							<a href="${fn:escapeXml(itemUrl)}">
-								${item.name}
-							</a>
-							<div class="thumbnail">
-								<a href="${fn:escapeXml(itemUrl)}">
-									<img class="img-responsive" src="${item.imagePath}" alt="${item.name}">
-								</a>
-							</div>
-						</div>
-					</c:forEach>
 				</div>
 			</div>
 		</div>
@@ -79,10 +70,5 @@
 			</div>
 		</div>
 	</footer>
-
-	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
-	<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<%-- <script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>
-	<script type="text/javascript" src='<c:url value="/template/basic/bootstrap-3.2.0/js/bootstrap.min.js" />'></script> --%>
 </body>
 </html>

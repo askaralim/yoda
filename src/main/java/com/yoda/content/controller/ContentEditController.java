@@ -2,6 +2,7 @@ package com.yoda.content.controller;
 
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,7 @@ import com.yoda.category.model.Category;
 import com.yoda.category.service.CategoryService;
 import com.yoda.content.ContentEditValidator;
 import com.yoda.content.model.Content;
+import com.yoda.content.model.ContentContributor;
 import com.yoda.content.service.ContentService;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
@@ -36,7 +39,6 @@ import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.model.Menu;
 import com.yoda.menu.service.MenuService;
 import com.yoda.section.model.Section;
-import com.yoda.section.service.SectionService;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
@@ -118,6 +120,8 @@ public class ContentEditController {
 		}
 
 		Content contentDb = contentService.updateContent(site.getSiteId(), content, categoryId);
+
+		saveContentContributors(request, contentDb);
 
 //		Indexer.getInstance(siteId).removeContent(content);
 //		Indexer.getInstance(siteId).indexContent(content);
@@ -608,6 +612,43 @@ public class ContentEditController {
 //			command.setHomePage(true);
 //		}
 //	}
+
+	public void saveContentContributors(HttpServletRequest request, Content content) {
+		Enumeration<String> names = request.getParameterNames();
+
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+
+			if (name.startsWith("contributorId")) {
+				String userId = request.getParameter(name);
+
+				if (StringUtils.isEmpty(userId)) {
+					continue;
+				}
+
+				User user = userService.getUser(Long.valueOf(userId));
+
+				if (null == user) {
+					continue;
+				}
+
+				ContentContributor contributor = new ContentContributor();
+
+				contributor.setApproved(true);
+				contributor.setContentId(content.getContentId());
+				contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
+				contributor.setUserId(user.getUserId());
+				contributor.setUsername(user.getUsername());
+				contributor.setVersion("1.0");
+
+				List<ContentContributor> results = contentService.getContentContributor(content.getContentId(), user.getUserId());
+
+				if (results.isEmpty()) {
+					contentService.addContentContributor(contributor);
+				}
+			}
+		}
+	}
 
 	private HomePage getHomePage(int siteId, Long contentId) {
 		List<HomePage> homePages = homePageService.getHomePages(siteId);

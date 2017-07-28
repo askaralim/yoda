@@ -1,7 +1,9 @@
 package com.yoda.content.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,6 +48,8 @@ public class Content extends BaseEntity {
 	private String featuredImage;
 
 //	private Section section;
+
+	private List<ContentContributor> contentContributors = new ArrayList<ContentContributor>();
 
 	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
 
@@ -227,6 +231,14 @@ public class Content extends BaseEntity {
 
 	public void setMenus(Set<Menu> menus) {
 		this.menus = menus;
+	}
+
+	public List<ContentContributor> getContentContributors() {
+		return contentContributors;
+	}
+
+	public void setContentContributors(List<ContentContributor> contentContributors) {
+		this.contentContributors = contentContributors;
 	}
 
 	public Set<ContentBrand> getContentBrands() {

@@ -1,5 +1,6 @@
 package com.yoda.portal.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.brand.service.BrandService;
+import com.yoda.content.service.ContentService;
+import com.yoda.item.model.Item;
+import com.yoda.item.service.ItemService;
 import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.portal.account.controller.UserProfileController;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
@@ -33,6 +36,12 @@ import com.yoda.user.model.User;
 public class FrontEndBrandController extends BaseFrontendController {
 	@Autowired
 	BrandService brandService;
+
+	@Autowired
+	ItemService itemService;
+
+	@Autowired
+	ContentService contentService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showBrands(
@@ -100,11 +109,14 @@ public class FrontEndBrandController extends BaseFrontendController {
 
 		Brand brand = brandService.getBrand(brandId);
 
+		List<Item> items = itemService.getItemsByBrandId(brandId);
+
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
 		model.put("siteInfo", siteInfo);
 		model.put("brand", brand);
+		model.put("items", items);
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
@@ -113,5 +125,5 @@ public class FrontEndBrandController extends BaseFrontendController {
 		return new ModelAndView("/portal/brand/brand", model);
 	}
 
-	Logger logger = Logger.getLogger(UserProfileController.class);
+	Logger logger = Logger.getLogger(FrontEndBrandController.class);
 }

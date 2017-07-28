@@ -24,6 +24,13 @@
 		WHERE c.content_brand_id = #{contentBrandId}
 	</select>
 
+	<select id="getByBrandId" resultType="ContentBrand">
+		SELECT 
+			<include refid="contentBrandColumns"/>
+		FROM content_brand c
+		WHERE c.brand_id = #{brandId}
+	</select>
+
 	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
 		INSERT INTO content_brand(content_brand_id, content_id, brand_id, brand_name, brand_logo, description, create_by, create_date, update_by, update_date)
 		VALUES(#{contentBrandId}, #{contentId}, #{brandId}, #{brandName}, #{brandLogo}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})

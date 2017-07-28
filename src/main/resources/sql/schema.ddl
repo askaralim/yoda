@@ -132,6 +132,21 @@
         FOREIGN KEY (category_id) REFERENCES category(category_id)
     ) comment='';
 
+	create table content_contributor (
+		id INT not null AUTO_INCREMENT PRIMARY KEY,
+		content_id bigint not null,
+		user_id INT not null,
+		username varchar(50) not null,
+		profile_photo_small varchar(255) DEFAULT NULL,
+		version VARCHAR(30),
+		approved boolean not null,
+		create_by INT NOT NULL,
+		create_date DATETIME NOT NULL,
+		update_by INT NOT NULL,
+		update_date DATETIME NOT NULL,
+		INDEX(id)
+	) engine=InnoDB;
+
 	CREATE TABLE content_user_rate (
 		id INT NOT NULL AUTO_INCREMENT,
 		content_id INT,
@@ -148,7 +163,7 @@
 		content_id bigint,
 		create_by INT NOT NULL,
 		create_date DATETIME NOT NULL,
-		description VARCHAR(2000),
+		description VARCHAR(5000),
 		image_path VARCHAR(50),
 		level VARCHAR(20),
 		name VARCHAR(100),
@@ -184,7 +199,7 @@
 		brand_id INT not null,
 		brand_name VARCHAR(30),
 		brand_logo VARCHAR(50),
-		description VARCHAR(2000),
+		description VARCHAR(5000),
 		create_by bigint NOT NULL,
 		create_date DATETIME NOT NULL,
 		update_by bigint NOT NULL,
@@ -330,6 +345,18 @@
         primary key (poll_header_id)
     ) comment='';
 
+	CREATE TABLE private_message (
+		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		root_id INT NOT NULL,
+		message_from INT NOT NULL,
+		message_to INT NOT NULL,
+		create_by bigint NOT NULL,
+		create_date DATETIME NOT NULL,
+		update_by bigint NOT NULL,
+		update_date DATETIME NOT NULL,
+		description VARCHAR(2000),
+	) engine=InnoDB;
+
     create table section (
         section_id INT not null,
         site_id INT(4) not null,
@@ -405,6 +432,8 @@
         address_line2 varchar(30) not null comment '',
         username varchar(50) not null comment '',
         password varchar(60) not null comment '',
+        profile_photo varchar(255) DEFAULT NULL,
+		profile_photo_small varchar(255) DEFAULT NULL,
         city_name varchar(25) not null comment '',
         create_by bigint not null comment '',
         create_date datetime not null comment '',

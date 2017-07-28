@@ -1,5 +1,11 @@
 <%@ include file="/html/common/init.jsp" %>
 
+<%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
+
+<jsp:useBean id="item" type="com.yoda.item.model.Item" scope="request" />
+
+<script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
+
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
 	<li><a href="<spring:url value="/controlpanel/item" />">Item Listing</a></li>
@@ -84,7 +90,7 @@
 				</form:select>
 			</div>
 			<div id="input_fields_wrap">
-				<label for="description"><spring:message code="add-extra-field" /></label>
+				<label for="add-extra-field"><spring:message code="add-extra-field" /></label>
 				<c:forEach var="extraField" items="${extraFields}" varStatus="index" step="1">
 					<div class="form-group">
 						<div class="row">
@@ -137,7 +143,9 @@
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
-				<form:textarea path="description" cssClass="form-control input-sm" rows="5" />
+				<%
+					out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", item.getDescription()));
+				%>
 			</div>
 			<div class="form-actions">
 				<c:choose>

@@ -47,8 +47,7 @@ public class ItemAddController {
 
 	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.GET)
 	public ModelAndView initCreationForm(
-			Map<String, Object> model,
-			HttpServletRequest request) {
+			Map<String, Object> model, HttpServletRequest request) {
 		Site site = PortalUtil.getSiteFromSession(request);
 
 		List<Content> contents = contentService.getContents(site.getSiteId());

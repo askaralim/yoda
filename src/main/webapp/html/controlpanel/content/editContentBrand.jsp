@@ -1,5 +1,12 @@
 <%@ include file="/html/common/init.jsp" %>
 
+<%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
+
+<jsp:useBean id="contentBrand" type="com.yoda.content.model.ContentBrand" scope="request" />
+
+<script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
+
+
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
 	<spring:url value="/controlpanel/content/{contentId}/edit" var="editContentUrl">
@@ -51,7 +58,9 @@
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
-				<form:textarea path="description" cssClass="form-control" />
+				<%
+					out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", contentBrand.getDescription()));
+				%>
 			</div>
 			<div class="form-actions">
 				<c:choose>

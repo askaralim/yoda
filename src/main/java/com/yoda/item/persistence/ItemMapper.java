@@ -12,5 +12,9 @@ public interface ItemMapper extends BaseMapper<Item> {
 
 	List<Item> getItemsByContentId(Long contentId);
 
+	List<Item> getItemsByBrandId(int brandId);
+
 	List<Item> search(String title);
+
+	List<Item> getItemsByContentIdAndBrandId(Long contentId, int brandId);
 }

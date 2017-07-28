@@ -5,7 +5,7 @@
 				#if ($info.feature)
 					<a href="$info.contentUrl"><img src="$info.defaultImageUrl" alt="$info.title"></a>
 				#else
-					<a href="$info.contentUrl"><img src="$info.defaultImageUrl" height="180px" alt="$info.title"></a>
+					<a href="$info.contentUrl"><img src="$info.defaultImageUrl" width="100%" alt="$info.title"></a>
 				#end
 			#end
 		</div>

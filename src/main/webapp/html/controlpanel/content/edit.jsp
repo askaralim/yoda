@@ -122,6 +122,48 @@ function removeContent() {
 							</c:forEach>
 						</select>
 					</div>
+					<c:if test="${!content['new']}">
+						<div id="input_fields_wrap">
+							<label for="content-contributor"><spring:message code="content-contributor" /></label>
+							<c:forEach var="contributor" items="${content.contentContributors}" varStatus="index" step="1">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-7">
+											<div class="input-group">
+												<div class="input-group-addon">Id</div>
+												<input id="contributorId" name="contributorId${index.count}" class="form-control input-sm" type="text" value="${contributor.userId}">
+											</div>
+										</div>
+										<c:if test="${index.count == 1}">
+											<div class="col-xs-1">
+												<button class="btn btn-default btn-sm" id="addNewField" type="button"><spring:message code="add" /></button>
+											</div>
+										</c:if>
+										<c:if test="${index.count != 1}">
+											<div class="col-xs-1">
+												<button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>
+											</div>
+										</c:if>
+									</div>
+								</div>
+							</c:forEach>
+							<c:if test="${content.contentContributors.size() == 0}">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-7">
+											<div class="input-group">
+												<div class="input-group-addon">User Id</div>
+												<input id="contributorId" name="contributorId1" class="form-control input-sm" type="text">
+											</div>
+										</div>
+										<div class="col-xs-1">
+											<button class="btn btn-default btn-sm" id="addNewField" type="button"><spring:message code="add" /></button>
+										</div>
+									</div>
+								</div>
+							</c:if>
+						</div>
+					</c:if>
 					<label class="checkbox-inline">
 						<form:checkbox path="homePage" />
 						Show in Home Page
@@ -343,4 +385,38 @@ function resetCounter() {
 		}
 	});
 }
+
+$(function() {
+	var max_fields = 5;
+	var index = $('#input_fields_wrap .form-group').size() + 1;
+	var size = $('#input_fields_wrap .form-group').size() + 1;
+
+	$('#addNewField').click(function() {
+		if(size < max_fields){
+			$('#input_fields_wrap').append(
+				'<div class="form-group">'
+					+'<div class="row">'
+						+'<div class="col-xs-7">'
+							+'<div class="input-group">'
+								+'<div class="input-group-addon">User Id</div>'
+								+'<input id="extraFieldValue" name="contributorId' + index + '" class="form-control input-sm" type="text">'
+							+'</div>'
+						+'</div>'
+						+'<div class="col-xs-1">'
+							+ '<button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>'
+						+'</div>'
+					+'</div>'
+				+'</div>'
+			);
+			index++;
+			size++
+		}
+	});
+
+	$('#input_fields_wrap').on("click","#removeField", function() {
+		$(this).parent('div').parent('div').parent('div').remove();
+
+		size--;
+	});
+});
 </script>
