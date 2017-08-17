@@ -8,7 +8,7 @@ import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
 
 public interface ItemService {
-	void save(int siteId, Item item);
+	void save(Item item);
 
 	Item getItem(int itemId);
 
@@ -28,6 +28,8 @@ public interface ItemService {
 	List<Item> getItemsByBrandId(int brandId);
 
 	List<Item> getItemsByContentIdAndBrandId(long contentId, int brandId);
+
+	List<Item> getItemsTopViewed(int count);
 
 	List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 

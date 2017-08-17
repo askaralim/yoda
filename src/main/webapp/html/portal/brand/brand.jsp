@@ -30,6 +30,12 @@
 				<h4 class="page-header">
 					${brand.name}
 				</h4>
+				<p class="text-right">
+					<bd style="font-size: 12px; color: #d2d2d2; font-weight: 700;">
+						<i class="glyphicon glyphicon-eye-open"></i>
+						${brand.hitCounter}
+					</bd>
+				</p>
 				<div class="row">
 					<div class="brand-detail">
 						<div class="col-sm-3">
@@ -39,6 +45,10 @@
 							<dl class="dl-horizontal">
 								<dt><spring:message code="brand-founded" /></dt>
 								<dd>${brand.country}</dd>
+								<c:if test="${brand.foundDate != null}">
+								<dt><spring:message code="foundeded-date" /></dt>
+								<dd>${brand.foundDate}</dd>
+								</c:if>
 								<dt><spring:message code="brand-products" /></dt>
 								<dd>${brand.kind}</dd>
 							</dl>

@@ -14,7 +14,7 @@
 
 	<link rel="icon" type="image/x-icon" href="<c:url value="/resources/images/favicon.ico" />" />
 
-	<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />' type="text/css">
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href='<c:url value="/template/basic/main.css" />' type="text/css" />
 
 	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
@@ -75,7 +75,8 @@
 									+'<div class="thumbnail">'
 										+'<a href="' + url + '"><img src="' + data[i].imagePath + '" alt=".."></a>'
 									+'</div>'
-								+'</div>');
+								+'</div>'
+							);
 						}
 					}
 				});

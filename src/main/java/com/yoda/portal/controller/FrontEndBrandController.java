@@ -77,12 +77,12 @@ public class FrontEndBrandController extends BaseFrontendController {
 	@RequestMapping(value="/page", method = RequestMethod.GET)
 	public String showPagination(
 			@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Brand> pages = brandService.getBrands(new RowBounds(offset, 20));
+		Pagination<Brand> page = brandService.getBrands(new RowBounds(offset, 20));
 
 		JSONArray array = new JSONArray();
 
 		try {
-			for (Brand brand : pages.getData()) {
+			for (Brand brand : page.getData()) {
 				JSONObject jsonObject = new JSONObject();
 
 				jsonObject.put("brandId", brand.getBrandId());
@@ -108,6 +108,10 @@ public class FrontEndBrandController extends BaseFrontendController {
 		SiteInfo siteInfo = getSite(site);
 
 		Brand brand = brandService.getBrand(brandId);
+
+		brand.setHitCounter(brand.getHitCounter() + 1);
+
+		brandService.update(brand);
 
 		List<Item> items = itemService.getItemsByBrandId(brandId);
 

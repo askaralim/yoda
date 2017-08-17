@@ -1,13 +1,24 @@
 package com.yoda.brand.model;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.yoda.BaseEntity;
 
 public class Brand extends BaseEntity {
 	private Integer brandId;
 
+	private String company;
+
 	private String country;
 
 	private String description;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
+	private Date foundDate;
+
+	private int hitCounter;
 
 	private String kind;
 
@@ -23,6 +34,14 @@ public class Brand extends BaseEntity {
 
 	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	public String getCountry() {
@@ -55,6 +74,22 @@ public class Brand extends BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Date getFoundDate() {
+		return foundDate;
+	}
+
+	public void setFoundDate(Date foundDate) {
+		this.foundDate = foundDate;
+	}
+
+	public int getHitCounter() {
+		return hitCounter;
+	}
+
+	public void setHitCounter(int hitCounter) {
+		this.hitCounter = hitCounter;
 	}
 
 	public String getKind() {

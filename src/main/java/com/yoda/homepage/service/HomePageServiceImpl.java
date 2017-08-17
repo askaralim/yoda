@@ -1,7 +1,11 @@
 package com.yoda.homepage.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,12 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yoda.content.model.Content;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.persistence.HomePageMapper;
+import com.yoda.kernal.model.Pagination;
 
 @Transactional
 @Service
 public class HomePageServiceImpl implements HomePageService {
 	@Autowired
 	private HomePageMapper homePageMapper;
+
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
 
 	public void add(int siteId, boolean featureData, Content content) {
 		HomePage homePage = new HomePage();
@@ -55,6 +63,22 @@ public class HomePageServiceImpl implements HomePageService {
 	@Transactional(readOnly = true)
 	public List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId) {
 		return homePageMapper.getBySiteIdAndFeatureData(siteId, false);
+	}
+
+	@Transactional(readOnly = true)
+	public Pagination<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId, RowBounds rowBounds) {
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("param1", siteId);
+		params.put("param2", false);
+
+		List<HomePage> homepages = sqlSessionTemplate.selectList("com.yoda.homepage.persistence.HomePageMapper.getBySiteIdAndFeatureData", params, rowBounds);
+
+		List<Integer> count = sqlSessionTemplate.selectList("com.yoda.homepage.persistence.HomePageMapper.getBySiteIdAndFeatureDataCount", params);
+
+		Pagination<HomePage> page = new Pagination<HomePage>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), homepages);
+
+		return page;
 	}
 
 	public void update(HomePage homePage) {

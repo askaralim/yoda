@@ -1,5 +1,6 @@
 package com.yoda.brand.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -13,9 +14,11 @@ public interface BrandService {
 
 	List<Brand> getBrands();
 
+	List<Brand> getBrandsTopViewed(int count);
+
 	Brand getBrand(int brandId);
 
-	Brand update(int brandId, String country, String description, String kind, String name);
+	Brand update(int brandId, String company, String country, String description, Date foundedDate, String kind, String name);
 
 	Brand update(Brand brand);
 

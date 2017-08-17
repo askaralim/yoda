@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.brand.model.Brand;
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.content.model.Content;
+import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 import com.yoda.portal.content.data.ContentInfo;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
@@ -110,6 +112,11 @@ public class FrontendController extends BaseFrontendController {
 
 		Map<String, Object> model = new HashMap<String, Object>();
 
+		List<Item> items = itemService.getItemsTopViewed(5);
+		List<Brand> brands = brandService.getBrandsTopViewed(5);
+
+		model.put("topViewedItems", items);
+		model.put("topViewedBrands", brands);
 		model.put("homeInfo", homeInfo);
 
 		String text = DefaultTemplateEngine.getTemplate(request, response, "home/home.vm", model);

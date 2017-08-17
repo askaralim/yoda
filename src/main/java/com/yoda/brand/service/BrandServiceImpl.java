@@ -1,6 +1,7 @@
 package com.yoda.brand.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -38,6 +39,10 @@ public class BrandServiceImpl implements BrandService {
 		return brandMapper.getBrands();
 	}
 
+	public List<Brand> getBrandsTopViewed(int count) {
+		return brandMapper.getBrandsTopViewed(count);
+	}
+
 	@Transactional(readOnly = true)
 	public Pagination<Brand> getBrands(RowBounds rowBounds) {
 		List<Brand> brands = sqlSessionTemplate.selectList("com.yoda.brand.persistence.BrandMapper.getBrands", null, rowBounds);
@@ -73,12 +78,14 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	public Brand update(
-			int brandId, String country, String description,
-			String kind, String name) {
+			int brandId, String company, String country, String description,
+			Date foundedDate, String kind, String name) {
 		Brand brand = this.getBrand(brandId);
 
 		brand.setCountry(country);
+		brand.setCompany(company);
 		brand.setDescription(description);
+		brand.setFoundDate(foundedDate);
 		brand.setName(name);
 		brand.setKind(kind);
 
@@ -89,7 +96,6 @@ public class BrandServiceImpl implements BrandService {
 
 	public Brand updateImage(int id, MultipartFile file) {
 		Brand brand = getBrand(id);
-
 
 		ImageUploader imageUpload = new ImageUploader();
 

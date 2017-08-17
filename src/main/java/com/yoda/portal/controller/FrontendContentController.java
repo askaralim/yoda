@@ -7,8 +7,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
@@ -25,7 +27,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentUserRate;
+import com.yoda.homepage.model.HomePage;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.servlet.ServletContextUtil;
+import com.yoda.kernal.util.PortalInstances;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.portal.content.data.ComponentInfo;
 import com.yoda.portal.content.data.ContentInfo;
@@ -35,14 +40,15 @@ import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 import com.yoda.util.StringPool;
+import com.yoda.util.Utility;
 import com.yoda.util.Validator;
 
 @Controller
-@RequestMapping(value="/content/{contentId}")
+@RequestMapping(value="/content")
 public class FrontendContentController extends BaseFrontendController {
 	Logger logger = Logger.getLogger(FrontendContentController.class);
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/{contentId}", method = RequestMethod.GET)
 	public ModelAndView setupForm(
 			@PathVariable("contentId") String contentId,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -153,7 +159,7 @@ public class FrontendContentController extends BaseFrontendController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/rate" ,method = RequestMethod.POST)
+	@RequestMapping(value="/{contentId}/rate" ,method = RequestMethod.POST)
 	public String score(
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
@@ -173,5 +179,51 @@ public class FrontendContentController extends BaseFrontendController {
 		}
 
 		return jsonResult.toString();
+	}
+
+	@ResponseBody
+	@RequestMapping(value="/page", method = RequestMethod.GET)
+	public String showPagination(
+			@RequestParam(value="offset", defaultValue="0") Integer offset) {
+		//not proper
+		int[] siteIds = PortalInstances.getSiteIds();
+
+		Pagination<HomePage> page = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteIds[0], new RowBounds(offset, 5));
+
+//		List<DataInfo> dataInfos = new ArrayList<DataInfo>();
+		JSONArray array = new JSONArray();
+
+		try {
+			for (HomePage homePage : page.getData()) {
+				if (homePage.getContent() != null) {
+//					Content content = homePage.getContent();
+					Content content = contentService.getContent(homePage.getContent().getContentId());
+
+					if (!Utility.isContentPublished(content)) {
+						continue;
+					}
+
+//					dataInfos.add(formatContent(content));
+
+					JSONObject jsonObject = new JSONObject();
+
+					ContentInfo info = formatContent(content);
+
+					jsonObject.put("contentUrl", info.getContentUrl());
+					jsonObject.put("defaultImageUrl", info.getDefaultImageUrl());
+					jsonObject.put("title", info.getTitle());
+					jsonObject.put("hitCounter", info.getHitCounter());
+					jsonObject.put("score", info.getScore());
+					jsonObject.put("shortDescription", info.getShortDescription());
+
+					array.put(jsonObject);
+				}
+			}
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return array.toString();
 	}
 }

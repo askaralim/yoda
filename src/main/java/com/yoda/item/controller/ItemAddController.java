@@ -93,7 +93,10 @@ public class ItemAddController {
 
 			ExtraFieldUtil.setExtraFields(request, item);
 
-			itemService.save(site.getSiteId(), item);
+			item.setHitCounter(0);
+			item.setSiteId(site.getSiteId());
+
+			itemService.save(item);
 
 			status.setComplete();
 

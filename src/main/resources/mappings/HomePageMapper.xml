@@ -47,6 +47,12 @@
 		ORDER BY update_date DESC
 	</select>
 
+	<select id="getBySiteIdAndFeatureDataCount" resultType="java.lang.Integer">
+		SELECT count(*) from home_page h
+		WHERE h.site_id = #{param1}
+		AND h.feature_data = #{param2}
+	</select>
+
 	<insert id="insert" parameterType="HomePage" useGeneratedKeys="true" keyProperty="homePageId">
 		INSERT INTO home_page(home_page_id, site_id, seq_num, feature_data, content_id, create_by, create_date, update_by, update_date)
 		VALUES(#{homePageId}, #{siteId}, #{seqNum}, #{featureData}, #{content.contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})

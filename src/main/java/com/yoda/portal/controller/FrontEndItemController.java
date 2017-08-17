@@ -37,6 +37,10 @@ public class FrontEndItemController extends BaseFrontendController {
 
 		Item item = itemService.getItem(itemId);
 
+		item.setHitCounter(item.getHitCounter() + 1);
+
+		itemService.update(item);
+
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);

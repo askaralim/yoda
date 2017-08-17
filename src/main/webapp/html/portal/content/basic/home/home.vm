@@ -54,23 +54,56 @@
 <div class="section">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-8 home-main">
-				#foreach ($homePageData in $homeInfo.homePageDatas)
-					#if ($velocityCount % 2 == 1)
-						</tr>
-						<tr>
+			<div class="col-sm-8">
+				<div class="home-main">
+					#foreach ($homePageData in $homeInfo.homePageDatas)
+						#if ($velocityCount % 2 == 1)
+							</tr>
+							<tr>
+						#end
+						#set ($info = $homePageData)
+						#if ($homePageData.infoType == "content")
+							#set ($orientation = "left")
+							#parse("common/previewContent.vm")
+						#else
+							#set ($orientation = "top")
+							#parse("common/previewItem.vm")
+						#end
 					#end
-					#set ($info = $homePageData)
-					#if ($homePageData.infoType == "content")
-						#set ($orientation = "left")
-						#parse("common/previewContent.vm")
-					#else
-						#set ($orientation = "top")
-						#parse("common/previewItem.vm")
-					#end
+				</div>
+				#if ($homeInfo.page.totalCount > 5)
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
+							<button id="more-content" type="button" class="btn btn-default btn-block">#springMessage('more')</button>
+						</div>
+					</div>
 				#end
 			</div>
 			<div class="col-sm-3 col-sm-offset-1 home-sidebar">
+				<div class="home-sidebar-module col-xs-12">
+					<h5>#springMessage('top-viewed-brands')</h5>
+					#foreach ($brand in $topViewedBrands)
+						<div class="col-xs-4" style="float:left">
+							<a href='#springUrl("/brand/")$brand.brandId'>
+								<div class="thumbnail" style="width: 50px; height: 50px;">
+									<img src="${brand.imagePath}" class="img-responsive" alt="${brand.name}" style="max-width: 100%; max-height: 100%;">
+								</div>
+							</a>
+						</div>
+					#end
+				</div>
+				<div class="home-sidebar-module col-xs-12">
+					<h5>#springMessage('top-viewed-items')</h5>
+					#foreach ($item in $topViewedItems)
+						<div class="col-xs-4" style="float:left">
+							<a href='#springUrl("/item/")$item.id'>
+								<div class="thumbnail" style="width: 50px; height: 50px;">
+									<img src="${item.imagePath}" class="img-responsive" alt="${item.name}" style="max-width: 100%; max-height: 100%;">
+								</div>
+							</a>
+						</div>
+					#end
+				</div>
 				#if ($homeInfo.homePageFeatureData)
 					<div class="home-sidebar-module home-sidebar-module-inset">
 						<h5>$homeInfo.homePageFeatureData.title</h5>
@@ -96,3 +129,59 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript" src='#springUrl("/template/basic/jquery-1.11.1.min.js")'></script>
+
+<script type="text/javascript">
+	$(function(){
+		var offset = 5;
+
+		$('#more-content').click(function(){
+			$.ajax({
+				type: "GET",
+				url: '#springUrl("/content/page")',
+				data:{
+					offset:offset
+				},
+				dataType: "json",
+				success: function(data){
+					for(var i = 0; i < data.length; i++) {
+						var info = data[i];
+
+						var infoScore = info.score;
+
+						if (info.score > 0) {
+							infoScore = '+' + info.score;
+						}
+
+						$('.home-main').append(
+							'<div class="row content-preview-wrapper-row">'
+								+ '<div class="col-sm-5 content-preview-item">'
+									+ '<div class="content-preview-image">'
+										+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
+									+ '</div>'
+								+ '</div>'
+								+ '<div class="col-sm-7 content-preview-item">'
+									+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
+									+ '<p class="text-left">'
+										+ '<bd>'
+											+ '<i class="fa fa-eye"></i>'
+											+ info.hitCounter
+											+ '&nbsp'
+											+ '<i class="fa fa-heart"></i>'
+											+ '<span id="score">'
+												+ infoScore
+											+ '</span>'
+										+ '</bd>'
+									+ '</p>'
+									+ '<p>' + info.shortDescription + '</p>'
+								+ '</div>'
+							+ '</div>'
+						);
+					}
+				}
+			});
+			offset = offset + 5;
+		});
+	});
+</script>

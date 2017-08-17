@@ -36,12 +36,22 @@
 				<form:input path="name" cssClass="form-control" />
 			</div>
 			<div class="form-group">
+				<label for="company"><spring:message code="company" /></label>
+				<form:input path="company" cssClass="form-control" />
+			</div>
+			<div class="form-group">
 				<label for="kind"><spring:message code="kind" /></label>
 				<form:input path="kind" cssClass="form-control" />
 			</div>
 			<div class="form-group">
 				<label for="country"><spring:message code="country" /></label>
 				<form:input path="country" cssClass="form-control" />
+			</div>
+			<div class="form-group">
+				<label for="foundDate"><spring:message code="founded-date" /></label>
+				<div class="input-daterange input-group" id="datepicker">
+					<form:input path="foundDate" cssClass="form-control" />
+				</div>
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
@@ -118,9 +128,17 @@
 <script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
 <script src='<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />'></script>
 
+
 <script type="text/javascript">
 function submitBackForm(type) {
 	location.href='<spring:url value="/controlpanel/content/list" />';
 	return false;
 }
+
+$('.input-daterange').datepicker({
+	format : "yyyy-mm-dd",
+	weekStart : 1,
+	language : "zh-CN",
+	todayHighlight : true
+});
 </script>

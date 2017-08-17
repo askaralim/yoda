@@ -8,10 +8,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.yoda.brand.service.BrandService;
 import com.yoda.contactus.model.ContactUs;
 import com.yoda.contactus.service.ContactUsService;
 import com.yoda.content.model.Comment;
@@ -21,6 +25,7 @@ import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.service.MenuService;
@@ -45,6 +50,9 @@ public class BaseFrontendController {
 //	private SectionService sectionService;
 
 	@Autowired
+	protected BrandService brandService;
+
+	@Autowired
 	protected ContentService contentService;
 
 	@Autowired
@@ -57,7 +65,7 @@ public class BaseFrontendController {
 	protected MenuService menuService;
 
 	@Autowired
-	private HomePageService homePageService;
+	protected HomePageService homePageService;
 
 	@Autowired
 	private ContactUsService contactUsService;
@@ -179,6 +187,10 @@ public class BaseFrontendController {
 
 		List<Item> items = itemService.getItemsByContentId(content.getContentId());
 
+		for (Item item : items) {
+			shortenItemDescription(item);
+		}
+
 //		setExtraFields
 		contentInfo.setItems(items);
 
@@ -228,6 +240,22 @@ public class BaseFrontendController {
 		return contentInfo;
 	}
 
+	private Item shortenItemDescription(Item item) {
+		String desc = item.getDescription();
+
+		if (desc.length() > 200) {
+			desc = desc.substring(0, 200);
+
+			if (desc.indexOf("img") > 0) {
+				desc = desc.substring(0, desc.indexOf("<img"));
+			}
+
+			item.setDescription(desc);
+		}
+
+		return item;
+	}
+
 	public HomeInfo getHome(int siteId) {
 		HomeInfo homeInfo = new HomeInfo();
 
@@ -249,7 +277,10 @@ public class BaseFrontendController {
 			}
 		}
 
-		homePages = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteId);
+		Pagination<HomePage> page = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteId, new RowBounds(0, 5));
+
+//		homePages = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteId);
+		homePages = page.getData();
 
 		List<DataInfo> dataInfos = new ArrayList<DataInfo>();
 
@@ -279,6 +310,7 @@ public class BaseFrontendController {
 //		String pageTitle = Utility.getParam(site, Constants.HOME_TITLE);
 
 		homeInfo.setPageTitle(site.getTitle());
+		homeInfo.setPage(page);
 
 		return homeInfo;
 	}

@@ -72,16 +72,18 @@ public class ItemServiceImpl implements ItemService {
 		return items;
 	}
 
+	public List<Item> getItemsTopViewed(int count) {
+		return itemMapper.getItemsTopViewed(count);
+	}
+
 	public List<Item> search(
 			int siteId, String itemNum, String itemUpcCd,
 			String itemShortDesc) {
 		return null;
 	}
 
-	public void save(int siteId, Item item) {
+	public void save(Item item) {
 		item.preInsert();
-
-		item.setSiteId(siteId);
 
 		itemMapper.insert(item);
 	}
@@ -135,6 +137,7 @@ public class ItemServiceImpl implements ItemService {
 		itemDB.setCategoryId(item.getCategoryId());
 		itemDB.setContentId(item.getContentId());
 		itemDB.setDescription(item.getDescription());
+		itemDB.setHitCounter(item.getHitCounter());
 		itemDB.setLevel(item.getLevel());
 		itemDB.setName(item.getName());
 		itemDB.setPrice(item.getPrice());

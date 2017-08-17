@@ -14,7 +14,7 @@ public class Item extends BaseEntity {
 
 	private Brand brand;
 
-//	private int hitCounter;
+	private int hitCounter;
 
 	private int rating;
 
@@ -114,13 +114,13 @@ public class Item extends BaseEntity {
 		this.price = price;
 	}
 
-//	public int getItemHitCounter() {
-//		return this.hitCounter;
-//	}
-//
-//	public void setItemHitCounter(Integer itemHitCounter) {
-//		this.hitCounter = itemHitCounter;
-//	}
+	public int getHitCounter() {
+		return this.hitCounter;
+	}
+
+	public void setHitCounter(Integer hitCounter) {
+		this.hitCounter = hitCounter;
+	}
 
 	public int getRating() {
 		return this.rating;

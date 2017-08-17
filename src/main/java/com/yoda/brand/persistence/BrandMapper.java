@@ -9,4 +9,6 @@ import com.yoda.kernal.persistence.BaseMapper;
 @YodaMyBatisMapper
 public interface BrandMapper extends BaseMapper<Brand> {
 	List<Brand> getBrands();
+
+	List<Brand> getBrandsTopViewed(int count);
 }

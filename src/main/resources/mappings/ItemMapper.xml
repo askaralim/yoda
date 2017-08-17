@@ -11,6 +11,7 @@
 		<result property="createDate" column="create_date" />
 		<result property="updateDate" column="update_date" />
 		<result property="description" column="description" />
+		<result property="hitCounter" column="hit_counter" />
 		<result property="level" column="level" />
 		<result property="name" column="name" />
 		<result property="extraFields" column="extra_fields" />
@@ -38,6 +39,7 @@
 		i.site_id AS site_id,
 		i.content_id AS content_id,
 		i.category_id AS category_id,
+		i.hit_counter AS hit_counter,
 		i.name,
 		i.level,
 		i.price,
@@ -102,6 +104,14 @@
 		WHERE i.content_id = #{param1} AND i.brand_id = #{param2}
 	</select>
 
+	<select id="getItemsTopViewed" resultMap="itemResult">
+		SELECT 
+			<include refid="itemColumns"/>
+		FROM item i
+		<include refid="itemJoins"/>
+		ORDER BY i.hit_counter DESC LIMIT #{count}
+	</select>
+
 	<select id="search" resultType="Item">
 		SELECT 
 			<include refid="itemColumns"/>
@@ -114,8 +124,8 @@
 	</select>
 
 	<insert id="insert" parameterType="Item" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, description, image_path, extra_fields, level, name, price, rating, site_id)
-		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{description}, #{imagePath}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
+		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, hit_counter, description, image_path, extra_fields, level, name, price, rating, site_id)
+		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
 	</insert>
 
 	<update id="update" parameterType="Item">
@@ -126,6 +136,7 @@
 			update_by = #{updateBy.userId},
 			update_date = #{updateDate},
 			description = #{description},
+			hit_counter = #{hitCounter},
 			image_path = #{imagePath},
 			extra_fields = #{extraFields},
 			level = #{level},

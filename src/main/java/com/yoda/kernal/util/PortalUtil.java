@@ -9,6 +9,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
@@ -70,6 +73,27 @@ public class PortalUtil {
 		return null;
 	}
 
+	public static String getClientIP(HttpServletRequest request) {
+		String xfHeader = request.getHeader("X-Forwarded-For");
+
+		if (xfHeader == null) {
+			return request.getRemoteAddr();
+		}
+
+		return xfHeader.split(",")[0];
+	}
+
+	public static HttpServletRequest getRequest() {
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+
+		if (null != requestAttributes) {
+			return ((ServletRequestAttributes) requestAttributes).getRequest();
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
 	public static boolean isAdminRole(UserDetails userDetail) {
 		Set<UserAuthority> authorities = (Set<UserAuthority>)userDetail.getAuthorities();
 

@@ -116,6 +116,7 @@
 		FROM content c
 		<include refid="contentJoins"/>
 		WHERE c.site_id = #{siteId}
+		ORDER BY c.update_date DESC
 	</select>
 
 	<select id="getContentsByTitle" resultType="Content">

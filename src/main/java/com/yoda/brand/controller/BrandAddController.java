@@ -48,6 +48,8 @@ public class BrandAddController {
 			return new ModelAndView("controlpanel/brand/form", model);
 		}
 		else {
+			brand.setHitCounter(0);
+
 			brandService.addBrand(brand);
 
 			status.setComplete();

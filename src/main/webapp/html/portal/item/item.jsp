@@ -30,6 +30,12 @@
 				<h4 class="page-header">
 					${item.name}
 				</h4>
+				<p class="text-right">
+					<bd style="font-size: 12px; color: #d2d2d2; font-weight: 700;">
+						<i class="glyphicon glyphicon-eye-open"></i>
+						${item.hitCounter}
+					</bd>
+				</p>
 				<div class="row">
 					<div class="brand-detail">
 						<div class="col-sm-3">
