@@ -1,5 +1,7 @@
 package com.yoda.portal.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
@@ -118,6 +121,13 @@ public class FrontendContentController extends BaseFrontendController {
 			model.put("contentInfo", contentInfo);
 			model.put("comments", comments);
 			model.put("date", new DateTool());
+
+			try {
+				model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
+			}
+			catch (UnsupportedEncodingException e) {
+				logger.error(e.getMessage());
+			}
 
 			User loginUser = PortalUtil.getAuthenticatedUser();
 

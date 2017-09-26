@@ -14,6 +14,7 @@
 		<result property="hitCounter" column="hit_counter" />
 		<result property="level" column="level" />
 		<result property="name" column="name" />
+		<result property="buyLinks" column="buy_links" />
 		<result property="extraFields" column="extra_fields" />
 		<result property="imagePath" column="image_path" />
 		<result property="price" column="price" />
@@ -47,6 +48,7 @@
 		i.create_date AS create_date,
 		i.update_date AS update_date,
 		i.image_path AS image_path,
+		i.buy_links AS buy_links,
 		i.extra_fields AS extra_fields,
 		i.description,
 		b.brand_id,
@@ -124,8 +126,8 @@
 	</select>
 
 	<insert id="insert" parameterType="Item" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, hit_counter, description, image_path, extra_fields, level, name, price, rating, site_id)
-		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
+		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, hit_counter, description, image_path, buy_links, extra_fields, level, name, price, rating, site_id)
+		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{buyLinks}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
 	</insert>
 
 	<update id="update" parameterType="Item">
@@ -138,6 +140,7 @@
 			description = #{description},
 			hit_counter = #{hitCounter},
 			image_path = #{imagePath},
+			buy_links = #{buyLinks},
 			extra_fields = #{extraFields},
 			level = #{level},
 			name = #{name},

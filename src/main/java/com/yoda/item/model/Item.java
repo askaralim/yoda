@@ -28,7 +28,11 @@ public class Item extends BaseEntity {
 
 	private String name;
 
+	private String buyLinks;
+
 	private String extraFields;
+
+	private List<ExtraField> buyLinkList;
 
 	private List<ExtraField> extraFieldList;
 
@@ -134,12 +138,28 @@ public class Item extends BaseEntity {
 		return (this.id == null);
 	}
 
+	public String getBuyLinks() {
+		return buyLinks;
+	}
+
+	public void setBuyLinks(String buyLinks) {
+		this.buyLinks = buyLinks;
+	}
+
 	public String getExtraFields() {
 		return extraFields;
 	}
 
 	public void setExtraFields(String extraFields) {
 		this.extraFields = extraFields;
+	}
+
+	public List<ExtraField> getBuyLinkList() {
+		return buyLinkList;
+	}
+
+	public void setBuyLinkList(List<ExtraField> buyLinkList) {
+		this.buyLinkList = buyLinkList;
 	}
 
 	public List<ExtraField> getExtraFieldList() {

@@ -26,10 +26,12 @@ import com.yoda.content.service.ContentService;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.model.Pagination;
+import com.yoda.kernal.util.PageViewUtil;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
+import com.yoda.util.Constants;
 
 @Controller
 @RequestMapping("/brand")
@@ -125,6 +127,8 @@ public class FrontEndBrandController extends BaseFrontendController {
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		model.put("currentUser", currentUser);
+
+		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
 
 		return new ModelAndView("/portal/brand/brand", model);
 	}

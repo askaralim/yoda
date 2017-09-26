@@ -1,7 +1,6 @@
 package com.yoda.kernal.persistence;
 
 import java.io.Serializable;
-import java.util.List;
 
 public interface BaseMapper<T> {
 //	public T get(String id);

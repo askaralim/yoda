@@ -85,6 +85,7 @@
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Administration<span class="caret"></span></a>
 								<ul class="dropdown-menu" role="menu">
 									<li><a href='<c:url value="/controlpanel/system/edit" />'>System</a></li>
+									<li><a href='<c:url value="/controlpanel/pageview" />'>Page View</a></li>
 									<li><a href='<c:url value="/controlpanel/elasticsearch" />'>Elastic Search</a></li>
 									<li><a href='<c:url value="/controlpanel/site/list" />'>Sites</a></li>
 									<li><a href='<c:url value="/controlpanel/user/list" />'>Users</a></li>

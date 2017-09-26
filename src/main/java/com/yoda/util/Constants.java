@@ -7,6 +7,14 @@ public class Constants {
 
 	public static final int ADMIN_SEARCH_MAXCOUNT = 100;
 
+	public static final int PAGE_TYPE_HOME = 1;
+
+	public static final int PAGE_TYPE_BRAND = 2;
+
+	public static final int PAGE_TYPE_CONTENT = 3;
+
+	public static final int PAGE_TYPE_ITEM = 4;
+
 	public static final String USER_RATE_THUMB_UP = "up";
 
 	public static final String USER_RATE_THUMB_DOWN = "down";

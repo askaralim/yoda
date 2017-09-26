@@ -28,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
 		Item item = itemMapper.getById(itemId);
 
 		item.setExtraFieldList(ExtraFieldUtil.getExtraFields(item));
+		item.setBuyLinkList(ExtraFieldUtil.getBuyLinks(item));
 
 		return item;
 	}
@@ -53,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
 
 		for (Item item : items) {
 			item.setExtraFieldList(ExtraFieldUtil.getExtraFields(item));
+			item.setBuyLinkList(ExtraFieldUtil.getBuyLinks(item));
 		}
 
 		return items;
@@ -142,6 +144,7 @@ public class ItemServiceImpl implements ItemService {
 		itemDB.setName(item.getName());
 		itemDB.setPrice(item.getPrice());
 		itemDB.setExtraFields(item.getExtraFields());
+		itemDB.setBuyLinks(item.getBuyLinks());
 
 		itemDB.preUpdate();
 

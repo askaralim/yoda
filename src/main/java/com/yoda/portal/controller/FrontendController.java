@@ -1,5 +1,7 @@
 package com.yoda.portal.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +120,13 @@ public class FrontendController extends BaseFrontendController {
 		model.put("topViewedItems", items);
 		model.put("topViewedBrands", brands);
 		model.put("homeInfo", homeInfo);
+
+		try {
+			model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e) {
+			logger.error(e.getMessage());
+		}
 
 		String text = DefaultTemplateEngine.getTemplate(request, response, "home/home.vm", model);
 

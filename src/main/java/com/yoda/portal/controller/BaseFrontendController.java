@@ -178,7 +178,8 @@ public class BaseFrontendController {
 		contentInfo.setContentId(content.getContentId());
 		contentInfo.setTitle(content.getTitle());
 		contentInfo.setShortDescription(content.getShortDescription());
-		contentInfo.setDescription(content.getDescription());
+		String desc = content.getDescription();
+		contentInfo.setDescription(desc.replace("img src", "img data-src"));
 		contentInfo.setHitCounter(content.getHitCounter());
 
 		int score = contentService.getContentRate(content.getContentId());

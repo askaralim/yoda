@@ -183,7 +183,65 @@
 						</div>
 					</div>
 				</div>
-
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Buy Links
+					</div>
+					<div class="panel-body">
+						<div id="buy_links_wrap">
+							<label for="add-buy-link"><spring:message code="add-buy-link" /></label>
+							<c:forEach var="buyLink" items="${buyLinks}" varStatus="index" step="1">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="input-group">
+												<div class="input-group-addon">Key</div>
+												<input id="buyLinkKey" name="buyLinkKey${index.count}" class="form-control input-sm" type="text" value="${buyLink.key}">
+											</div>
+										</div>
+										<div class="col-xs-5">
+											<div class="input-group">
+												<div class="input-group-addon">Value</div>
+												<input id="buyLinkValue" name="buyLinkValue${index.count}" class="form-control input-sm" type="text" value="${buyLink.value}">
+											</div>
+										</div>
+										<c:if test="${index.count == 1}">
+											<div class="col-xs-1">
+												<button class="btn btn-default btn-sm" id="addNewBuyLink" type="button"><spring:message code="add" /></button>
+											</div>
+										</c:if>
+										<c:if test="${index.count != 1}">
+											<div class="col-xs-1">
+												<button type="button" class="btn btn-default btn-sm" id="removeBuyLink"><span class="glyphicon glyphicon-remove"></span></button>
+											</div>
+										</c:if>
+									</div>
+								</div>
+							</c:forEach>
+							<c:if test="${buyLinks.size() == 0}">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="input-group">
+												<div class="input-group-addon">Key</div>
+												<input id="buyLinkKey" name="buyLinkKey1" class="form-control input-sm" type="text">
+											</div>
+										</div>
+										<div class="col-xs-5">
+											<div class="input-group">
+												<div class="input-group-addon">Value</div>
+												<input id="buyLinkValue" name="buyLinkValue1" class="form-control input-sm" type="text">
+											</div>
+										</div>
+										<div class="col-xs-1">
+											<button class="btn btn-default btn-sm" id="addNewBuyLink" type="button"><spring:message code="add" /></button>
+										</div>
+									</div>
+								</div>
+							</c:if>
+						</div>
+					</div>
+				</div>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<spring:message code="details" />
@@ -282,6 +340,46 @@ $(function() {
 	});
 
 	$('#input_fields_wrap').on("click","#removeField", function() {
+		$(this).parent('div').parent('div').parent('div').remove();
+
+		size--;
+	});
+});
+
+$(function() {
+	var max_fields = 10;
+	var index = $('#buy_links_wrap .form-group').size() + 1;
+	var size = $('#buy_links_wrap .form-group').size() + 1;
+
+	$('#addNewBuyLink').click(function() {
+		if(size < max_fields){
+			$('#buy_links_wrap').append(
+				'<div class="form-group">'
+					+'<div class="row">'
+						+'<div class="col-xs-5">'
+							+'<div class="input-group">'
+								+'<div class="input-group-addon">Key</div>'
+								+'<input id="buyLinkKey" name="buyLinkKey' + index + '" class="form-control input-sm" type="text">'
+							+'</div>'
+						+'</div>'
+						+'<div class="col-xs-5">'
+							+'<div class="input-group">'
+								+'<div class="input-group-addon">Value</div>'
+								+'<input id="buyLinkValue" name="buyLinkValue' + index + '" class="form-control input-sm" type="text">'
+							+'</div>'
+						+'</div>'
+						+'<div class="col-xs-1">'
+							+ '<button type="button" class="btn btn-default btn-sm" id="removeBuyLink"><span class="glyphicon glyphicon-remove"></span></button>'
+						+'</div>'
+					+'</div>'
+				+'</div>'
+			);
+			index++;
+			size++
+		}
+	});
+
+	$('#buy_links_wrap').on("click","#removeBuyLink", function() {
 		$(this).parent('div').parent('div').parent('div').remove();
 
 		size--;

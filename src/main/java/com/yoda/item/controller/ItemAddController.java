@@ -63,6 +63,7 @@ public class ItemAddController {
 		model.put("categories", categories);
 		model.put("contents", contents);
 		model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
+		model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
 
 		return new ModelAndView("controlpanel/item/form", model);
 	}
@@ -92,6 +93,7 @@ public class ItemAddController {
 			}
 
 			ExtraFieldUtil.setExtraFields(request, item);
+			//ExtraFieldUtil.setBuyLinks(request, item);
 
 			item.setHitCounter(0);
 			item.setSiteId(site.getSiteId());

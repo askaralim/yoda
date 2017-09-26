@@ -70,6 +70,7 @@ public class ItemEditController {
 		model.put("categories", categories);
 		model.put("contents", contents);
 		model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
+		model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
 
 		return "controlpanel/item/form";
 	}
@@ -98,6 +99,7 @@ public class ItemEditController {
 			item.setBrand(brand);
 
 			ExtraFieldUtil.setExtraFields(request, item);
+			ExtraFieldUtil.setBuyLinks(request, item);
 
 			Item itemDb = itemService.update(item);
 
@@ -114,6 +116,7 @@ public class ItemEditController {
 			model.put("categories", categories);
 			model.put("contents", contents);
 			model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
+			model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
 			model.put("success", "success");
 
 			status.setComplete();

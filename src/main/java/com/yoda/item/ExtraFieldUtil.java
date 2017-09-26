@@ -19,10 +19,23 @@ public class ExtraFieldUtil {
 	public static final String EXTRA_FIELD_KEY = "extraFieldKey";
 	public static final String EXTRA_FIELD_VALUE = "extraFieldValue";
 
-	public static List<ExtraField> getExtraFields(Item item) {
-		List<ExtraField> extraFields = new ArrayList<ExtraField>();
+	public static final String BUY_LINK_KEY = "buyLinkKey";
+	public static final String BUY_LINK_VALUE = "buyLinkValue";
 
+	public static List<ExtraField> getBuyLinks(Item item) {
+		String json = item.getBuyLinks();
+
+		return getExtraFields(json);
+	}
+
+	public static List<ExtraField> getExtraFields(Item item) {
 		String json = item.getExtraFields();
+
+		return getExtraFields(json);
+	}
+
+	private static List<ExtraField> getExtraFields(String json) {
+		List<ExtraField> extraFields = new ArrayList<ExtraField>();
 
 		if (StringUtils.isEmpty(json)) {
 			return extraFields;
@@ -56,24 +69,37 @@ public class ExtraFieldUtil {
 		return extraFields;
 	}
 
+	public static void setBuyLinks(HttpServletRequest request, Item item) {
+		String json = setExtraFields(request, item, BUY_LINK_KEY, BUY_LINK_VALUE);
+
+		item.setBuyLinks(json);
+	}
+
 	public static void setExtraFields(HttpServletRequest request, Item item) {
+		String json = setExtraFields(request, item, EXTRA_FIELD_KEY, EXTRA_FIELD_VALUE);
+
+		item.setExtraFields(json);
+	}
+
+	private static String setExtraFields(HttpServletRequest request, Item item, String key, String value) {
+		JSONArray jsonArray = new JSONArray();
+
 		try {
 			Enumeration<String> names = request.getParameterNames();
-			JSONArray jsonArray = new JSONArray();
 
 			while (names.hasMoreElements()) {
 				String name = (String) names.nextElement();
 
-				if (name.startsWith(EXTRA_FIELD_KEY)) {
+				if (name.startsWith(key)) {
 					String extraFieldKey = request.getParameter(name);
 
 					if (StringUtils.isEmpty(extraFieldKey)) {
 						continue;
 					}
 
-					int index = Integer.valueOf(name.substring(EXTRA_FIELD_KEY.length()));
+					int index = Integer.valueOf(name.substring(key.length()));
 
-					String extraFieldvalue = request.getParameter(EXTRA_FIELD_VALUE + index);
+					String extraFieldvalue = request.getParameter(value + index);
 
 					JSONObject json = new JSONObject();
 
@@ -84,11 +110,11 @@ public class ExtraFieldUtil {
 					jsonArray.put(json);
 				}
 			}
-
-			item.setExtraFields(jsonArray.toString());
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
 		}
+
+		return jsonArray.toString();
 	}
 }

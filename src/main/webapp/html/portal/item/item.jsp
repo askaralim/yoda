@@ -58,11 +58,28 @@
 									<dt><c:out value="${extraField.key}" /></dt>
 									<dd><c:out value="${extraField.value}" /></dd>
 								</c:forEach>
+								<c:if test="${item.buyLinkList.size() > 0}">
+									<dt><spring:message code="buy-link" /></dt>
+									<dd>
+										<c:forEach var="buyLink" items="${item.buyLinkList}">
+											<i class="fa fa-external-link" aria-hidden="true"></i>
+											<a href="${fn:escapeXml(buyLink.value)}" target="_blank">
+												${buyLink.key}
+											</a>
+											&nbsp&nbsp
+										</c:forEach>
+									</dd>
+								</c:if>
 							</dl>
 							<div class="item-description">${item.description}</div>
 						</div>
 					</div>
 				</div>
+				<p class="text-right">
+					<a href="${fn:escapeXml(backURL)}" class="btn btn-default">
+						<spring:message code="back" />
+					</a>
+				</p>
 			</div>
 		</div>
 	</div>

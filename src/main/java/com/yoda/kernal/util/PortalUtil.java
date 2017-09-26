@@ -76,7 +76,7 @@ public class PortalUtil {
 	public static String getClientIP(HttpServletRequest request) {
 		String xfHeader = request.getHeader("X-Forwarded-For");
 
-		if (xfHeader == null) {
+		if ((xfHeader == null) || (!Validator.isIPAddress(xfHeader.split(",")[0]))) {
 			return request.getRemoteAddr();
 		}
 

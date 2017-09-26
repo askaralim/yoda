@@ -168,6 +168,7 @@
 		image_path VARCHAR(50),
 		level VARCHAR(20),
 		name VARCHAR(100),
+		buy_links VARCHAR(2000),
 		extra_fields VARCHAR(2000),
 		price INT,
 		rating INT,
@@ -454,6 +455,18 @@
         update_date datetime not null comment '',
         primary key (user_id)
     ) comment='';
+
+	CREATE TABLE page_view (
+		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		user_id INT,
+		username varchar(50),
+		user_ip_address VARCHAR(30),
+		page_type INT,
+		page_id INT,
+		page_name varchar(50),
+		page_url VARCHAR(100),
+		create_date DATETIME NOT NULL
+	) engine=InnoDB;
 
 	create table authority (
 		id bigint not null AUTO_INCREMENT,

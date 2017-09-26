@@ -60,7 +60,7 @@
 									<div class="row content-preview-wrapper-row">
 										<div class="col-sm-4">
 											<a href='#springUrl("/brand/$contentBrand.brandId")'>
-												<img src="$contentBrand.brandLogo" alt="$contentBrand.brandName" style="width: 100%;">
+												<img data-src="$contentBrand.brandLogo" alt="$contentBrand.brandName" width="220" height="280">
 											</a>
 										</div>
 										<div class="col-sm-8">
@@ -79,14 +79,14 @@
 									<div class="content-preview-wrapper-row">
 										<div class="row">
 											<div class="col-sm-4">
-												<a href='#springUrl("/item/$item.Id")'>
-													<img src="$item.imagePath" alt="$item.name" style="width: 100%;">
+												<a href='#springUrl("/item/$item.Id?backURL=$backURL")'>
+													<img data-src="$item.imagePath" alt="$item.name" width="220" height="280">
 												</a>
 											</div>
 											<div class="col-sm-8">
 												<dl class="dl-horizontal">
 													<dt>#springMessage('name')</dt>
-													<dd><a href='#springUrl("/item/$item.Id")'>$item.name</a></dd>
+													<dd><a href='#springUrl("/item/$item.Id?backURL=$backURL")'>$item.name</a></dd>
 													<dt>#springMessage('brand')</dt>
 													<dd><a href='#springUrl("/brand/$item.brand.brandId")'>$item.brand.name</a></dd>
 													<dt>#springMessage('price')</dt>
@@ -105,7 +105,7 @@
 														$item.description
 													</p>
 													<p>
-														<a href='#springUrl("/item/$item.Id")'>#springMessage('more')>>></a>
+														<a href='#springUrl("/item/$item.Id?backURL=$backURL")'>#springMessage('more')>>></a>
 													</p>
 												</div>
 												<div class="content-actions">
@@ -254,6 +254,22 @@
 </div>
 
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/10.3.0/lazyload.min.js"></script>
+
+<script>
+(function () {
+	var myLazyLoad1 = new LazyLoad({
+		container: document.getElementById('tab-should-know')
+	});
+	var myLazyLoad2 = new LazyLoad({
+		container: document.getElementById('tab-brand')
+	});
+	var myLazyLoad3 = new LazyLoad({
+		container: document.getElementById('tab-recommend')
+	});
+}());
+</script>
+
 
 <script type="text/javascript">
 $(function(){

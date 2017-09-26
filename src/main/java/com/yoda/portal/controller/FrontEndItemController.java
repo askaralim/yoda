@@ -15,10 +15,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
+import com.yoda.kernal.util.PageViewUtil;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
+import com.yoda.util.Constants;
 
 @Controller
 @RequestMapping("/item")
@@ -50,6 +52,12 @@ public class FrontEndItemController extends BaseFrontendController {
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		model.put("currentUser", currentUser);
+
+		String backURL = request.getParameter("backURL");
+
+		model.put("backURL", backURL);
+
+		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
 
 		return new ModelAndView("/portal/item/item", model);
 	}
