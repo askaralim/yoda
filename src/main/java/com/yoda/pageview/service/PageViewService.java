@@ -14,6 +14,8 @@ public interface PageViewService {
 
 	List<PageView> getPageViews();
 
+	PageView getPageView(int id);
+
 	List<PageView> getPageViewsByIP(String ip);
 
 	List<PageView> getPageViewsByPage(int pageType, int pageId);

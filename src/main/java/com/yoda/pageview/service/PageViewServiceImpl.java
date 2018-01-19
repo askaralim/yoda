@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yoda.content.model.Comment;
 import com.yoda.kernal.model.Pagination;
 import com.yoda.pageview.model.PageView;
 import com.yoda.pageview.persistence.PageViewMapper;
@@ -33,13 +34,18 @@ public class PageViewServiceImpl implements PageViewService {
 
 	@Transactional(readOnly = true)
 	public Pagination<PageView> getPageViews(RowBounds rowBounds) {
-		List<PageView> pageViews = sqlSessionTemplate.selectList("com.yoda.brand.persistence.PageViewMapper.getPageViews", null, rowBounds);
+		List<PageView> pageViews = sqlSessionTemplate.selectList("com.yoda.pageview.persistence.PageViewMapper.getPageViews", null, rowBounds);
 
-		List<Integer> count = sqlSessionTemplate.selectList("com.yoda.brand.persistence.PageViewMapper.count");
+		List<Integer> count = sqlSessionTemplate.selectList("com.yoda.pageview.persistence.PageViewMapper.count");
 
 		Pagination<PageView> page = new Pagination<PageView>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), pageViews);
 
 		return page;
+	}
+
+	@Transactional(readOnly = true)
+	public PageView getPageView(int id) {
+		return pageViewMapper.getById(id);
 	}
 
 	@Transactional(readOnly = true)

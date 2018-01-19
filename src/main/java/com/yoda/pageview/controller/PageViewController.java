@@ -1,16 +1,21 @@
 package com.yoda.pageview.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ibatis.session.RowBounds;
+import org.hsqldb.lib.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.content.model.Comment;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.pageview.model.PageView;
 import com.yoda.pageview.service.PageViewService;
 
@@ -23,22 +28,27 @@ public class PageViewController {
 	public String showPageViews(
 		Map<String, Object> model, HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
-//		String offsetStr = request.getParameter("offset");
-//		int offset = 0;
-//
-//		if (null != offsetStr) {
-//			offset = Integer.valueOf(offsetStr);
-//		}
-//
-//		Pagination<PageView> page = pageViewService.getPageViews(new RowBounds(offset, 20));
-//
-//		model.put("page", page);
+		String offset = request.getParameter("offset");
 
-		List<PageView> pageViews = pageViewService.getPageViews();
+		int offsetInt = 0;
 
-		model.put("pageViews", pageViews);
+		if (!StringUtil.isEmpty(offset)) {
+			offsetInt = Integer.valueOf(offset) * 10;
+		}
+
+		Pagination<PageView> page = pageViewService.getPageViews(new RowBounds(offsetInt, 10));
+
+		model.put("page", page);
 
 		return "controlpanel/pageview/list";
+	}
+
+	@RequestMapping(value = "/controlpanel/pageview/{id}", method = RequestMethod.GET)
+	public ModelAndView viewComment(@PathVariable("id") int id) {
+		PageView pageView = pageViewService.getPageView(id);
+
+		return new ModelAndView(
+			"controlpanel/pageview/view", "pageView", pageView);
 	}
 
 //	@RequestMapping(value = "/controlpanel/pageview/{pageType}/{pageId}", method = RequestMethod.GET)

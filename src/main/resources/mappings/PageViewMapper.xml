@@ -20,6 +20,13 @@
 		SELECT count(*) from page_view
 	</select>
 
+	<select id="getById" resultType="PageView">
+		SELECT 
+			<include refid="pageViewColumns"/>
+		FROM page_view p
+		WHERE p.id = #{id}
+	</select>
+
 	<select id="getPageViews" resultType="PageView">
 		SELECT 
 			<include refid="pageViewColumns"/>

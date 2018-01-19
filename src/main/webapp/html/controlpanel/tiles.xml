@@ -99,6 +99,11 @@
 		<put-attribute name="content" value="/html/controlpanel/pageview/list.jsp" type="template" />
 	</definition>
 
+	<definition name="controlpanel/pageview/view" extends="controlpanelframe">
+		<put-attribute name="title" value="Page View Listing" type="string" />
+		<put-attribute name="content" value="/html/controlpanel/pageview/view.jsp" type="template" />
+	</definition>
+
 	<definition name="controlpanel/indices" extends="controlpanelframe">
 		<put-attribute name="title" value="Elastic Search Configuration" type="string" />
 		<put-attribute name="content" value="/html/controlpanel/elasticsearch/indices.jsp" type="template" />

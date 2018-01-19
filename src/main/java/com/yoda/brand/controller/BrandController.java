@@ -1,8 +1,12 @@
 package com.yoda.brand.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.ibatis.session.RowBounds;
+import org.hsqldb.lib.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.brand.service.BrandService;
+import com.yoda.kernal.model.Pagination;
 
 @Controller
 public class BrandController {
@@ -20,14 +25,22 @@ public class BrandController {
 	BrandService brandService;
 
 	@RequestMapping(value = "/controlpanel/brand", method = RequestMethod.GET)
-	public ModelAndView showBrands() {
+	public String showBrands(
+			Map<String, Object> model, HttpServletRequest request,
+			HttpServletResponse response) {
+		String offset = request.getParameter("offset");
 
-		List<Brand> brands = new ArrayList<Brand>();
+		int offsetInt = 0;
 
-		brands = brandService.getBrands();
+		if (!StringUtil.isEmpty(offset)) {
+			offsetInt = Integer.valueOf(offset) * 10;
+		}
 
-		return new ModelAndView(
-			"controlpanel/brand/list", "brands", brands);
+		Pagination<Brand> page = brandService.getBrands(new RowBounds(offsetInt, 10));
+
+		model.put("page", page);
+
+		return "controlpanel/brand/list";
 	}
 
 	@RequestMapping(value = "/controlpanel/brand/{brandId}", method = RequestMethod.GET)

@@ -143,7 +143,6 @@ function getSelectedItemIds(){
 							<c:choose>
 								<c:when test="${page.hasNextPage}">
 									<li><a href="<spring:url value="/controlpanel/item?offset=${page.currentPageNo}" />" aria-label="Next"><span>&raquo;</span></a></li>
-									
 								</c:when>
 								<c:otherwise>
 									<li class="disabled"><span>&raquo;</span></li>

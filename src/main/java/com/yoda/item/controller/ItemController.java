@@ -1,6 +1,5 @@
 package com.yoda.item.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yoda.content.model.Content;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.model.Pagination;
@@ -51,10 +49,6 @@ public class ItemController {
 		Pagination<Item> page = itemService.getItems(site.getSiteId(), new RowBounds(offsetInt, 10));
 
 		model.put("page", page);
-
-//		List<Item> items = itemService.getItems(site.getSiteId());
-//
-//		model.put("items", items);
 
 		return "controlpanel/item/list";
 	}

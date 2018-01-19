@@ -2,7 +2,9 @@ package com.yoda.brand.service;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.brand.persistence.BrandMapper;
+import com.yoda.item.model.Item;
 import com.yoda.kernal.elasticsearch.BrandIndexer;
 import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.ImageUploader;
