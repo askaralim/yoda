@@ -10,7 +10,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>${siteInfo.siteName} - ${brand.name}</title>
+	<title>${brand.name} - ${siteInfo.siteName}</title>
 
 	<link rel="icon" type="image/x-icon" href="<c:url value="/resources/images/favicon.ico" />" />
 

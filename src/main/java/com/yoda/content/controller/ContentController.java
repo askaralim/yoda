@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.session.RowBounds;
+import org.hsqldb.lib.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.yoda.content.ContentSearchForm;
 import com.yoda.content.model.Content;
 import com.yoda.content.service.ContentService;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.menu.service.MenuService;
 import com.yoda.site.service.SiteService;
@@ -40,13 +43,21 @@ public class ContentController {
 	MenuService menuService;
 
 	@RequestMapping(value="/controlpanel/content", method = RequestMethod.GET)
-	public String showPanel(Map<String, Object> model) {
+	public String showPanel(Map<String, Object> model, HttpServletRequest request) {
 
 		User user = PortalUtil.getAuthenticatedUser();
 
-		List<Content> contents = contentService.getContents(user.getLastVisitSiteId());
+		String offset = request.getParameter("offset");
 
-		model.put("contents", contents);
+		int offsetInt = 0;
+
+		if (!StringUtil.isEmpty(offset)) {
+			offsetInt = Integer.valueOf(offset) * 10;
+		}
+
+		Pagination<Content> page = contentService.getContents(user.getLastVisitSiteId(), new RowBounds(offsetInt, 10));
+
+		model.put("page", page);
 		model.put("searchForm", new ContentSearchForm());
 
 		return "controlpanel/content/list";

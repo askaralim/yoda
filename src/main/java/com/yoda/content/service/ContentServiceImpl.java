@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ import com.yoda.content.persistence.ContentUserRateMapper;
 import com.yoda.homepage.model.HomePage;
 import com.yoda.homepage.service.HomePageService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.ImageUploader;
 import com.yoda.kernal.util.PortalUtil;
@@ -65,6 +70,9 @@ public class ContentServiceImpl implements ContentService {
 
 	@Autowired
 	private ContentUserRateMapper contentUserRateMapper;
+
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
 
 	public void addContent(int siteId, Content content, Integer categoryId) {
 		try {
@@ -223,6 +231,21 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(readOnly = true)
 	public List<Content> getContents(int siteId) {
 		return contentMapper.getContentsBySiteId(siteId);
+	}
+
+	@Transactional(readOnly = true)
+	public Pagination<Content> getContents(int siteId, RowBounds rowBounds) {
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("siteId", siteId);
+
+		List<Content> contents = sqlSessionTemplate.selectList("com.yoda.content.persistence.ContentMapper.getContentsBySiteId", params, rowBounds);
+
+		List<Integer> count = sqlSessionTemplate.selectList("com.yoda.content.persistence.ContentMapper.getContentsBySiteIdCount", params);
+
+		Pagination<Content> page = new Pagination<Content>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), contents);
+
+		return page;
 	}
 
 	@Transactional(readOnly = true)

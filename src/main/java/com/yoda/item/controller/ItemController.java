@@ -6,14 +6,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ibatis.session.RowBounds;
+import org.hsqldb.lib.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.yoda.content.model.Content;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.site.model.Site;
 import com.yoda.site.service.SiteService;
@@ -36,9 +40,21 @@ public class ItemController {
 		HttpServletResponse response) throws Exception {
 		Site site = PortalUtil.getSiteFromSession(request);
 
-		List<Item> items = itemService.getItems(site.getSiteId());
+		String offset = request.getParameter("offset");
 
-		model.put("items", items);
+		int offsetInt = 0;
+
+		if (!StringUtil.isEmpty(offset)) {
+			offsetInt = Integer.valueOf(offset) * 10;
+		}
+
+		Pagination<Item> page = itemService.getItems(site.getSiteId(), new RowBounds(offsetInt, 10));
+
+		model.put("page", page);
+
+//		List<Item> items = itemService.getItems(site.getSiteId());
+//
+//		model.put("items", items);
 
 		return "controlpanel/item/list";
 	}

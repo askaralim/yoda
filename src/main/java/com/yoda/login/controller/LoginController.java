@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yoda.kernal.util.ChangeImagePath;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.kernal.util.WebKeys;
 import com.yoda.site.model.Site;
@@ -89,6 +90,8 @@ public class LoginController {
 		HttpSession session = request.getSession();
 
 		session.setAttribute(WebKeys.SITE, site);
+
+//		ChangeImagePath.setImagePath();
 
 		return "redirect:/";
 	}

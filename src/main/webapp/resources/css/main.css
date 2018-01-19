@@ -114,3 +114,30 @@ a:hover, a:focus, a:active, a.active {
 .container .text-muted {
 	margin: 20px 0;
 }
+
+/* Pagination */
+.pagination-info {
+	padding-top: 8px;
+}
+
+.pagination-section {
+	float: right;
+}
+
+.pagination-section .pagination-pages ul {
+	margin: 0;
+	padding: 0
+}
+
+.pagination-section .pagination-nav {
+	line-height: 36px;
+}
+
+.pagination-section .pagination-pages, .pagination-go-button, .pagination-go-input, .pagination-nav {
+	float: left;
+	margin-left: 10px;
+}
+
+.pagination-section .pagination-go-input>input[type=text] {
+	width: 50px;
+}

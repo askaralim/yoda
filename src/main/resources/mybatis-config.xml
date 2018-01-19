@@ -44,5 +44,9 @@
 	</typeAliases>
 
 	<!-- 插件配置 -->
-	<!-- <plugins> <plugin interceptor="com.thinkgem.jeesite.common.persistence.interceptor.PaginationInterceptor" /> </plugins> -->
+	<plugins>
+		<plugin interceptor="com.yoda.kernal.persistence.interceptor.PaginationInterceptor">
+			<property name="dialectClass" value="com.yoda.kernal.persistence.dialect.MySQLDialect"/>
+		</plugin>
+	</plugins>
 </configuration>

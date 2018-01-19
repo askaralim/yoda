@@ -135,7 +135,7 @@ public class FrontendController extends BaseFrontendController {
 		String pageTitle = homeInfo.getPageTitle();
 
 		if (Validator.isNotNull(pageTitle)) {
-			pageInfo.setPageTitle(site.getSiteName() + " - " + pageTitle);
+			pageInfo.setPageTitle(pageTitle + " - " + site.getSiteName() );
 		}
 		else {
 			pageInfo.setPageTitle(site.getSiteName());

@@ -2,10 +2,12 @@ package com.yoda.item.service;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
+import com.yoda.kernal.model.Pagination;
 
 public interface ItemService {
 	void save(Item item);
@@ -22,6 +24,8 @@ public interface ItemService {
 	Item update(int id, Brand brand, Integer categoryId, Long contentId, String description, String level, String name, int price);
 
 	List<Item> getItems(int siteId);
+
+	Pagination<Item> getItems(int siteId, RowBounds rowBounds);
 
 	List<Item> getItemsByContentId(long contentId);
 

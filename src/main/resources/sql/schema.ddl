@@ -463,7 +463,7 @@
 		user_ip_address VARCHAR(30),
 		page_type INT,
 		page_id INT,
-		page_name varchar(50),
+		page_name varchar(100),
 		page_url VARCHAR(100),
 		create_date DATETIME NOT NULL
 	) engine=InnoDB;

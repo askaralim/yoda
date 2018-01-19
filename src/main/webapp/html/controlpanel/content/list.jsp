@@ -143,7 +143,7 @@ function getSelectedContentIds(){
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
-					<c:if test="${contents != null}">
+					<c:if test="${page.data != null}">
 						<thead>
 							<tr>
 								<th></th>
@@ -159,7 +159,7 @@ function getSelectedContentIds(){
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="content" items="${contents}">
+							<c:forEach var="content" items="${page.data}">
 								<tr>
 									<td>
 										<input type="checkbox" id="contentIds" value="${content.contentId}">
@@ -240,6 +240,45 @@ function getSelectedContentIds(){
 						</td>
 					</tr> --%>
 				</table>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="pagination-info" role="alert" aria-live="polite" aria-relevant="all">
+						Showing ${((page.currentPageNo - 1) * 10) + 1} to ${(page.currentPageNo) * 10} of ${page.totalCount} entries
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="pagination-section">
+						<div class="pagination-pages">
+							<ul class="pagination">
+								<c:choose>
+									<c:when test="${page.hasPreviousPage}">
+										<li><a href='<spring:url value="/controlpanel/content?offset=${page.currentPageNo - 2}" />' aria-label="Previous"><span>&laquo;</span></a></li>
+									</c:when>
+									<c:otherwise>
+										<li class="disabled"><span>&laquo;</span></li>
+									</c:otherwise>
+								</c:choose>
+								<c:choose>
+									<c:when test="${page.hasNextPage}">
+										<li><a href="<spring:url value="/controlpanel/content?offset=${page.currentPageNo}" />" aria-label="Next"><span>&raquo;</span></a></li>
+										
+									</c:when>
+									<c:otherwise>
+										<li class="disabled"><span>&raquo;</span></li>
+									</c:otherwise>
+								</c:choose>
+							</ul>
+						</div>
+						<div class="pagination-nav">${page.currentPageNo}/${page.totalPageCount}</div>
+						<div class="pagination-go-input">
+							<input type="text" class="form-control">
+						</div>
+						<div class="pagination-go-button">
+							<input type="button" class="btn btn-default" value="Go">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

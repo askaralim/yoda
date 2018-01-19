@@ -3,6 +3,7 @@ package com.yoda.content.service;
 import java.text.ParseException;
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yoda.content.model.Comment;
@@ -10,6 +11,7 @@ import com.yoda.content.model.Content;
 import com.yoda.content.model.ContentBrand;
 import com.yoda.content.model.ContentContributor;
 import com.yoda.content.model.ContentUserRate;
+import com.yoda.kernal.model.Pagination;
 
 public interface ContentService {
 	void addContent(int siteId, Content content, Integer categoryId);
@@ -57,6 +59,8 @@ public interface ContentService {
 	List<Content> getContents(String title);
 
 	List<Content> getContents(int siteId);
+
+	Pagination<Content> getContents(int siteId, RowBounds rowBounds);
 
 	List<Comment> getComments(long contentId);
 

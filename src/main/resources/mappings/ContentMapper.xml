@@ -53,6 +53,28 @@
 		<result property="profilePhotoSmall" column="profile_photo_small" />
 	</resultMap>
 
+	<sql id="contentColumnsSimple">
+		c.content_id AS content_id,
+		<!-- c.category_id AS "category.categoryId", -->
+		c.site_id AS site_id,
+		c.natural_key AS natural_key,
+		c.title,
+		<!-- c.create_by AS "createBy.userId", -->
+		c.create_date AS create_date,
+		<!-- c.update_by AS "updateBy.userId", -->
+		c.update_date AS update_date,
+		c.publish_date AS publish_date,
+		c.expire_date AS expire_date,
+		c.short_description AS short_description,
+		c.description,
+		c.page_title AS page_title,
+		c.hit_counter AS hit_counter,
+		c.published,
+		<!-- c.section_id AS section_id, -->
+		c.featured_image AS featured_image,
+		c.score
+	</sql>
+
 	<sql id="contentColumns">
 		c.content_id AS content_id,
 		<!-- c.category_id AS "category.categoryId", -->
@@ -112,11 +134,15 @@
 
 	<select id="getContentsBySiteId" resultMap="contentResult">
 		SELECT 
-			<include refid="contentColumns"/>
+			<include refid="contentColumnsSimple"/>
 		FROM content c
-		<include refid="contentJoins"/>
 		WHERE c.site_id = #{siteId}
 		ORDER BY c.update_date DESC
+	</select>
+
+	<select id="getContentsBySiteIdCount" resultType="java.lang.Integer">
+		SELECT count(*) from content c
+		WHERE c.site_id = #{siteId}
 	</select>
 
 	<select id="getContentsByTitle" resultType="Content">

@@ -1,8 +1,12 @@
 package com.yoda.item.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +16,7 @@ import com.yoda.brand.model.Brand;
 import com.yoda.item.ExtraFieldUtil;
 import com.yoda.item.model.Item;
 import com.yoda.item.persistence.ItemMapper;
+import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.util.ImageUploader;
 
 @Service
@@ -21,7 +26,9 @@ public class ItemServiceImpl implements ItemService {
 	@Autowired
 	private ItemMapper itemMapper;
 //	private ItemDAO itemDAO;
-	
+
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
 
 	@Transactional(readOnly = true)
 	public Item getItem(int itemId) {
@@ -46,6 +53,21 @@ public class ItemServiceImpl implements ItemService {
 	@Transactional(readOnly = true)
 	public List<Item> getItems(int siteId) {
 		return itemMapper.getItemsBySiteId(siteId);
+	}
+
+	@Transactional(readOnly = true)
+	public Pagination<Item> getItems(int siteId, RowBounds rowBounds) {
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("siteId", siteId);
+
+		List<Item> items = sqlSessionTemplate.selectList("com.yoda.item.persistence.ItemMapper.getItemsBySiteId", params, rowBounds);
+
+		List<Integer> count = sqlSessionTemplate.selectList("com.yoda.item.persistence.ItemMapper.getItemsBySiteIdCount", params);
+
+		Pagination<Item> page = new Pagination<Item>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), items);
+
+		return page;
 	}
 
 	@Transactional(readOnly = true)
