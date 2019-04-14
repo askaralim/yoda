@@ -2,7 +2,7 @@
 <div id="content-body">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-8">
+			<div class="col-lg-8 col-lg-offset-1">
 				<div class="content-post">
 					<div class="page-header">
 						<h3>$contentInfo.title</h3>
@@ -27,7 +27,7 @@
 								<p class="text-right">
 									<bd>
 										<i class="glyphicon glyphicon-time"></i>
-										$contentInfo.createDate
+										$contentInfo.updateDate
 										&nbsp
 										<i class="glyphicon glyphicon-eye-open"></i>
 										$contentInfo.hitCounter
@@ -186,7 +186,7 @@
 					#end
 				</div>
 			</div>
-			<div class="col-sm-3 col-sm-offset-1 home-sidebar">
+			<div class="col-lg-3 home-sidebar">
 				<div class="home-sidebar-module">
 					<h5>#springMessage('content-publisher')</h5>
 					#if ($contentInfo.createBy.profilePhotoSmall)

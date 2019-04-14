@@ -153,4 +153,41 @@
 		<put-attribute name="title" value="Site Listing - Site Maintenance" type="string" />
 		<put-attribute name="content" value="/html/controlpanel/site/edit.jsp" type="template" />
 	</definition>
+
+	<definition name="portaltemplate" template="/html/portal/portaltemplate.jsp"/>
+
+	<definition name="portal/home/home" extends="portaltemplate">
+		<put-attribute name="title" value="Home" type="string" />
+		<put-attribute name="content" value="/html/portal/home/home.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/content/content" extends="portaltemplate">
+		<put-attribute name="title" value="Content" type="string" />
+		<put-attribute name="content" value="/html/portal/content/content.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/brand/brand" extends="portaltemplate">
+		<put-attribute name="title" value="Brand" type="string" />
+		<put-attribute name="content" value="/html/portal/brand/brand.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/brand/brands" extends="portaltemplate">
+		<put-attribute name="title" value="Brands" type="string" />
+		<put-attribute name="content" value="/html/portal/brand/brands.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/item/item" extends="portaltemplate">
+		<put-attribute name="title" value="Item" type="string" />
+		<put-attribute name="content" value="/html/portal/item/item.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/contactUs/contactUs" extends="portaltemplate">
+		<put-attribute name="title" value="Contact Us" type="string" />
+		<put-attribute name="content" value="/html/portal/contactUs/contactUs.jsp" type="template" />
+	</definition>
+
+	<definition name="portal/search/search" extends="portaltemplate">
+		<put-attribute name="title" value="Search" type="string" />
+		<put-attribute name="content" value="/html/portal/search/search.jsp" type="template" />
+	</definition>
 </tiles-definitions>

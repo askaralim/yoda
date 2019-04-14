@@ -11,6 +11,7 @@ import com.yoda.util.GetterUtil;
 import com.yoda.util.StringUtil;
 import com.yoda.util.Validator;
 
+@Deprecated
 public class SystemProperties {
 
 	public static final String SYSTEM_PROPERTIES_FINAL =

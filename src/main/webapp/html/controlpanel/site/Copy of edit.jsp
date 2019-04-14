@@ -1,4 +1,4 @@
-<%@ include file="/html/common/init.jsp"%>
+<%-- <%@ include file="/html/common/init.jsp"%>
 
 <%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
 
@@ -280,7 +280,7 @@ function paymentGatewaySelect() {
 													<tr>
 														<td class="jc_input_label"><hr></td>
 													</tr>
-													<%-- <tr>
+													<tr>
 														<td class="jc_input_label">Default Currency Code</td>
 													</tr>
 													<tr>
@@ -294,7 +294,7 @@ function paymentGatewaySelect() {
 																<form:options items="${siteEditCommand.countries}" itemLabel="countryName" itemValue="countryCode" />
 															</form:select>
 														</td>
-													</tr> --%>
+													</tr>
 													<tr>
 														<td class="jc_input_label">Section page size</td>
 													</tr>
@@ -351,7 +351,7 @@ function paymentGatewaySelect() {
 														<td width="100%">
 															<c:if test="${siteEditCommand.logoContentType != null}">
 																<img src='<spring:url value="/images?imageId=${siteEditCommand.siteId}&type=s&maxsize=100" htmlEscape="true" />'>
-																<%-- <img src="/<c:out value='${adminBean.contextPath}'/>/services/SecureImageProvider.do?type=S&maxsize=100&imageId=<c:out value='${siteEditCommand.siteId}'/>"> --%>
+																<img src="/<c:out value='${adminBean.contextPath}'/>/services/SecureImageProvider.do?type=S&maxsize=100&imageId=<c:out value='${siteEditCommand.siteId}'/>">
 																<br>
 															</c:if>
 														</td>
@@ -359,7 +359,7 @@ function paymentGatewaySelect() {
 												</table>
 												<br>
 											</div>
-											<%-- <div id="mail" style="padding: 5px; min-height: 300px">
+											<div id="mail" style="padding: 5px; min-height: 300px">
 												<table border="0" cellspacing="0" cellpadding="3" width="100%">
 													<tr>
 														<td class="jc_input_label">Mail outgoing (SMTP) host</td>
@@ -539,7 +539,7 @@ function paymentGatewaySelect() {
 													</tr>
 												</table>
 												<br>
-											</div> --%>
+											</div>
 											<div id="template" style="padding: 5px; min-height: 300px">
 												<table border="0" cellspacing="0" cellpadding="3">
 													<tr>
@@ -550,23 +550,23 @@ function paymentGatewaySelect() {
 													</tr>
 													<tr>
 														<td width="200" class="jc_input_label" valign="top">
-															<%-- <form:select path="templateName" onchange="javascript:preview(this);">
+															<form:select path="templateName" onchange="javascript:preview(this);">
 																<form:options items="${siteEditCommand.templates}" itemLabel="templateName" itemValue="templateName" />
-															</form:select> --%>
+															</form:select>
 														</td>
 													</tr>
 													<tr>
 														<td width="100%">
 															<c:choose>
 																<c:when test="${siteEditCommand.themeId == '1'}">
-																	<%-- <img name="templateImage"
+																	<img name="templateImage"
 																		src="/<c:out value='${adminBean.contextPath}'/>/services/SecureImageProvider.do?type=U&siteId=<c:out value='${siteEditCommand.siteId}'/>&imageId=/html/content/template/basic/preview.jpg&maxsize=240"
-																		border="0"> --%>
+																		border="0">
 																</c:when>
 																<c:otherwise>
-																	<%-- <img name="templateImage"
+																	<img name="templateImage"
 																		src="/<c:out value='${adminBean.contextPath}'/>/services/SecureImageProvider.do?type=T&siteId=<c:out value='${siteEditCommand.siteId}'/>&imageId=<c:out value='${siteEditCommand.templateName}'/>&maxsize=240"
-																		border="0"> --%>
+																		border="0">
 																</c:otherwise>
 															</c:choose>
 														</td>
@@ -574,7 +574,7 @@ function paymentGatewaySelect() {
 												</table>
 												<br>
 											</div>
-											<%-- <div id="business" style="padding: 5px; min-height: 300px">
+											<div id="business" style="padding: 5px; min-height: 300px">
 												<table border="0" cellspacing="0" cellpadding="3">
 													<tr>
 														<td>
@@ -681,8 +681,8 @@ function paymentGatewaySelect() {
 													</tr>
 												</table>
 												<br>
-											</div> --%>
-											<%-- <div id="shipping" style="padding: 5px; min-height: 300px">
+											</div>
+											<div id="shipping" style="padding: 5px; min-height: 300px">
 												<table border="0" cellspacing="0" cellpadding="3">
 													<tr>
 														<td width="200" class="jc_input_label">
@@ -991,7 +991,7 @@ function paymentGatewaySelect() {
 													</tr>
 												</table>
 												<br>
-											</div> --%>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -1026,7 +1026,7 @@ function jc_logo_init() {
 
 YAHOO.util.Event.onDOMReady(jc_logo_init); */
 
-<%-- var jc_upload_callback = {
+var jc_upload_callback = {
   upload: function(o) {
     var value = o.responseText.replace(/<\/?pre>/ig, '');
     var object = eval('(' + value + ')');
@@ -1086,7 +1086,7 @@ function jc_uploadImage() {
 </div>
 </div>
 </div>
-</form> --%>
+</form>
 <!------------------------------------------------------------------------>
 <c:if test="${siteEditCommand['new']}">
 	<script type="text/javascript">
@@ -1096,4 +1096,4 @@ function jc_uploadImage() {
 
 		paymentGatewaySelect();
 	</script>
-</c:if>
+</c:if> --%>

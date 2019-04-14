@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yoda.brand.model.Brand;
 import com.yoda.item.model.Item;
 import com.yoda.kernal.model.Pagination;
 
@@ -14,14 +13,11 @@ public interface ItemService {
 
 	Item getItem(int itemId);
 
-//	Item getItem(int siteId, int itemId);
-//
-//	Item getItem(int siteId, String itemNaturalKey);
-
 	Item update(Item item);
 
-	@Deprecated
-	Item update(int id, Brand brand, Integer categoryId, Long contentId, String description, String level, String name, int price);
+	void updateItemHitCounter(int itemId, int hitCounter);
+
+	void updateItemRating(int itemId, int rating);
 
 	List<Item> getItems(int siteId);
 

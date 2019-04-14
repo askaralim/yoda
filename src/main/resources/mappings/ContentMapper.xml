@@ -19,6 +19,7 @@
 		<result property="hitCounter" column="hit_counter" />
 		<result property="published" column="published" />
 		<!-- <result property="sectionId" column="section_id" /> -->
+		<result property="featureData" column="feature_data" />
 		<result property="featuredImage" column="featured_image" />
 		<result property="score" column="score" />
 		<association property="category" column="category_id" javaType="Category" resultMap="categoryResult" />
@@ -70,6 +71,7 @@
 		c.page_title AS page_title,
 		c.hit_counter AS hit_counter,
 		c.published,
+		c.feature_data AS feature_data,
 		<!-- c.section_id AS section_id, -->
 		c.featured_image AS featured_image,
 		c.score
@@ -92,6 +94,7 @@
 		c.page_title AS page_title,
 		c.hit_counter AS hit_counter,
 		c.published,
+		c.feature_data AS feature_data,
 		<!-- c.section_id AS section_id, -->
 		c.featured_image AS featured_image,
 		c.score,
@@ -161,6 +164,20 @@
 		WHERE c.create_by = #{userId}
 	</select>
 
+	<select id="getContentsByFeatureData" resultType="Content">
+		SELECT 
+			<include refid="contentColumnsSimple"/>
+		FROM content c
+		WHERE c.feature_data = #{featureData}
+		AND c.published = true
+		ORDER BY c.update_date DESC
+	</select>
+
+	<select id="getContentsByFeatureDataCount" resultType="java.lang.Integer">
+		SELECT count(*) from content c
+		WHERE c.feature_data = #{featureData}
+	</select>
+
 	<select id="search" resultType="Content">
 		SELECT 
 			<include refid="contentColumns"/>
@@ -191,8 +208,8 @@
 	</select>
 
 	<insert id="insert" parameterType="Content" useGeneratedKeys="true" keyProperty="contentId">
-		INSERT INTO content(content_id, category_id, site_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, featured_image, score)
-		VALUES(#{contentId}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featuredImage}, #{score})
+		INSERT INTO content(content_id, category_id, site_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, feature_data, featured_image, score)
+		VALUES(#{contentId}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featureData}, #{featuredImage}, #{score})
 	</insert>
 
 	<update id="update" parameterType="Content">
@@ -209,6 +226,7 @@
 			page_title = #{pageTitle},
 			hit_counter = #{hitCounter},
 			published = #{published},
+			feature_data = #{featureData},
 			featured_image = #{featuredImage},
 			score = #{score}
 		WHERE content_id = #{contentId}

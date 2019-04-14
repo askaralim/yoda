@@ -41,6 +41,7 @@ public class ContentAddController {
 
 		content.setPublished(true);
 		content.setHomePage(false);
+		content.setFeatureData(false);
 		content.setPublishDate(new Date());
 		content.setExpireDate(Format.getHighDate());
 

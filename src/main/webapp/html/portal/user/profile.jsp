@@ -124,7 +124,7 @@
 	</div>
 
 	<footer class="footer-below">
-		<p class="small text-muted text-center">${siteInfo.siteFooter}</p>
+		<p class="small text-muted text-center">${site.footer}</p>
 	</footer>
 
 	<script type="text/javascript" src='<c:url value="/template/basic/jquery-1.11.1.min.js" />'></script>

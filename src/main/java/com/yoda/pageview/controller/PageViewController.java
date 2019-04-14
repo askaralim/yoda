@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.content.model.Comment;
 import com.yoda.kernal.model.Pagination;
-import com.yoda.pageview.model.PageView;
+import com.yoda.pageview.model.PageViewData;
 import com.yoda.pageview.service.PageViewService;
 
 @Controller
@@ -36,7 +35,7 @@ public class PageViewController {
 			offsetInt = Integer.valueOf(offset) * 10;
 		}
 
-		Pagination<PageView> page = pageViewService.getPageViews(new RowBounds(offsetInt, 10));
+		Pagination<PageViewData> page = pageViewService.getPageViewDatas(new RowBounds(offsetInt, 10));
 
 		model.put("page", page);
 
@@ -45,7 +44,7 @@ public class PageViewController {
 
 	@RequestMapping(value = "/controlpanel/pageview/{id}", method = RequestMethod.GET)
 	public ModelAndView viewComment(@PathVariable("id") int id) {
-		PageView pageView = pageViewService.getPageView(id);
+		PageViewData pageView = pageViewService.getPageViewData(id);
 
 		return new ModelAndView(
 			"controlpanel/pageview/view", "pageView", pageView);

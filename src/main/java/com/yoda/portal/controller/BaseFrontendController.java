@@ -1,79 +1,32 @@
 package com.yoda.portal.controller;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ibatis.session.RowBounds;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.yoda.brand.service.BrandService;
-import com.yoda.contactus.model.ContactUs;
-import com.yoda.contactus.service.ContactUsService;
-import com.yoda.content.model.Comment;
-import com.yoda.content.model.Content;
-import com.yoda.content.service.ContentService;
-import com.yoda.homepage.model.HomePage;
-import com.yoda.homepage.service.HomePageService;
-import com.yoda.item.model.Item;
-import com.yoda.item.service.ItemService;
-import com.yoda.kernal.model.Pagination;
-import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.menu.service.MenuService;
-import com.yoda.portal.content.data.ContentInfo;
-import com.yoda.portal.content.data.DataInfo;
+import com.yoda.pageview.model.PageViewData;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
-import com.yoda.portal.content.data.HomeInfo;
-import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.portal.content.frontend.MenuFactory;
 import com.yoda.site.model.Site;
-import com.yoda.site.service.SiteService;
 import com.yoda.user.model.User;
 import com.yoda.user.service.UserService;
 import com.yoda.util.Constants;
 import com.yoda.util.Format;
-import com.yoda.util.StringPool;
-import com.yoda.util.Utility;
-import com.yoda.util.Validator;
 
 public class BaseFrontendController {
-//	@Autowired
-//	private SectionService sectionService;
-
-	@Autowired
-	protected BrandService brandService;
-
-	@Autowired
-	protected ContentService contentService;
-
 	@Autowired
 	protected UserService userService;
 
 	@Autowired
-	protected ItemService itemService;
-
-	@Autowired
-	protected MenuService menuService;
-
-	@Autowired
-	protected HomePageService homePageService;
-
-	@Autowired
-	private ContactUsService contactUsService;
-
-	@Autowired
-	private SiteService siteService;
-
-	Logger logger = Logger.getLogger(BaseFrontendController.class);
+	protected KafkaTemplate<String, String> kafkaTemplate;
 
 	public String getHorizontalMenu(
 			HttpServletRequest request, HttpServletResponse response) {
@@ -108,212 +61,26 @@ public class BaseFrontendController {
 		return PortalUtil.getSiteFromSession(request);
 	}
 
-	public SiteInfo getSite(Site site) {
-		SiteInfo siteInfo = new SiteInfo();
+	public void pageView(HttpServletRequest request, int pageType, int pageId, String pageName) {
+		String ip = PortalUtil.getClientIP(request);
 
-		siteInfo.setSiteId(site.getSiteId());
-		siteInfo.setSiteName(site.getSiteName());
+		PageViewData pageView = new PageViewData();
 
-		siteInfo.setSiteDomainName(site.getDomainName());
-		siteInfo.setGoogleAnalyticsId(site.getGoogleAnalyticsId());
-		siteInfo.setSiteFooter(site.getFooter());
+		pageView.setCreateTime(Format.getFullDatetime(new Date()));
+		pageView.setPageId(pageId);
+		pageView.setPageName(pageName);
+		pageView.setPageType(pageType);
+		pageView.setPageUrl(request.getRequestURL().toString());
+		pageView.setUserIPAddress(ip);
 
-		return siteInfo;
-	}
+		User user = PortalUtil.getAuthenticatedUser();
 
-	public List<ContactUs> getContactUs(int siteId) {
-		return contactUsService.getContactUs(siteId, true);
-	}
-
-	/******************************************************************************************************/
-	public ContentInfo getContent(
-			int siteId, Content content, boolean checkExpiry,
-			boolean updateStatistics) {
-		return processContent(siteId, content, checkExpiry, updateStatistics);
-	}
-
-//	public ContentInfo getContent(
-//			int siteId, String contentNaturalKey, boolean checkExpiry,
-//			boolean updateStatistics) {
-//		Content content = contentService.getContent(siteId, contentNaturalKey);
-//
-//		return processContent(siteId, content, checkExpiry, updateStatistics);
-//	}
-
-	public List<Comment> getComments(long contentId) {
-		return contentService.getComments(contentId);
-	}
-
-	public ContentInfo processContent(
-			int siteId, Content content, boolean checkExpiry, boolean updateStatistics) {
-		if (content == null) {
-			return null;
+		if (null != user) {
+			pageView.setUserId(user.getUserId());
+			pageView.setUsername(user.getUsername());
 		}
 
-		if (checkExpiry) {
-			if (!Utility.isContentPublished(content)) {
-				return null;
-			}
-		}
-
-		if (content.getSiteId() != siteId) {
-			return null;
-		}
-
-		if (updateStatistics) {
-			content.setHitCounter(content.getHitCounter() + 1);
-		}
-
-		contentService.updateContent(content);
-
-		ContentInfo contentInfo = formatContent(content);
-
-		return contentInfo;
-	}
-
-	public ContentInfo formatContent(Content content) {
-		ContentInfo contentInfo = new ContentInfo();
-
-		contentInfo.setNaturalKey(content.getNaturalKey());
-		contentInfo.setContentId(content.getContentId());
-		contentInfo.setTitle(content.getTitle());
-		contentInfo.setShortDescription(content.getShortDescription());
-		String desc = content.getDescription();
-		contentInfo.setDescription(desc.replace("img src", "img data-src"));
-		contentInfo.setHitCounter(content.getHitCounter());
-
-		int score = contentService.getContentRate(content.getContentId());
-
-		contentInfo.setScore(score);
-
-		List<Item> items = itemService.getItemsByContentId(content.getContentId());
-
-		for (Item item : items) {
-			shortenItemDescription(item);
-		}
-
-//		setExtraFields
-		contentInfo.setItems(items);
-
-		contentInfo.setContentContributors(content.getContentContributors());
-		contentInfo.setContentBrands(content.getContentBrands());
-		contentInfo.setCategory(content.getCategory());
-
-//		User user = userService.getUser(content.getCreateBy());
-		User user = content.getCreateBy();
-
-		contentInfo.setUpdateDate(Format.getDate(content.getUpdateDate()));
-		contentInfo.setCreateBy(user);
-		contentInfo.setCreateDate(Format.getDate(content.getCreateDate()));
-
-		if (Format.isNullOrEmpty(content.getPageTitle())) {
-			contentInfo.setKeywords(content.getTitle());
-		}
-		else {
-			contentInfo.setKeywords(content.getPageTitle());
-		}
-
-		contentInfo.setPageTitle(content.getTitle());
-
-		String contextPath = ServletContextUtil.getContextPath();
-
-		String frontEndUrlPrefix = Constants.FRONTEND_URL_PREFIX;
-
-		if (Validator.isNotNull(frontEndUrlPrefix)) {
-			frontEndUrlPrefix = StringPool.SLASH + frontEndUrlPrefix;
-		}
-
-		String contentUrl = contextPath + frontEndUrlPrefix + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
-
-		contentInfo.setContentUrl(contentUrl);
-
-		contentInfo.setDefaultImageUrl(null);
-
-//		String imageUrlPrefix = contextPath + "/images";
-//		String imageUrlPrefix = "/service/imageprovider";
-
-		/*if (content.getImage() != null) {*/
-		if (content.getFeaturedImage() != null) {
-			contentInfo.setDefaultImageUrl(content.getFeaturedImage());
-			/*contentInfo.setDefaultImageUrl(imageUrlPrefix + "?type=C&imageId=" + content.getImage().getImageId());*/
-		}
-
-		return contentInfo;
-	}
-
-	private Item shortenItemDescription(Item item) {
-		String desc = item.getDescription();
-
-		if (desc.length() > 200) {
-			desc = desc.substring(0, 200);
-
-			if (desc.indexOf("img") > 0) {
-				desc = desc.substring(0, desc.indexOf("<img"));
-			}
-
-			item.setDescription(desc);
-		}
-
-		return item;
-	}
-
-	public HomeInfo getHome(int siteId) {
-		HomeInfo homeInfo = new HomeInfo();
-
-		List<HomePage> homePages = homePageService.getHomePagesBySiteIdAndFeatureData(siteId);
-
-		for (HomePage homePage : homePages) {
-			if (homePage.getContent() != null) {
-				Content content = contentService.getContent(homePage.getContent().getContentId());
-
-				if (!Utility.isContentPublished(content)) {
-					break;
-				}
-
-				ContentInfo contentInfo = formatContent(content);
-
-				contentInfo.setFeature(true);
-
-				homeInfo.setHomePageFeatureData(contentInfo);
-			}
-		}
-
-		Pagination<HomePage> page = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteId, new RowBounds(0, 5));
-
-//		homePages = homePageService.getHomePagesBySiteIdAndFeatureDataNotY(siteId);
-		homePages = page.getData();
-
-		List<DataInfo> dataInfos = new ArrayList<DataInfo>();
-
-//		Vector<DataInfo> vector = new Vector<DataInfo>();
-
-		for (HomePage homePage : homePages) {
-			if (homePage.getContent() != null) {
-//				Content content = homePage.getContent();
-				Content content = contentService.getContent(homePage.getContent().getContentId());
-
-				if (!Utility.isContentPublished(content)) {
-					continue;
-				}
-
-				dataInfos.add(formatContent(content));
-			}
-		}
-
-//		Object homePageDatas[] = new Object[vector.size()];
-
-//		vector.copyInto(homePageDatas);
-//		homeInfo.setHomePageDatas(homePageDatas);
-		homeInfo.setHomePageDatas(dataInfos);
-
-		Site site = siteService.getSite(siteId);
-
-//		String pageTitle = Utility.getParam(site, Constants.HOME_TITLE);
-
-		homeInfo.setPageTitle(site.getTitle());
-		homeInfo.setPage(page);
-
-		return homeInfo;
+		kafkaTemplate.send(Constants.KAFKA_TOPIC_PAGE_VIEW, pageView.toString());
 	}
 
 //	public SectionInfo getSection(

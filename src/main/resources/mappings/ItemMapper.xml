@@ -93,6 +93,7 @@
 		FROM item i
 		<include refid="itemJoins"/>
 		WHERE i.content_id = #{contentId}
+		ORDER BY i.update_date DESC
 	</select>
 
 	<select id="getItemsByBrandId" resultMap="itemResult">
@@ -101,6 +102,7 @@
 		FROM item i
 		<include refid="itemJoins"/>
 		WHERE i.brand_id = #{brandId}
+		ORDER BY i.update_date DESC
 	</select>
 
 	<select id="getItemsByContentIdAndBrandId" resultMap="itemResult">

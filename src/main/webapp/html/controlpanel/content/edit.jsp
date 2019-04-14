@@ -172,6 +172,10 @@ function removeContent() {
 						<form:checkbox path="published" />
 						Published
 					</label>
+					<label class="checkbox-inline">
+						<form:checkbox path="featureData" />
+						Feature Data
+					</label>
 				</div>
 			</div>
 			<c:if test="${!content['new']}">

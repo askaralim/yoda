@@ -20,7 +20,6 @@ import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.data.PageInfo;
 import com.yoda.portal.content.data.SearchInfo;
-import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.util.Format;
 import com.yoda.util.StringPool;
@@ -43,12 +42,10 @@ public class FrontendSearchController extends BaseFrontendController {
 			e.printStackTrace();
 		}
 
-		SiteInfo siteInfo = getSite(site);
-
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 
 		ContentIndexer indexer = new ContentIndexer();
 		BrandIndexer brandIndexer = new BrandIndexer();

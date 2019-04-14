@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.yoda.pageview.persistence.PageViewMapper">
+<mapper namespace="com.yoda.pageview.persistence.PageViewDataMapper">
 	<cache />
 
-	<sql id="pageViewColumns">
+	<sql id="pageViewDataColumns">
 		p.id,
 		p.user_id AS userId,
 		p.username,
@@ -20,46 +20,46 @@
 		SELECT count(*) from page_view
 	</select>
 
-	<select id="getById" resultType="PageView">
+	<select id="getById" resultType="PageViewData">
 		SELECT 
-			<include refid="pageViewColumns"/>
+			<include refid="pageViewDataColumns"/>
 		FROM page_view p
 		WHERE p.id = #{id}
 	</select>
 
-	<select id="getPageViews" resultType="PageView">
+	<select id="getPageViewDatas" resultType="PageViewData">
 		SELECT 
-			<include refid="pageViewColumns"/>
+			<include refid="pageViewDataColumns"/>
 		FROM page_view p 
 		ORDER BY p.create_date DESC
 	</select>
 
-	<select id="getPageViewsByIP" resultType="PageView">
+	<select id="getPageViewDatasByIP" resultType="PageViewData">
 		SELECT 
-			<include refid="pageViewColumns"/>
+			<include refid="pageViewDataColumns"/>
 		FROM page_view p 
 		WHERE p.ip like CONCAT('%', #{ip}, '%')
 		ORDER BY p.create_date DESC
 	</select>
 
-	<select id="getPageViewsByPage" resultType="PageView">
+	<select id="getPageViewDatasByPage" resultType="PageViewData">
 		SELECT 
-			<include refid="pageViewColumns"/>
+			<include refid="pageViewDataColumns"/>
 		FROM page_view p 
 		WHERE p.page_type = #{param1}
 		AND p.page_id = #{param2}
 		ORDER BY p.create_date DESC
 	</select>
 
-	<select id="getPageViewsByUserId" resultType="PageView">
+	<select id="getPageViewDatasByUserId" resultType="PageViewData">
 		SELECT 
-			<include refid="pageViewColumns"/>
+			<include refid="pageViewDataColumns"/>
 		FROM page_view p 
 		WHERE p.user_id = #{userId}
 		ORDER BY p.create_date DESC
 	</select>
 
-	<insert id="insert" parameterType="PageView" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="PageViewData" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO page_view(user_id, username, user_ip_address, page_type, page_id, page_name, page_url, create_date)
 		VALUES(#{userId}, #{username}, #{userIPAddress}, #{pageType}, #{pageId}, #{pageName}, #{pageUrl}, #{createDate})
 	</insert>

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.yoda.kernal.servlet.ServletContextUtil;
-import com.yoda.pageview.model.PageView;
+import com.yoda.pageview.model.PageViewData;
 import com.yoda.pageview.service.PageViewService;
 import com.yoda.user.model.User;
 
@@ -16,7 +16,7 @@ public class PageViewUtil {
 	public static void viewPage(HttpServletRequest request, int pageType, int pageId, String pageName) {
 		String ip = PortalUtil.getClientIP(request);
 
-		PageView pageView = new PageView();
+		PageViewData pageView = new PageViewData();
 
 		pageView.setCreateDate(new Date());
 		pageView.setPageId(pageId);
@@ -32,7 +32,7 @@ public class PageViewUtil {
 			pageView.setUsername(user.getUsername());
 		}
 
-		getService().addPageView(pageView);
+		getService().addPageViewData(pageView);
 	}
 
 	private static PageViewService getService() {

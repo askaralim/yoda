@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.portal.FrontendContentEditValidator;
 import com.yoda.content.model.Content;
+import com.yoda.content.service.ContentService;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.portal.content.data.SiteInfo;
+import com.yoda.portal.FrontendContentEditValidator;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 import com.yoda.util.Format;
@@ -27,6 +28,8 @@ import com.yoda.util.StringPool;
 @Controller
 @RequestMapping(value = "/content/add")
 public class FrontendContentAddController extends BaseFrontendController {
+	@Autowired
+	protected ContentService contentService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView setupForm(
@@ -41,13 +44,11 @@ public class FrontendContentAddController extends BaseFrontendController {
 
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("user", currentUser);
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 
 		Content content = new Content();
 
@@ -56,6 +57,7 @@ public class FrontendContentAddController extends BaseFrontendController {
 		return new ModelAndView("portal/user/contentEdit", model);
 	}
 
+	/* not used */
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView submitAdd(
 			@ModelAttribute("content") Content content,

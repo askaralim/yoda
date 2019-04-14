@@ -15,9 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
-import com.yoda.kernal.util.PageViewUtil;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 import com.yoda.util.Constants;
@@ -25,29 +23,37 @@ import com.yoda.util.Constants;
 @Controller
 @RequestMapping("/item")
 public class FrontEndItemController extends BaseFrontendController {
+	Logger logger = Logger.getLogger(FrontEndItemController.class);
+
 	@Autowired
 	ItemService itemService;
 
 	@RequestMapping(value="/{itemId}", method = RequestMethod.GET)
-	public ModelAndView showBrand(
+	public ModelAndView showItem(
 			@PathVariable("itemId") int itemId,
 			Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) {
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		Item item = itemService.getItem(itemId);
 
-		item.setHitCounter(item.getHitCounter() + 1);
+//		item.setHitCounter(item.getHitCounter() + 1);
 
-		itemService.update(item);
+		kafkaTemplate.send(Constants.KAFKA_TOPIC_REDIS_INCR, Constants.REDIS_ITEM_HIT_COUNTER, String.valueOf(itemId));
+
+//		itemService.update(item);
 
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 		model.put("item", item);
+
+		model.put("pageTitle", "【"+ item.getName() +"】" + item.getBrand().getName() + " " + item.getName() + "，产品报价、介绍 - " + site.getSiteName());
+		model.put("keywords", item.getBrand().getName() + "," + item.getName() + "," + item.getName() + "介绍," + item.getName() + "怎么样");
+		model.put("description", item.getBrand().getName() + " " + item.getName() + "详细介绍。");
+		model.put("url", request.getRequestURL().toString());
+		model.put("image", "http://" + site.getDomainName() + item.getImagePath());
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
@@ -57,10 +63,9 @@ public class FrontEndItemController extends BaseFrontendController {
 
 		model.put("backURL", backURL);
 
-		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
+		pageView(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
+//		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
 
-		return new ModelAndView("/portal/item/item", model);
+		return new ModelAndView("portal/item/item", model);
 	}
-
-	Logger logger = Logger.getLogger(FrontEndItemController.class);
 }

@@ -2,14 +2,13 @@ package com.yoda.content.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.yoda.BaseEntity;
 import com.yoda.category.model.Category;
+import com.yoda.item.model.Item;
 import com.yoda.menu.model.Menu;
 
 public class Content extends BaseEntity {
@@ -47,15 +46,19 @@ public class Content extends BaseEntity {
 
 	private String featuredImage;
 
+	private String contentUrl;
+
+	private boolean featureData;
+
 //	private Section section;
 
 	private List<ContentContributor> contentContributors = new ArrayList<ContentContributor>();
 
-	private Set<ContentBrand> contentBrands = new HashSet<ContentBrand>();
+	private List<ContentBrand> contentBrands = new ArrayList<ContentBrand>();
 
-//	private Set<Item> items = new HashSet<Item>();
+	private List<Item> items = new ArrayList<Item>();
 
-	private Set<Menu> menus = new HashSet<Menu>();
+	private List<Menu> menus = new ArrayList<Menu>();
 
 	public Long getContentId() {
 		return this.contentId;
@@ -225,11 +228,11 @@ public class Content extends BaseEntity {
 //		this.section = section;
 //	}
 
-	public Set<Menu> getMenus() {
+	public List<Menu> getMenus() {
 		return this.menus;
 	}
 
-	public void setMenus(Set<Menu> menus) {
+	public void setMenus(List<Menu> menus) {
 		this.menus = menus;
 	}
 
@@ -241,11 +244,11 @@ public class Content extends BaseEntity {
 		this.contentContributors = contentContributors;
 	}
 
-	public Set<ContentBrand> getContentBrands() {
+	public List<ContentBrand> getContentBrands() {
 		return contentBrands;
 	}
 
-	public void setContentBrands(Set<ContentBrand> contentBrands) {
+	public void setContentBrands(List<ContentBrand> contentBrands) {
 		this.contentBrands = contentBrands;
 	}
 
@@ -255,21 +258,35 @@ public class Content extends BaseEntity {
 //		contentBrand.setContent(this);
 	}
 
-//	public Set<Item> getItems() {
-//		return items;
-//	}
-//
-//	public void setItems(Set<Item> items) {
-//		this.items = items;
-//	}
+	public List<Item> getItems() {
+		return items;
+	}
 
-//	public void addItem(Item item) {
-//		getItems().add(item);
-//
-//		item.setContent(this);
-//	}
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	public void addItem(Item item) {
+		getItems().add(item);
+	}
 
 	public boolean isNew() {
 		return (this.contentId == null);
+	}
+
+	public String getContentUrl() {
+		return contentUrl;
+	}
+
+	public void setContentUrl(String contentUrl) {
+		this.contentUrl = contentUrl;
+	}
+
+	public boolean isFeatureData() {
+		return featureData;
+	}
+
+	public void setFeatureData(boolean featureData) {
+		this.featureData = featureData;
 	}
 }

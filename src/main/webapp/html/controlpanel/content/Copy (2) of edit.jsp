@@ -1,4 +1,4 @@
-<%@ include file="/html/common/init.jsp" %>
+<%-- <%@ include file="/html/common/init.jsp" %>
 
 <%@ page language="java" import="com.yoda.fckeditor.FckEditorCreator"%>
 
@@ -243,9 +243,9 @@
 										<a class="jc_navigation_link" onclick="jc_image_upload_show(<c:out value='${contentEditCommand.contentId}'/>)" href="javascript:void(0);">
 											Upload&nbsp;image
 										</a>
-										<%-- <a class="jc_navigation_link" onclick="jc_images_remove()" href="javascript:void(0);">
+										<a class="jc_navigation_link" onclick="jc_images_remove()" href="javascript:void(0);">
 											Remove&nbsp;selected&nbsp;images
-										</a> --%>
+										</a>
 									</div>
 									<!-- <input type="file" name="file" class="jc_input_object" width="300px"> -->
 								</td>
@@ -273,7 +273,7 @@
 													</td>
 												</c:if>
 												<form:hidden path="createDefaultImageId" />
-												<%-- <c:forEach items="${contentEditCommand.images}" var="image">
+												<c:forEach items="${contentEditCommand.images}" var="image">
 													<td width="150px" align="center" valign="bottom" class="jc_input_label_small">
 														<img id="${image.imageId}"
 														src='<spring:url value="/controlpanel/content/secureimage" />?imageId='+ ${image.imageId} + '&type=C&maxsize=100'
@@ -287,7 +287,7 @@
 															Set&nbsp;Default
 														</a>
 													</td>
-												</c:forEach> --%>
+												</c:forEach>
 												<td width="100%"></td>
 											</tr>
 										</table>
@@ -349,23 +349,23 @@
 								<td class="jc_input_label">Window Mode</td>
 								<td class="jc_input_label">Window Target</td>
 							</tr>
-							<%-- <form:checkboxes items="${contentEditCommand.selectedMenus}" path="selectedMenusIds" itemLabel="menuLongDesc" itemValue="menuId" /> --%>
+							<form:checkboxes items="${contentEditCommand.selectedMenus}" path="selectedMenusIds" itemLabel="menuLongDesc" itemValue="menuId" />
 							<c:forEach items="${contentEditCommand.selectedMenus}" var="selectedMenu">
 								<tr>
 									<td class="jc_input_control">
-										<%-- <form:checkbox path="contentEditCommand.selectedMenus.menuId" /> --%>
+										<form:checkbox path="contentEditCommand.selectedMenus.menuId" />
 										<input type="checkbox" name="removeMenus" value="${selectedMenu.menuId}">
 									</td>
 									<td>
-										<%-- <form:label path="contentEditCommand.selectedMenus.menuLongDesc" /> --%>
+										<form:label path="contentEditCommand.selectedMenus.menuLongDesc" />
 										<c:out value="${selectedMenu.menuLongDesc}" />
 									</td>
 									<td>
-										<%-- <form:label path="contentEditCommand.selectedMenus.menuWindowMode" /> --%>
+										<form:label path="contentEditCommand.selectedMenus.menuWindowMode" />
 										<c:out value="${selectedMenu.menuWindowMode}" />
 									</td>
 									<td>
-										<%-- <form:label path="contentEditCommand.selectedMenus.menuWindowTarget" /> --%>
+										<form:label path="contentEditCommand.selectedMenus.menuWindowTarget" />
 										<c:out value="${selectedMenu.menuWindowTarget}" />
 									</td>
 								</tr>
@@ -936,4 +936,4 @@ var jc_reset_counter_callback =
 	}
 };
 </script>
-<%@ include file="/html/controlpanel/include/panel.jsp"%>
+<%@ include file="/html/controlpanel/include/panel.jsp"%> --%>

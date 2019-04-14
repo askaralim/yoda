@@ -2,20 +2,20 @@ package com.yoda.portal.content.data;
 
 import java.util.List;
 
-import com.yoda.homepage.model.HomePage;
+import com.yoda.content.model.Content;
 import com.yoda.kernal.model.Pagination;
 
 public class HomeInfo extends DataInfo {
-	List<DataInfo> homePageDatas;
-	DataInfo homePageFeatureData;
+	List<Content> homePageDatas;
+	Content homePageFeatureData;
 	String pageTitle;
-	Pagination<HomePage> page;
+	Pagination<Content> page;
 
-	public Pagination<HomePage> getPage() {
+	public Pagination<Content> getPage() {
 		return page;
 	}
 
-	public void setPage(Pagination<HomePage> page) {
+	public void setPage(Pagination<Content> page) {
 		this.page = page;
 	}
 
@@ -27,19 +27,19 @@ public class HomeInfo extends DataInfo {
 		this.pageTitle = pageTitle;
 	}
 
-	public List<DataInfo> getHomePageDatas() {
+	public List<Content> getHomePageDatas() {
 		return homePageDatas;
 	}
 
-	public void setHomePageDatas(List<DataInfo> homePageDatas) {
+	public void setHomePageDatas(List<Content> homePageDatas) {
 		this.homePageDatas = homePageDatas;
 	}
 
-	public DataInfo getHomePageFeatureData() {
+	public Content getHomePageFeatureData() {
 		return homePageFeatureData;
 	}
 
-	public void setHomePageFeatureData(DataInfo homePageFeatureData) {
+	public void setHomePageFeatureData(Content homePageFeatureData) {
 		this.homePageFeatureData = homePageFeatureData;
 	}
 }

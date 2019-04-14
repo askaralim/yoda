@@ -45,7 +45,7 @@ function submitCancel() {
 			<div class="form-group">
 				<label for="parent"><spring:message code="parent" /></label>
 				<form:select path="parent" cssClass="form-control">
-					<form:option value="" />
+					<form:option value="0" />
 					<c:forEach var="cate" items="${categories}">
 						<form:option value="${cate.categoryId}" label="${cate.name}" />
 					</c:forEach>

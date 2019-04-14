@@ -3,7 +3,7 @@ package com.yoda.portal.content.data;
 import java.util.Hashtable;
 
 public class DataInfo {
-	Hashtable<String, String> attributes;
+	Hashtable<String, String> attributes = new Hashtable<String, String>();
 
 	public Hashtable getAttributes() {
 		return attributes;

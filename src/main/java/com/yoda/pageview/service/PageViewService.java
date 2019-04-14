@@ -5,20 +5,20 @@ import java.util.List;
 import org.apache.ibatis.session.RowBounds;
 
 import com.yoda.kernal.model.Pagination;
-import com.yoda.pageview.model.PageView;
+import com.yoda.pageview.model.PageViewData;
 
 public interface PageViewService {
-	void addPageView(PageView pageView);
+	void addPageViewData(PageViewData pageView);
 
-	Pagination<PageView> getPageViews(RowBounds rowBounds);
+	Pagination<PageViewData> getPageViewDatas(RowBounds rowBounds);
 
-	List<PageView> getPageViews();
+	List<PageViewData> getPageViewDatas();
 
-	PageView getPageView(int id);
+	PageViewData getPageViewData(int id);
 
-	List<PageView> getPageViewsByIP(String ip);
+	List<PageViewData> getPageViewDatasByIP(String ip);
 
-	List<PageView> getPageViewsByPage(int pageType, int pageId);
+	List<PageViewData> getPageViewDatasByPage(int pageType, int pageId);
 
-	List<PageView> getPageViewsByUser(int userId);
+	List<PageViewData> getPageViewDatasByUser(int userId);
 }

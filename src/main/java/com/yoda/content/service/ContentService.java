@@ -44,6 +44,8 @@ public interface ContentService {
 			Integer categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception;
 
+	void updateContentHitCounter(int id, int hitCounter);
+
 	Content getContent(Long contentId);
 
 //	Content getContent(String naturalKey);
@@ -52,6 +54,8 @@ public interface ContentService {
 
 	List<ContentBrand> getContentBrandByBrandId(long brandId);
 
+	ContentContributor getContentContributor(long Id);
+
 	List<ContentContributor> getContentContributor(long contentId, long userId);
 
 	Comment getComment(int commentId);
@@ -59,6 +63,10 @@ public interface ContentService {
 	List<Content> getContents(String title);
 
 	List<Content> getContents(int siteId);
+
+	List<Content> getContentsFeatureData();
+
+	Pagination<Content> getContentsNotFeatureData(int offset, int limit);
 
 	Pagination<Content> getContents(int siteId, RowBounds rowBounds);
 

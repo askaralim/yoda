@@ -1,14 +1,5 @@
 package com.yoda.section;
 
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-
-import com.yoda.menu.model.Menu;
-import com.yoda.section.model.DropDownMenu;
-import com.yoda.section.model.DropDownMenuContainer;
 
 public class DropDownUtil {
 

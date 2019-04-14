@@ -1,4 +1,4 @@
-<%@ include file="/html/common/init.jsp"%>
+<%-- <%@ include file="/html/common/init.jsp"%>
 
 <c:set var="emptyTemplateInfo" scope="request" value="${emptyTemplateInfo}"/>
 <c:out escapeXml="false" value="${emptyTemplateInfo.templatePrefix}"/>
@@ -18,4 +18,4 @@
 	</tr>
 </table>
 
-<c:out escapeXml="false" value="${emptyTemplateInfo.templateSuffix}"/>
+<c:out escapeXml="false" value="${emptyTemplateInfo.templateSuffix}"/> --%>

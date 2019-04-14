@@ -121,6 +121,7 @@
         publish_date date not null comment '',
         expire_date date not null comment '',
         published boolean not null comment '',
+        feature_data boolean not null comment '',
         update_by bigint not null comment '',
         update_date datetime not null comment '',
         create_by bigint not null comment '',

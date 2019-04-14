@@ -1,4 +1,4 @@
-<!--
+#*
 #if ($homeInfo.homePageFeatureData)
 <div class="section">
 	<div class="container">
@@ -50,81 +50,100 @@
 		</div>
 	</div>
 </header>
--->
+*#
 
 <div class="section">
 	<div class="container">
-		<div class="row">
-			<div class="col-sm-8">
-				<div class="home-main">
-					#foreach ($homePageData in $homeInfo.homePageDatas)
-						#if ($velocityCount % 2 == 1)
-							</tr>
-							<tr>
-						#end
-						#set ($info = $homePageData)
-						#if ($homePageData.infoType == "content")
-							#set ($orientation = "left")
-							#parse("common/previewContent.vm")
-						#else
-							#set ($orientation = "top")
-							#parse("common/previewItem.vm")
-						#end
-					#end
-				</div>
-				#if ($homeInfo.page.totalCount > 5)
+		<div class="home-main">
+			<div class="col-sm-12">
+				<div class="home-content">
+					<!--<h1 style="text-align: center">选购参考</h1>-->
 					<div class="row">
-						<div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
-							<button id="more-content" type="button" class="btn btn-default btn-block">#springMessage('more')</button>
+					#foreach ($contentInfo in $homeInfo.homePageDatas)
+						<div class="col-sm-3">
+							#if ($velocityCount % 2 == 1)
+								</tr>
+								<tr>
+							#end
+							#set ($info = $contentInfo)
+								#set ($orientation = "left")
+								#parse("common/previewContent.vm")
 						</div>
+					#end
 					</div>
-				#end
+				</div>
 			</div>
-			<div class="col-sm-3 col-sm-offset-1 home-sidebar">
-				<div class="home-sidebar-module col-xs-12">
-					<h5>#springMessage('top-viewed-brands')</h5>
-					#foreach ($brand in $topViewedBrands)
-						<div class="col-xs-4" style="float:left">
-							<a href='#springUrl("/brand/")$brand.brandId'>
-								<div class="thumbnail" style="width: 50px; height: 50px;">
-									<img src="${brand.imagePath}" class="img-responsive" alt="${brand.name}" style="max-width: 100%; max-height: 100%;">
-								</div>
-							</a>
-						</div>
-					#end
-				</div>
-				<div class="home-sidebar-module col-xs-12">
-					<h5>#springMessage('top-viewed-items')</h5>
-					#foreach ($item in $topViewedItems)
-						<div class="col-xs-4" style="float:left">
-							<a href='#springUrl("/item/")$item.id'>
-								<div class="thumbnail" style="width: 50px; height: 50px;">
-									<img src="${item.imagePath}" class="img-responsive" alt="${item.name}" style="max-width: 100%; max-height: 100%;">
-								</div>
-							</a>
-						</div>
-					#end
-				</div>
-				#if ($homeInfo.homePageFeatureData)
-					<div class="home-sidebar-module home-sidebar-module-inset">
-						<h5>$homeInfo.homePageFeatureData.title</h5>
-						<p>$homeInfo.homePageFeatureData.description</p>
+			#if ($homeInfo.page.totalCount > 4)
+				<div class="row">
+					<div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
+						<button id="more-content" type="button" class="btn btn-default btn-block">#springMessage('more')</button>
 					</div>
-				#end
-				<div class="home-sidebar-module">
-					<h5>#springMessage('social')</h5>
-					<ol class="list-unstyled">
-						<li>
-							<a href="http://weibo.com/taklip" aria-label="weibo">
-								<i class="fa fa-weibo fa-2x fa-fw margin-bottom" aria-hidden="true"></i> taklip太离谱
-							</a>
-						</li>
-						<br>
-						<li>
-							<i class="fa fa-weixin fa-2x fa-fw margin-bottom"></i> taklip太离谱
-							<img src="/yoda/uploads/1/content/qrcode_for_gh_1306e58d35fe_860_L.jpg" width="100%">
-						</li>
-					</ol>
+				</div>
+			#end
+			<div class="col-sm-12">
+				<div class="home-brand">
+					<h1 style="text-align: center">#springMessage('top-viewed-brands')</h1>
+					<div class="row">
+						#foreach ($brand in $topViewedBrands)
+							<div class="col-sm-3" style="text-align: -webkit-center;">
+								<a href='#springUrl("/brand/")$brand.brandId'>
+									<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
+										<img src="${brand.imagePath}" class="img-responsive" alt="${brand.name}">
+									</div>
+								</a>
+								<a href='#springUrl("/brand/")$brand.brandId'>
+									<p>$brand.name</p>
+								</a>
+							</div>
+						#end
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="home-item">
+					<h1 style="text-align: center">#springMessage('top-viewed-items')</h1>
+					<div class="row">
+						#foreach ($item in $topViewedItems)
+							<div class="col-sm-3" style="text-align: -webkit-center;">
+								<a href='#springUrl("/item/")$item.id'>
+									<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
+										<img src="${item.imagePath}" class="img-responsive" alt="${item.name}">
+									</div>
+								</a>
+								<a href='#springUrl("/item/")$item.id'>
+									<p>$item.name</p>
+								</a>
+							</div>
+						#end
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="home-about">
+					<div class="row">
+						<div class="col-sm-12">
+##						#if ($homeInfo.homePageFeatureData)
+							<div class="home-about-inset">
+								<h1 style="text-align: center">$homeInfo.homePageFeatureData.title</h1>
+								<p>$homeInfo.homePageFeatureData.description</p>
+							</div>
+##						#end
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<h4>#springMessage('social')</h4>
+							<div class="col-sm-2">
+								<a href="http://weibo.com/taklip" aria-label="weibo">
+									<i class="fa fa-weibo fa-2x fa-fw margin-bottom" aria-hidden="true"></i> taklip太离谱
+								</a>
+							</div>
+							<div class="col-sm-2">
+								<i class="fa fa-weixin fa-2x fa-fw margin-bottom"></i> taklip太离谱
+								<img src="/yoda/uploads/1/content/qrcode_for_gh_1306e58d35fe_860_L.jpg" width="100%">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -135,7 +154,7 @@
 
 <script type="text/javascript">
 	$(function(){
-		var offset = 5;
+		var offset = 4;
 
 		$('#more-content').click(function(){
 			$.ajax({
@@ -144,8 +163,11 @@
 				data:{
 					offset:offset
 				},
+				contentType: 'text/json,charset=utf-8',
 				dataType: "json",
 				success: function(data){
+					$('.home-content').append('<div class="row">');
+
 					for(var i = 0; i < data.length; i++) {
 						var info = data[i];
 
@@ -155,34 +177,38 @@
 							infoScore = '+' + info.score;
 						}
 
-						$('.home-main').append(
-							'<div class="row content-preview-wrapper-row">'
-								+ '<div class="col-sm-5 content-preview-item">'
-									+ '<div class="content-preview-image">'
-										+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
+						$('.home-content').append(
+							'<div class="col-sm-3">'
+								+'<div class="row content-preview-wrapper-row">'
+									+ '<div class="col-sm-12 content-preview-item">'
+										+ '<div class="content-preview-image">'
+											+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
+										+ '</div>'
 									+ '</div>'
-								+ '</div>'
-								+ '<div class="col-sm-7 content-preview-item">'
-									+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
-									+ '<p class="text-left">'
-										+ '<bd>'
-											+ '<i class="fa fa-eye"></i>'
-											+ info.hitCounter
-											+ '&nbsp'
-											+ '<i class="fa fa-heart"></i>'
-											+ '<span id="score">'
-												+ infoScore
-											+ '</span>'
-										+ '</bd>'
-									+ '</p>'
-									+ '<p>' + info.shortDescription + '</p>'
+									+ '<div class="col-sm-12 content-preview-item">'
+										+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
+										+ '<p class="text-left">'
+											+ '<bd>'
+												+ '<i class="fa fa-eye"></i>'
+												+ info.hitCounter
+												+ '&nbsp'
+												+ '<i class="fa fa-heart"></i>'
+												+ '<span id="score">'
+													+ infoScore
+												+ '</span>'
+											+ '</bd>'
+										+ '</p>'
+										+ '<p>' + info.shortDescription + '</p>'
+									+ '</div>'
 								+ '</div>'
 							+ '</div>'
 						);
 					}
+
+					$('.home-content').append('</div>');
 				}
 			});
-			offset = offset + 5;
+			offset = offset + 4;
 		});
 	});
 </script>

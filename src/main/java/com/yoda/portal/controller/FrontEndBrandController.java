@@ -26,9 +26,7 @@ import com.yoda.content.service.ContentService;
 import com.yoda.item.model.Item;
 import com.yoda.item.service.ItemService;
 import com.yoda.kernal.model.Pagination;
-import com.yoda.kernal.util.PageViewUtil;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 import com.yoda.util.Constants;
@@ -36,6 +34,8 @@ import com.yoda.util.Constants;
 @Controller
 @RequestMapping("/brand")
 public class FrontEndBrandController extends BaseFrontendController {
+	Logger logger = Logger.getLogger(FrontEndBrandController.class);
+
 	@Autowired
 	BrandService brandService;
 
@@ -51,8 +51,6 @@ public class FrontEndBrandController extends BaseFrontendController {
 			HttpServletResponse response) {
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		String offsetStr = request.getParameter("offset");
 		int offset = 0;
 
@@ -65,14 +63,14 @@ public class FrontEndBrandController extends BaseFrontendController {
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 		model.put("page", page);
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		model.put("currentUser", currentUser);
 
-		return new ModelAndView("/portal/brand/brands", model);
+		return new ModelAndView("portal/brand/brands", model);
 	}
 
 	@ResponseBody
@@ -94,7 +92,7 @@ public class FrontEndBrandController extends BaseFrontendController {
 			}
 		}
 		catch (JSONException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return array.toString();
@@ -107,31 +105,36 @@ public class FrontEndBrandController extends BaseFrontendController {
 			HttpServletResponse response) {
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		Brand brand = brandService.getBrand(brandId);
 
-		brand.setHitCounter(brand.getHitCounter() + 1);
+//		brand.setHitCounter(brand.getHitCounter() + 1);
+//
+//		brandService.update(brand);
 
-		brandService.update(brand);
+		kafkaTemplate.send(Constants.KAFKA_TOPIC_REDIS_INCR, Constants.REDIS_BRAND_HIT_COUNTER, String.valueOf(brandId));
 
 		List<Item> items = itemService.getItemsByBrandId(brandId);
 
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 		model.put("brand", brand);
 		model.put("items", items);
+
+		model.put("pageTitle", "【" + brand.getName() + "】" + brand.getName() + "品牌介绍" + " - " + site.getSiteName());
+		model.put("keywords", brand.getName() + "," + brand.getName() + "品牌介绍" + "," + brand.getName() + "是什么牌子");
+		model.put("description", "全方位介绍" + brand.getName() + "是什么牌子，及相应推荐产品。");
+		model.put("url", request.getRequestURL().toString());
+		model.put("image", "http://" + site.getDomainName() + brand.getImagePath());
 
 		User currentUser = PortalUtil.getAuthenticatedUser();
 
 		model.put("currentUser", currentUser);
 
-		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
+		pageView(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
+//		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
 
-		return new ModelAndView("/portal/brand/brand", model);
+		return new ModelAndView("portal/brand/brand", model);
 	}
-
-	Logger logger = Logger.getLogger(FrontEndBrandController.class);
 }

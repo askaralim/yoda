@@ -72,6 +72,10 @@ public class Format {
 		return dateformat.parse(input);
 	}
 
+	static public Date getFullDatetime(String input) throws ParseException {
+		return fullDatetimeformat.parse(input);
+	}
+
 	static public String getDate(Date date) {
 		if (date == null) {
 			return null;

@@ -50,10 +50,7 @@ public class BrandEditController {
 			return new ModelAndView("controlpanel/brand/edit", model);
 		}
 		else {
-			Brand brandDb = brandService.update(
-				brand.getBrandId(), brand.getCompany(), brand.getCountry(), 
-				brand.getDescription(), brand.getFoundDate(), brand.getKind(),
-				brand.getName());
+			Brand brandDb = brandService.update(brand);
 
 			model.put("brand", brandDb);
 			model.put("success", "success");

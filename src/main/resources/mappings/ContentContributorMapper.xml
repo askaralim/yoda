@@ -37,6 +37,13 @@
 		WHERE c.id = #{id}
 	</select>
 
+	<select id="getByContentId" resultMap="contentContributorResult">
+		SELECT 
+			<include refid="contentContributorColumns"/>
+		FROM content_contributor c
+		WHERE c.content_id = #{contentId}
+	</select>
+
 	<select id="getByContentIdAndUserId" resultMap="contentContributorResult">
 		SELECT 
 			<include refid="contentContributorColumns"/>

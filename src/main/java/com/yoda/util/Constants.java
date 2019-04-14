@@ -130,4 +130,68 @@ public class Constants {
 	public static final char SECTION_SORT_DESC_DSC = '3';
 
 	public static final char SECTION_SORT_DESC_ASC = '4';
+
+	/* kafka */
+	public static final String KAFKA_TOPIC_PAGE_VIEW = "pageViewTopic";
+
+	public static final String KAFKA_TOPIC_REDIS_INCR = "redisIncrTopic";
+
+//	public static final String TOPIC_CLICK = "clickTopic";
+
+	public static final String KAFKA_BOOTSTRAP_SERVERS = "localhost:9092";
+
+	public static final String KAFKA_GROUP_ID_PAGE_VIEW = "page-view-data";
+
+	public static final String KAFKA_GROUP_ID_REDIS_INCR = "redis-incr-data";
+
+	public static final String KAFKA_CONTAINER_PAGE_VIEW_DATA = "pageViewContainer";
+
+	public static final String KAFKA_CONTAINER_REDIS_INCR = "redisIncrContainer";
+
+	/* redis */
+//	public static final String REDIS_HOME_PAGE_CONTENT_ID_LIST = "homePageContentIdList";
+
+	public static final String REDIS_HOME_PAGE_BRAND_ID_LIST = "homePageBrandIdList";
+
+	public static final String REDIS_HOME_PAGE_ITEM_ID_LIST = "homePageItemIdList";
+
+	public static final String REDIS_CONTENT = "content";
+
+	public static final String REDIS_CONTENT_RATE = "contentRate";
+
+	public static final String REDIS_CONTENT_HIT_COUNTER = "contentHitCounter";
+
+	public static final String REDIS_CONTENT_CONTRIBUROR_LIST = "contentContributorList";
+
+	public static final String REDIS_CONTENT_BRAND_LIST = "contentBrandList";
+
+	public static final String REDIS_CONTENT_ITEM_LIST = "contentItemList";
+
+	public static final String REDIS_CONTENT_BRAND = "contentBrand";
+
+	public static final String REDIS_CONTENT_CONTRIBUROR = "contentContributor";
+
+	public static final String REDIS_CONTENT_FEATURE_DATA_ID_LIST = "contentFeatureDataIdList";
+
+	public static final String REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST = "contentNotFeatureDataIdList";
+
+	public static final String REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST = "contentNotFeatureDataCount";
+
+	public static final String REDIS_BRAND = "brand";
+
+	public static final String REDIS_BRAND_TOP_VIEW_LIST = "brandTopViewList";
+
+	public static final String REDIS_BRAND_HIT_COUNTER = "brandHitCounter";
+
+	public static final String REDIS_BRAND_RATE = "brandRate";
+
+	public static final String REDIS_ITEM = "item";
+
+	public static final String REDIS_ITEM_TOP_VIEW_LIST = "itemTopViewList";
+
+	public static final String REDIS_ITEM_HIT_COUNTER = "itemHitCounter";
+
+	public static final String REDIS_ITEM_RATE = "itemRate";
+
+	public static final String REDIS_CATEGORY = "category";
 }

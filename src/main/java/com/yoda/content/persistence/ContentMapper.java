@@ -16,5 +16,7 @@ public interface ContentMapper extends BaseMapper<Content> {
 
 	List<Content> getContentsByUserId(Long userId);
 
+	List<Content> getContentsByFeatureData(boolean featureData);
+
 	List<Content> search(int siteId, String title, Boolean published, String createBy, String updateBy, String publishDateStart, String publishDateEnd, String expireDateStart, String expireDateEnd);
 }

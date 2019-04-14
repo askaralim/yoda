@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.kernal.util.ChangeImagePath;
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.kernal.util.WebKeys;
 import com.yoda.site.model.Site;
@@ -71,7 +69,7 @@ public class LoginController {
 			try {
 				site = siteService.getSite(currentUser.getLastVisitSiteId());
 			}
-			catch (ObjectNotFoundException e) {
+			catch (Exception e) {
 				logger.info("Site " + currentUser.getLastVisitSiteId()
 					+ " not found for use " + currentUser.getUserId());
 

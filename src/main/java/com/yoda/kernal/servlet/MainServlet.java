@@ -8,11 +8,9 @@ import javax.servlet.http.HttpServlet;
 import org.apache.log4j.Logger;
 
 import com.yoda.install.controller.Installer;
-import com.yoda.kernal.util.ChangeImagePath;
 import com.yoda.kernal.util.PortalInstances;
 
 public class MainServlet extends HttpServlet {
-
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext servletContext = config.getServletContext();
 

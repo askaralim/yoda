@@ -107,7 +107,7 @@
 		<div class="footer-below">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-12">${siteInfo.siteFooter}</div>
+					<div class="col-lg-12">${site.footer}</div>
 				</div>
 			</div>
 		</div>

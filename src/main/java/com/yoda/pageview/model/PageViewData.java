@@ -2,7 +2,9 @@ package com.yoda.pageview.model;
 
 import com.yoda.BaseEntity;
 
-public class PageView extends BaseEntity {
+public class PageViewData extends BaseEntity {
+	private static final long serialVersionUID = -6503671451587448655L;
+
 	private Integer id;
 
 	private Long userId;
@@ -18,6 +20,10 @@ public class PageView extends BaseEntity {
 	private String pageName;
 
 	private String pageUrl;
+
+	private String operate;
+
+	private String createTime;
 
 	public Integer getId() {
 		return id;
@@ -81,5 +87,35 @@ public class PageView extends BaseEntity {
 
 	public void setPageUrl(String pageUrl) {
 		this.pageUrl = pageUrl;
+	}
+
+	public String getOperate() {
+		return operate;
+	}
+
+	public void setOperate(String operate) {
+		this.operate = operate;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	@Override
+	public String toString() {
+		return "PageViewData{"
+					+ "userId:'" + userId + '\'' 
+					+ ", username:'" + username + '\''
+					+ ", userIPAddress:'" + userIPAddress + '\''
+					+ ", pageType:'" + pageType + '\''
+					+ ", pageId:'" + pageId + '\''
+					+ ", pageName:'" + pageName + '\''
+					+ ", pageUrl:'" + pageUrl + '\''
+					+ ", createTime:'" + createTime + '\''
+					+ ", operate:'" + operate + "'}";
 	}
 }

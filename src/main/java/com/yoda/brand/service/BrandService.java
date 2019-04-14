@@ -1,6 +1,5 @@
 package com.yoda.brand.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -18,9 +17,11 @@ public interface BrandService {
 
 	Brand getBrand(int brandId);
 
-	Brand update(int brandId, String company, String country, String description, Date foundedDate, String kind, String name);
-
 	Brand update(Brand brand);
+
+	void updateBrandHitCounter(int id, int hitCounter);
+
+	void updateBrandRating(int id, int rating);
 
 	Brand updateImage(int brandId, MultipartFile file);
 

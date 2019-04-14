@@ -355,20 +355,19 @@ public class GetterUtil {
 		return _parseShort(_trim(value), defaultValue);
 	}
 
-//	public static String get(String value, String defaultValue) {
-//		if (value == null) {
-//			return defaultValue;
-//		}
-//
-//		value = value.trim();
-//
-//		if (value.indexOf(CharPool.RETURN) != -1) {
-//			value = StringUtil.replace(
-//				value, StringPool.RETURN_NEW_LINE, StringPool.NEW_LINE);
-//		}
-//
-//		return value;
-//	}
+	public static String get(String value, String defaultValue) {
+		if (value == null) {
+			return defaultValue;
+		}
+
+		value = value.trim();
+
+		if (value.indexOf(CharPool.RETURN) != -1) {
+			value = value.replace(StringPool.RETURN_NEW_LINE, StringPool.NEW_LINE);
+		}
+
+		return value;
+	}
 
 	public static boolean getBoolean(Object value) {
 		return getBoolean(value, DEFAULT_BOOLEAN);

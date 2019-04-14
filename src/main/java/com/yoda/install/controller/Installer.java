@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.hibernate.cfg.Environment;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -51,10 +50,10 @@ public class Installer {
 		throws IOException {
 		Properties properties = new Properties();
 
-		properties.setProperty(Environment.DRIVER, installationInfo.getDriver());
-		properties.setProperty(Environment.URL, installationInfo.getUrl());
-		properties.setProperty(Environment.USER, installationInfo.getUsername());
-		properties.setProperty(Environment.PASS, installationInfo.getPassword());
+		properties.setProperty("driverClass", installationInfo.getDriver());
+		properties.setProperty("jdbcUrl", installationInfo.getUrl());
+		properties.setProperty("user", installationInfo.getUsername());
+		properties.setProperty("password", installationInfo.getPassword());
 		properties.setProperty(Constants.CONFIG_PROPERTY_WORKINGDIRECTORY, installationInfo.getWorkingDirectory());
 		properties.setProperty(Constants.CONFIG_PROPERTY_LOGDIRECTORY, installationInfo.getLog4jDirectory());
 

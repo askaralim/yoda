@@ -1,16 +1,16 @@
 <div class="row content-preview-wrapper-row">
-	<div class="col-sm-5 content-preview-item">
+	<div class="col-sm-12 content-preview-item">
 		<div class="content-preview-image">
-			#if ($info.defaultImageUrl)
+			#if ($info.featuredImage)
 				#if ($info.feature)
-					<a href="$info.contentUrl"><img src="$info.defaultImageUrl" alt="$info.title"></a>
+					<a href="$info.contentUrl"><img src="$info.featuredImage" alt="$info.title"></a>
 				#else
-					<a href="$info.contentUrl"><img src="$info.defaultImageUrl" width="100%" alt="$info.title"></a>
+					<a href="$info.contentUrl"><img src="$info.featuredImage" width="100%" alt="$info.title"></a>
 				#end
 			#end
 		</div>
 	</div>
-	<div class="col-sm-7 content-preview-item">
+	<div class="col-sm-12 content-preview-item">
 		<h4><a href="$info.contentUrl" class="">$info.title</a></h4>
 		<p class="text-left">
 			<bd>

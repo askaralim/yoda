@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.portal.account.UserSettingsValidator;
-import com.yoda.portal.content.data.SiteInfo;
 import com.yoda.portal.controller.BaseFrontendController;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
@@ -46,12 +45,10 @@ public class UserSettingsController extends BaseFrontendController {
 		model.put("user", user);
 		model.put("tab", "basic");
 
-		SiteInfo siteInfo = getSite(site);
-
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.put("horizontalMenu", horizontalMenu);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 
 		return new ModelAndView("/portal/user/settings", model);
 	}
@@ -67,12 +64,10 @@ public class UserSettingsController extends BaseFrontendController {
 
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		String horizontalMenu = getHorizontalMenu(request, response);
 
 		model.addObject("horizontalMenu", horizontalMenu);
-		model.addObject("siteInfo", siteInfo);
+		model.addObject("site", site);
 
 		new UserSettingsValidator().validate(user, result);
 

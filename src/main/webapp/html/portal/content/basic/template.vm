@@ -1,9 +1,16 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+
+		<meta property="og:type" content="article" />
+		<meta property="og:url" content="$pageInfo.attributes.get('url')" />
+		<meta property="og:title" content="$pageInfo.pageTitle" />
+		<meta property="og:image" content="$pageInfo.attributes.get('image')" />
+		<meta property="og:description" content="$pageInfo.attributes.get('description')" />
+
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="Keywords" content="$pageInfo.keywords">
-		<meta name="Description" content="$siteInfo.siteName">
+		<meta name="Description" content="$pageInfo.attributes.get('description')">
 		<meta property="wb:webmaster" content="a680e5302e30bee6" />
 
 		<title>$pageInfo.pageTitle</title>

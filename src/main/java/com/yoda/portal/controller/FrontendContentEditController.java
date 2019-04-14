@@ -3,7 +3,8 @@ package com.yoda.portal.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -14,31 +15,33 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yoda.portal.FrontendContentEditValidator;
 import com.yoda.content.model.Content;
+import com.yoda.content.service.ContentService;
 import com.yoda.kernal.util.PortalUtil;
-import com.yoda.portal.content.data.SiteInfo;
+import com.yoda.portal.FrontendContentEditValidator;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
 
 @Controller
 @RequestMapping(value = "/content/{contentId}/edit")
 public class FrontendContentEditController extends BaseFrontendController {
+	Logger logger = Logger.getLogger(FrontendContentEditController.class);
 
+	@Autowired
+	protected ContentService contentService;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView setupForm(
 			@PathVariable("contentId") String contentId,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
-		SiteInfo siteInfo = getSite(site);
-
 		Content content = new Content();
 
 		try {
 			content = contentService.getContent(Long.valueOf(contentId));
 		}
-		catch (HibernateObjectRetrievalFailureException e) {
+		catch (Exception e) {
 			logger.error(e.getMessage());
 
 			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
@@ -57,7 +60,7 @@ public class FrontendContentEditController extends BaseFrontendController {
 		model.put("user", currentUser);
 		model.put("horizontalMenu", horizontalMenu);
 		model.put("content", content);
-		model.put("siteInfo", siteInfo);
+		model.put("site", site);
 
 		return new ModelAndView("portal/user/contentEdit", model);
 	}
