@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.HtmlUtils;
@@ -29,8 +30,9 @@ import com.yoda.util.StringPool;
 public class FrontendSearchController extends BaseFrontendController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String setupForm(
-			Map<String, Object> model,
 			HttpServletRequest request, HttpServletResponse response) {
+		ModelMap model = new ModelMap();
+
 		Site site = getSite(request);
 
 		String q = StringPool.BLANK;
@@ -42,9 +44,8 @@ public class FrontendSearchController extends BaseFrontendController {
 			e.printStackTrace();
 		}
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 
 		ContentIndexer indexer = new ContentIndexer();

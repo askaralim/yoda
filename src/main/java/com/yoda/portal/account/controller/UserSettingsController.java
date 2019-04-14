@@ -45,9 +45,8 @@ public class UserSettingsController extends BaseFrontendController {
 		model.put("user", user);
 		model.put("tab", "basic");
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 
 		return new ModelAndView("/portal/user/settings", model);
@@ -60,23 +59,20 @@ public class UserSettingsController extends BaseFrontendController {
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request, HttpServletResponse response)
 		throws Throwable {
-		ModelAndView model = new ModelAndView();
+		ModelMap model = new ModelMap();
 
 		Site site = getSite(request);
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.addObject("horizontalMenu", horizontalMenu);
-		model.addObject("site", site);
+		model.put("site", site);
 
 		new UserSettingsValidator().validate(user, result);
 
 		if(result.hasErrors()) {
-			model.addObject("errors", "errors");
+			model.put("errors", "errors");
 
-			model.setViewName("/portal/user/settings");
-
-			return model;
+			return new ModelAndView("/portal/user/settings", model);
 		}
 
 		User userDb = userService.updateUser(
@@ -87,12 +83,10 @@ public class UserSettingsController extends BaseFrontendController {
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		model.addObject("success", "success");
-		model.addObject("user", userDb);
+		model.put("success", "success");
+		model.put("user", userDb);
 
-		model.setViewName("/portal/user/settings");
-
-		return model;
+		return new ModelAndView("/portal/user/settings", model);
 	}
 
 	Logger logger = Logger.getLogger(UserProfileController.class);

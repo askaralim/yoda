@@ -49,7 +49,7 @@
 	</style>
 	</head>
 	<body id="page-top" class="index">
-		${horizontalMenu}
+		<%@ include file="/html/portal/home/horizontalMenu.jsp"%>
 
 		<tiles:insertAttribute name="content" />
 

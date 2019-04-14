@@ -1,8 +1,6 @@
 package com.yoda.portal.controller;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.ui.ModelMap;
 
 import com.yoda.kernal.util.PortalUtil;
 import com.yoda.pageview.model.PageViewData;
-import com.yoda.portal.content.data.DefaultTemplateEngine;
 import com.yoda.portal.content.frontend.MenuFactory;
 import com.yoda.site.model.Site;
 import com.yoda.user.model.User;
@@ -29,9 +27,8 @@ public class BaseFrontendController {
 	protected KafkaTemplate<String, String> kafkaTemplate;
 
 	public String getHorizontalMenu(
-			HttpServletRequest request, HttpServletResponse response) {
-		Map<String, Object> model = new HashMap<String, Object>();
-
+			HttpServletRequest request, HttpServletResponse response,
+			ModelMap model) {
 		User loginUser = PortalUtil.getAuthenticatedUser();
 
 		if (loginUser != null) {
@@ -54,7 +51,8 @@ public class BaseFrontendController {
 
 		model.put("horizontalMenuCode", horizontalMenuCode);
 
-		return DefaultTemplateEngine.getTemplate(request, response, "components/menus/horizontalMenu.vm", model);
+//		return DefaultTemplateEngine.getTemplate(request, response, "components/menus/horizontalMenu.vm", model);
+		return horizontalMenuCode;
 	}
 
 	public Site getSite(HttpServletRequest request) {

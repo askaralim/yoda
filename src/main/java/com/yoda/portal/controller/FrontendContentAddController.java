@@ -44,10 +44,9 @@ public class FrontendContentAddController extends BaseFrontendController {
 
 		Site site = getSite(request);
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
 		model.put("user", currentUser);
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 
 		Content content = new Content();

@@ -49,9 +49,8 @@ public class UserProfileController extends BaseFrontendController {
 		model.put("user", user);
 		model.put("contents", contents);
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 
 		User currentUser = PortalUtil.getAuthenticatedUser();

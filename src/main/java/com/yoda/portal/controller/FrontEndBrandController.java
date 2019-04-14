@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,8 +48,9 @@ public class FrontEndBrandController extends BaseFrontendController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView showBrands(
-			Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
+		ModelMap model = new ModelMap();
+
 		Site site = getSite(request);
 
 		String offsetStr = request.getParameter("offset");
@@ -60,9 +62,8 @@ public class FrontEndBrandController extends BaseFrontendController {
 
 		Pagination<Brand> page = brandService.getBrands(new RowBounds(offset, 20));
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 		model.put("page", page);
 
@@ -101,8 +102,7 @@ public class FrontEndBrandController extends BaseFrontendController {
 	@RequestMapping(value="/{brandId}", method = RequestMethod.GET)
 	public ModelAndView showBrand(
 			@PathVariable("brandId") int brandId,
-			Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
 		Brand brand = brandService.getBrand(brandId);
@@ -115,9 +115,10 @@ public class FrontEndBrandController extends BaseFrontendController {
 
 		List<Item> items = itemService.getItemsByBrandId(brandId);
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		ModelMap model = new ModelMap();
 
-		model.put("horizontalMenu", horizontalMenu);
+		getHorizontalMenu(request, response, model);
+
 		model.put("site", site);
 		model.put("brand", brand);
 		model.put("items", items);

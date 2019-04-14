@@ -88,9 +88,8 @@ public class FrontendHomeController extends BaseFrontendController {
 			modelMap.put("topViewedBrands", brands);
 			modelMap.put("homeInfo", homeInfo);
 
-			String horizontalMenu = getHorizontalMenu(request, response);
+			getHorizontalMenu(request, response, modelMap);
 
-			modelMap.put("horizontalMenu", horizontalMenu);
 			modelMap.put("site", site);
 //			modelMap.put("pageInfo", pageInfo);
 			modelMap.put("pageTitle", site.getSiteName() + " | " + "小白的购物懒人包、生活方式的供应商");

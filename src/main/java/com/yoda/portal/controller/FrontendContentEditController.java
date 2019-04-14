@@ -53,12 +53,11 @@ public class FrontendContentEditController extends BaseFrontendController {
 			return new ModelAndView("redirect:/login");
 		}
 
-		String horizontalMenu = getHorizontalMenu(request, response);
-
 		ModelMap model = new ModelMap();
 
+		getHorizontalMenu(request, response, model);
+
 		model.put("user", currentUser);
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("content", content);
 		model.put("site", site);
 

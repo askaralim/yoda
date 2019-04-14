@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,8 +32,9 @@ public class FrontEndItemController extends BaseFrontendController {
 	@RequestMapping(value="/{itemId}", method = RequestMethod.GET)
 	public ModelAndView showItem(
 			@PathVariable("itemId") int itemId,
-			Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) {
+		ModelMap model = new ModelMap();
+
 		Site site = getSite(request);
 
 		Item item = itemService.getItem(itemId);
@@ -43,9 +45,8 @@ public class FrontEndItemController extends BaseFrontendController {
 
 //		itemService.update(item);
 
-		String horizontalMenu = getHorizontalMenu(request, response);
+		getHorizontalMenu(request, response, model);
 
-		model.put("horizontalMenu", horizontalMenu);
 		model.put("site", site);
 		model.put("item", item);
 
