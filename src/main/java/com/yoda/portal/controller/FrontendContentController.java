@@ -25,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yoda.content.model.Comment;
 import com.yoda.content.model.Content;
-import com.yoda.content.model.ContentBrand;
 import com.yoda.content.model.ContentUserRate;
 import com.yoda.content.service.ContentService;
 import com.yoda.item.model.Item;
@@ -98,10 +97,6 @@ public class FrontendContentController extends BaseFrontendController {
 
 			for (Item item : items) {
 				shortenItemDescription(item);
-			}
-
-			for (ContentBrand cb : content.getContentBrands()) {
-				cb.setDescription(cb.getDescription().replace("<img src=\"/upload", "<img src=\"/yoda/upload"));
 			}
 
 			String contentUrl = ServletContextUtil.getContextPath() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();

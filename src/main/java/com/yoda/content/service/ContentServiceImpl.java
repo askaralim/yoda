@@ -40,6 +40,7 @@ import com.yoda.item.service.ItemService;
 import com.yoda.kernal.elasticsearch.ContentIndexer;
 import com.yoda.kernal.model.Pagination;
 import com.yoda.kernal.redis.RedisService;
+import com.yoda.kernal.servlet.ServletContextUtil;
 import com.yoda.kernal.util.FileUploader;
 import com.yoda.kernal.util.ImageUploader;
 import com.yoda.kernal.util.PortalUtil;
@@ -255,6 +256,10 @@ public class ContentServiceImpl implements ContentService {
 		}
 
 		content = contentMapper.getById(contentId);
+
+		for (ContentBrand cb : content.getContentBrands()) {
+			cb.setDescription(cb.getDescription().replace("<img src=\"/upload", "<img src=\"/yoda/upload"));
+		}
 
 		this.setContentIntoCache(content);
 
