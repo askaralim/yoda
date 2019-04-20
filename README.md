@@ -1,8 +1,14 @@
-# Yoda Project
+# Yoda for taklip.com
 
-## Overview
+## 运行环境
+- JDK 8
+- Maven
+- MySQL
 
-## Features
-
-## Check Out and Build from Source
-
+## 主要技术
+- Spring Boot
+- Spring Security
+- MyBatis
+- Bootstrap
+- Redis
+- Kafka
