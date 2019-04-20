@@ -1,0 +1,52 @@
+spring:
+   datasource:
+      password: root
+      driverClassName: com.mysql.cj.jdbc.Driver
+      username: root
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://localhost:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+      druid:
+         min-idle: 0
+         max-active: 8
+         initial-size: 5
+         max-wait: 60000
+   kafka:
+      bootstrap-servers: localhost:9092
+      producer:
+         value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+      consumer:
+         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#group-id: yodaTestGroup
+   redis:
+      password: null
+#auto-offset-reset: earliest
+      port: 6379
+      pool:
+         max-idle: 300
+         min-idle: 0
+         max-yotal: 600
+         max-wait: 1000
+      host: localhost
+      timeout: 100000
+logging:
+   level:
+      org:
+         springframework:
+            security: INFO
+      root: INFO
+      sample:
+         mybatis:
+            mapper: DEBUG
+# MyBatis
+# ----------------
+# Orphan comments:
+# ----------------
+# Was at begin of line:46 :#mybatis:
+# Was at begin of line:47 :#    type-aliases-package: com.zyd.blog.persistence.beans
+# Was at begin of line:48 :#    mapper-locations: classpath:/mybatis/*.xml
+# Was at begin of line:49 :# mapper
+# Was at begin of line:50 :#mapper:
+# Was at begin of line:51 :#    mappers:
+# Was at begin of line:52 :#        -
+# Was at begin of line:53 :#    not-empty: false
+# Was at begin of line:54 :#    identity: MYSQL

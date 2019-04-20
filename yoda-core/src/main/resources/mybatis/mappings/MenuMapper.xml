@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.MenuMapper">
+	<cache />
+
+	<sql id="menuColumns">
+		m.menu_id AS menuId,
+		m.site_id AS siteId,
+		m.set_name AS setName,
+		m.title,
+		m.name,
+		m.seq_num AS seqNum,
+		m.parent_id AS parentId,
+		m.menu_type AS menuType,
+		m.menu_url AS menuUrl,
+		m.menu_window_target AS menuWindowTarget,
+		m.menu_window_mode AS menuWindowMode,
+		m.published,
+		m.content_id AS "content.contentId",
+		m.create_by AS "createBy.userId",
+		m.create_date AS createDate,
+		m.update_by AS "updateBy.userId",
+		m.update_date AS updateDate
+	</sql>
+
+	<select id="getById" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.menu_id = #{menuId}
+	</select>
+
+	<select id="getMenusBySiteIdAndParentId" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.site_id = #{param1} AND m.parent_id = #{param2}
+	</select>
+
+	<select id="getMenusBySiteIdAndSetNameAndParentId" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.set_name = #{param1} AND m.parent_id = #{param2}
+		ORDER BY seq_num
+	</select>
+
+	<select id="getMenusRootBySiteIdOrderBySetName" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.site_id = #{siteId} AND m.parent_id = 0
+		ORDER BY set_name
+	</select>
+
+	<select id="getMenuBySiteIdAndName" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.site_id = #{param1}
+		AND m.name = #{param2}
+		ORDER BY set_name
+	</select>
+
+	<!-- <select id="getMenuBySiteIdAndSetName" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.site_id = #{param1} AND m.set_name = #{param2}
+		ORDER BY set_name
+	</select> -->
+
+	<select id="getMenuRootBySiteIdAndSetNameOrderBySetName" resultType="Menu">
+		SELECT 
+			<include refid="menuColumns"/>
+		FROM menu m
+		WHERE m.set_name = #{setName} AND m.parent_id = 0
+		ORDER BY set_name
+	</select>
+
+	<select id="selectMaxSeqNumBySiteIdParentMenuId" resultType="Integer">
+		SELECT 
+			MAX(seqNum)
+		FROM menu m
+		WHERE m.site_id = #{param1} AND m.parent_id = #{param2}
+	</select>
+
+	<!-- <select id="search" resultType="Menu">
+	</select> -->
+
+	<insert id="insert" parameterType="Menu" useGeneratedKeys="true" keyProperty="menu_id">
+		INSERT INTO menu(menu_id, site_id, set_name, title, name, seq_num, parent_id, menu_type, menu_url, menu_window_target, menu_window_mode, published, create_by, create_date, update_by, update_date, section_id, content_id)
+		VALUES(#{menuId}, #{siteId}, #{setName}, #{title}, #{name}, #{seqNum}, #{parentId}, #{menuType}, #{menuUrl}, #{menuWindowTarget}, #{menuWindowMode}, #{published}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{sectionId}, #{contentId})
+	</insert>
+
+	<update id="updateSeqNum" parameterType="Menu">
+		UPDATE menu SET
+			seqNum = seqNum + 1
+		WHERE m.site_id = #{param1} AND m.parent_id = #{param2} AND seq_num >= #{param3}
+	</update>
+
+	<update id="update" parameterType="Menu">
+		UPDATE menu SET
+			site_id = #{siteId}
+			set_name = #{setName},
+			title = #{name},
+			seq_num = #{seqNum},
+			parent_id = #{parentId}
+			menu_type = #{menuType},
+			menu_url = #{menuUrl},
+			menu_window_target = #{menuWindowTarget},
+			menu_window_mode = #{menuWindowMode},
+			published = #{published},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+			section_id = #{sectionId},
+			content_id = #{contentId},
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM menu WHERE menu_id = #{menuId}
+	</delete>
+</mapper>

@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+   profiles:
+      include:
+      - core-dev
+   application:
+      name: yoda-portal
+   servlet:
+      multipart:
+         max-file-size: 50MB
+         max-request-size: 50MB
+   http:
+      encoding:
+         enabled: true
+         charset: UTF-8
+# ----------------
+         force: true
+# logging settings
+   messages:
+      basename: messages/messages
+      encoding: UTF-8
+#resources:
+#  static-locations: classpath:/static/
+   banner:
+      charset: UTF-8
+# ----------------
+# Orphan comments:
+# ----------------
+# Was at begin of line:26 :# Orphan comments:
+# Was at begin of line:27 :# ----------------
+# Was at begin of line:28 :# Was at begin of line:24 :# logging:
+# Was at begin of line:29 :# Was at begin of line:25 :#    path: /var/tmp/yoda-portal-web
+
+logging:
+   level:
+      root: WARN
+      org.springframework.web: DEBUG
+      org.springframework.security: DEBUG

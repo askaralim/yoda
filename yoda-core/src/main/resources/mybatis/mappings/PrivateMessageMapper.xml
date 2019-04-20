@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.PrivateMessageMapper">
+	<cache />
+
+	<resultMap id="privateMessageResult" type="PrivateMessage">
+		<id property="id" column="id" />
+		<result property="rootId" column="root_id" />
+		<result property="createDate" column="create_date" />
+		<result property="description" column="description" />
+		<association property="messageFrom" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="messageTo" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+		<association property="user" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+	</resultMap>
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+		<result property="profilePhotoSmall" column="profile_photo_small" />
+	</resultMap>
+
+	<!-- <sql id="commentColumns">
+		m.id,
+		m.root_id AS root_id,
+		m.create_date AS create_date,
+		m.description,
+		u.user_id,
+		u.username,
+		u.profile_photo_small
+		u.user_id,
+		u.username,
+		u.profile_photo_small,
+		uu.user_id AS u_user_id,
+		uu.username AS u_username
+	</sql>
+
+	<sql id="commentJoins">
+		LEFT OUTER JOIN user_ u on c.user_id = u.user_id
+	</sql>
+
+	<select id="getById" resultMap="commentResult">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+			<include refid="commentJoins"/>
+		WHERE c.id = #{id}
+	</select>
+
+	<select id="getCommentsByContentId" resultMap="commentResult">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+			<include refid="commentJoins"/>
+		WHERE c.content_id = #{contentId} ORDER BY create_date DESC
+	</select>
+
+	<select id="getCommentsBySiteId" resultMap="commentResult">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+			<include refid="commentJoins"/>
+		WHERE c.site_id = #{siteId} ORDER BY create_date DESC
+	</select>
+
+	<select id="getCommentsByUserId" resultMap="commentResult">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM comment c
+			<include refid="commentJoins"/>
+		WHERE c.user_id = #{userId} ORDER BY create_date DESC
+	</select>
+
+	<insert id="insert" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO comment(id, content_id, user_id, create_date, description, rating, site_id)
+		VALUES(#{id}, #{contentId}, #{user.userId}, #{createDate}, #{description}, #{rating}, #{siteId})
+	</insert>
+
+	<update id="update" parameterType="Comment">
+	</update> -->
+
+	<delete id="delete">
+		DELETE FROM comment WHERE id = #{id}
+	</delete>
+</mapper>

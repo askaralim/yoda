@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.UserMapper">
+	<cache />
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="accountNonExpired" column="account_non_expired" />
+		<result property="accountNonLocked" column="account_non_locked" />
+		<result property="credentialsNonExpired" column="credentials_non_expired" />
+		<result property="addressLine1" column="address_line1" />
+		<result property="addressLine2" column="address_line2" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="cityName" column="city_name" />
+		<!-- <result property="createBy.userId" column="createBy.user_id" /> -->
+		<result property="createDate" column="create_date" />
+		<!-- <result property="updateBy.userId" column="updateBy.user_id" /> -->
+		<result property="updateDate" column="update_date" />
+		<result property="enabled" column="enabled" />
+		<result property="stateName" column="state_name" />
+		<result property="countryName" column="country_name" />
+		<result property="zipCode" column="zip_code" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="profilePhoto" column="profile_photo" />
+		<result property="profilePhotoSmall" column="profile_photo_small" />
+		<result property="lastLoginDate" column="last_login_date" />
+		<result property="lastVisitSiteId" column="last_visit_site_id" />
+		<association property="createBy" column="user_id" javaType="User" resultMap="createOrUpdateUserResult" />
+		<association property="updateBy" column="user_id" javaType="User" resultMap="createOrUpdateUserResult" columnPrefix="u_" />
+		<collection property="authorities" ofType="UserAuthority">
+			<id property="id" column="authority_id" />
+			<result property="userId" column="authority_user_id" />
+			<result property="authorityName" column="authority_name" />
+		</collection>
+		<!-- <id property="userId" column="user_id" />
+		<result property="accountNonExpired" column="user_account_non_expired" />
+		<result property="accountNonLocked" column="user_account_non_locked" />
+		<result property="credentialsNonExpired" column="user_credentials_non_expired" />
+		<result property="addressLine1" column="user_address_line1" />
+		<result property="addressLine2" column="user_address_line2" />
+		<result property="username" column="user_username" />
+		<result property="password" column="user_password" />
+		<result property="cityName" column="user_city_name" />
+		<result property="createBy.userId" column="createBy.userId" />
+		<result property="createDate" column="create_date" />
+		<result property="updateBy.userId" column="user_updateBy.userId" />
+		<result property="updateDate" column="user_update_date" />
+		<result property="enabled" column="user_enabled" />
+		<result property="stateName" column="user_state_name" />
+		<result property="countryName" column="user_country_name" />
+		<result property="zipCode" column="user_zip_code" />
+		<result property="email" column="user_email" />
+		<result property="phone" column="user_phone" />
+		<result property="lastLoginDate" column="user_last_login_date" />
+		<result property="lastVisitSiteId" column="user_last_visit_site_id" />
+		<collection property="authorities" ofType="UserAuthority">
+			<id property="id" column="authority_id" />
+			<result property="userId" column="user.user_id" />
+			<result property="authorityName" column="authority_name" />
+		</collection> -->
+	</resultMap>
+
+	<resultMap id="createOrUpdateUserResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+	</resultMap>
+
+	<sql id="userColumns">
+		<!-- u.user_id AS user_id,
+		u.account_non_expired AS user_account_non_expired,
+		u.account_non_locked AS user_account_non_locked,
+		u.credentials_non_expired AS user_credentials_non_expired,
+		u.address_line1 AS user_address_line1,
+		u.address_line2 AS user_address_line2,
+		u.username AS user_username,
+		u.password AS user_password,
+		u.city_name AS user_city_name,
+		u.create_by AS "createBy.userId",
+		u.create_date AS user_create_date,
+		u.update_by AS "updateBy.userId",
+		u.update_date AS user_update_date,
+		u.enabled AS user_enabled,
+		u.state_name AS user_state_name,
+		u.country_name AS user_country_name,
+		u.zip_code AS user_zip_code,
+		u.email AS user_email,
+		u.phone AS user_phone,
+		u.last_login_date AS user_last_login_date,
+		u.last_visit_site_id AS user_last_visit_site_id,
+		au.id AS authority_id,
+		au.user_id AS authority_user_id,
+		au.authority_name AS authority_name -->
+		u.user_id AS user_id,
+		u.account_non_expired AS account_non_expired,
+		u.account_non_locked AS account_non_locked,
+		u.credentials_non_expired AS credentials_non_expired,
+		u.address_line1 AS address_line1,
+		u.address_line2 AS address_line2,
+		u.username,
+		u.password,
+		u.city_name AS city_name,
+		<!-- u.create_by AS "createBy.user_id", -->
+		u.create_date AS create_date,
+		<!-- u.update_by AS "updateBy.user_id", -->
+		u.update_date AS update_date,
+		u.enabled,
+		u.state_name AS state_name,
+		u.country_name AS country_name,
+		u.zip_code AS zip_code,
+		u.email,
+		u.phone,
+		u.profile_photo AS profile_photo,
+		u.profile_photo_small AS profile_photo_small,
+		u.last_login_date AS last_login_date,
+		u.last_visit_site_id AS last_visit_site_id,
+		<!-- au.id AS "authorities.id",
+		au.user_id AS "authorities.userId",
+		au.authority_name AS "authorities.authorityName" -->
+		au.id AS authority_id,
+		au.user_id AS authority_user_id,
+		au.authority_name AS authority_name,
+		cu.user_id,
+		cu.username,
+		uu.user_id AS u_user_id,
+		uu.username AS u_username
+	</sql>
+
+	<sql id="userJoins">
+		LEFT OUTER JOIN authority au ON u.user_id = au.user_id
+		LEFT OUTER JOIN user_ cu on u.create_by = u.user_id
+		LEFT OUTER JOIN user_ uu on u.update_by = uu.user_id
+	</sql>
+
+	<select id="getById" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM user_ u
+		<include refid="userJoins"/>
+		WHERE u.user_id = #{userId}
+	</select>
+
+	<select id="getUserByUsername" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM user_ u
+		<include refid="userJoins"/>
+		WHERE u.username = #{username}
+	</select>
+
+	<select id="getUserByEmail" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM user_ u
+		<include refid="userJoins"/>
+		WHERE u.email = #{email}
+	</select>
+
+	<select id="getUsers" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM user_ u
+		<include refid="userJoins"/>
+		ORDER BY u.user_id ASC
+	</select>
+
+	<select id="search" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM user_ u
+		<include refid="userJoins"/>
+		<where>
+			1 = 1
+			<if test="userId != null and userId != ''">
+				AND u.user_id = #{userId}
+			</if>
+			<if test="username != null and username != ''">
+				AND u.username like CONCAT('%', #{username}, '%')
+			</if>
+			<if test="authorityName != null and authorityName != ''">
+				JOIN authority au ON au.user_id = u.user_id AND au.authorityName = #{authorityName}
+			</if>
+			<if test="enable != null and enable != ''">
+				AND u.enable = #{enable}
+			</if>
+		</where>
+		ORDER BY u.user_id
+	</select>
+
+	<insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+		INSERT INTO user_(user_id, account_non_expired, account_non_locked, credentials_non_expired, address_line1, address_line2, username, password, city_name, create_by, create_date, update_by, update_date, enabled, state_name, country_name, zip_code, email, phone, profile_photo, profile_photo_small, last_login_date, last_visit_site_id)
+		VALUES(#{userId}, #{accountNonExpired}, #{accountNonLocked}, #{credentialsNonExpired}, #{addressLine1}, #{addressLine2}, #{username}, #{password}, #{cityName}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{enabled}, #{stateName}, #{countryName}, #{zipCode}, #{email}, #{phone}, #{profilePhoto}, #{profilePhotoSmall}, #{lastLoginDate}, #{lastVisitSiteId})
+	</insert>
+
+	<update id="update" parameterType="User">
+		UPDATE user_ SET
+			account_non_expired = #{accountNonExpired},
+			account_non_locked = #{accountNonLocked},
+			credentials_non_expired = #{credentialsNonExpired},
+			address_line1 = #{addressLine1},
+			address_line2 = #{addressLine2},
+			username = #{username},
+			password = #{password},
+			city_name = #{cityName},
+			update_by = #{updateBy.userId},
+			update_date = #{updateDate},
+			enabled = #{enabled},
+			state_name = #{stateName},
+			country_name = #{countryName},
+			zip_code = #{zipCode},
+			email = #{email},
+			phone = #{phone},
+			profile_photo = #{profilePhoto},
+			profile_photo_small = #{profilePhotoSmall},
+			last_login_date = #{lastLoginDate},
+			last_visit_site_id = #{lastVisitSiteId}
+		WHERE user_id = #{userId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM user_ WHERE user_id = #{userId}
+	</delete>
+
+	<insert id="insertUserRole">
+		INSERT INTO authority(id, user_id, authority_name)
+		VALUES(#{id}, #{userId}, #{authorityName})
+	</insert>
+</mapper>

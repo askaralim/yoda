@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.ContentUserRateMapper">
+	<cache />
+
+	<resultMap id="contentUserRateResult" type="ContentUserRate">
+		<id property="id" column="id" />
+		<result property="contentId" column="content_id" />
+		<result property="createDate" column="create_date" />
+		<result property="score" column="score" />
+		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
+	</resultMap>
+
+	<resultMap id="userResult" type="User">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+	</resultMap>
+
+	<sql id="contentUserRateColumns">
+		c.id,
+		c.content_id AS content_id,
+		c.create_date AS create_date,
+		c.score,
+		u.user_id,
+		u.username
+	</sql>
+
+	<sql id="contentUserRateJoins">
+		LEFT OUTER JOIN user_ u on c.create_by = u.user_id
+	</sql>
+
+	<!-- <select id="getById" resultMap="contentUserRateResult">
+		SELECT 
+			<include refid="contentUserRateColumns"/>
+		FROM content_user_rate c
+			<include refid="contentUserRateJoins"/>
+		WHERE c.id = #{id}
+	</select> -->
+
+	<select id="getContentUserRateByContentIdAndUserId" resultMap="contentUserRateResult">
+		SELECT 
+			<include refid="contentUserRateColumns"/>
+		FROM content_user_rate c
+			<include refid="contentUserRateJoins"/>
+		WHERE c.content_id = #{param1} AND c.create_by = #{param2}
+	</select>
+
+	<select id="getContentUserRatesByContentId" resultMap="contentUserRateResult">
+		SELECT 
+			<include refid="contentUserRateColumns"/>
+		FROM content_user_rate c
+			<include refid="contentUserRateJoins"/>
+		WHERE c.content_id = #{contentId} ORDER BY create_date DESC
+	</select>
+
+	<select id="getContentRate" resultType="int">
+		SELECT SUM(score) FROM content_user_rate WHERE content_id = #{contentId}
+	</select>
+
+	<insert id="insert" parameterType="ContentUserRate" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO content_user_rate(id, content_id, create_by, create_date, score)
+		VALUES(#{id}, #{contentId}, #{createBy.userId}, #{createDate}, #{score})
+	</insert>
+
+	<delete id="delete">
+		DELETE FROM content_user_rate WHERE id = #{id}
+	</delete>
+</mapper>

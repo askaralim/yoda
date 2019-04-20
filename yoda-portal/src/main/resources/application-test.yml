@@ -1,0 +1,8 @@
+# SPRING PROFILES
+spring:
+   profiles:
+      include:
+      - core-test
+# logging settings
+logging:
+   path: /var/tmp/yoda-portal[]

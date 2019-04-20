@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.FeedbackMapper">
+	<cache />
+
+	<sql id="feedbackColumns">
+		f.id,
+		f.username,
+		f.email,
+		f.phone,
+		f.description,
+		f.create_date AS createDate
+	</sql>
+
+	<select id="getById" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM feedback f
+		WHERE f.id = #{id}
+	</select>
+
+	<select id="getFeedbacks" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM feedback f
+		ORDER BY f.id DESC
+	</select>
+
+	<insert id="insert" parameterType="Feedback" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO feedback(id, username, email, phone, description, create_date)
+		VALUES(#{id}, #{username}, #{email}, #{phone}, #{description}, #{createDate})
+	</insert>
+
+	<update id="update" parameterType="Category">
+	</update>
+
+	<delete id="delete">
+		DELETE FROM feedback WHERE id = #{id}
+	</delete>
+</mapper>
