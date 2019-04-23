@@ -47,6 +47,9 @@ public class ItemServiceImpl implements ItemService {
 	@Autowired
 	private RedisService redisService;
 
+	@Autowired
+	ImageUploader imageUpload;
+
 	@Transactional(readOnly = true)
 	public Item getItem(int itemId) {
 		Item item = getItemFromCached(itemId);
@@ -208,8 +211,6 @@ public class ItemServiceImpl implements ItemService {
 
 	public Item updateItemImage(int id, MultipartFile file) {
 		Item item = itemMapper.getById(id);
-
-		ImageUploader imageUpload = new ImageUploader();
 
 		imageUpload.deleteImage(item.getImagePath());
 

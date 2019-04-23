@@ -1,10 +1,6 @@
 <%@ include file="../../common/init.jsp"%>
 
-<%@ page language="java" import="com.taklip.yoda.util.FckEditorCreator"%>
-
-<jsp:useBean id="content" type="com.taklip.yoda.model.Content" scope="request" />
-
-<script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
+<%@ page language="java" import="com.taklip.yoda.tools.FckEditorCreator"%>
 
 <!--  tab panel -->
 <script type="text/javascript">
@@ -31,7 +27,8 @@ function removeContent() {
 	<li>Content Maintenance</li>
 </ol>
 
-<form:form method="post" modelAttribute="content" name="fm">
+<form:form modelAttribute="content" name="fm" id="contentForm" action="/controlpanel/content/save">
+	<input id="contentType" name="contentType" type="hidden" value="content">
 	<form:hidden path="contentId" />
 
 	<c:if test="${success != null}">
@@ -59,8 +56,12 @@ function removeContent() {
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="text" /></label>
+				<%-- <form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/> --%>
+				<div id="editor" style="width: 100%;height: 500px;">
+					
+				</div>
 				<%
-				out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription()));
+					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription())); */
 				%>
 			</div>
 			<%-- <div class="form-group">
@@ -78,10 +79,12 @@ function removeContent() {
 				<form:textarea path="pageTitle" cssClass="form-control" />
 			</div>
 			<c:if test="${content['new']}">
-				<input type="submit" value='<spring:message code="save" />' class="btn btn-sm btn-primary" role="button">
+				<%-- <input id="saveContent" type="submit" value='<spring:message code="save" />' class="btn btn-sm btn-primary" role="button"> --%>
+				<input id="saveContent" value='<spring:message code="save" />' class="btn btn-sm btn-primary" role="button">
 			</c:if>
 			<c:if test="${!content['new']}">
-				<input type="submit" value='<spring:message code="update" />' class="btn btn-sm btn-primary" role="button">
+				<%-- <input id="saveContent" type="submit" value='<spring:message code="update" />' class="btn btn-sm btn-primary" role="button"> --%>
+				<input id="saveContent" value='<spring:message code="update" />' class="btn btn-sm btn-primary" role="button">
 			</c:if>
 			<input type="button" value='<spring:message code="cancel" />' class="btn btn-sm btn-default" role="button" onclick="return submitBackForm();">
 		</div>
@@ -359,13 +362,34 @@ function removeContent() {
 <script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
 <script src='<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />'></script>
 <!-- Multiple Select -->
-<script src='<c:url value="/resources/js/chosen.jquery.min.js" />'></script>
 
 <!-- <script type="text/javascript">
 	$(".chosen-select").chosen();
 </script> -->
 
 <script type="text/javascript">
+contentId = '${contentID}';
+$(function () {
+    yoda.wangEditor.init({
+        container: "#editor",
+        textareaName: "description",
+        uploadUrl: "/api/uploadFile",
+        uploadFileName: "file",
+        uploadType: "content",
+        customCss: {
+            "height": "100%",
+            "max-height": "450px"
+        }
+    })
+});
+/* 
+var E = window.wangEditor
+var editor = new E('#editor')
+editor.customConfig.uploadImgServer = '/upload'
+editor.customConfig.showLinkImg = false
+
+editor.create(); */
+
 $('#publishDate').datepicker({
 	format : "yyyy-mm-dd",
 	weekStart : 1,
@@ -376,6 +400,11 @@ $('#expireDate').datepicker({
 	format : "yyyy-mm-dd",
 	weekStart : 1,
 	todayHighlight : true
+});
+
+$('#saveContent').click(function(){
+	$("#description").text(editor.txt.html());
+	$("#contentForm").submit();
 });
 
 function resetCounter() {

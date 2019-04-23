@@ -260,12 +260,7 @@ public class ItemController {
 
 		JSONObject jsonResult = new JSONObject();
 
-		try {
-			jsonResult.put("rating", rating);
-		}
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
+		jsonResult.put("rating", rating);
 
 		return jsonResult.toString();
 	}

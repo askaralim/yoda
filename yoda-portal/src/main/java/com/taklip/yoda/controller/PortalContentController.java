@@ -43,7 +43,6 @@ import com.taklip.yoda.util.PortalUtil;
 import com.taklip.yoda.validator.FrontendContentEditValidator;
 
 @Controller
-@RequestMapping(value="/content")
 public class PortalContentController extends PortalBaseController {
 	protected Logger logger =  LoggerFactory.getLogger(this.getClass());
 
@@ -53,7 +52,7 @@ public class PortalContentController extends PortalBaseController {
 	@Autowired
 	protected ItemService itemService;
 
-	@RequestMapping(value="/{contentId}", method = RequestMethod.GET)
+	@RequestMapping(value="/content/{contentId}", method = RequestMethod.GET)
 	public ModelAndView showContent(
 			@PathVariable("contentId") String contentId,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -171,7 +170,7 @@ public class PortalContentController extends PortalBaseController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/{contentId}/rate" ,method = RequestMethod.POST)
+	@RequestMapping(value="/content/{contentId}/rate" ,method = RequestMethod.POST)
 	public String score(
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("thumb") String thumb,
@@ -194,7 +193,7 @@ public class PortalContentController extends PortalBaseController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/page", method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
+	@RequestMapping(value="/content/page", method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
 	public String showPagination(
 			@RequestParam(value="offset", defaultValue="0") Integer offset) {
 		Pagination<Content> page = contentService.getContentsNotFeatureData(offset, 4);

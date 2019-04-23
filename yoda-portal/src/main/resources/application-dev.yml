@@ -11,6 +11,7 @@ spring:
       multipart:
          max-file-size: 50MB
          max-request-size: 50MB
+         #location: /yoda/uploads/
    http:
       encoding:
          enabled: true
@@ -37,4 +38,4 @@ logging:
    level:
       root: WARN
       org.springframework.web: DEBUG
-      org.springframework.security: DEBUG
+      org.springframework.security: WARN

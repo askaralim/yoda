@@ -13,7 +13,7 @@ spring:
    kafka:
       bootstrap-servers: localhost:9092
       producer:
-         value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+         value-serializer: org.apache.kafka.common.serialization.StringSerializer
       consumer:
          value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 #group-id: yodaTestGroup
@@ -37,6 +37,9 @@ logging:
       sample:
          mybatis:
             mapper: DEBUG
+
+yoda:
+   file-location: /yoda/uploads/
 # MyBatis
 # ----------------
 # Orphan comments:

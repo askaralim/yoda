@@ -26,6 +26,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers("/FCKeditor/**").permitAll()
+				.antMatchers("/file/**").permitAll()
 				.antMatchers("/controlpanel/**").hasRole("ADMIN")
 				.and().exceptionHandling().accessDeniedPage("/403")
 				.and().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password").defaultSuccessUrl("/login/success").failureUrl("/login?error");

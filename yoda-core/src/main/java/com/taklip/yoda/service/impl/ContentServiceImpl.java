@@ -39,11 +39,9 @@ import com.taklip.yoda.model.HomePage;
 import com.taklip.yoda.model.Menu;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
-import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.CategoryService;
 import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.HomePageService;
-import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.FileUploader;
@@ -91,19 +89,20 @@ public class ContentServiceImpl implements ContentService {
 	private CategoryService categoryService;
 
 	@Autowired
-	private ItemService itemService;
+	ImageUploader imageUpload;
 
-	@Autowired
-	private BrandService brandService;
-
-	public void addContent(int siteId, Content content, Integer categoryId) {
-		try {
-			content.setNaturalKey(encode(content.getTitle()));
+	@Override
+	public void saveContent(Integer siteId, Content content, Integer categoryId) throws Exception {
+		if (null == content.getContentId()) {
+			this.addContent(siteId, content, categoryId);
 		}
-		catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		else {
+			this.updateContent(siteId, content, categoryId);
 		}
+	}
 
+	public void addContent(int siteId, Content content, Integer categoryId) throws Exception {
+		content.setNaturalKey(encode(content.getTitle()));
 		content.setHitCounter(0);
 		content.setSiteId(siteId);
 		content.setScore(0);
@@ -654,6 +653,14 @@ public class ContentServiceImpl implements ContentService {
 		resetContentNotFeatureDataListIntoCache();
 		this.setContentIntoCache(contentDb);
 
+		if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
+			this.setContentNotFeatureDatasIntoCache(content.getContentId());
+			redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
+		}
+		else if (content.isFeatureData() && content.isPublished() && content.isHomePage()) {
+			this.setContentFeatureDatasIntoCache(content.getContentId());
+		}
+
 		return contentDb;
 	}
 
@@ -718,8 +725,6 @@ public class ContentServiceImpl implements ContentService {
 	public Content updateContentImage(
 			int siteId, Long contentId, MultipartFile image) {
 		Content content = getContent(contentId);
-
-		ImageUploader imageUpload = new ImageUploader();
 
 		imageUpload.deleteImage(content.getFeaturedImage());
 
@@ -1060,6 +1065,7 @@ public class ContentServiceImpl implements ContentService {
 			contentIds.add(String.valueOf(content.getContentId()));
 		}
 
+		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
 		redisService.setList(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, contentIds, 0);
 		setContentNotFeatureDataCountIntoCache(contentIds.size());
 	}

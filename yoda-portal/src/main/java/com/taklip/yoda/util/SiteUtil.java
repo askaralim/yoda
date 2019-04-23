@@ -2,13 +2,10 @@ package com.taklip.yoda.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.service.SiteService;
+import com.taklip.yoda.support.SpringContextHolder;
 
 public class SiteUtil {
 	private static final Logger logger = LoggerFactory.getLogger(SiteUtil.class);
@@ -29,12 +26,7 @@ public class SiteUtil {
 	}
 
 	private static SiteService getService() {
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-
-		if (null != requestAttributes) {
-			siteService = (SiteService)WebApplicationContextUtils.getRequiredWebApplicationContext(
-				((ServletRequestAttributes) requestAttributes).getRequest().getServletContext()).getBean("siteServiceImpl");
-		}
+		siteService = (SiteService) SpringContextHolder.getBean("siteServiceImpl");
 
 		return siteService;
 	}

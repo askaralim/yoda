@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.elasticsearch.ContentIndexer;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Category;
 import com.taklip.yoda.model.Content;
@@ -36,7 +35,6 @@ import com.taklip.yoda.model.ContentContributor;
 import com.taklip.yoda.model.HomePage;
 import com.taklip.yoda.model.Menu;
 import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.CategoryService;
@@ -78,11 +76,11 @@ public class ContentController {
 	BrandService brandService;
 
 	@RequestMapping(value="/controlpanel/content", method = RequestMethod.GET)
-	public String showPanel(Map<String, Object> model, HttpServletRequest request) {
-
-		User user = AuthenticatedUtil.getAuthenticatedUser();
-
-		String offset = request.getParameter("offset");
+	public String showPanel(
+			Map<String, Object> model,
+			@RequestParam(name = "offset", required = false) String offset,
+			HttpServletRequest request) {
+//		String offset = request.getParameter("offset");
 
 		int offsetInt = 0;
 
@@ -90,7 +88,8 @@ public class ContentController {
 			offsetInt = Integer.valueOf(offset) * 10;
 		}
 
-		Pagination<Content> page = contentService.getContents(user.getLastVisitSiteId(), new RowBounds(offsetInt, 10));
+		Pagination<Content> page = contentService.getContents(
+				SiteUtil.getDefaultSite().getSiteId(), new RowBounds(offsetInt, 10));
 
 		model.put("page", page);
 		model.put("searchForm", new ContentSearchForm());
@@ -116,8 +115,8 @@ public class ContentController {
 		return new ModelAndView("controlpanel/content/edit", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.POST)
-	public ModelAndView processSubmit(
+	@RequestMapping(value = "/controlpanel/content/save", method = RequestMethod.POST)
+	public ModelAndView save(
 			@ModelAttribute Content content,
 			@RequestParam("categoryId") Integer categoryId,
 			BindingResult result, SessionStatus status,
@@ -128,39 +127,97 @@ public class ContentController {
 		ModelMap model = new ModelMap();
 
 		if(result.hasErrors()) {
-			model.put("errors", "errors");
-
 			List<Category> categories = categoryService.getCategories();
 
 			model.put("categories", categories);
+			model.put("errors", "errors");
 
 			return new ModelAndView("controlpanel/content/edit", model);
 		}
 
-		Site site = SiteUtil.getDefaultSite();
+		contentService.saveContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
 
-		contentService.addContent(site.getSiteId(), content, categoryId);
+		saveContentContributors(request, content);
+
+		model.put("content", content);
+		model.put("success", "success");
 
 		return new ModelAndView("redirect:/controlpanel/content/" + content.getContentId() + "/edit", model);
 	}
+
+//	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.POST)
+//	public ModelAndView processSubmit(
+//			@ModelAttribute Content content,
+//			@RequestParam("categoryId") Integer categoryId,
+//			BindingResult result, SessionStatus status,
+//			HttpServletRequest request)
+//		throws Throwable {
+//		new ContentEditValidator().validate(content, result);
+//
+//		ModelMap model = new ModelMap();
+//
+//		if(result.hasErrors()) {
+//			model.put("errors", "errors");
+//
+//			List<Category> categories = categoryService.getCategories();
+//
+//			model.put("categories", categories);
+//
+//			return new ModelAndView("controlpanel/content/edit", model);
+//		}
+//
+//		contentService.addContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
+//
+//		return new ModelAndView("redirect:/controlpanel/content/" + content.getContentId() + "/edit", model);
+//	}
+//
+//	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.POST)
+//	public ModelAndView updateContent(
+//			@ModelAttribute Content content,
+//			@RequestParam("categoryId") Integer categoryId,
+//			BindingResult result, SessionStatus status,
+//			HttpServletRequest request)
+//		throws Throwable {
+//		new ContentEditValidator().validate(content, result);
+//
+//		ModelMap model = new ModelMap();
+//
+//		if(result.hasErrors()) {
+//			model.put("errors", "errors");
+//
+//			return new ModelAndView("controlpanel/content/edit", model);
+//		}
+//
+//		Content contentDb = contentService.updateContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
+//
+//		saveContentContributors(request, contentDb);
+//
+//		if (getHomePage(SiteUtil.getDefaultSite().getSiteId(), content.getContentId()) != null) {
+//			contentDb.setHomePage(true);
+//		}
+//
+//		List<Category> categories = categoryService.getCategories();
+//
+//		model.put("categories", categories);
+//		model.put("content", contentDb);
+//		model.put("success", "success");
+//
+//		new ContentIndexer().updateIndex(content);
+//
+//		return new ModelAndView("controlpanel/content/edit", model);
+//	}
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.GET)
 	public String initUpdateForm(
 			@PathVariable("contentId") long contentId,
 			Map<String, Object> model, HttpServletRequest request) {
-		Site site = SiteUtil.getDefaultSite();
-
 		Content content = contentService.getContent(contentId);
 
-//		copyProperties(command, content);
-
-//		createAdditionalInfo(user, content, command);
-
-		content.setHomePage(false);
-
-		if (getHomePage(site.getSiteId(), content.getContentId()) != null) {
-			content.setHomePage(true);
-		}
+//		content.setHomePage(false);
+//
+//		if (getHomePage(SiteUtil.getDefaultSite().getSiteId(), content.getContentId()) != null) {
+//			content.setHomePage(true);
+//		}
 
 		List<Category> categories = categoryService.getCategories();
 
@@ -168,53 +225,6 @@ public class ContentController {
 		model.put("content", content);
 
 		return "controlpanel/content/edit";
-	}
-
-	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.POST)
-	public ModelAndView updateContent(
-			@ModelAttribute Content content,
-			@RequestParam("categoryId") Integer categoryId,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request)
-		throws Throwable {
-		Site site = SiteUtil.getDefaultSite();
-
-		new ContentEditValidator().validate(content, result);
-
-		ModelMap model = new ModelMap();
-
-		if(result.hasErrors()) {
-			model.put("errors", "errors");
-
-			return new ModelAndView("controlpanel/content/edit", model);
-		}
-
-		Content contentDb = contentService.updateContent(site.getSiteId(), content, categoryId);
-
-		saveContentContributors(request, contentDb);
-
-//		Indexer.getInstance(siteId).removeContent(content);
-//		Indexer.getInstance(siteId).indexContent(content);
-
-//		copyProperties(command, content);
-
-//		createAdditionalInfo(user, content, content);
-
-//		uploadImage(content.getContentId(), contentImage, request, response);
-
-		if (getHomePage(site.getSiteId(), content.getContentId()) != null) {
-			contentDb.setHomePage(true);
-		}
-
-		List<Category> categories = categoryService.getCategories();
-
-		model.put("categories", categories);
-		model.put("content", contentDb);
-		model.put("success", "success");
-
-		new ContentIndexer().updateIndex(content);
-
-		return new ModelAndView("controlpanel/content/edit", model);
 	}
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.GET)
@@ -425,7 +435,7 @@ public class ContentController {
 
 		contentService.updateContent(content);
 
-		JSONObject jsonResult = createJsonSelectedMenus(user.getLastVisitSiteId(), content);
+		JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
 
 		jsonResult.put("updateBy", content.getUpdateBy());
 		jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
@@ -456,7 +466,7 @@ public class ContentController {
 		if (addMenus != null) {
 			for (int i = 0; i < addMenus.length; i++) {
 				menuService.updateMenu(
-					user.getLastVisitSiteId(), addMenus[i], content, null, "",
+					SiteUtil.getDefaultSite().getSiteId(), addMenus[i], content, null, "",
 					menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
 			}
 		}
@@ -466,7 +476,7 @@ public class ContentController {
 
 		contentService.updateContent(content);
 
-		JSONObject jsonResult = createJsonSelectedMenus(user.getLastVisitSiteId(), content);
+		JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
 
 		jsonResult.put("updateBy", content.getUpdateBy());
 		jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
@@ -490,7 +500,6 @@ public class ContentController {
 		throws Throwable {
 //		User user = PortalUtil.getAuthenticatedUser();
 
-		Site site = SiteUtil.getDefaultSite();
 
 		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/content/" + contentId + "/edit";
@@ -501,7 +510,7 @@ public class ContentController {
 		}
 
 		contentService.updateContentImage(
-			site.getSiteId(), contentId, file);
+			SiteUtil.getDefaultSite().getSiteId(), contentId, file);
 
 //		ImageScaler scaler = null;
 //
@@ -764,12 +773,8 @@ public class ContentController {
 	public String search(
 			@ModelAttribute ContentSearchForm form, Map<String, Object> model)
 		throws Throwable {
-		User user = AuthenticatedUtil.getAuthenticatedUser();
-
-		int siteId = user.getLastVisitSiteId();
-
 		List<Content> contents = contentService.search(
-			siteId, form.getTitle(), form.getPublished(),
+			SiteUtil.getDefaultSite().getSiteId(), form.getTitle(), form.getPublished(),
 			null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
 			form.getExpireDateStart(), form.getExpireDateEnd());
 

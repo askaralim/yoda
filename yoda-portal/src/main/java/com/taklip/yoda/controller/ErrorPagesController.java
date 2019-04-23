@@ -37,6 +37,15 @@ public class ErrorPagesController implements ErrorController {
 		this.errorAttributes = errorAttributes;
 	}
 
+	@RequestMapping("/")
+	public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response, WebRequest webRequest) {
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		Map<String, Object> model = getErrorAttributes(webRequest, isIncludeStackTrace(request, MediaType.TEXT_HTML));
+		model.put("queryString", request.getQueryString());
+
+		return new ModelAndView("html/" + response.getStatus(), model);
+	}
+
 	@RequestMapping("/404")
 	public ModelAndView errorHtml404(HttpServletRequest request, HttpServletResponse response, WebRequest webRequest) {
 		response.setStatus(HttpStatus.NOT_FOUND.value());

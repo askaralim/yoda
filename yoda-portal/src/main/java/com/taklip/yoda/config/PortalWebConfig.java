@@ -38,12 +38,7 @@ public class PortalWebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//		registry.addResourceHandler("/uploads/**").addResourceLocations("/uploads/")
-//			.setCachePeriod(2592000);
 		registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/static/");
-//		registry.addResourceHandler("/FCKeditor/**").addResourceLocations("/FCKeditor/")
-//			.setCachePeriod(2592000);
-//		registry.addResourceHandler("/template/basic/**").addResourceLocations("/html/portal/resources/")
-//			.setCachePeriod(2592000);
+		registry.addResourceHandler("/uploads/**").addResourceLocations("file:///" + System.getProperties().getProperty("user.home") + "/yoda/uploads/");
 	}
 }

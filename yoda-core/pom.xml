@@ -15,10 +15,11 @@
 	<name>Yoda Core</name>
 	<description>taklip.com yoda core</description>
 
-	<properties>
+	<!-- <properties>
 		<java.version>1.8</java.version>
 		<imgscalr.version>4.2</imgscalr.version>
-	</properties>
+		<elasticsearch.version>1.7.0</elasticsearch.version>
+	</properties> -->
 
 	<dependencies>
 		<dependency>
@@ -60,7 +61,6 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

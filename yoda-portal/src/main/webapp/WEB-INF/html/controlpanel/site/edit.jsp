@@ -1,7 +1,5 @@
 <%@ include file="../../common/init.jsp"%>
 
-<%@ page language="java" import="com.taklip.yoda.util.FckEditorCreator"%>
-
 <script type="text/javascript">
 function submitBackForm() {
 	location.href='<spring:url value="/controlpanel/site/list" htmlEscape="true" />';

@@ -29,6 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.taklip.yoda.model.ImageFile;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.tool.FileUploader;
 import com.taklip.yoda.tool.ImageUploader;
@@ -60,39 +61,6 @@ public class ConnectorController {
 
 //	private static String baseDir;
 	private static boolean debug = false;
-
-	/**
-	 * Initialize the servlet.<br>
-	 * Retrieve from the servlet configuration the "baseDir" which is the root
-	 * of the file repository:<br>
-	 * If not specified the value of "/UserFiles/" will be used.
-	 * 
-	 */
-//	public void init() throws ServletException {
-//		baseDir=getInitParameter("baseDir");
-//
-//		if(baseDir==null)
-//		baseDir="/data/";
-//
-//		String realBaseDir = getServletContext().getRealPath(baseDir);
-//		File baseFile=new File(realBaseDir);
-//
-//		if(!baseFile.exists()){
-//			baseFile.mkdir();
-//		}
-//
-//	}
-
-	/**
-	 * Manage the Get requests (GetFolders, GetFoldersAndFiles, CreateFolder).<br>
-	 * 
-	 * The servlet accepts commands sent in the following format:<br>
-	 * connector?Command=CommandName&Type=ResourceType&CurrentFolder=FolderPath<br>
-	 * <br>
-	 * It execute the command and then return the results to the client in XML
-	 * format.
-	 * 
-	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public void setup(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -278,9 +246,10 @@ public class ConnectorController {
 
 //				fileNameLong = fileNameLong.replace('\\', '/');
 
-				ImageUploader imageUpload = new ImageUploader();
+				ImageUploader imageUpload = new ImageUploader(null);
 
-				newName = imageUpload.uploadImage(file.getInputStream(), file.getOriginalFilename(), currentDirPath);
+				ImageFile uploadFile = imageUpload.uploadImage(file, currentDirPath);
+				newName = uploadFile.getFileName();
 
 //				while (pathToSave.exists()) {
 //					newName = nameWithoutExt + "(" + counter + ")" + "." + ext;

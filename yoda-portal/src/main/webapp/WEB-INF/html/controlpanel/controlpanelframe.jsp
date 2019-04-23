@@ -26,6 +26,7 @@
 		<link rel="stylesheet" href='<c:url value="/resources/css/fileinput.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/datepicker.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/css/chosen.min.css" />' />
+		<!-- <link rel="stylesheet" href="/resources/css/wangEditor.min.css" type="text/css" /> -->
 
 		<!-- <link rel="stylesheet" href="http://fonts.useso.com/css?family=Montserrat:400,700" /> -->
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat:400,700" />
@@ -113,18 +114,58 @@
 
 		<footer class="footer text-center">
 			<div class="container">
-				<p class="text-muted">&copy; Yoda Site, 2015</p>
+				<p class="text-muted">&copy; Yoda Site, 2019</p>
 			</div>
 		</footer>
 
+<div class="modal fade chooseImgModal" id="chooseImgModal" tabindex="-1" role="dialog" aria-labelledby="chooseImgLabelledby" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="chooseImgLabelledby"><i class="fa fa-image fa-fw"></i>素材库</h4>
+            </div>
+            <div class="modal-body material-body">
+                <div class="btn-group" style="width: 100%;margin: 0 5px 5px 5px;padding: 0 0 10px 0;border-bottom: 1px solid #e7e7eb;">
+                    <form action="" id="materialForm">
+                    	<input id="modalContentType" name="modalContentType" type="hidden" value="content">
+                    	<input id="modalContentId" name="modalContentId" type="hidden" value="${content.contentId}">
+                        <input id="input-material-upload" type="file" name="file" multiple="multiple" accept="image/bmp,image/png,image/jpeg,image/jpg,image/gif" style="display: none;">
+                        <button id="btn-material-upload" type="button" class="btn btn-success btn-md" title="本地上传">
+                            <i class="fa fa-cloud-upload fa-fw"></i> 本地上传
+                        </button>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </div>
+                <div class="fade active in material-box">
+                    <ul class="list-unstyled list-file">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="material-status pull-left">已选<span id="selected">0</span>个，可选<span id="selectable">1</span>个</span>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"> 关闭</i></button>
+                <button type="button" class="btn btn-success btn-confirm" data-dismiss="modal"><i class="fa fa-hand-o-up"> 确定</i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
-		<%-- <script src='<c:url value="/resources/js/jquery-2.0.3.min.js" />'></script> --%>
 		<script src='<c:url value="/resources/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
 		<%-- <script src='<c:url value="/resources/js/modernizr-2.6.2-respond-1.1.0.min.js" />'></script> --%>
 		<%-- <script src='<c:url value="/resources/js/fileupload/bootstrap-fileupload.js" />'></script> --%>
 		<script type="text/javascript" src='<c:url value="/resources/js/fileupload/fileinput.js" />'></script>
 		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 		<script src='<c:url value="/resources/js/ie10-viewport-bug-workaround.js" />'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="/resources/js/jquery-form.js"></script>
+		<script type="text/javascript" src="/resources/js/wangEditor.min.js"></script>
+		<script type="text/javascript" src="/resources/js/validator.js"></script>
+		<script type="text/javascript" src="/resources/js/yoda.core.js"></script>
+		<script src="/resources/js/yoda.tool.js"></script>
 	</body>
 </html>

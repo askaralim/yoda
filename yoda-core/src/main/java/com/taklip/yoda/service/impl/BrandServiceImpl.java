@@ -42,6 +42,9 @@ public class BrandServiceImpl implements BrandService {
 	@Autowired
 	private RedisService redisService;
 
+	@Autowired
+	ImageUploader imageUpload;
+
 	public void addBrand(Brand brand) {
 		brand.preInsert();
 
@@ -152,8 +155,6 @@ public class BrandServiceImpl implements BrandService {
 
 	public Brand updateImage(int id, MultipartFile file) {
 		Brand brand = brandMapper.getById(id);
-
-		ImageUploader imageUpload = new ImageUploader();
 
 		imageUpload.deleteImage(brand.getImagePath());
 

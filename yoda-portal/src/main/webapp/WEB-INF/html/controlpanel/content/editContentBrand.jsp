@@ -1,7 +1,5 @@
 <%@ include file="../../common/init.jsp"%>
 
-<%@ page language="java" import="com.taklip.yoda.util.FckEditorCreator"%>
-
 <jsp:useBean id="contentBrand" type="com.taklip.yoda.model.ContentBrand" scope="request" />
 
 <script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
@@ -59,7 +57,7 @@
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
 				<%
-					out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", contentBrand.getDescription()));
+					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", contentBrand.getDescription())); */
 				%>
 			</div>
 			<div class="form-actions">
