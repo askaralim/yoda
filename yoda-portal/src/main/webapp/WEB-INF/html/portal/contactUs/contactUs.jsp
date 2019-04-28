@@ -2,14 +2,10 @@
 
 <div class="container pt">
 	<div class="row mt">
-		<div class="col-lg-8 col-lg-offset-2">
+		<div class="col-lg-6 col-lg-offset-3 contactus">
 			<h3><spring:message code="contact-us" /></h3>
 			<hr>
 			<p><spring:message code="please-do-not-resubmit" /></p>
-		</div>
-	</div>
-	<div class="row mt">
-		<div class="col-lg-6 col-lg-offset-2">
 			<form role="form" method="POST" action='<spring:url value="/feedback/add" />'>
 				<c:forEach var="error" items="${status.errorMessages}">
 					<div class="alert alert-danger" role="alert">
