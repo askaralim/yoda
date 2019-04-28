@@ -228,7 +228,8 @@
 							<img src="${contentInfo.createBy.profilePhotoSmall}" alt="${contentInfo.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
 						</c:otherwise>
 					</c:choose>
-					<a href='<spring:url value="/user/${contentInfo.createBy.userId}" />'>${contentInfo.createBy.username}</a>
+					<!-- <a href='<spring:url value="/user/${contentInfo.createBy.userId}" />'>${contentInfo.createBy.username}</a> -->
+					${contentInfo.createBy.username}
 				</div>
 				<c:if test="${contentInfo.contentContributors.size() > 0}">
 					<div class="home-sidebar-module">
@@ -251,6 +252,20 @@
 						</ul>
 					</div>
 				</c:if>
+			</div>
+			<div class="col-lg-3 home-sidebar">
+				<div class="sidebar-module article-module">
+					<h5 class="custom-title">
+						<i class="fa fa-book fa-fw icon"></i>
+						<strong><spring:message code="content-menu" /></strong>
+						<i class="fa fa-close pull-right close-article-menu pointer hide"></i>
+						<small></small>
+					</h5>
+					<div id="article-menu" style="display: block;">
+						<ul class="list-unstyled">
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -292,6 +307,7 @@
 
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/10.3.0/lazyload.min.js"></script>
+<script type="text/javascript" src="/resources/js/content.js"></script>
 
 <script>
 (function () {

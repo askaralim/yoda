@@ -5,14 +5,24 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.util.AuthenticatedUtil;
 
+@Service
 public class FileUploader {
+	protected final YodaProperties properties;
+
+	@Autowired
+	public FileUploader(YodaProperties properties) {
+		this.properties = properties;
+	}
+
 	private final Logger logger = LoggerFactory.getLogger(FileUploader.class);
 
 	public static final String UPLOAD_BASE_FOLDER = "/uploads/";

@@ -226,19 +226,19 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Deprecated
-	public void deleteContentImage(int siteId, Long contentId) {
-		Content content = getContent(contentId);
-
-		FileUploader fileUpload = new FileUploader();
-
-		fileUpload.deleteFile(content.getFeaturedImage());
-
-		content.setFeaturedImage(StringPool.BLANK);
-		content.setUpdateBy(AuthenticatedUtil.getAuthenticatedUser());
-		content.setUpdateDate(new Date());
-
-		contentMapper.update(content);
-	}
+//	public void deleteContentImage(int siteId, Long contentId) {
+//		Content content = getContent(contentId);
+//
+//		FileUploader fileUpload = new FileUploader();
+//
+//		fileUpload.deleteFile(content.getFeaturedImage());
+//
+//		content.setFeaturedImage(StringPool.BLANK);
+//		content.setUpdateBy(AuthenticatedUtil.getAuthenticatedUser());
+//		content.setUpdateDate(new Date());
+//
+//		contentMapper.update(content);
+//	}
 
 	@Transactional(readOnly = true)
 	public List<Content> getContentByUserId(Long userId) {

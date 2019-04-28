@@ -4,9 +4,9 @@
 <div class="section">
 	<div class="container">
 		<div class="home-main">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="home-content">
+			<!-- <div class="col-sm-12"> -->
+				<div class="home-content">
+					<div class="row">
 					<!--<h1 style="text-align: center">选购参考</h1>-->
 						<c:forEach var="contentInfo" items="${homeInfo.homePageDatas}">
 							<div class="col-sm-3">
@@ -45,7 +45,7 @@
 						</c:forEach>
 					</div>
 				</div>
-			</div>
+			<!-- </div> -->
 			<c:if test="${homeInfo.page.totalCount > 4}">
 				<div class="row">
 					<div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
@@ -147,8 +147,9 @@
 				contentType: 'text/json,charset=utf-8',
 				dataType: "json",
 				success: function(data){
-					$('.home-content').append('<div class="row">');
+					//$('.home-content').append('<div class="row">');
 
+					var text = '<div class="row">';
 					for(var i = 0; i < data.length; i++) {
 						var info = data[i];
 
@@ -157,37 +158,37 @@
 						if (info.score > 0) {
 							infoScore = '+' + info.score;
 						}
-						$('.home-content').append(
-							'<div class="col-sm-3">'
-								+'<div class="content-preview">'
-									+'<div class="row content-preview-wrapper-row">'
-										+ '<div class="col-sm-12 content-preview-item">'
-											+ '<div class="content-preview-image">'
-												+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
-											+ '</div>'
-										+ '</div>'
-										+ '<div class="col-sm-12 content-preview-item">'
-											+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
-											+ '<p class="text-left">'
-												+ '<bd>'
-													+ '<i class="fa fa-eye"></i>'
-													+ info.hitCounter
-													+ '&nbsp'
-													+ '<i class="fa fa-heart"></i>'
-													+ '<span id="score">'
-														+ infoScore
-													+ '</span>'
-												+ '</bd>'
-											+ '</p>'
-											+ '<p>' + info.shortDescription + '</p>'
-										+ '</div>'
+						text += '<div class="col-sm-3">'
+							+'<div class="content-preview">'
+							+'<div class="row content-preview-wrapper-row">'
+								+ '<div class="col-sm-12 content-preview-item">'
+									+ '<div class="content-preview-image">'
+										+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
 									+ '</div>'
 								+ '</div>'
+								+ '<div class="col-sm-12 content-preview-item">'
+									+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
+									+ '<p class="text-left">'
+										+ '<bd>'
+											+ '<i class="fa fa-eye"></i>'
+											+ info.hitCounter
+											+ '&nbsp'
+											+ '<i class="fa fa-heart"></i>'
+											+ '<span id="score">'
+												+ infoScore
+											+ '</span>'
+										+ '</bd>'
+									+ '</p>'
+									+ '<p>' + info.shortDescription + '</p>'
+								+ '</div>'
 							+ '</div>'
-						);
+						+ '</div>'
+					+ '</div>';
 					}
 
-					$('.home-content').append('</div>');
+					text += '</div>';
+
+					$('.home-content').append(text);
 				}
 			});
 			offset = offset + 4;

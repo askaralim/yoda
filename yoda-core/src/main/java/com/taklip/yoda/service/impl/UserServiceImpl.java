@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	ThumbnailUploader thumbnailUploader;
+
 	public User addUser(
 			String userName, String password, String email, String phone,
 			String role, String addressLine1, String addressLine2,
@@ -201,8 +204,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (!profilePhoto.isEmpty()) {
-			ThumbnailUploader thumbnailUploader = new ThumbnailUploader();
-
 			thumbnailUploader.deleteFile(user.getProfilePhoto());
 			thumbnailUploader.deleteFile(user.getProfilePhotoSmall());
 

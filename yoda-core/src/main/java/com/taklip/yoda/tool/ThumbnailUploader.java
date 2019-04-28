@@ -11,8 +11,17 @@ import javax.imageio.ImageIO;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+import com.taklip.yoda.util.AuthenticatedUtil;
+
+@Service
 public class ThumbnailUploader extends FileUploader {
+
+	public ThumbnailUploader(YodaProperties properties) {
+		super(properties);
+	}
+
 	private final Logger logger = LoggerFactory.getLogger(ThumbnailUploader.class);
 
 	private static final String THUMBNAIL_SMALL = "-25-";
@@ -38,6 +47,10 @@ public class ThumbnailUploader extends FileUploader {
 		BufferedImage image = null;
 
 		try {
+			String userHome = System.getProperties().getProperty("user.home");
+			String abolutePath = userHome + properties.getFileLocation() + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH;
+			String imagePath = UPLOAD_BASE_FOLDER + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH;
+
 			image = ImageIO.read(imageInputStream);
 
 			int height = image.getHeight();
@@ -54,7 +67,7 @@ public class ThumbnailUploader extends FileUploader {
 
 			String fileName = this.getRandomFileName() + StringPool.UNDERLINE + maxSize + StringPool.PERIOD + THUMBNAIL_EXTENSION;
 
-			File thumbnail = new File(getRealPath(), fileName);
+			File thumbnail = new File(abolutePath, fileName);
 
 			//may not happen?
 			while (thumbnail.exists()) {
@@ -65,7 +78,7 @@ public class ThumbnailUploader extends FileUploader {
 
 			ImageIO.write(scaledImg, THUMBNAIL_EXTENSION, thumbnail);
 
-			return getUrlPrefix() + thumbnail.getName();
+			return imagePath + thumbnail.getName();
 		}
 		catch (IOException e) {
 			logger.error(e.getMessage());

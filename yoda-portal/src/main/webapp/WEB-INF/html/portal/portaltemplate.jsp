@@ -28,6 +28,7 @@
 
 		<!--<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />' type="text/css" />
+		<link rel="stylesheet" href="/resources/css/fileinput.css" />
 		<link rel="stylesheet" href='<c:url value="/resources/css/main.css" />' type="text/css" />
 		<!--<link rel="stylesheet" href='#springUrl("/resources/css/login.css")' type="text/css" />-->
 
@@ -61,8 +62,9 @@
 		<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 		<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		-->
-		<script type="text/javascript" src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
-		<script type="text/javascript" src='<c:url value="/resources/bootstrap-3.2.0/js/bootstrap.min.js" />'></script>
+		<script type="text/javascript" src="/resources/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/resources/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/resources/js/fileupload/fileinput.js"></script>
 
 		<c:if test="${!empty site.googleAnalyticsId}">
 			<script>

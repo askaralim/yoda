@@ -364,7 +364,7 @@ header .intro-text .name {
 }
 
 .content-preview-wrapper-row {
-	padding: 10px 0;
+	padding: 20px 0;
 }
 
 .home-main h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
@@ -542,6 +542,7 @@ header .intro-text .name {
 	position: absolute;
 	margin-left: 20px;
 	background-color: #777;
+	font-size: 14px;
 }
 
 .content-post-meta {
@@ -777,6 +778,45 @@ blockquote {
 	-o-transition: opacity .25s linear;
 	-ms-transition: opacity .25s linear;
 	transition: opacity .25s linear;
+}
+
+#article-menu {
+	display: none;
+	overflow-y: scroll;
+	max-height: 500px;
+}
+
+#article-menu ul {
+	list-style-type: none;
+	-webkit-padding-start: 0;
+}
+
+#article-menu ul li {
+	line-height: 1.5;
+	white-space: nowrap;
+	word-wrap: normal;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+#article-menu>ul>li:hover, #article-menu>ul>li.active {
+	color: #367fa9;
+	background: #f3f3f3;
+	border-left: 2px solid #367fa9;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	-webkit-transition: all .2s ease;
+	transition: all .2s ease;
+}
+
+#article-menu>ul>li:hover>a, #article-menu>ul>li.active>a {
+	color: #367fa9;
+}
+
+#article-menu>ul>li>a {
+	display: block;
+	padding: 3px 0;
+	color: #000;
 }
 
 /* .content-actions:hover {
