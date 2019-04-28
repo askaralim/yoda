@@ -7,21 +7,31 @@
 			<div class="col-lg-8 col-lg-offset-1">
 				<div class="content-post">
 					<div class="page-header">
-						<h3>${contentInfo.title}</h3>
-						<c:if test="${!empty contentInfo.category}">
-							<span class="label label-default">${contentInfo.category.name}</span>
-						</c:if>
+						<h1 class="content-title">
+							<strong>${contentInfo.title}</strong>
+						</h1>
+						
 						<!--<p>$contentInfo.shortDescription</p>-->
-						<p><!-- <img src="assets/img/user.png" width="50px" height="50px"> --> <bd></bd></p>
-						<p class="text-left">
-							<bd>
-								<i class="glyphicon glyphicon-time"></i>
-								<fmt:formatDate value="${contentInfo.updateDate}" pattern="yyyy-MM-dd" />
-								&nbsp
-								<i class="glyphicon glyphicon-eye-open"></i>
-								${contentInfo.hitCounter}
-							</bd>
-						</p>
+						<!-- <p><img src="assets/img/user.png" width="50px" height="50px"> <bd></bd></p> -->
+						<div class="content-flag">
+							<span class="content-category">
+								<c:if test="${!empty contentInfo.category}">
+									${contentInfo.category.name}
+								</c:if>
+							</span>
+							<div class="content-post-meta text-right">
+								<ul class="list-unstyled list-inline">
+									<li>
+										<i class="glyphicon glyphicon-time"></i>
+										<fmt:formatDate value="${contentInfo.updateDate}" pattern="yyyy-MM-dd" />
+									</li>
+									<li>
+										<i class="glyphicon glyphicon-eye-open"></i>
+										${contentInfo.hitCounter}
+									</li>
+								</ul>
+							</div>
+						</div>
 					</div>
 					<div class="nav-tabs-custom">
 						<ul class="nav nav-tabs">
@@ -33,6 +43,7 @@
 								<li><a data-toggle="tab" href="#tab-recommend"><spring:message code="recommend-product" /></a></li>
 							</c:if>
 						</ul>
+						<div class="content-post-body">
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab-should-know">
 								<p>${contentInfo.description}</p>
@@ -68,7 +79,7 @@
 							</div>
 							<div class="tab-pane" id="tab-brand">
 								<c:forEach var="contentBrand" items="${contentInfo.contentBrands}">
-									<div class="row content-preview-wrapper-row">
+									<div class="row content-preview-wrapper-row" style="border-bottom: 1px solid #f4f4f4;">
 										<div class="col-sm-4">
 											<a href='<spring:url value="/brand/${contentBrand.brandId}" />'>
 												<img data-src='<spring:url value="${contentBrand.brandLogo}"/>' alt="${contentBrand.brandName}" width="150" height="150">
@@ -87,7 +98,7 @@
 							</div>
 							<div class="tab-pane" id="tab-recommend">
 								<c:forEach var="item" items="${contentInfo.items}">
-									<div class="content-preview-wrapper-row">
+									<div class="content-preview-wrapper-row" style="border-bottom: 1px solid #f4f4f4;">
 										<div class="row">
 											<div class="col-sm-4">
 												<a href='<spring:url value="/item/${item.id}?backURL=${backURL}" />'>
@@ -138,6 +149,7 @@
 									</div>
 								</c:forEach>
 							</div>
+						</div>
 						</div>
 					</div>
 				</div>

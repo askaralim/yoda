@@ -56,9 +56,8 @@ function removeContent() {
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="text" /></label>
-				<%-- <form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/> --%>
+				<form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/>
 				<div id="editor" style="width: 100%;height: 500px;">
-					
 				</div>
 				<%
 					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription())); */
@@ -368,11 +367,12 @@ function removeContent() {
 </script> -->
 
 <script type="text/javascript">
-contentId = '${contentID}';
+contentId = '${contentId}';
 $(function () {
     yoda.wangEditor.init({
         container: "#editor",
         textareaName: "description",
+        /* textareaContent: "${content.description}", */
         uploadUrl: "/api/uploadFile",
         uploadFileName: "file",
         uploadType: "content",
@@ -382,13 +382,6 @@ $(function () {
         }
     })
 });
-/* 
-var E = window.wangEditor
-var editor = new E('#editor')
-editor.customConfig.uploadImgServer = '/upload'
-editor.customConfig.showLinkImg = false
-
-editor.create(); */
 
 $('#publishDate').datepicker({
 	format : "yyyy-mm-dd",

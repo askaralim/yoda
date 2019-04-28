@@ -5,7 +5,8 @@ var yoda = window.yoda || {
         _instance: window.wangEditor,
         defaultConfig: {
             container: "#editor",
-            textareaName: "content",
+            //textareaName: "content",
+            //textareaContent: "",
             uploadUrl: "",
             uploadFileName: "file",
             uploadType: "",
@@ -20,10 +21,11 @@ var yoda = window.yoda || {
             // 关闭粘贴样式的过滤
             editor.customConfig.pasteFilterStyle = false;
             editor.customConfig.zIndex = 100;
-            if (config.textareaName) {
-                $('<textarea class="wangeditor-textarea" id="' + config.textareaName + '" name="' + config.textareaName + '" style="display: none" required="required"></textarea>').insertAfter($(config.container));
-            }
-            var $contentBox = $('textarea[name=' + config.textareaName + ']');
+//            if (config.textareaName) {
+//                $('<textarea class="wangeditor-textarea" id="' + config.textareaName + '" name="' + config.textareaName + '" style="display: none" required="required"></textarea>').insertAfter($(config.container));
+//            }
+//            var $contentBox = $('textarea[name=' + config.textareaName + ']');
+            var $contentBox = $('#description');
             editor.customConfig.onchange = function (html) {
                 // 监控变化，同步更新到 textarea
                 $contentBox.val(html);
@@ -43,6 +45,13 @@ var yoda = window.yoda || {
             });
             // 配置编辑器 end
             editor.create();
+
+//            $(config.textareaName).val(config.textareaContent);
+            if(editor){
+//                editor.txt.html(config.textareaContent);
+            	editor.txt.html($('#description').val());
+            }
+
             // 注册全屏插件
             yoda.wangEditor.plugins.registerFullscreen(config.container);
             // 注册图片资源库
