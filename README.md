@@ -1,11 +1,11 @@
-# Yoda for taklip.com
+# Yoda - CMS propotype
 
-## 运行环境
+## Envrionmen
 - JDK 8
 - Maven
 - MySQL
 
-## 主要技术
+## Tools
 - Spring Boot
 - Spring Security
 - MyBatis
