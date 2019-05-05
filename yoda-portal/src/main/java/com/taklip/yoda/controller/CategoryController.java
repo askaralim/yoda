@@ -75,7 +75,7 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "/controlpanel/category/{id}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("id") Integer id, Map<String, Object> model) {
+	public String initUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
 		Category category = categoryService.getCategory(id);
 
 		List<Category> categories = categoryService.getCategories();
@@ -123,7 +123,7 @@ public class CategoryController {
 		String[] arrIds = categoryIds.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
-			Category category = categoryService.getCategory(Integer.valueOf(arrIds[i]));
+			Category category = categoryService.getCategory(Long.valueOf(arrIds[i]));
 
 			categoryService.deleteCategory(category);
 		}

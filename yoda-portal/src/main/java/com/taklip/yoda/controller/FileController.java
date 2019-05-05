@@ -39,7 +39,7 @@ public class FileController {
 
 	@ResponseBody
 	@RequestMapping(value="/add", method = RequestMethod.POST)
-	public JsonResponse save(
+	public JsonResponse<Object> save(
 		Map<String, Object> model,
 		@RequestParam(name = "modalContentId", required = false) Long contentId,
 		@RequestParam(name = "modalContentType", required = false) String contentType,

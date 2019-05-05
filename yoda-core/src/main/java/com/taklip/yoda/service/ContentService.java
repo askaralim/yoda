@@ -14,12 +14,12 @@ import com.taklip.yoda.model.ContentUserRate;
 import com.taklip.yoda.model.Pagination;
 
 public interface ContentService {
-	void addContent(int siteId, Content content, Integer categoryId) throws Exception ;
+	void addContent(int siteId, Content content, Long categoryId) throws Exception ;
 
 	Content addContent(
 			int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			Integer categoryId, String publishDate, String expireDate,
+			Long categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception;
 
 	void addComment(Comment comment);
@@ -32,19 +32,19 @@ public interface ContentService {
 
 //	void deleteContent(Long contentId);
 
-	void deleteComment(int commentId);
+	void deleteComment(Long commentId);
 
 	void updateContent(Content content);
 
-	Content updateContent(int siteId, Content content, Integer categoryId) throws Exception;
+	Content updateContent(int siteId, Content content, Long categoryId) throws Exception;
 
 	Content updateContent(
 			Long contentId, int siteId, String naturalKey, String title,
 			String shortDescription, String description, String pageTitle,
-			Integer categoryId, String publishDate, String expireDate,
+			Long categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception;
 
-	void updateContentHitCounter(int id, int hitCounter);
+	void updateContentHitCounter(Long id, int hitCounter);
 
 	Content getContent(Long contentId);
 
@@ -58,7 +58,7 @@ public interface ContentService {
 
 	List<ContentContributor> getContentContributor(long contentId, long userId);
 
-	Comment getComment(int commentId);
+	Comment getComment(Long commentId);
 
 	List<Content> getContents(String title);
 
@@ -96,5 +96,5 @@ public interface ContentService {
 
 	ContentUserRate getContentUserRateByContentIdAndUserId(Long contentId, Long userId);
 
-	void saveContent(Integer siteId, Content content, Integer categoryId) throws Exception ;
+	void saveContent(Integer siteId, Content content, Long categoryId) throws Exception ;
 }

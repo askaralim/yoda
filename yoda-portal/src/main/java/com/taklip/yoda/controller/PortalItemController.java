@@ -30,7 +30,7 @@ public class PortalItemController extends PortalBaseController {
 
 	@RequestMapping(value="/{itemId}", method = RequestMethod.GET)
 	public ModelAndView showItem(
-			@PathVariable("itemId") int itemId,
+			@PathVariable("itemId") Long itemId,
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 

@@ -1,19 +1,19 @@
 package com.taklip.yoda.model;
 
 public class Category extends BaseEntity {
-	private Integer categoryId;
+	private Long categoryId;
 
 	private String description;
 
 	private String name;
 
-	private Integer parent;
+	private Long parent;
 
-	public Integer getCategoryId() {
+	public Long getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(Integer categoryId) {
+	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
 	}
 
@@ -25,11 +25,11 @@ public class Category extends BaseEntity {
 		this.name = name;
 	}
 
-	public Integer getParent() {
+	public Long getParent() {
 		return parent;
 	}
 
-	public void setParent(Integer parent) {
+	public void setParent(Long parent) {
 		this.parent = parent;
 	}
 

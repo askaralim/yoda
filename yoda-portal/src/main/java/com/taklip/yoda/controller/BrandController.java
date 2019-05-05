@@ -50,7 +50,7 @@ public class BrandController {
 	}
 
 	@RequestMapping(value = "/controlpanel/brand/{brandId}", method = RequestMethod.GET)
-	public ModelAndView viewBrand(@PathVariable("brandId") int brandId) {
+	public ModelAndView viewBrand(@PathVariable("brandId") Long brandId) {
 		Brand brand = brandService.getBrand(brandId);
 
 		return new ModelAndView(
@@ -92,7 +92,7 @@ public class BrandController {
 	}
 
 	@RequestMapping(value = "/controlpanel/brand/{brandId}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("brandId") int brandId, Map<String, Object> model) {
+	public String initUpdateForm(@PathVariable("brandId") Long brandId, Map<String, Object> model) {
 		Brand brand = brandService.getBrand(brandId);
 
 		model.put("brand", brand);
@@ -127,7 +127,7 @@ public class BrandController {
 	@RequestMapping(value = "/controlpanel/brand/{id}/uploadImage", method = RequestMethod.POST)
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
-			@PathVariable("id") int id, HttpServletRequest request,
+			@PathVariable("id") Long id, HttpServletRequest request,
 			HttpServletResponse response)
 		throws Throwable {
 		if (file.getBytes().length <= 0) {
@@ -150,7 +150,7 @@ public class BrandController {
 		String[] arrIds = brandIds.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
-			brandService.deleteBrand(Integer.valueOf(arrIds[i]));
+			brandService.deleteBrand(Long.valueOf(arrIds[i]));
 		}
 
 		return "redirect:/controlpanel/brand";

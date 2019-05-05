@@ -1,7 +1,5 @@
 package com.taklip.yoda.service.impl;
 
-import java.text.Format;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.CategoryMapper;
 import com.taklip.yoda.model.Category;
 import com.taklip.yoda.model.User;
@@ -33,7 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private RedisService redisService;
 
+	@Autowired
+	private IdService idService;
+
 	public void addCategory(Category category) {
+		category.setCategoryId(idService.generateId());
 		category.preInsert();
 
 		categoryMapper.insert(category);
@@ -45,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Category getCategory(Integer id) {
+	public Category getCategory(Long id) {
 		Category category = this.getCategoryFromCached(id);
 
 		if (null != category) {
@@ -64,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	public Category update(
-			Integer id, String name, String description, Integer parent) {
+			Long id, String name, String description, Long parent) {
 		Category category = this.getCategory(id);
 
 		category.setDescription(description);
@@ -84,7 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
 		return category;
 	}
 
-	private Category getCategoryFromCached(int categoryId) {
+	private Category getCategoryFromCached(long categoryId) {
 		Category category = null;
 
 		String key = Constants.REDIS_CATEGORY + ":" + categoryId;
@@ -103,10 +106,10 @@ public class CategoryServiceImpl implements CategoryService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			category.setCategoryId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Integer.valueOf(id) : null);
+			category.setCategoryId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			category.setDescription(StringUtils.isNoneBlank(description) && !"nil".equalsIgnoreCase(description) ? description : null);
 			category.setName(StringUtils.isNoneBlank(name) && !"nil".equalsIgnoreCase(name) ? name : null);
-			category.setParent(StringUtils.isNoneBlank(parent) && !"nil".equalsIgnoreCase(parent) ? Integer.valueOf(parent) : null);
+			category.setParent(StringUtils.isNoneBlank(parent) && !"nil".equalsIgnoreCase(parent) ? Long.valueOf(parent) : null);
 			category.setCreateDate(StringUtils.isNoneBlank(createDate) && !"nil".equalsIgnoreCase(createDate) ? DateUtil.getDate(createDate) : null);
 			category.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getDate(updateDate) : null);
 

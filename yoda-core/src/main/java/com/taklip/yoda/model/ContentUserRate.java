@@ -1,17 +1,17 @@
 package com.taklip.yoda.model;
 
 public class ContentUserRate extends BaseEntity {
-	private Integer id;
+	private Long id;
 
 	private Long contentId;
 
 	private Integer score;
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

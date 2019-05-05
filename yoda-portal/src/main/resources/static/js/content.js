@@ -19,20 +19,16 @@ function initArticeMenu() {
 									var $this = $(this);
 									// 注意：$this.offset().top代表每一个item的顶部位置
 									if (top > $this.offset().top - 200) {
-										currentId = "#"
-												+ $this.prev().attr("id");
+										currentId = "#" + $this.prev().attr("id");
 									} else {
 										return false;
 									}
 								});
 
 								var currentLink = $articleMenu.find(".active");
-								if (currentId
-										&& currentLink.attr("href") != currentId) {
+								if (currentId&& currentLink.attr("href") != currentId) {
 									currentLink.removeClass("active");
-									$articleMenu.find(
-											"[href=" + currentId + "]")
-											.parent().addClass("active");
+									$articleMenu.find("[href=" + currentId + "]").parent().addClass("active");
 								}
 							});
 			// 生成目录
@@ -43,8 +39,7 @@ function initArticeMenu() {
 						var tagIndex = parseInt(tagName.charAt(1)) - 1;
 
 						$this.addClass("menu-title").before(
-								$('<span id="menu_' + index
-										+ '" class="menu-point"></span>'));
+								$('<span id="menu_' + index + '" class="menu-point"></span>'));
 						aDom = '<a href="#menu_'
 								+ index
 								+ '" style="display:inline-block;"><i class="fa fa-caret-right"></i>'
@@ -61,6 +56,25 @@ function initArticeMenu() {
 					bindMenuScroll();
 				});
 
+				function bindMenuScroll() {
+					$articleBox.css('display', ($(window).width() < 768) ? 'none' : 'block');
+					if ($(window).width() < 768) {
+						return false;
+					}
+						if ($(document).scrollTop() >= 200) {
+							if (!$articleBox.hasClass("fixed")) {
+								$articleBox.addClass('fixed').css({
+									//width : '25.2%'
+								}).animate({
+									top : '85px'
+								}, 100);
+								$('.close-article-menu').removeClass('hide');
+							}
+						} else {
+							$articleBox.removeClass('fixed').removeAttr('style');
+							$('.close-article-menu').addClass('hide');
+						}
+				}
 
 				$('.close-article-menu').click(function() {
 					$articleBox.addClass('hide');
@@ -74,15 +88,14 @@ function initArticeMenu() {
 $(function() {
 	initArticeMenu();
 
-	/* 图片懒加载 */
-//	$("img.lazy-img").lazyload({
-//		placeholder : "/img/loading.gif",
-//		effect : "fadeIn",
-//		threshold : 100
-//	});
-//	$(window).bind("load", function() {
-//		var timeout = setTimeout(function() {
-//			$("img.lazy-img").trigger("sporty");
-//		}, 3000);
-//	});
+	$("img.lazy-img").lazyload({
+		placeholder : "/img/loading.gif",
+		effect : "fadeIn",
+		threshold : 100
+	});
+	$(window).bind("load", function() {
+		var timeout = setTimeout(function() {
+			$("img.lazy-img").trigger("sporty");
+		}, 3000);
+	});
 });

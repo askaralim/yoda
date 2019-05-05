@@ -9,11 +9,11 @@ public interface ItemMapper extends BaseMapper<Item> {
 
 	List<Item> getItemsByContentId(Long contentId);
 
-	List<Item> getItemsByBrandId(int brandId);
+	List<Item> getItemsByBrandId(Long brandId);
 
 	List<Item> getItemsTopViewed(int count);
 
 	List<Item> search(String title);
 
-	List<Item> getItemsByContentIdAndBrandId(Long contentId, int brandId);
+	List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
 }

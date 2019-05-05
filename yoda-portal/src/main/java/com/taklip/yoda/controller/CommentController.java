@@ -42,7 +42,7 @@ public class CommentController {
 	}
 
 	@RequestMapping(value = "/controlpanel/comment/{id}", method = RequestMethod.GET)
-	public ModelAndView viewComment(@PathVariable("id") int id) {
+	public ModelAndView viewComment(@PathVariable("id") Long id) {
 		Comment comment = contentService.getComment(id);
 
 		return new ModelAndView(
@@ -68,7 +68,7 @@ public class CommentController {
 		String[] arrIds = ids.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
-			contentService.deleteComment(Integer.valueOf(arrIds[i]));
+			contentService.deleteComment(Long.valueOf(arrIds[i]));
 		}
 
 		return "redirect:/controlpanel/comment";

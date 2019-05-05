@@ -16,12 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.taklip.yoda.enums.FileContentTypeEnum;
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.ItemMapper;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
+import com.taklip.yoda.service.FileService;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
@@ -48,10 +51,17 @@ public class ItemServiceImpl implements ItemService {
 	private RedisService redisService;
 
 	@Autowired
+	private IdService idService;
+
+	@Autowired
 	ImageUploader imageUpload;
 
+	@Autowired
+	FileService fileService;
+
+
 	@Transactional(readOnly = true)
-	public Item getItem(int itemId) {
+	public Item getItem(Long itemId) {
 		Item item = getItemFromCached(itemId);
 
 		if (null == item) {
@@ -86,13 +96,13 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItemsByContentId(long contentId) {
+	public List<Item> getItemsByContentId(Long contentId) {
 		List<Item> items = new ArrayList<>();
 		List<String> ids = redisService.getList(Constants.REDIS_CONTENT_ITEM_LIST + ":" + contentId);
 
 		if (null != ids && !ids.isEmpty()) {
 			for (String id : ids) {
-				Item item = getItem(Integer.valueOf(id));
+				Item item = getItem(Long.valueOf(id));
 
 				if (null != item) {
 					items.add(item);
@@ -117,14 +127,14 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItemsByBrandId(int brandId) {
+	public List<Item> getItemsByBrandId(Long brandId) {
 		List<Item> items = itemMapper.getItemsByBrandId(brandId);
 
 		return items;
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItemsByContentIdAndBrandId(long contentId, int brandId) {
+	public List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId) {
 		List<Item> items = itemMapper.getItemsByContentIdAndBrandId(contentId, brandId);
 
 		return items;
@@ -147,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
 		}
 		else {
 			for (String itemId : itemIds) {
-				Item item = this.getItem(Integer.valueOf(itemId));
+				Item item = this.getItem(Long.valueOf(itemId));
 
 				items.add(item);
 			}
@@ -163,6 +173,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public void save(Item item) {
+		item.setId(idService.generateId());
 		item.preInsert();
 
 		itemMapper.insert(item);
@@ -197,25 +208,25 @@ public class ItemServiceImpl implements ItemService {
 		return itemDB;
 	}
 
-	public void updateItemHitCounter(int itemId, int hitCounter) {
+	public void updateItemHitCounter(Long itemId, int hitCounter) {
 		Item itemDB = itemMapper.getById(itemId);
 		itemDB.setHitCounter(hitCounter);
 		itemMapper.update(itemDB);
 	}
 
-	public void updateItemRating(int itemId, int rating) {
+	public void updateItemRating(Long itemId, int rating) {
 		Item itemDB = itemMapper.getById(itemId);
 		itemDB.setRating(rating);
 		itemMapper.update(itemDB);
 	}
 
-	public Item updateItemImage(int id, MultipartFile file) {
+	public Item updateItemImage(Long id, MultipartFile file) {
 		Item item = itemMapper.getById(id);
 
 		imageUpload.deleteImage(item.getImagePath());
 
 		try {
-			String imagePath = imageUpload.uploadItemImage(file.getInputStream(), file.getOriginalFilename());
+			String imagePath = fileService.save(FileContentTypeEnum.ITEM.getType(), id, file);
 
 			item.setImagePath(imagePath);
 		}
@@ -227,10 +238,12 @@ public class ItemServiceImpl implements ItemService {
 
 		itemMapper.update(item);
 
+		setItemIntoCached(item);
+
 		return item;
 	}
 
-	public void remove(int itemId) {
+	public void remove(Long itemId) {
 		Item item = itemMapper.getById(itemId);
 
 		itemMapper.delete(item);
@@ -248,7 +261,7 @@ public class ItemServiceImpl implements ItemService {
 		return result;
 	}
 
-	private Item getItemFromCached(int itemId) {
+	private Item getItemFromCached(Long itemId) {
 		Item item = null;
 
 		String key = Constants.REDIS_ITEM + ":" + itemId;
@@ -275,7 +288,7 @@ public class ItemServiceImpl implements ItemService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			item.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Integer.valueOf(id) : null);
+			item.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			item.setBuyLinks(StringUtils.isNoneBlank(buyLinks) && !"nil".equalsIgnoreCase(buyLinks) ? buyLinks : null);
 			item.setCategoryId(StringUtils.isNoneBlank(categoryId) && !"nil".equalsIgnoreCase(categoryId) ? Integer.valueOf(categoryId) : null);
 			item.setContentId(StringUtils.isNoneBlank(contentId) && !"nil".equalsIgnoreCase(contentId) ? Long.valueOf(contentId) : null);
@@ -302,7 +315,7 @@ public class ItemServiceImpl implements ItemService {
 			item.setCreateDate(StringUtils.isNoneBlank(createDate) && !"nil".equalsIgnoreCase(createDate) ? DateUtil.getDate(createDate) : null);
 			item.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getDate(updateDate) : null);
 
-			Brand brand = brandService.getBrand(Integer.valueOf(brandId));
+			Brand brand = brandService.getBrand(Long.valueOf(brandId));
 
 			item.setBrand(brand);
 
@@ -339,7 +352,7 @@ public class ItemServiceImpl implements ItemService {
 		setItemRateIntoCached(item.getId(), item.getRating());
 	}
 
-	private int getItemHitCounterFromCached(int itemId) {
+	private int getItemHitCounterFromCached(Long itemId) {
 		String hit = redisService.get(Constants.REDIS_ITEM_HIT_COUNTER + ":" + itemId);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
@@ -354,11 +367,11 @@ public class ItemServiceImpl implements ItemService {
 		}
 	}
 
-	private void setItemHitCounterIntoCached(int itemId, int hitCounter) {
+	private void setItemHitCounterIntoCached(Long itemId, int hitCounter) {
 		redisService.set(Constants.REDIS_ITEM_HIT_COUNTER + ":" + itemId, String.valueOf(hitCounter));
 	}
 
-	private int getItemRateFromCached(int itemId) {
+	private int getItemRateFromCached(Long itemId) {
 		String rating = redisService.get(Constants.REDIS_ITEM_RATE + ":" + itemId);
 
 		if (StringUtils.isNoneBlank(rating) && !"nil".equalsIgnoreCase(rating)) {
@@ -373,7 +386,7 @@ public class ItemServiceImpl implements ItemService {
 		}
 	}
 
-	private void setItemRateIntoCached(int itemId, int rating) {
+	private void setItemRateIntoCached(Long itemId, int rating) {
 		redisService.set(Constants.REDIS_ITEM_RATE + ":" + itemId, String.valueOf(rating));
 	}
 }

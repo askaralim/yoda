@@ -46,7 +46,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 //						.endObject()
 						.startObject("properties")
 							.startObject("brandId")
-								.field("type", "integer")
+								.field("type", "long")
 								.field("store", "no")
 								.field("index", "not_analyzed")
 							.endObject()
@@ -177,7 +177,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 			SearchHits hits = response.getHits();
 
 			for (SearchHit hit : hits.getHits()) {
-				int brandId = (Integer)hit.getSource().get("brandId");
+				Long brandId = (Long)hit.getSource().get("brandId");
 				String name = (String)hit.getSource().get("name");
 				String description = (String)hit.getSource().get("description");
 				String imagePath = (String)hit.getSource().get("imagePath");

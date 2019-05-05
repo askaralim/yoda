@@ -79,7 +79,7 @@
 							</div>
 							<div class="tab-pane" id="tab-brand">
 								<c:forEach var="contentBrand" items="${contentInfo.contentBrands}">
-									<div class="row content-preview-wrapper-row" style="border-bottom: 1px solid #f4f4f4;">
+									<div class="row" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
 										<div class="col-sm-4">
 											<a href='<spring:url value="/brand/${contentBrand.brandId}" />'>
 												<img data-src='<spring:url value="${contentBrand.brandLogo}"/>' alt="${contentBrand.brandName}" width="150" height="150">
@@ -98,7 +98,7 @@
 							</div>
 							<div class="tab-pane" id="tab-recommend">
 								<c:forEach var="item" items="${contentInfo.items}">
-									<div class="content-preview-wrapper-row" style="border-bottom: 1px solid #f4f4f4;">
+									<div style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
 										<div class="row">
 											<div class="col-sm-4">
 												<a href='<spring:url value="/item/${item.id}?backURL=${backURL}" />'>

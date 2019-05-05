@@ -3,7 +3,7 @@ package com.taklip.yoda.model;
 public class PageViewData extends BaseEntity {
 	private static final long serialVersionUID = -6503671451587448655L;
 
-	private Integer id;
+	private Long id;
 
 	private Long userId;
 
@@ -13,7 +13,7 @@ public class PageViewData extends BaseEntity {
 
 	private Integer pageType;
 
-	private Integer pageId;
+	private Long pageId;
 
 	private String pageName;
 
@@ -23,11 +23,11 @@ public class PageViewData extends BaseEntity {
 
 	private String createTime;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -63,11 +63,11 @@ public class PageViewData extends BaseEntity {
 		this.pageType = pageType;
 	}
 
-	public Integer getPageId() {
+	public Long getPageId() {
 		return pageId;
 	}
 
-	public void setPageId(Integer pageId) {
+	public void setPageId(Long pageId) {
 		this.pageId = pageId;
 	}
 

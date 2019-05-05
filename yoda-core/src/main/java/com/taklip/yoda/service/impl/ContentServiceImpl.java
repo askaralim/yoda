@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.elasticsearch.ContentIndexer;
+import com.taklip.yoda.enums.FileContentTypeEnum;
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.CategoryMapper;
 import com.taklip.yoda.mapper.CommentMapper;
 import com.taklip.yoda.mapper.ContentBrandMapper;
@@ -41,12 +42,11 @@ import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.CategoryService;
 import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.FileService;
 import com.taklip.yoda.service.HomePageService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
-import com.taklip.yoda.tool.FileUploader;
 import com.taklip.yoda.tool.ImageUploader;
-import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.DateUtil;
 
@@ -89,10 +89,16 @@ public class ContentServiceImpl implements ContentService {
 	private CategoryService categoryService;
 
 	@Autowired
-	ImageUploader imageUpload;
+	private ImageUploader imageUpload;
+
+	@Autowired
+	private IdService idService;
+
+	@Autowired
+	FileService fileService;
 
 	@Override
-	public void saveContent(Integer siteId, Content content, Integer categoryId) throws Exception {
+	public void saveContent(Integer siteId, Content content, Long categoryId) throws Exception {
 		if (null == content.getContentId()) {
 			this.addContent(siteId, content, categoryId);
 		}
@@ -101,7 +107,8 @@ public class ContentServiceImpl implements ContentService {
 		}
 	}
 
-	public void addContent(int siteId, Content content, Integer categoryId) throws Exception {
+	public void addContent(int siteId, Content content, Long categoryId) throws Exception {
+		content.setContentId(idService.generateId());
 		content.setNaturalKey(encode(content.getTitle()));
 		content.setHitCounter(0);
 		content.setSiteId(siteId);
@@ -147,7 +154,7 @@ public class ContentServiceImpl implements ContentService {
 	public Content addContent(
 			int siteId, String naturalKey,
 			String title, String shortDescription, String description,
-			String pageTitle, Integer categoryId, String publishDate, String expireDate,
+			String pageTitle, Long categoryId, String publishDate, String expireDate,
 			boolean isPublished) throws Exception {
 		Content content = new Content();
 
@@ -219,7 +226,7 @@ public class ContentServiceImpl implements ContentService {
 		contentMapper.delete(content);
 	}
 
-	public void deleteComment(int commentId) {
+	public void deleteComment(Long commentId) {
 		Comment comment = commentMapper.getById(commentId);
 
 		commentMapper.delete(comment);
@@ -430,7 +437,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Comment getComment(int commentId) {
+	public Comment getComment(Long commentId) {
 		return commentMapper.getById(commentId);
 	}
 
@@ -608,10 +615,11 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void updateContent(Content content) {
+		content.preUpdate();
 		contentMapper.update(content);
 	}
 
-	public Content updateContent(int siteId, Content content, Integer categoryId)
+	public Content updateContent(int siteId, Content content, Long categoryId)
 		throws Exception {
 		Content contentDb = contentMapper.getById(content.getContentId());
 
@@ -678,7 +686,7 @@ public class ContentServiceImpl implements ContentService {
 	public Content updateContent(
 		Long contentId, int siteId, String naturalKey,
 		String title, String shortDescription, String description,
-		String pageTitle, Integer categoryId, String publishDate, String expireDate,
+		String pageTitle, Long categoryId, String publishDate, String expireDate,
 		boolean isPublished) throws Exception {
 		Content content = contentMapper.getById(contentId);
 
@@ -708,7 +716,7 @@ public class ContentServiceImpl implements ContentService {
 		return content;
 	}
 
-	public void updateContentHitCounter(int id, int hitCounter) {
+	public void updateContentHitCounter(Long id, int hitCounter) {
 		Content content = contentMapper.getById(id);
 		content.setHitCounter(hitCounter);
 		contentMapper.update(content);
@@ -724,12 +732,13 @@ public class ContentServiceImpl implements ContentService {
 
 	public Content updateContentImage(
 			int siteId, Long contentId, MultipartFile image) {
-		Content content = getContent(contentId);
+		Content content = contentMapper.getById(contentId);
 
 		imageUpload.deleteImage(content.getFeaturedImage());
 
 		try {
-			String imagePath = imageUpload.uploadContentImage(image.getInputStream(), image.getOriginalFilename());
+			String imagePath = fileService.save(FileContentTypeEnum.CONTENT.getType(), contentId, image);
+//			String imagePath = imageUpload.uploadContentImage(image.getInputStream(), image.getOriginalFilename());
 
 			content.setFeaturedImage(imagePath);
 		}
@@ -812,7 +821,7 @@ public class ContentServiceImpl implements ContentService {
 			content.setFeaturedImage(StringUtils.isNoneBlank(featuredImage) && !"nil".equalsIgnoreCase(featuredImage) ? featuredImage : null);
 
 			if (StringUtils.isNoneBlank(categoryId) && !"nil".equalsIgnoreCase(categoryId)) {
-				Category category = categoryService.getCategory(Integer.valueOf(categoryId));
+				Category category = categoryService.getCategory(Long.valueOf(categoryId));
 				content.setCategory(category);
 			}
 
@@ -931,7 +940,7 @@ public class ContentServiceImpl implements ContentService {
 			String contentId = redisService.getMap(key, "contentId");
 			String description = redisService.getMap(key, "description");
 
-			contentBrand.setBrandId(StringUtils.isNoneBlank(brandId) && !"nil".equalsIgnoreCase(brandId) ? Integer.valueOf(brandId) : null);
+			contentBrand.setBrandId(StringUtils.isNoneBlank(brandId) && !"nil".equalsIgnoreCase(brandId) ? Long.valueOf(brandId) : null);
 			contentBrand.setBrandLogo(StringUtils.isNoneBlank(brandLogo) && !"nil".equalsIgnoreCase(brandLogo) ? brandLogo : null);
 			contentBrand.setBrandName(StringUtils.isNoneBlank(brandName) && !"nil".equalsIgnoreCase(brandName) ? brandName : null);
 			contentBrand.setContentBrandId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);

@@ -17,11 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.elasticsearch.BrandIndexer;
+import com.taklip.yoda.enums.FileContentTypeEnum;
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.BrandMapper;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
+import com.taklip.yoda.service.FileService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.ImageUploader;
@@ -45,7 +48,15 @@ public class BrandServiceImpl implements BrandService {
 	@Autowired
 	ImageUploader imageUpload;
 
+	@Autowired
+	private IdService idService;
+
+	@Autowired
+	FileService fileService;
+
 	public void addBrand(Brand brand) {
+		brand.setBrandId(idService.generateId());
+
 		brand.preInsert();
 
 		brandMapper.insert(brand);
@@ -77,7 +88,7 @@ public class BrandServiceImpl implements BrandService {
 		}
 		else {
 			for (String brandId : brandsIds) {
-				Brand brand = this.getBrand(Integer.valueOf(brandId));
+				Brand brand = this.getBrand(Long.valueOf(brandId));
 
 				brands.add(brand);
 			}
@@ -98,7 +109,7 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	@Transactional(readOnly = true)
-	public Brand getBrand(int id) {
+	public Brand getBrand(Long id) {
 		Brand brand = getBrandFromCached(id);
 
 		if (null != brand) {
@@ -112,7 +123,7 @@ public class BrandServiceImpl implements BrandService {
 		return brand;
 	}
 
-	public void deleteBrand(Integer brandId) {
+	public void deleteBrand(Long brandId) {
 		Brand brand = brandMapper.getById(brandId);
 
 		new BrandIndexer().deleteIndex(brandId);
@@ -141,25 +152,25 @@ public class BrandServiceImpl implements BrandService {
 		return brand;
 	}
 
-	public void updateBrandHitCounter(int id, int hitCounter) {
+	public void updateBrandHitCounter(Long id, int hitCounter) {
 		Brand brandDb = brandMapper.getById(id);
 		brandDb.setHitCounter(hitCounter);
 		brandMapper.update(brandDb);
 	}
 
-	public void updateBrandRating(int id, int rating) {
+	public void updateBrandRating(Long id, int rating) {
 		Brand brandDb = brandMapper.getById(id);
 		brandDb.setScore(rating);
 		brandMapper.update(brandDb);
 	}
 
-	public Brand updateImage(int id, MultipartFile file) {
+	public Brand updateImage(Long id, MultipartFile file) {
 		Brand brand = brandMapper.getById(id);
 
 		imageUpload.deleteImage(brand.getImagePath());
 
 		try {
-			String imagePath = imageUpload.uploadBrandImage(file.getInputStream(), file.getOriginalFilename());
+			String imagePath = fileService.save(FileContentTypeEnum.BRAND.getType(), id, file);
 
 			brand.setImagePath(imagePath);
 		}
@@ -170,6 +181,8 @@ public class BrandServiceImpl implements BrandService {
 		brand.preUpdate();
 
 		brandMapper.update(brand);
+
+		setBrandIntoCached(brand);
 
 		return brand;
 	}
@@ -186,7 +199,7 @@ public class BrandServiceImpl implements BrandService {
 		return result;
 	}
 
-	private Brand getBrandFromCached(int brandId) {
+	private Brand getBrandFromCached(Long brandId) {
 		Brand brand = null;
 
 		String key = Constants.REDIS_BRAND + ":" + brandId;
@@ -209,7 +222,7 @@ public class BrandServiceImpl implements BrandService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			brand.setBrandId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Integer.valueOf(id) : null);
+			brand.setBrandId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			brand.setCompany(StringUtils.isNoneBlank(company) && !"nil".equalsIgnoreCase(company) ? company : null);
 			brand.setCountry(StringUtils.isNoneBlank(country) && !"nil".equalsIgnoreCase(country) ? country : null);
 			brand.setFoundDate(StringUtils.isNoneBlank(foundedDate) && !"nil".equalsIgnoreCase(foundedDate) ? DateUtil.getDate(foundedDate) : null);
@@ -263,7 +276,7 @@ public class BrandServiceImpl implements BrandService {
 		setBrandScoreIntoCached(brand.getBrandId(), brand.getScore());
 	}
 
-	private int getBrandHitCounterFromCached(int brandId) {
+	private int getBrandHitCounterFromCached(Long brandId) {
 		String hit = redisService.get(Constants.REDIS_BRAND_HIT_COUNTER + ":" + brandId);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
@@ -278,11 +291,11 @@ public class BrandServiceImpl implements BrandService {
 		}
 	}
 
-	private void setBrandHitCounterIntoCached(int brandId, int hitCounter) {
+	private void setBrandHitCounterIntoCached(Long brandId, int hitCounter) {
 		redisService.set(Constants.REDIS_BRAND_HIT_COUNTER + ":" + brandId, String.valueOf(hitCounter));
 	}
 
-	private int getBrandScoreFromCached(int brandId) {
+	private int getBrandScoreFromCached(Long brandId) {
 		String score = redisService.get(Constants.REDIS_BRAND_RATE + ":" + brandId);
 
 		if (StringUtils.isNoneBlank(score) && !"nil".equalsIgnoreCase(score)) {
@@ -297,7 +310,7 @@ public class BrandServiceImpl implements BrandService {
 		}
 	}
 
-	private void setBrandScoreIntoCached(int brandId, int score) {
+	private void setBrandScoreIntoCached(Long brandId, int score) {
 		redisService.set(Constants.REDIS_BRAND_RATE + ":" + brandId, String.valueOf(score));
 	}
 }

@@ -36,10 +36,14 @@ logging:
       root: INFO
       sample:
          mybatis:
-            mapper: DEBUG
+            mapper: INFO
+   path: /var/tmp/yoda-core-log
 
 yoda:
    file-location: /yoda/uploads/
+
+jediorder: 
+   machine-id: 1022
 # MyBatis
 # ----------------
 # Orphan comments:

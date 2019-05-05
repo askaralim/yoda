@@ -63,7 +63,7 @@
 									<div class="home-brand">
 										<a href='<spring:url value="/brand/${brand.brandId}" />'>
 											<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
-												<img src="${brand.imagePath}" class="img-responsive" alt="${brand.name}">
+												<img src="${brand.imagePath}" class="img-responsive lazy-img" alt="${brand.name}">
 											</div>
 										</a>
 										<a href='<spring:url value="/brand/${brand.brandId}" />'>
@@ -86,7 +86,7 @@
 									<div class="home-item">
 										<a href='<spring:url value="/item/${item.id}" />'>
 											<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
-												<img src='<spring:url value="${item.imagePath}"/>' class="img-responsive" alt="${item.name}">
+												<img src='<spring:url value="${item.imagePath}"/>' class="img-responsive lazy-img" alt="${item.name}">
 											</div>
 										</a>
 										<a href='<spring:url value="/item/${item.id}" />'>

@@ -1,7 +1,5 @@
 <%@ include file="../../common/init.jsp"%>
 
-<%@ page language="java" import="com.taklip.yoda.tools.FckEditorCreator"%>
-
 <!--  tab panel -->
 <script type="text/javascript">
 /* function submitDefaultImage(input) {
@@ -59,9 +57,6 @@ function removeContent() {
 				<form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/>
 				<div id="editor" style="width: 100%;height: 500px;">
 				</div>
-				<%
-					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription())); */
-				%>
 			</div>
 			<%-- <div class="form-group">
 				<label for="brand"><spring:message code="brand" /></label>
@@ -339,7 +334,7 @@ function removeContent() {
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="H2">Upload Image</h4>
 				</div>
-				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/content/${content.contentId}/edit/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
+				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/content/${content.contentId}/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
 							<label class="control-label col-lg-4">Image</label>

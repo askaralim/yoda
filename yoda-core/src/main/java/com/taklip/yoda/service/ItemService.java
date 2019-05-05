@@ -11,29 +11,29 @@ import com.taklip.yoda.model.Pagination;
 public interface ItemService {
 	void save(Item item);
 
-	Item getItem(int itemId);
+	Item getItem(Long itemId);
 
 	Item update(Item item);
 
-	void updateItemHitCounter(int itemId, int hitCounter);
+	void updateItemHitCounter(Long itemId, int hitCounter);
 
-	void updateItemRating(int itemId, int rating);
+	void updateItemRating(Long itemId, int rating);
 
 	List<Item> getItems(int siteId);
 
 	Pagination<Item> getItems(int siteId, RowBounds rowBounds);
 
-	List<Item> getItemsByContentId(long contentId);
+	List<Item> getItemsByContentId(Long contentId);
 
-	List<Item> getItemsByBrandId(int brandId);
+	List<Item> getItemsByBrandId(Long brandId);
 
-	List<Item> getItemsByContentIdAndBrandId(long contentId, int brandId);
+	List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
 
 	List<Item> getItemsTopViewed(int count);
 
 	List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 
-	void remove(int itemId);
+	void remove(Long itemId);
 
-	Item updateItemImage(int id, MultipartFile file);
+	Item updateItemImage(Long id, MultipartFile file);
 }

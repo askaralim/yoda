@@ -1,7 +1,7 @@
 package com.taklip.yoda.model;
 
 public class Comment extends BaseEntity {
-	private Integer id;
+	private Long id;
 
 	private Long contentId;
 
@@ -13,11 +13,11 @@ public class Comment extends BaseEntity {
 
 	private String description;
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

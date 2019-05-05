@@ -5,7 +5,7 @@ public class ContentBrand extends BaseEntity {
 
 	private Long contentId;
 
-	private Integer brandId;
+	private Long brandId;
 
 	private String description;
 
@@ -29,11 +29,11 @@ public class ContentBrand extends BaseEntity {
 		this.brandName = brandName;
 	}
 
-	public Integer getBrandId() {
+	public Long getBrandId() {
 		return this.brandId;
 	}
 
-	public void setBrandId(Integer brandId) {
+	public void setBrandId(Long brandId) {
 		this.brandId = brandId;
 	}
 

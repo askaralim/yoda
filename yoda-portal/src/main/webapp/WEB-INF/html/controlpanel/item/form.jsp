@@ -141,9 +141,9 @@
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
-				<%
-					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", item.getDescription())); */
-				%>
+				<form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/>
+				<div id="editor" style="width: 100%;height: 300px;">
+				</div>
 			</div>
 			<div class="form-actions">
 				<c:choose>
@@ -299,6 +299,22 @@
 <script src='<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />'></script>
 
 <script type="text/javascript">
+contentId = '${id}';
+$(function() {
+	yoda.wangEditor.init({
+		container : "#editor",
+		textareaName : "description",
+		/* textareaContent: "${content.description}", */
+		uploadUrl : "/api/uploadFile",
+		uploadFileName : "file",
+		uploadType : "item",
+		customCss : {
+			"height" : "100%",
+			"max-height" : "250px"
+		}
+	})
+});
+
 function submitBackForm(type) {
 	location.href='<spring:url value="/controlpanel/item" />';
 	return false;

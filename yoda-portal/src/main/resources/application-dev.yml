@@ -1,5 +1,5 @@
 server:
-  port: 8080
+   port: 8080
 
 spring:
    profiles:
@@ -39,3 +39,4 @@ logging:
       root: WARN
       org.springframework.web: WARN
       org.springframework.security: WARN
+   path: /var/tmp/yoda-portal-log

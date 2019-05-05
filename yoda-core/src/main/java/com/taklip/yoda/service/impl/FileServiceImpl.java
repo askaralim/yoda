@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.enums.FileContentTypeEnum;
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.ImageFileMapper;
 import com.taklip.yoda.model.ImageFile;
 import com.taklip.yoda.service.FileService;
@@ -22,8 +23,11 @@ public class FileServiceImpl implements FileService {
 	@Autowired
 	ImageUploader imageUploader;
 
+	@Autowired
+	private IdService idService;
+
 	@Override
-	public void save(String contentType, Long contentId, MultipartFile image) throws IOException {
+	public String save(String contentType, Long contentId, MultipartFile image) throws IOException {
 		ImageFile imageFile = imageUploader.uploadImage(image, contentType + StringPool.FORWARD_SLASH + contentId);
 
 		if (null != imageFile) {
@@ -32,9 +36,20 @@ public class FileServiceImpl implements FileService {
 			imageFile.setContentType(FileContentTypeEnum.getCode(contentType));
 		}
 
+		imageFile.setFileId(idService.generateId());
 		imageFile.preInsert();
 
 		fileMapper.insert(imageFile);
+
+		return imageFile.getFilePath();
+	}
+
+	@Override
+	public void save(ImageFile file) throws IOException {
+		file.setFileId(idService.generateId());
+		file.preInsert();
+
+		fileMapper.insert(file);
 	}
 
 	@Override

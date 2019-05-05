@@ -166,7 +166,7 @@
 		create_date DATETIME NOT NULL,
 		description VARCHAR(5000),
 		hit_counter INT,
-		image_path VARCHAR(50),
+		image_path VARCHAR(255),
 		level VARCHAR(20),
 		name VARCHAR(100),
 		buy_links VARCHAR(2000),
@@ -189,7 +189,7 @@
 		description VARCHAR(2000),
 		found_date DATETIME,
 		kind VARCHAR(30),
-		image_path VARCHAR(50),
+		image_path VARCHAR(255),
 		hit_counter INT,
 		score INT,
 		create_by bigint NOT NULL,
@@ -280,7 +280,7 @@
     ) comment='';
 
     CREATE TABLE file (
-		file_id INT NOT NULL AUTO_INCREMENT,
+		file_id bigint NOT NULL AUTO_INCREMENT,
 		file_name varchar(255) NULL DEFAULT NULL,
 		file_path varchar(255)  NULL DEFAULT NULL,
 		file_small_path varchar(255) NULL DEFAULT NULL,
@@ -296,7 +296,7 @@
 		create_date DATETIME NOT NULL,
 		update_by bigint NOT NULL,
 		update_date DATETIME NOT NULL,
-		PRIMARY KEY (fileId) USING BTREE
+		PRIMARY KEY (file_id) USING BTREE
 	) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact;
 
     create table home_page (

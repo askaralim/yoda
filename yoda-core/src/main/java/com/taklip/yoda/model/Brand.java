@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Brand extends BaseEntity {
-	private Integer brandId;
+	private Long brandId;
 
 	private String company;
 
@@ -26,11 +26,11 @@ public class Brand extends BaseEntity {
 
 	private int score;
 
-	public Integer getBrandId() {
+	public Long getBrandId() {
 		return this.brandId;
 	}
 
-	public void setBrandId(Integer brandId) {
+	public void setBrandId(Long brandId) {
 		this.brandId = brandId;
 	}
 

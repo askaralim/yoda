@@ -2,8 +2,6 @@
 
 <jsp:useBean id="brand" type="com.taklip.yoda.model.Brand" scope="request" />
 
-<script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
-
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
 	<li><a href="<spring:url value="/controlpanel/brand" />">Brand Listing</a></li>
@@ -59,9 +57,9 @@
 			</div>
 			<div class="form-group">
 				<label for="description"><spring:message code="description" /></label>
-				<%
-					/* out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "300", "Basic", brand.getDescription())); */
-				%>
+				<form:textarea path="description" cssClass="form-control" value="" display="none" style="display: none"/>
+				<div id="editor" style="width: 100%;height: 300px;">
+				</div>
 			</div>
 			<div class="form-actions">
 				<c:choose>
@@ -134,10 +132,25 @@
 <script src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
 <script src='<c:url value="/resources/js/datepicker/bootstrap-datepicker.js" />'></script>
 
-
 <script type="text/javascript">
+contentId = '${brandId}';
+$(function() {
+	yoda.wangEditor.init({
+		container : "#editor",
+		textareaName : "description",
+		/* textareaContent: "${content.description}", */
+		uploadUrl : "/api/uploadFile",
+		uploadFileName : "file",
+		uploadType : "brand",
+		customCss : {
+			"height" : "100%",
+			"max-height" : "250px"
+		}
+	})
+});
+
 function submitBackForm(type) {
-	location.href='<spring:url value="/controlpanel/content/list" />';
+	location.href = '<spring:url value="/controlpanel/content/list" />';
 	return false;
 }
 

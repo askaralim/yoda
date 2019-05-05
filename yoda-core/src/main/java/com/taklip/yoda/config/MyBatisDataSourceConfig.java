@@ -19,14 +19,6 @@ import com.taklip.yoda.model.BaseEntity;
 @MapperScan("com.taklip.yoda.mapper")
 @EnableTransactionManagement
 public class MyBatisDataSourceConfig {
-//	@Bean(name = "dataSource")
-//	@ConfigurationProperties(prefix = "spring.datasource")
-//	@Primary
-//	public DataSource dataSource() {
-//		DruidDataSource druidDataSource = new DruidDataSource();
-//		return druidDataSource;
-//	}
-
 	@Bean
 	public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource)
 			throws Exception {

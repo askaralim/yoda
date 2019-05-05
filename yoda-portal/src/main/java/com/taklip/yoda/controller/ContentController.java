@@ -118,7 +118,7 @@ public class ContentController {
 	@RequestMapping(value = "/controlpanel/content/save", method = RequestMethod.POST)
 	public ModelAndView save(
 			@ModelAttribute Content content,
-			@RequestParam("categoryId") Integer categoryId,
+			@RequestParam("categoryId") Long categoryId,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request)
 		throws Throwable {
@@ -209,7 +209,7 @@ public class ContentController {
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.GET)
 	public String initUpdateForm(
-			@PathVariable("contentId") long contentId,
+			@PathVariable("contentId") Long contentId,
 			Map<String, Object> model, HttpServletRequest request) {
 		Content content = contentService.getContent(contentId);
 
@@ -229,7 +229,7 @@ public class ContentController {
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.GET)
 	public ModelAndView initCreationForm(
-			@PathVariable("contentId") long contentId, Map<String, Object> model) {
+			@PathVariable("contentId") Long contentId, Map<String, Object> model) {
 		ContentBrand contentBrand = new ContentBrand();
 
 		contentBrand.setContentId(contentId);
@@ -245,7 +245,7 @@ public class ContentController {
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
 			@ModelAttribute("contentBrand") ContentBrand contentBrand,
-			@RequestParam("brandId") Integer brandId, BindingResult result,
+			@RequestParam("brandId") Long brandId, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelMap model = new ModelMap();
@@ -270,7 +270,7 @@ public class ContentController {
 	}
 
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/{contentBrandId}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("contentBrandId") int contentBrandId, Map<String, Object> model) {
+	public String initUpdateForm(@PathVariable("contentBrandId") Long contentBrandId, Map<String, Object> model) {
 		ContentBrand contentBrand = contentService.getContentBrand(contentBrandId);
 
 		List<Brand> brands = brandService.getBrands();
@@ -284,7 +284,7 @@ public class ContentController {
 	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/{contentBrandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ModelAndView processUpdateForm(
 			@ModelAttribute("contentBrand") ContentBrand contentBrand,
-			@RequestParam("brandId") Integer brandId,
+			@RequestParam("brandId") Long brandId,
 			BindingResult result, SessionStatus status) {
 		ModelMap model = new ModelMap();
 
@@ -314,7 +314,7 @@ public class ContentController {
 		return new ModelAndView("controlpanel/content/editContentBrand", model);
 	}
 
-	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/content/remove", method = RequestMethod.POST)
 	public String deleteContent(
 			@ModelAttribute Content content,
 			HttpServletRequest request) {
@@ -350,7 +350,7 @@ public class ContentController {
 		return "redirect:/controlpanel/content/list";
 	}
 
-	@RequestMapping(value = "/resetCounter")
+	@RequestMapping(value = "/controlpanel/content/resetCounter")
 	public void resetCounter(
 			@PathVariable("contentId") Long contentId,
 			HttpServletRequest request, HttpServletResponse response)
@@ -492,7 +492,7 @@ public class ContentController {
 		outputStream.flush();
 	}
 
-	@RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/content/{contentId}/uploadImage", method = RequestMethod.POST)
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("contentId") long contentId,

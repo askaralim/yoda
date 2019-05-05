@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.PageViewDataMapper;
 import com.taklip.yoda.model.PageViewData;
 import com.taklip.yoda.model.Pagination;
@@ -20,9 +21,14 @@ public class PageViewServiceImpl implements PageViewService {
 	PageViewDataMapper pageViewDataMapper;
 
 	@Autowired
+	private IdService idService;
+
+	@Autowired
 	private SqlSessionTemplate sqlSessionTemplate;
 
 	public void addPageViewData(PageViewData pageView) {
+		pageView.setId(idService.generateId());
+
 		pageViewDataMapper.insert(pageView);
 	}
 

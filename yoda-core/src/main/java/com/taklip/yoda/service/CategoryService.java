@@ -9,11 +9,11 @@ public interface CategoryService {
 
 	List<Category> getCategories();
 
-	Category getCategory(Integer id);
+	Category getCategory(Long id);
 
 	Category update(Category category);
 
-	Category update(Integer id, String name, String description, Integer parent);
+	Category update(Long id, String name, String description, Long parent);
 
 	void deleteCategory(Category category);
 }

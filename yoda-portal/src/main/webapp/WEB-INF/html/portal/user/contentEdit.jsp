@@ -2,7 +2,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<%@ page language="java" import="com.taklip.yoda.tools.FckEditorCreator"%>
+<%-- <%@ page language="java" import="com.taklip.yoda.tools.FckEditorCreator"%> --%>
 
 <jsp:useBean id="content" type="com.taklip.yoda.model.Content" scope="request" />
 
@@ -87,9 +87,9 @@
 					</div>
 					<div class="form-group">
 						<label for=description><spring:message code="text" /></label>
-						<%
+						<%-- <%
 						out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription()));
-						%>
+						%> --%>
 					</div>
 				</div>
 				<div class="col-md-3">

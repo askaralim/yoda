@@ -62,7 +62,7 @@ public class PortalBaseController {
 		return siteService.getSites().get(0);
 	}
 
-	public void pageView(HttpServletRequest request, int pageType, int pageId, String pageName) {
+	public void pageView(HttpServletRequest request, int pageType, Long pageId, String pageName) {
 		String ip = PortalUtil.getClientIP(request);
 
 		PageViewData pageView = new PageViewData();

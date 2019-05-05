@@ -40,7 +40,7 @@ public class PageViewDataComsumer {
 			PageViewData pageView = new PageViewData();
 
 			pageView.setCreateDate(DateUtil.getFullDatetime(obj.getString("createTime")));
-			pageView.setPageId(obj.getInteger("pageId"));
+			pageView.setPageId(obj.getLong("pageId"));
 			pageView.setPageName(obj.getString("pageName"));
 			pageView.setPageType(obj.getInteger("pageType"));
 			pageView.setPageUrl(obj.getString("pageUrl"));

@@ -42,13 +42,13 @@ public class RedisKeyValueComsumer {
 		long hitCounter = redisService.incr(record.key() + ":" + record.value());
 
 		if (record.key().equals(Constants.REDIS_ITEM_HIT_COUNTER)) {
-			itemService.updateItemHitCounter(Integer.valueOf(record.value()), (int)hitCounter);
+			itemService.updateItemHitCounter(Long.valueOf(record.value()), (int)hitCounter);
 		}
 		else if (record.key().equals(Constants.REDIS_BRAND_HIT_COUNTER)) {
-			brandService.updateBrandHitCounter(Integer.valueOf(record.value()), (int)hitCounter);
+			brandService.updateBrandHitCounter(Long.valueOf(record.value()), (int)hitCounter);
 		}
 		else if (record.key().equals(Constants.REDIS_CONTENT_HIT_COUNTER)) {
-			contentService.updateContentHitCounter(Integer.valueOf(record.value()), (int)hitCounter);
+			contentService.updateContentHitCounter(Long.valueOf(record.value()), (int)hitCounter);
 		}
 	}
 }

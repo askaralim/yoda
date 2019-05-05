@@ -30,7 +30,7 @@
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />' type="text/css" />
 		<link rel="stylesheet" href="/resources/css/fileinput.css" />
 		<link rel="stylesheet" href='<c:url value="/resources/css/main.css" />' type="text/css" />
-		<!--<link rel="stylesheet" href='#springUrl("/resources/css/login.css")' type="text/css" />-->
+		<!-- <link rel="stylesheet" href="/resources/css/login.css" type="text/css" /> -->
 
 		<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 		<!-- <link href='https://fonts.cat.net/css?family=Montserrat:400,700' rel='stylesheet'> -->
@@ -63,6 +63,7 @@
 		<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		-->
 		<script type="text/javascript" src="/resources/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
 		<script type="text/javascript" src="/resources/bootstrap-3.2.0/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="/resources/js/fileupload/fileinput.js"></script>
 

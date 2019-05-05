@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.taklip.yoda.jediorder.service.IdService;
 import com.taklip.yoda.mapper.SiteMapper;
 import com.taklip.yoda.mapper.UserAuthorityMapper;
 import com.taklip.yoda.mapper.UserMapper;
@@ -42,6 +43,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	ThumbnailUploader thumbnailUploader;
 
+	@Autowired
+	private IdService idService;
+
 	public User addUser(
 			String userName, String password, String email, String phone,
 			String role, String addressLine1, String addressLine2,
@@ -64,6 +68,7 @@ public class UserServiceImpl implements UserService {
 
 		String hashedPassword = passwordEncoder.encode(password);
 
+		user.setUserId(idService.generateId());
 		user.setPassword(hashedPassword);
 //		user.setUsername(StringEscapeUtils.escapeHtml4(userName));
 		user.setUsername(userName);

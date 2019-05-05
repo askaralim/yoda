@@ -22,7 +22,6 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Category;
@@ -107,7 +106,7 @@ public class ItemController {
 	@RequestMapping(value = "/controlpanel/item/new", method = RequestMethod.POST)
 	public ModelAndView processCreationForm(
 			@ModelAttribute("item") Item item, 
-			@RequestParam("brandId") Integer brandId, BindingResult result,
+			@RequestParam("brandId") Long brandId, BindingResult result,
 			SessionStatus status, HttpServletRequest request,
 			HttpServletResponse response) {
 		new ItemValidator().validate(item, result);
@@ -144,7 +143,7 @@ public class ItemController {
 
 	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = RequestMethod.GET)
 	public String initUpdateForm(
-			@PathVariable("itemId") int itemId, Map<String, Object> model,
+			@PathVariable("itemId") Long itemId, Map<String, Object> model,
 			HttpServletRequest request) {
 		Site site = SiteUtil.getDefaultSite();
 
@@ -169,7 +168,7 @@ public class ItemController {
 	@RequestMapping(value = "/controlpanel/item/{itemId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ModelAndView processUpdateForm(
 			@ModelAttribute("item") Item item,
-			@RequestParam("brandId") Integer brandId,
+			@RequestParam("brandId") Long brandId,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request) {
 		new ItemValidator().validate(item, result);
@@ -219,7 +218,7 @@ public class ItemController {
 	@RequestMapping(value = "/controlpanel/item/{id}/uploadImage", method = RequestMethod.POST)
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
-			@PathVariable("id") int id, HttpServletRequest request,
+			@PathVariable("id") Long id, HttpServletRequest request,
 			HttpServletResponse response)
 		throws Throwable {
 		if (file.getBytes().length <= 0) {
@@ -240,7 +239,7 @@ public class ItemController {
 	@ResponseBody
 	@RequestMapping(value="/item/{id}/rating" ,method = RequestMethod.POST)
 	public String score(
-			@PathVariable("id") int id,
+			@PathVariable("id") Long id,
 			@RequestParam("thumb") String thumb,
 			HttpServletRequest request, HttpServletResponse response) {
 		Item item  = itemService.getItem(id);
@@ -270,7 +269,7 @@ public class ItemController {
 		String[] arrIds = ids.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
-			itemService.remove(Integer.valueOf(arrIds[i]));
+			itemService.remove(Long.valueOf(arrIds[i]));
 		}
 
 		return "redirect:/controlpanel/item";

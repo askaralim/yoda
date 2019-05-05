@@ -2,6 +2,7 @@ package com.taklip.yoda.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +18,8 @@ import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.LoginUserDetailsService;
 
 @EnableWebSecurity
-public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private LoginUserDetailsService loginUserDetailsService;
