@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Pagination;
@@ -29,7 +30,6 @@ import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.ItemService;
-import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.util.AuthenticatedUtil;
 
 @Controller
@@ -107,12 +107,6 @@ public class PortalBrandController extends PortalBaseController {
 
 		Brand brand = brandService.getBrand(brandId);
 
-//		brand.setHitCounter(brand.getHitCounter() + 1);
-//
-//		brandService.update(brand);
-
-		kafkaTemplate.send(Constants.KAFKA_TOPIC_REDIS_INCR, Constants.REDIS_BRAND_HIT_COUNTER, String.valueOf(brandId));
-
 		List<Item> items = itemService.getItemsByBrandId(brandId);
 
 		ModelMap model = new ModelMap();
@@ -133,8 +127,7 @@ public class PortalBrandController extends PortalBaseController {
 
 		model.put("currentUser", currentUser);
 
-		pageView(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
-//		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_BRAND, brand.getBrandId(), brand.getName());
+		pageViewHandler.add(request, ContentTypeEnum.BRAND.getType(), brand.getName(), brand.getBrandId());
 
 		return new ModelAndView("portal/brand/brand", model);
 	}

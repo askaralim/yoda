@@ -100,9 +100,7 @@ public class CategoryController {
 			return new ModelAndView("controlpanel/category/form", model);
 		}
 		else {
-			Category categoryDb = categoryService.update(
-				category.getCategoryId(), category.getName(), category.getDescription(),
-				category.getParent());
+			Category categoryDb = categoryService.update(category);
 
 			List<Category> categories = categoryService.getCategories();
 

@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.Comment;
 import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.ContentUserRate;
@@ -76,6 +77,8 @@ public class PortalContentController extends PortalBaseController {
 		setUserLoginStatus(request, response, model);
 
 		model.put("site", site);
+
+		pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getContentId());
 
 		return new ModelAndView("portal/content/content", model);
 	}
@@ -157,12 +160,7 @@ public class PortalContentController extends PortalBaseController {
 			return new ModelAndView("portal/user/contentEdit", model);
 		}
 
-//		User currentUser = PortalUtil.getAuthenticatedUser();
-
-		contentService.updateContent(
-			site.getSiteId(),
-			content.getContentId(), content.getTitle(),
-			content.getShortDescription(), content.getDescription());
+		contentService.updateContent(site.getSiteId(), content, null);
 
 		model.put("success", "success");
 
@@ -208,7 +206,6 @@ public class PortalContentController extends PortalBaseController {
 
 				JSONObject jsonObject = new JSONObject();
 
-//				String contentUrl = ServletContextUtil.getContextPath() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
 				String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
 
 				jsonObject.put("contentUrl", contentUrl);
@@ -234,8 +231,6 @@ public class PortalContentController extends PortalBaseController {
 		Site site = getSite(request);
 
 		try {
-			kafkaTemplate.send(Constants.KAFKA_TOPIC_REDIS_INCR, Constants.REDIS_CONTENT_HIT_COUNTER, String.valueOf(content.getContentId()));
-
 			CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
 
 			if (csrfToken != null) {
@@ -249,7 +244,6 @@ public class PortalContentController extends PortalBaseController {
 				shortenItemDescription(item);
 			}
 
-//			String contentUrl = ServletContextUtil.getContextPath() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
 			String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
 
 			String desc = content.getDescription();

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.taklip.yoda.enums.FileContentTypeEnum;
-import com.taklip.yoda.jediorder.service.IdService;
+import com.taklip.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.mapper.ImageFileMapper;
 import com.taklip.yoda.model.ImageFile;
 import com.taklip.yoda.service.FileService;
@@ -33,7 +33,7 @@ public class FileServiceImpl implements FileService {
 		if (null != imageFile) {
 			imageFile.setFileType(image.getContentType());
 			imageFile.setContentId(contentId);
-			imageFile.setContentType(FileContentTypeEnum.getCode(contentType));
+			imageFile.setContentType(ContentTypeEnum.getCode(contentType));
 		}
 
 		imageFile.setFileId(idService.generateId());
@@ -59,6 +59,6 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public List<ImageFile> getFilesByContent(String contentType, Long contentId) {
-		return fileMapper.getFilesByContent(FileContentTypeEnum.getCode(contentType), contentId);
+		return fileMapper.getFilesByContent(ContentTypeEnum.getCode(contentType), contentId);
 	}
 }

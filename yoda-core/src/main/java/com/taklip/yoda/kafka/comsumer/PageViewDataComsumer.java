@@ -10,13 +10,26 @@ import org.springframework.kafka.annotation.KafkaListener;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.PageViewData;
+import com.taklip.yoda.service.BrandService;
+import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.PageViewService;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.util.DateUtil;
 
 @Configuration
 public class PageViewDataComsumer {
+	@Autowired
+	protected BrandService brandService;
+
+	@Autowired
+	protected ContentService contentService;
+
+	@Autowired
+	protected ItemService itemService;
+
 	@Autowired
 	PageViewService pageViewService;
 
@@ -39,16 +52,29 @@ public class PageViewDataComsumer {
 
 			PageViewData pageView = new PageViewData();
 
+			Integer pageTypeCode = obj.getInteger("pageType");
+			Long pageId = obj.getLong("pageId");
+
 			pageView.setCreateDate(DateUtil.getFullDatetime(obj.getString("createTime")));
-			pageView.setPageId(obj.getLong("pageId"));
+			pageView.setPageId(pageId);
 			pageView.setPageName(obj.getString("pageName"));
-			pageView.setPageType(obj.getInteger("pageType"));
+			pageView.setPageType(pageTypeCode);
 			pageView.setPageUrl(obj.getString("pageUrl"));
 			pageView.setUserIPAddress(obj.getString("userIPAddress"));
 			pageView.setUserId(obj.getLong("userId"));
 			pageView.setUsername(obj.getString("username"));
 
 			pageViewService.addPageViewData(pageView);
+
+			if (pageTypeCode == ContentTypeEnum.ITEM.getCode()) {
+				itemService.increaseItemHitCounter(pageId);
+			}
+			else if (pageTypeCode == ContentTypeEnum.BRAND.getCode()) {
+				brandService.increaseBrandHitCounter(pageId);
+			}
+			else if (pageTypeCode == ContentTypeEnum.CONTENT.getCode()) {
+				contentService.increaseContentHitCounter(pageId);
+			}
 		}
 		catch (JSONException e) {
 			logger.error(e.getMessage());

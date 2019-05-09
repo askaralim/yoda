@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.elasticsearch.BrandIndexer;
-import com.taklip.yoda.enums.FileContentTypeEnum;
-import com.taklip.yoda.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
+import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.mapper.BrandMapper;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
@@ -147,15 +147,21 @@ public class BrandServiceImpl implements BrandService {
 
 		brandMapper.update(brandDb);
 
-		new BrandIndexer().updateIndex(brand);
+		new BrandIndexer().updateIndex(brandDb);
 
-		return brand;
+		deleteBrandFromCached(brandDb.getBrandId());
+
+		return brandDb;
 	}
 
-	public void updateBrandHitCounter(Long id, int hitCounter) {
+	public void increaseBrandHitCounter(Long id) {
 		Brand brandDb = brandMapper.getById(id);
-		brandDb.setHitCounter(hitCounter);
+
+		brandDb.setHitCounter(brandDb.getHitCounter() + 1);
+
 		brandMapper.update(brandDb);
+
+		this.setBrandHitCounterIntoCached(id, brandDb.getHitCounter());
 	}
 
 	public void updateBrandRating(Long id, int rating) {
@@ -170,7 +176,7 @@ public class BrandServiceImpl implements BrandService {
 		imageUpload.deleteImage(brand.getImagePath());
 
 		try {
-			String imagePath = fileService.save(FileContentTypeEnum.BRAND.getType(), id, file);
+			String imagePath = fileService.save(ContentTypeEnum.BRAND.getType(), id, file);
 
 			brand.setImagePath(imagePath);
 		}
@@ -197,6 +203,10 @@ public class BrandServiceImpl implements BrandService {
 		long result = redisService.setList(Constants.REDIS_BRAND_TOP_VIEW_LIST, ids, 3600);
 
 		return result;
+	}
+
+	private void deleteBrandFromCached(Long brandId) {
+		redisService.delete(Constants.REDIS_BRAND + ":" + brandId);
 	}
 
 	private Brand getBrandFromCached(Long brandId) {
@@ -247,7 +257,7 @@ public class BrandServiceImpl implements BrandService {
 
 			brand.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getDate(updateDate) : null);
 
-			brand.setHitCounter(getBrandHitCounterFromCached(brand.getBrandId()));
+			brand.setHitCounter(getBrandHitCounter(brand.getBrandId()));
 			brand.setScore(getBrandScoreFromCached(brand.getBrandId()));
 		}
 
@@ -276,7 +286,7 @@ public class BrandServiceImpl implements BrandService {
 		setBrandScoreIntoCached(brand.getBrandId(), brand.getScore());
 	}
 
-	private int getBrandHitCounterFromCached(Long brandId) {
+	public int getBrandHitCounter(Long brandId) {
 		String hit = redisService.get(Constants.REDIS_BRAND_HIT_COUNTER + ":" + brandId);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {

@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.ItemService;
-import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.util.AuthenticatedUtil;
 
 @Controller
@@ -38,12 +38,6 @@ public class PortalItemController extends PortalBaseController {
 
 		Item item = itemService.getItem(itemId);
 
-//		item.setHitCounter(item.getHitCounter() + 1);
-
-		kafkaTemplate.send(Constants.KAFKA_TOPIC_REDIS_INCR, Constants.REDIS_ITEM_HIT_COUNTER, String.valueOf(itemId));
-
-//		itemService.update(item);
-
 		setUserLoginStatus(request, response, model);
 
 		model.put("site", site);
@@ -63,8 +57,7 @@ public class PortalItemController extends PortalBaseController {
 
 		model.put("backURL", backURL);
 
-		pageView(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
-//		PageViewUtil.viewPage(request, Constants.PAGE_TYPE_ITEM, item.getId(), item.getName());
+		pageViewHandler.add(request, ContentTypeEnum.ITEM.getType(), item.getName(), item.getId());
 
 		return new ModelAndView("portal/item/item", model);
 	}

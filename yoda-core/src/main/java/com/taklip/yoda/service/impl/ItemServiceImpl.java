@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.taklip.yoda.enums.FileContentTypeEnum;
-import com.taklip.yoda.jediorder.service.IdService;
+import com.taklip.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.mapper.ItemMapper;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Item;
@@ -198,20 +198,25 @@ public class ItemServiceImpl implements ItemService {
 		itemDB.setPrice(item.getPrice());
 		itemDB.setExtraFields(item.getExtraFields());
 		itemDB.setBuyLinks(item.getBuyLinks());
+		itemDB.setImagePath(item.getImagePath());
 
 		itemDB.preUpdate();
 
 		itemMapper.update(itemDB);
-
-		setItemIntoCached(itemDB);
+logger.info("update item: " + item.getId() + " " + item.getImagePath());
+		deleteItemFromCached(item.getId());
 
 		return itemDB;
 	}
 
-	public void updateItemHitCounter(Long itemId, int hitCounter) {
+	public void increaseItemHitCounter(Long itemId) {
 		Item itemDB = itemMapper.getById(itemId);
-		itemDB.setHitCounter(hitCounter);
+
+		itemDB.setHitCounter(itemDB.getHitCounter() + 1);
+
 		itemMapper.update(itemDB);
+
+		setItemHitCounterIntoCached(itemId, itemDB.getHitCounter());
 	}
 
 	public void updateItemRating(Long itemId, int rating) {
@@ -226,7 +231,7 @@ public class ItemServiceImpl implements ItemService {
 		imageUpload.deleteImage(item.getImagePath());
 
 		try {
-			String imagePath = fileService.save(FileContentTypeEnum.ITEM.getType(), id, file);
+			String imagePath = fileService.save(ContentTypeEnum.ITEM.getType(), id, file);
 
 			item.setImagePath(imagePath);
 		}
@@ -256,9 +261,13 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	private long setItemsTopViewedListIntoCache(List<String> ids) {
-		long result = redisService.setList(Constants.REDIS_ITEM_TOP_VIEW_LIST, ids, 3600);
+		long result = redisService.setList(Constants.REDIS_ITEM_TOP_VIEW_LIST, ids);
 
 		return result;
+	}
+
+	private void deleteItemFromCached(Long itemId) {
+		redisService.delete(Constants.REDIS_ITEM + ":" + itemId);
 	}
 
 	private Item getItemFromCached(Long itemId) {
@@ -319,7 +328,7 @@ public class ItemServiceImpl implements ItemService {
 
 			item.setBrand(brand);
 
-			item.setHitCounter(getItemHitCounterFromCached(itemId));
+			item.setHitCounter(getItemHitCounter(itemId));
 			item.setRating(getItemRateFromCached(itemId));
 		}
 
@@ -352,7 +361,7 @@ public class ItemServiceImpl implements ItemService {
 		setItemRateIntoCached(item.getId(), item.getRating());
 	}
 
-	private int getItemHitCounterFromCached(Long itemId) {
+	public int getItemHitCounter(Long itemId) {
 		String hit = redisService.get(Constants.REDIS_ITEM_HIT_COUNTER + ":" + itemId);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {

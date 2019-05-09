@@ -2,8 +2,6 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<%-- <%@ page language="java" import="com.taklip.yoda.tools.FckEditorCreator"%> --%>
-
 <jsp:useBean id="content" type="com.taklip.yoda.model.Content" scope="request" />
 
 <html>
@@ -30,8 +28,6 @@
 
 	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 	<link href='<c:url value="/resources/font-awesome-4.1.0/css/font-awesome.min.css" />' rel="stylesheet" type="text/css">
-
-	<script type="text/javascript" src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
 </head>
 
 <body>
@@ -87,9 +83,6 @@
 					</div>
 					<div class="form-group">
 						<label for=description><spring:message code="text" /></label>
-						<%-- <%
-						out.println(FckEditorCreator.getFckEditor(request, "description", "100%", "600", "Basic", content.getDescription()));
-						%> --%>
 					</div>
 				</div>
 				<div class="col-md-3">

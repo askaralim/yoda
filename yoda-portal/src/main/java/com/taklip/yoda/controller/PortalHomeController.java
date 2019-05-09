@@ -1,6 +1,5 @@
 package com.taklip.yoda.controller;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.HomeInfo;
-import com.taklip.yoda.model.ImageFile;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.Release;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.ContentService;
@@ -36,7 +33,6 @@ import com.taklip.yoda.service.ReleaseService;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.PortalUtil;
-import com.taklip.yoda.vo.ReleaseInfo;
 
 @Controller
 public class PortalHomeController extends PortalBaseController {
@@ -63,114 +59,6 @@ public class PortalHomeController extends PortalBaseController {
 	@GetMapping("/")
 	public ModelAndView setupForm(
 			HttpServletRequest request, HttpServletResponse response) {
-		
-		Release release = releaseService.getRelease(ReleaseInfo.getBuildNumber());
-
-		if (release == null) {
-			List<Content> contents = contentService.getContents(1);
-
-			for (Content content : contents) {
-//				String desc = content.getDescription();
-				String desc = content.getDescription().replace("/yoda/uploads/", "/uploads/");
-				desc = desc.replace("//", "/");
-
-				content.setDescription(desc.replace("/yoda/uploads/", "/uploads/"));
-
-				if (content.getFeaturedImage() != null) {
-					if (content.getFeaturedImage().startsWith("/yoda")) {
-						content.setFeaturedImage(content.getFeaturedImage().substring(5));
-					}
-
-					content.setFeaturedImage(content.getFeaturedImage().replace("//", "/"));
-
-					ImageFile file = new ImageFile();
-					file.setContentId(content.getContentId());
-					file.setContentType(1);
-					file.setFileFullPath(System.getProperties().getProperty("user.home") + "/yoda" + content.getFeaturedImage());
-					file.setFileName(content.getFeaturedImage().substring(content.getFeaturedImage().lastIndexOf("/") + 1));
-					file.setFilePath(content.getFeaturedImage());
-					file.setFileType("image/jpeg");
-					file.setSuffix(content.getFeaturedImage().substring(content.getFeaturedImage().lastIndexOf(".") + 1));
-
-					try {
-						fileService.save(file);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				contentService.updateContent(content);
-			}
-
-			List<Item> items = itemService.getItems(1);
-
-			for (Item item : items) {
-				String desc = item.getDescription();
-
-				item.setDescription(desc.replace("/yoda/uploads/", "/uploads/"));
-
-				if (item.getImagePath() != null) {
-					if (item.getImagePath().startsWith("/yoda")) {
-						item.setImagePath(item.getImagePath().substring(5));
-					}
-
-					item.setImagePath(item.getImagePath().replace("//", "/"));
-
-					ImageFile file = new ImageFile();
-					file.setContentId(Long.valueOf(item.getId()));
-					file.setContentType(3);
-					file.setFileFullPath(System.getProperties().getProperty("user.home") + "/yoda" + item.getImagePath());
-					file.setFileName(item.getImagePath().substring(item.getImagePath().lastIndexOf("/") + 1));
-					file.setFilePath(item.getImagePath());
-					file.setFileType("image/jpeg");
-					file.setSuffix(item.getImagePath().substring(item.getImagePath().lastIndexOf(".") + 1));
-
-					try {
-						fileService.save(file);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				itemService.update(item);
-			}
-
-			List<Brand> brands = brandService.getBrands();
-
-			for (Brand brand : brands) {
-				String desc = brand.getDescription();
-
-				brand.setDescription(desc.replace("/yoda/uploads/", "/uploads/"));
-
-				if (brand.getImagePath() != null) {
-					if (brand.getImagePath().startsWith("/yoda")) {
-						brand.setImagePath(brand.getImagePath().substring(5));
-					}
-
-					brand.setImagePath(brand.getImagePath().replace("//", "/"));
-
-					ImageFile file = new ImageFile();
-					file.setContentId(Long.valueOf(brand.getBrandId()));
-					file.setContentType(2);
-					file.setFileFullPath(System.getProperties().getProperty("user.home") + "/yoda" + brand.getImagePath());
-					file.setFileName(brand.getImagePath().substring(brand.getImagePath().lastIndexOf("/") + 1));
-					file.setFilePath(brand.getImagePath());
-					file.setFileType("image/jpeg");
-					file.setSuffix(brand.getImagePath().substring(brand.getImagePath().lastIndexOf(".") + 1));
-
-					try {
-						fileService.save(file);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				brandService.update(brand);
-			}
-
-			releaseService.addRelease(ReleaseInfo.getBuildNumber());
-		}
-
 		return process(Constants.MENU_HOME, request, response);
 	}
 

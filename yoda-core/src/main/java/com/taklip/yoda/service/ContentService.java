@@ -16,12 +16,6 @@ import com.taklip.yoda.model.Pagination;
 public interface ContentService {
 	void addContent(int siteId, Content content, Long categoryId) throws Exception ;
 
-	Content addContent(
-			int siteId, String naturalKey, String title,
-			String shortDescription, String description, String pageTitle,
-			Long categoryId, String publishDate, String expireDate,
-			boolean isPublished) throws Exception;
-
 	void addComment(Comment comment);
 
 	void addContentBrand(ContentBrand contentBrand);
@@ -30,27 +24,19 @@ public interface ContentService {
 
 	void deleteContent(Content content);
 
-//	void deleteContent(Long contentId);
-
 	void deleteComment(Long commentId);
 
 	void updateContent(Content content);
 
 	Content updateContent(int siteId, Content content, Long categoryId) throws Exception;
 
-	Content updateContent(
-			Long contentId, int siteId, String naturalKey, String title,
-			String shortDescription, String description, String pageTitle,
-			Long categoryId, String publishDate, String expireDate,
-			boolean isPublished) throws Exception;
-
-	void updateContentHitCounter(Long id, int hitCounter);
+	void increaseContentHitCounter(Long id);
 
 	Content getContent(Long contentId);
 
-//	Content getContent(String naturalKey);
-
 	ContentBrand getContentBrand(long contentBrandId);
+
+	int getContentHitCounter(long contentId);
 
 	List<ContentBrand> getContentBrandByBrandId(long brandId);
 
@@ -78,15 +64,11 @@ public interface ContentService {
 
 	List<Content> search(int siteId, String title, Boolean published, String updateBy, String createBy, String publishDateStart, String publishDateEnd, String expireDateStart, String expireDateEnd) throws ParseException;
 
-//	Content updateContentImage(int siteId, Long userId, Long contentId, ContentImage contentImage);
-
 	Content updateContentImage(int siteId, Long contentId, MultipartFile featureImage);
 
 //	Content updateDefaultContentImage(int siteId, Long userId, Long contentId, Long defaultImageId);
 
 	List<Content> getContentByUserId(Long userId);
-
-	Content updateContent(int siteId, Long contentId, String title, String shortDescription, String description) throws Exception;
 
 	ContentBrand updateContentBrand(ContentBrand contentBrand);
 

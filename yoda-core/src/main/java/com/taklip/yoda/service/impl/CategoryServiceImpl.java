@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.taklip.yoda.jediorder.service.IdService;
+import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.mapper.CategoryMapper;
 import com.taklip.yoda.model.Category;
 import com.taklip.yoda.model.User;
@@ -66,25 +66,18 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryMapper.delete(category);
 	}
 
-	public Category update(
-			Long id, String name, String description, Long parent) {
-		Category category = this.getCategory(id);
-
-		category.setDescription(description);
-		category.setParent(parent);
-		category.setName(name);
-
-		update(category);
-
-		return category;
-	}
-
 	public Category update(Category category) {
 		category.preUpdate();
 
 		categoryMapper.update(category);
 
+		deleteCategoryFromCached(category.getCategoryId());
+
 		return category;
+	}
+
+	private void deleteCategoryFromCached(long categoryId) {
+		redisService.delete(Constants.REDIS_CATEGORY + ":" + categoryId);
 	}
 
 	private Category getCategoryFromCached(long categoryId) {

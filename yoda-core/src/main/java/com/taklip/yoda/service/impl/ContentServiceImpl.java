@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,30 +19,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.elasticsearch.ContentIndexer;
-import com.taklip.yoda.enums.FileContentTypeEnum;
-import com.taklip.yoda.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.mapper.CategoryMapper;
 import com.taklip.yoda.mapper.CommentMapper;
 import com.taklip.yoda.mapper.ContentBrandMapper;
 import com.taklip.yoda.mapper.ContentContributorMapper;
 import com.taklip.yoda.mapper.ContentMapper;
 import com.taklip.yoda.mapper.ContentUserRateMapper;
-import com.taklip.yoda.mapper.MenuMapper;
 import com.taklip.yoda.model.Category;
 import com.taklip.yoda.model.Comment;
 import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.ContentBrand;
 import com.taklip.yoda.model.ContentContributor;
 import com.taklip.yoda.model.ContentUserRate;
-import com.taklip.yoda.model.HomePage;
-import com.taklip.yoda.model.Menu;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.CategoryService;
 import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.FileService;
-import com.taklip.yoda.service.HomePageService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.ImageUploader;
@@ -63,12 +58,6 @@ public class ContentServiceImpl implements ContentService {
 
 	@Autowired
 	private CommentMapper commentMapper;
-
-	@Autowired
-	private MenuMapper menuMapper;
-
-	@Autowired
-	private HomePageService homePageService;
 
 	@Autowired
 	private ContentMapper contentMapper;
@@ -95,7 +84,7 @@ public class ContentServiceImpl implements ContentService {
 	private IdService idService;
 
 	@Autowired
-	FileService fileService;
+	private FileService fileService;
 
 	@Override
 	public void saveContent(Integer siteId, Content content, Long categoryId) throws Exception {
@@ -124,19 +113,6 @@ public class ContentServiceImpl implements ContentService {
 
 		contentMapper.insert(content);
 
-//		HomePage homePage = getHomePage(siteId, content.getContentId());
-//
-//		if (content.isHomePage()) {
-//			if (homePage == null) {
-//				homePageService.add(siteId, false, content);
-//			}
-//		}
-//		else {
-//			if (homePage != null) {
-//				homePageService.delete(homePage);
-//			}
-//		}
-
 		if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
 			this.setContentNotFeatureDatasIntoCache(content.getContentId());
 			redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
@@ -148,44 +124,6 @@ public class ContentServiceImpl implements ContentService {
 		this.setContentIntoCache(content);
 
 		new ContentIndexer().createIndex(content);
-	}
-
-	/* not used */
-	public Content addContent(
-			int siteId, String naturalKey,
-			String title, String shortDescription, String description,
-			String pageTitle, Long categoryId, String publishDate, String expireDate,
-			boolean isPublished) throws Exception {
-		Content content = new Content();
-
-		content.setSiteId(siteId);
-		content.setNaturalKey(encode(naturalKey));
-		content.setTitle(title);
-		content.setShortDescription(shortDescription);
-		content.setDescription(description);
-		content.setPageTitle(pageTitle);
-//		content.setPublishDate(Format.getDate(publishDate));
-//		content.setExpireDate(Format.getDate(expireDate));
-		content.setPublished(isPublished);
-		content.setHitCounter(0);
-		content.setScore(0);
-		content.setFeatureData(false);
-
-//		if (Validator.isNotNull(categoryId)) {
-//			Category category = categoryMapper.getById(categoryId);
-//
-//			content.setCategory(category);
-//		}
-
-		content.preUpdate();
-
-		contentMapper.insert(content);
-
-		this.setContentIntoCache(content);
-
-		new ContentIndexer().createIndex(content);
-
-		return content;
 	}
 
 	public void addComment(Comment comment) {
@@ -201,26 +139,6 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void deleteContent(Content content) {
-		List<HomePage> homePages = homePageService.getHomePages(content.getSiteId());
-
-		for (HomePage homePage : homePages) {
-			if (homePage.getContent() != null) {
-				if (content.getContentId().longValue() == homePage.getContent().getContentId().longValue()) {
-					homePageService.delete(homePage);
-				}
-			}
-		}
-
-		Iterator iterator = (Iterator)content.getMenus().iterator();
-
-		while (iterator.hasNext()) {
-			Menu menu = (Menu) iterator.next();
-
-			menu.setContent(null);
-
-			menuMapper.update(menu);
-		}
-
 		new ContentIndexer().deleteIndex(content.getContentId());
 
 		contentMapper.delete(content);
@@ -231,21 +149,6 @@ public class ContentServiceImpl implements ContentService {
 
 		commentMapper.delete(comment);
 	}
-
-	@Deprecated
-//	public void deleteContentImage(int siteId, Long contentId) {
-//		Content content = getContent(contentId);
-//
-//		FileUploader fileUpload = new FileUploader();
-//
-//		fileUpload.deleteFile(content.getFeaturedImage());
-//
-//		content.setFeaturedImage(StringPool.BLANK);
-//		content.setUpdateBy(AuthenticatedUtil.getAuthenticatedUser());
-//		content.setUpdateDate(new Date());
-//
-//		contentMapper.update(content);
-//	}
 
 	@Transactional(readOnly = true)
 	public List<Content> getContentByUserId(Long userId) {
@@ -514,109 +417,12 @@ public class ContentServiceImpl implements ContentService {
 		return contentMapper.search(
 			siteId, title, published, createBy, updateBy, publishDateStart,
 			publishDateEnd, expireDateStart, expireDateEnd);
-
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//
-//		Query query = null;
-//
-//		title = title.trim();
-//
-//		String sql = "select content from Content content where siteId = :siteId ";
-//
-//		if (Validator.isNotNull(title) && title.length() > 0) {
-//			sql += "and title like :title ";
-//		}
-//
-//		if (Validator.isNotNull(published)) {
-//			sql += "and published = :published ";
-//		}
-//
-//		sql += "and publishDate between :publishDateStart and :publishDateEnd ";
-//		sql += "and expireDate between :expireDateStart and :expireDateEnd ";
-//
-//		if (Validator.isNotNull(updateBy)) {
-//			sql += "and updateBy = :updateBy ";
-//		}
-//
-//		if (Validator.isNotNull(createBy)) {
-//			sql += "and createBy = :createBy ";
-//		}
-//
-//		query = contentDAO.getSession().createQuery(sql);
-//
-//		Date highDate = dateFormat.parse("31-12-2999");
-//		Date lowDate = dateFormat.parse("01-01-1900");
-//		Date date = null;
-//
-//		query.setLong("siteId", siteId);
-//
-//		if (Validator.isNotNull(title) && title.length() > 0) {
-//			query.setString("title", "%" + title + "%");
-//		}
-//
-//		if (Validator.isNotNull(published)) {
-//			query.setBoolean("published", published);
-//		}
-//
-//		if (publishDateStart.length() > 0) {
-//			date = dateFormat.parse(publishDateStart);
-//			query.setDate("publishDateStart", date);
-//		}
-//		else {
-//			query.setDate("publishDateStart", lowDate);
-//		}
-//
-//		if (publishDateEnd.length() > 0) {
-//			date = dateFormat.parse(publishDateEnd);
-//			query.setDate("publishDateEnd", date);
-//		}
-//		else {
-//			query.setDate("publishDateEnd", highDate);
-//		}
-//
-//		if (expireDateStart.length() > 0) {
-//			date = dateFormat.parse(expireDateStart);
-//			query.setDate("expireDateStart", date);
-//		}
-//		else {
-//			query.setDate("expireDateStart", lowDate);
-//		}
-//
-//		if (expireDateEnd.length() > 0) {
-//			date = dateFormat.parse(expireDateEnd);
-//			query.setDate("expireDateEnd", date);
-//		}
-//		else {
-//			query.setDate("expireDateEnd", highDate);
-//		}
-//
-//		if (Validator.isNotNull(updateBy)) {
-//			query.setString("updateBy", updateBy);
-//		}
-//
-//		if (Validator.isNotNull(createBy)) {
-//			query.setString("createBy", createBy);
-//		}
-////		if (selectedSections != null) {
-////			int index = 0;
-////
-////			for (int i = 0; i < selectedSections.length; i++) {
-////				Long sectionIds[] = sectionService.getSectionIdTreeList(
-////					siteId, Format.getLong(selectedSections[i]));
-////
-////				for (int j = 0; j < sectionIds.length; j++) {
-////					query.setLong(
-////						"selectedSection" + index++, sectionIds[j].longValue());
-////				}
-////			}
-////		}
-//
-//		return query.list();
 	}
 
 	public void updateContent(Content content) {
 		content.preUpdate();
 		contentMapper.update(content);
+		deleteContentFromCache(content.getContentId());
 	}
 
 	public Content updateContent(int siteId, Content content, Long categoryId)
@@ -643,83 +449,21 @@ public class ContentServiceImpl implements ContentService {
 
 		contentMapper.update(contentDb);
 
-		HomePage homePage = getHomePage(siteId, content.getContentId());
-
-		if (content.isHomePage()) {
-			if (homePage == null) {
-				homePageService.add(siteId, false, content);
-			}
-		}
-		else {
-			if (homePage != null) {
-				homePageService.delete(homePage);
-			}
-		}
-
 		new ContentIndexer().updateIndex(content);
 
-		resetContentNotFeatureDataListIntoCache();
-		this.setContentIntoCache(contentDb);
-
-		if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-			this.setContentNotFeatureDatasIntoCache(content.getContentId());
-			redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
-		}
-		else if (content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-			this.setContentFeatureDatasIntoCache(content.getContentId());
-		}
+		deleteContentFromCache(content.getContentId());
 
 		return contentDb;
 	}
 
-	public Content updateContent(
-		int siteId, Long contentId, String title,
-		String shortDescription, String description) throws Exception {
-		Content content = getContent(contentId);
-
-		return this.updateContent(
-			contentId, siteId, content.getNaturalKey(), title, shortDescription,
-			description, content.getPageTitle(), null, String.valueOf(content.getPublishDate()),
-			String.valueOf(content.getExpireDate()), content.isPublished());	
-	}
-
-	public Content updateContent(
-		Long contentId, int siteId, String naturalKey,
-		String title, String shortDescription, String description,
-		String pageTitle, Long categoryId, String publishDate, String expireDate,
-		boolean isPublished) throws Exception {
-		Content content = contentMapper.getById(contentId);
-
-		content.setContentId(contentId);
-		content.setSiteId(siteId);
-		content.setNaturalKey(encode(naturalKey));
-		content.setTitle(title);
-		content.setShortDescription(shortDescription);
-		content.setDescription(description);
-		content.setPageTitle(pageTitle);
-		content.setPublishDate(DateUtil.getFullDatetime(publishDate));
-		content.setExpireDate(DateUtil.getFullDatetime(expireDate));
-		content.setPublished(isPublished);
-
-		if (null != categoryId) {
-			Category category = categoryMapper.getById(categoryId);
-
-			content.setCategory(category);
-		}
-
-		content.preUpdate();
-
-		contentMapper.update(content);
-
-		new ContentIndexer().updateIndex(content);
-
-		return content;
-	}
-
-	public void updateContentHitCounter(Long id, int hitCounter) {
+	public void increaseContentHitCounter(Long id) {
 		Content content = contentMapper.getById(id);
-		content.setHitCounter(hitCounter);
+
+		content.setHitCounter(content.getHitCounter() + 1);
+
 		contentMapper.update(content);
+
+		this.setContentHitCounterIntoCached(id, content.getHitCounter());
 	}
 
 	public void addContentContributor(ContentContributor contentContributor) {
@@ -737,8 +481,7 @@ public class ContentServiceImpl implements ContentService {
 		imageUpload.deleteImage(content.getFeaturedImage());
 
 		try {
-			String imagePath = fileService.save(FileContentTypeEnum.CONTENT.getType(), contentId, image);
-//			String imagePath = imageUpload.uploadContentImage(image.getInputStream(), image.getOriginalFilename());
+			String imagePath = fileService.save(ContentTypeEnum.CONTENT.getType(), contentId, image);
 
 			content.setFeaturedImage(imagePath);
 		}
@@ -759,22 +502,6 @@ public class ContentServiceImpl implements ContentService {
 		contentBrandMapper.update(contentBrand);
 
 		return contentBrand;
-	}
-
-	private HomePage getHomePage(int siteId, Long contentId) {
-		List<HomePage> homePages = homePageService.getHomePages(siteId);
-
-		for (HomePage homePage : homePages) {
-			Content homePageContent = homePage.getContent();
-
-			if (homePageContent != null) {
-				if (homePageContent.getContentId().longValue() == contentId.longValue()) {
-					return homePage;
-				}
-			}
-		}
-
-		return null;
 	}
 
 	private Content getContentFromCache(Long contentId) {
@@ -842,7 +569,7 @@ public class ContentServiceImpl implements ContentService {
 			content.setCreateDate(StringUtils.isNoneBlank(createDate) && !"nil".equalsIgnoreCase(createDate) ? DateUtil.getFullDatetime(createDate) : null);
 			content.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getFullDatetime(updateDate) : null);
 
-			content.setHitCounter(getContentHitCounterFromCached(contentId));
+			content.setHitCounter(getContentHitCounter(contentId));
 			content.setScore(getContentRate(content.getContentId()));
 
 			List<ContentBrand> contentBrands = new ArrayList<>();
@@ -872,9 +599,6 @@ public class ContentServiceImpl implements ContentService {
 			}
 
 			content.setContentContributors(contentContributors);
-
-//				List<Item> items = itemService.getItemsByContentId(content.getContentId());
-//				content.setItems(items);
 		}
 
 		return content;
@@ -916,7 +640,7 @@ public class ContentServiceImpl implements ContentService {
 			content.setShortDescription(StringUtils.isNoneBlank(shortDescription) && !"nil".equalsIgnoreCase(shortDescription) ? shortDescription : null);
 			content.setFeaturedImage(StringUtils.isNoneBlank(featuredImage) && !"nil".equalsIgnoreCase(featuredImage) ? featuredImage : null);
 
-			content.setHitCounter(getContentHitCounterFromCached(contentId));
+			content.setHitCounter(getContentHitCounter(contentId));
 			content.setScore(getContentRate(contentId));
 		}
 
@@ -975,6 +699,15 @@ public class ContentServiceImpl implements ContentService {
 		}
 
 		return contentContributor;
+	}
+
+	private void deleteContentFromCache(Long id) {
+		redisService.delete(Constants.REDIS_CONTENT + ":" + id);
+		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + id);
+		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + id);
+		redisService.delete(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST);
+		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
+		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
 	}
 
 	private void setContentIntoCache(Content content) {
@@ -1066,19 +799,6 @@ public class ContentServiceImpl implements ContentService {
 		redisService.listRightPushAll(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, String.valueOf(contentId));
 	}
 
-	private void resetContentNotFeatureDataListIntoCache() {
-		List<Content> contents = contentMapper.getContentsByFeatureData(false);
-		List<String> contentIds = new ArrayList<>();
-
-		for (Content content : contents) {
-			contentIds.add(String.valueOf(content.getContentId()));
-		}
-
-		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
-		redisService.setList(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, contentIds, 0);
-		setContentNotFeatureDataCountIntoCache(contentIds.size());
-	}
-
 	private Integer getContentNotFeatureDataCountFromCache() {
 		String count = redisService.get(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
 
@@ -1102,7 +822,7 @@ public class ContentServiceImpl implements ContentService {
 		redisService.set(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST, String.valueOf(count));
 	}
 
-	private int getContentHitCounterFromCached(long contentId) {
+	public int getContentHitCounter(long contentId) {
 		String hit = redisService.get(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + contentId);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
@@ -1126,70 +846,4 @@ public class ContentServiceImpl implements ContentService {
 		input = input.replaceAll("/", "_*_");
 		return URLEncoder.encode(input, "UTF-8");
 	}
-
-//	public Content updateDefaultContentImage(
-//			Long siteId, Long userId, Long contentId, Long defaultImageId) {
-//		Content content = getContent(siteId, contentId);
-//
-//		ContentImage contentImage = contentImageDAO.getContentImageBySId_Id(siteId, defaultImageId);
-//
-////		ContentImage currentImage = content.getImage();
-//
-////		if (currentImage != null) {
-////			content.getImages().add(currentImage);
-////		}
-//
-//		content.setImage(contentImage);
-////		content.getImages().remove(contentImage);
-//		content.setUpdateBy(userId);
-//		content.setUpdateDate(new Date());
-//
-//		contentDAO.update(content);
-//
-//		return content;
-//	}
-
-//	public Content deleteContentImage(
-//			Long siteId, Long userId, Long contentId, Long[] imageIds) {
-//		Content content = getContent(siteId, contentId);
-//
-//		ContentImage defaultImage = content.getImage();
-//
-//		if (imageIds != null) {
-//			for (int i = 0; i < imageIds.length; i++) {
-//				if (defaultImage != null && (defaultImage.getImageId() == imageIds[i])) {
-//
-//					content.setImage(null);
-//
-//					updateContent(content);
-//
-//					contentImageDAO.delete(defaultImage);
-//
-//					defaultImage = null;
-//				}
-//				else {
-//					ContentImage contentImage = contentImageDAO.getContentImageBySId_Id(siteId, imageIds[i]);
-//
-//					contentImageDAO.delete(contentImage);
-//				}
-//			}
-//		}
-//
-//		content.setRecUpdateBy(userId);
-//		content.setRecUpdateDatetime(new Date(System.currentTimeMillis()));
-//
-//		if (content.getImage() == null) {
-//			Set<ContentImage> images = content.getImages();
-//
-//			if (!images.isEmpty()) {
-//				ContentImage contentImage = (ContentImage) images.iterator().next();
-//
-//				content.setImage(contentImage);
-//
-//				images.remove(contentImage);
-//			}
-//		}
-//
-//		return content;
-//	}
 }

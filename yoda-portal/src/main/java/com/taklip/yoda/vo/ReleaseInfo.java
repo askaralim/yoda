@@ -7,7 +7,7 @@ import com.taklip.yoda.util.DateUtil;
 
 public class ReleaseInfo {
 
-	public static final int RELEASE_2_0_01_BUILD_NUMBER = 2001;
+	public static final int RELEASE_2_0_01_BUILD_NUMBER = 3001;
 
 	public static final Date getBuildDate() {
 		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);

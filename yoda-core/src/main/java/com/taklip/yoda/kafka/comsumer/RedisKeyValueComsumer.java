@@ -38,17 +38,5 @@ public class RedisKeyValueComsumer {
 					+ " key = " + record.key() 
 					+ " value = " + record.value());
 		}
-
-		long hitCounter = redisService.incr(record.key() + ":" + record.value());
-
-		if (record.key().equals(Constants.REDIS_ITEM_HIT_COUNTER)) {
-			itemService.updateItemHitCounter(Long.valueOf(record.value()), (int)hitCounter);
-		}
-		else if (record.key().equals(Constants.REDIS_BRAND_HIT_COUNTER)) {
-			brandService.updateBrandHitCounter(Long.valueOf(record.value()), (int)hitCounter);
-		}
-		else if (record.key().equals(Constants.REDIS_CONTENT_HIT_COUNTER)) {
-			contentService.updateContentHitCounter(Long.valueOf(record.value()), (int)hitCounter);
-		}
 	}
 }

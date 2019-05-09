@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix="yoda")
 public class YodaProperties {
 	private String fileLocation;
+	private Boolean kafkaEnabled;
 
 	public String getFileLocation() {
 		return fileLocation;
@@ -14,5 +15,13 @@ public class YodaProperties {
 
 	public void setFileLocation(String fileLocation) {
 		this.fileLocation = fileLocation;
+	}
+
+	public Boolean getKafkaEnabled() {
+		return kafkaEnabled;
+	}
+
+	public void setKafkaEnabled(Boolean kafkaEnabled) {
+		this.kafkaEnabled = kafkaEnabled;
 	}
 }

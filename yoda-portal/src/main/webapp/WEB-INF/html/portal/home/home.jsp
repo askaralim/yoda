@@ -120,7 +120,7 @@
 									</div>
 									<div class="col-sm-2">
 										<i class="fa fa-weixin fa-2x fa-fw margin-bottom"></i> taklip太离谱
-										<img src="/yoda/uploads/1/content/qrcode_for_gh_1306e58d35fe_860_L.jpg" width="100%">
+										<img src="/uploads/1/content/qrcode_for_gh_1306e58d35fe_860_L.jpg" width="100%">
 									</div>
 								</div>
 							</div>

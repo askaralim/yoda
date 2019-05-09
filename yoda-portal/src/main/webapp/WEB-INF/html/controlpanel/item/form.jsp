@@ -2,8 +2,6 @@
 
 <jsp:useBean id="item" type="com.taklip.yoda.model.Item" scope="request" />
 
-<script src='<c:url value="/FCKeditor/fckeditor.js" />'></script>
-
 <ol class="breadcrumb">
 	<li><a href="<spring:url value="/controlpanel/home" />">Administration</a></li>
 	<li><a href="<spring:url value="/controlpanel/item" />">Item Listing</a></li>

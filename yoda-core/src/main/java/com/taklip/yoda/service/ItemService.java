@@ -15,7 +15,9 @@ public interface ItemService {
 
 	Item update(Item item);
 
-	void updateItemHitCounter(Long itemId, int hitCounter);
+	int getItemHitCounter(Long itemId);
+
+	void increaseItemHitCounter(Long itemId);
 
 	void updateItemRating(Long itemId, int rating);
 

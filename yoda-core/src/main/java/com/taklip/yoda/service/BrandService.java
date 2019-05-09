@@ -19,11 +19,13 @@ public interface BrandService {
 
 	Brand update(Brand brand);
 
-	void updateBrandHitCounter(Long id, int hitCounter);
+	Brand updateImage(Long brandId, MultipartFile file);
+
+	int getBrandHitCounter(Long brandId);
+
+	void increaseBrandHitCounter(Long id);
 
 	void updateBrandRating(Long id, int rating);
-
-	Brand updateImage(Long brandId, MultipartFile file);
 
 	void deleteBrand(Long brandId);
 

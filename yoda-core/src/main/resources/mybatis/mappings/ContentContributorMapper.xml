@@ -51,12 +51,12 @@
 		WHERE c.content_id = #{param1} AND c.user_id = #{param2}
 	</select>
 
-	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
+	<insert id="insert" parameterType="ContentContributor" useGeneratedKeys="true" keyProperty="contentBrandId">
 		INSERT INTO content_contributor(id, content_id, user_id, username, profile_photo_small, version, approved, create_by, create_date, update_by, update_date)
 		VALUES(#{id}, #{contentId}, #{userId}, #{username}, #{profilePhotoSmall}, #{version}, #{approved}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
 	</insert>
 
-	<update id="update" parameterType="ContentBrand">
+	<update id="update" parameterType="ContentContributor">
 		UPDATE content_contributor SET
 			content_id = #{contentId}
 		WHERE content_id = #{contentId}
