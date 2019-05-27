@@ -111,6 +111,10 @@ public class PortalUtil {
 			return false;
 		}
 
+		if (content.getPublishDate() == null || content.getExpireDate() == null) {
+			return false;
+		}
+
 		Date current = new Date();
 
 		if (current.before(content.getPublishDate())

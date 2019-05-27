@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,10 @@ public class DateUtil {
 	}
 
 	static public boolean isDate(String input) {
+		if (StringUtils.isBlank(input)) {
+			return false;
+		}
+
 		try {
 			dateformat.parse(input);
 		}
@@ -55,6 +60,10 @@ public class DateUtil {
 	static public Date getDate(String input, DateFormat df) {
 		Date date = null;
 
+		if (StringUtils.isBlank(input)) {
+			return date;
+		}
+
 		try {
 			date = df.parse(input);
 		}
@@ -67,6 +76,11 @@ public class DateUtil {
 
 	static public Date getDate(String input) {
 		Date date = null;
+
+		if (StringUtils.isBlank(input)) {
+			return date;
+		}
+
 		try {
 			date = dateformat.parse(input);
 		}
@@ -78,12 +92,18 @@ public class DateUtil {
 
 	static public Date getFullDatetime(String input) {
 		Date date = null;
+
+		if (StringUtils.isBlank(input)) {
+			return date;
+		}
+
 		try {
 			date = fullDatetimeformat.parse(input);
 		}
-		catch (ParseException e) {
+		catch (Exception e) {
 			logger.debug("DateUtil#getFullDatetime failed for input:" + input + ", detail: " + e.getMessage());
 		}
+
 		return date;
 	}
 
