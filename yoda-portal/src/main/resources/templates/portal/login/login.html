@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title th:text="${siteTitle} + ' - ' + #{login}">Login</title>
+
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+
+    <link rel="stylesheet" th:href="@{/bootstrap-3.2.0/css/bootstrap.min.css}" href="../bootstrap-3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}" href="../css/login.css"/>
+    <link rel="stylesheet" href="resources/css/login.css" type="text/css">
+</head>
+
+<body>
+<div class="form-box" id="login-box">
+    <div class="header">
+        <div class="icons">
+            <a th:href=@{"/"}><i class="glyphicon glyphicon-home"></i></a>
+        </div>
+        <h2 class="text-center" th:text="#{login}">Login</h2>
+    </div>
+    <form th:action="@{/login}" action="#" method="POST" name="fm">
+        <div class="body">
+            <!-- If the query parameter error exists, authentication was attempted and failed -->
+            <p th:if="${error != null}" class="alert alert-danger" role="alert" th:text="${SPRING_SECURITY_LAST_EXCEPTION.message}">SPRING_SECURITY_LAST_EXCEPTION</p>
+            <p th:if="${error != null}" class="alert alert-danger" role="alert" th:text="${error}">Error</p>
+            <p th:if="${exception != null}" class="alert alert-danger" role="alert" th:text="${exception}">Exception</p>
+            <p th:if="${param.logout != null}" class="alert alert-danger" role="alert" th:text="#{you-have-been-logged-out}">you-have-been-logged-out</p>
+
+            <div class="form-group">
+                <input id="email" name="email" type="email" class="form-control" th:placeholder="#{email}" required
+                       autofocus>
+            </div>
+            <div class="form-group">
+                <input id="password" name="password" type="password" class="form-control" th:placeholder="#{password}" required>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input name="remember-me" type="checkbox" value="remember-me">
+                        <span th:text="#{remember-me}">Remember Me</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <button type="submit" class="btn btn-block" th:text="#{login}">Login</button>
+            <!-- <p><a href="#">I forgot my password</a></p> -->
+
+            <a class="text-center" th:href="@{/user/register}" href="/user/register.html" th:text="#{register}">Register</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

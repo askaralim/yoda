@@ -120,8 +120,7 @@ public class PortalUserController extends PortalBaseController {
 			@ModelAttribute User user,
 			@RequestParam("photo") MultipartFile photo,
 			BindingResult result, SessionStatus status,
-			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
+			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 
 		Site site = getSite(request);
@@ -133,11 +132,8 @@ public class PortalUserController extends PortalBaseController {
 		new UserSettingsValidator().validate(user, result);
 
 		if(result.hasErrors()) {
-			model.put("errors", "errors");
-
 			logger.error(result.toString());
-
-			return new ModelAndView("portal/user/settings", model);
+			return new ModelAndView("portal/user/settings", "errors", result.getAllErrors());
 		}
 
 		User userDb = userService.updateUser(
@@ -160,7 +156,7 @@ public class PortalUserController extends PortalBaseController {
 	}
 
 	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
-	public ModelAndView sumbit(
+	public ModelAndView submit(
 			@RequestParam("username") String username,
 			@RequestParam("email") String email,
 			@RequestParam("password") String password,

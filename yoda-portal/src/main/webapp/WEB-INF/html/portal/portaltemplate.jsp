@@ -16,7 +16,7 @@
 		<meta property="og:image" content="${image}" />
 		<meta property="og:description" content="${description}" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="Keywords" content="${keywords}">
 		<meta name="Description" content="${description}">
 
@@ -24,12 +24,12 @@
 
 		<title>${pageTitle}</title>
 
-		<link rel="icon" type="image/x-icon" href='<c:url value="/resources/images/favicon.ico" />' />
+		<link rel="icon" type="image/x-icon" href="/resources/images/favicon.ico" />
 
 		<!--<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
-		<link rel="stylesheet" href='<c:url value="/resources/bootstrap-3.2.0/css/bootstrap.min.css" />' type="text/css" />
+		<link rel="stylesheet" href="/resources/bootstrap-3.2.0/css/bootstrap.min.css" type="text/css" />
 		<link rel="stylesheet" href="/resources/css/fileinput.css" />
-		<link rel="stylesheet" href='<c:url value="/resources/css/main.css" />' type="text/css" />
+		<link rel="stylesheet" href="/resources/css/main.css" type="text/css" />
 		<!-- <link rel="stylesheet" href="/resources/css/login.css" type="text/css" /> -->
 
 		<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">

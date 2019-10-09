@@ -3,60 +3,78 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<artifactId>yoda-portal</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Yoda Portal</name>
+	<description>taklip.com Yoda Portal</description>
+
 	<parent>
 		<groupId>com.taklip</groupId>
 		<artifactId>yoda</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>yoda-portal</artifactId>
-	<packaging>war</packaging>
-
-	<name>Yoda Portal</name>
-	<description>taklip.com Yoda Portal</description>
-
 	<dependencies>
-		<!-- Compile -->
 		<dependency>
 			<groupId>com.taklip</groupId>
 			<artifactId>yoda-core</artifactId>
-			<scope>compile</scope>
 		</dependency>
-		<!-- Provided -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!-- Provided -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-devtools</artifactId>-->
+<!--&lt;!&ndash;			<optional>true</optional>&ndash;&gt;-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.apache.tomcat.embed</groupId>-->
+<!--			<artifactId>tomcat-embed-jasper</artifactId>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
 		<finalName>yoda-portal</finalName>
+<!--		<resources>-->
+<!--			<resource>-->
+<!--				<directory>src/main/webapp/WEB-INF</directory>-->
+<!--				&lt;!&ndash;注意此次必须要放在此目录下才能被访问到 &ndash;&gt;-->
+<!--				<targetPath>META-INF/resources</targetPath>-->
+<!--				<includes>-->
+<!--					<include>**/**</include>-->
+<!--				</includes>-->
+<!--			</resource>-->
+<!--		</resources>-->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin> -->
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-surefire-plugin</artifactId>-->
+<!--&lt;!&ndash;				<configuration>&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;					<skip>true</skip>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;					<useSystemClassLoader>false</useSystemClassLoader>&ndash;&gt;-->
+<!--&lt;!&ndash;				</configuration>&ndash;&gt;-->
+<!--			</plugin>-->
+<!--			<plugin>-->
+<!--				<artifactId>maven-compiler-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<source>11</source>-->
+<!--					<target>11</target>-->
+<!--					<encoding>UTF-8</encoding>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 </project>

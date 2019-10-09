@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+
+    <title>403</title>
+
+    <link rel="stylesheet" th:href="@{/bootstrap-3.2.0/css/bootstrap.min.css}" href="../bootstrap-3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/403.css}" href="../css/403.css"/>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.1.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<div class="container">
+    <div class="error-page">
+        <h2 class="headline text-info">404</h2>
+        <div class="error-content">
+            <h3>
+                <i class="fa fa-warning text-yellow"></i>
+                <p th:text="#{page-not-found}">page-not-found</p>
+            </h3>
+            <p th:text="#{the-requested-resource-is-not-available}">the-requested-resource-is-not-available</p>
+            <p>
+                <a th:href="@{/}" href="/home.html" th:text="#{go-to-home-page}">go-to-home-page</a>
+            </p>
+            <form class='search-form' th:action="@{/(search)}" action="#">
+                <div class='input-group'>
+                    <input type="text" class="form-control" id="q" name="q" th:placeholder="#{search}">
+                    <div class="input-group-btn">
+                        <button type="submit" name="submit" class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-1.11.1.min.js}"></script>
+<script th:src="@{/bootstrap-3.2.0/js/bootstrap.min.js}"></script>
+</body>
+</html>

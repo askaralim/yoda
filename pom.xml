@@ -4,6 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>com.taklip</groupId>
+	<artifactId>yoda</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Yoda</name>
+	<description>taklip.com yoda base</description>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -11,21 +18,17 @@
 		<relativePath />
 	</parent>
 
-	<groupId>com.taklip</groupId>
-	<artifactId>yoda</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
-	<name>Yoda</name>
-	<description>taklip.com yoda base</description>
-
 	<modules>
 		<module>yoda-core</module>
 		<module>yoda-portal</module>
 	</modules>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+<!--		<maven.compiler.source>${java.version}</maven.compiler.source>-->
+<!--		<maven.compiler.target>${java.version}</maven.compiler.target>-->
 		<imgscalr.version>4.2</imgscalr.version>
 		<elasticsearch.version>1.7.0</elasticsearch.version>
 	</properties>

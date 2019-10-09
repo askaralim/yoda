@@ -483,7 +483,7 @@
 		username varchar(50),
 		user_ip_address VARCHAR(30),
 		page_type INT,
-		page_id INT,
+		page_id bigint(20),
 		page_name varchar(100),
 		page_url VARCHAR(100),
 		create_date DATETIME NOT NULL

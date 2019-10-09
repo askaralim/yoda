@@ -45,14 +45,14 @@ import com.taklip.yoda.validator.FrontendContentEditValidator;
 
 @Controller
 public class PortalContentController extends PortalBaseController {
-	protected Logger logger =  LoggerFactory.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	protected ContentService contentService;
 
 	@Autowired
 	protected ItemService itemService;
-
+	
 	@RequestMapping(value="/content/{contentId}", method = RequestMethod.GET)
 	public ModelAndView showContent(
 			@PathVariable("contentId") String contentId,
@@ -80,7 +80,7 @@ public class PortalContentController extends PortalBaseController {
 
 		pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getContentId());
 
-		return new ModelAndView("portal/content/content", model);
+		return new ModelAndView("portal/content", model);
 	}
 
 	@RequestMapping(value = "/content/{contentId}/edit", method = RequestMethod.GET)
@@ -226,7 +226,7 @@ public class PortalContentController extends PortalBaseController {
 	}
 
 	public void formatContent(
-			HttpServletRequest request, HttpServletResponse response, 
+			HttpServletRequest request, HttpServletResponse response,
 			ModelMap model, Content content) {
 		Site site = getSite(request);
 
@@ -254,7 +254,7 @@ public class PortalContentController extends PortalBaseController {
 
 			model.put("contentInfo", content);
 			model.put("comments", comments);
-			model.put("date", new Date());	
+			model.put("date", new Date());
 			model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
 
 			User loginUser = AuthenticatedUtil.getAuthenticatedUser();

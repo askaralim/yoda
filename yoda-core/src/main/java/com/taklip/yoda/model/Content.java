@@ -47,13 +47,13 @@ public class Content extends BaseEntity {
 
 //	private Section section;
 
-	private List<ContentContributor> contentContributors = new ArrayList<ContentContributor>();
+	private List<ContentContributor> contentContributors = new ArrayList<>();
 
-	private List<ContentBrand> contentBrands = new ArrayList<ContentBrand>();
+	private List<ContentBrand> contentBrands = new ArrayList<>();
 
-	private List<Item> items = new ArrayList<Item>();
+	private List<Item> items = new ArrayList<>();
 
-	private List<Menu> menus = new ArrayList<Menu>();
+	private List<Menu> menus = new ArrayList<>();
 
 	public Long getContentId() {
 		return this.contentId;

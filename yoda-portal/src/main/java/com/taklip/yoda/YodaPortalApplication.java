@@ -8,14 +8,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
-public class YodaPortalApplication extends SpringBootServletInitializer {
-	private final Logger logger = LoggerFactory.getLogger(YodaPortalApplication.class);
+//@SpringBootApplication
+//public class YodaPortalApplication extends SpringBootServletInitializer {
+//	private final Logger logger = LoggerFactory.getLogger(YodaPortalApplication.class);
+//
+//	@Override
+//	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//		return application.sources(YodaPortalApplication.class).bannerMode(Banner.Mode.OFF);
+//	}
+//
+//	public static void main(String[] args) {
+//		SpringApplication.run(YodaPortalApplication.class, args);
+//	}
+//}
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(YodaPortalApplication.class).bannerMode(Banner.Mode.OFF);
-	}
+@SpringBootApplication
+public class YodaPortalApplication {
+	private final Logger logger = LoggerFactory.getLogger(YodaPortalApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(YodaPortalApplication.class, args);

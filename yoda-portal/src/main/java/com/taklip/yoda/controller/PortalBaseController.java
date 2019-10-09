@@ -44,6 +44,7 @@ public class PortalBaseController {
 			}
 		}
 
+		// csrf is disabled
 		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
 
 		if (csrfToken != null) {

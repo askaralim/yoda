@@ -1,48 +1,8 @@
 package com.taklip.yoda.controller;
 
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.model.Brand;
-import com.taklip.yoda.model.Category;
-import com.taklip.yoda.model.Content;
-import com.taklip.yoda.model.ContentBrand;
-import com.taklip.yoda.model.ContentContributor;
-import com.taklip.yoda.model.HomePage;
-import com.taklip.yoda.model.Menu;
-import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.User;
-import com.taklip.yoda.service.BrandService;
-import com.taklip.yoda.service.CategoryService;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.HomePageService;
-import com.taklip.yoda.service.MenuService;
-import com.taklip.yoda.service.SiteService;
-import com.taklip.yoda.service.UserService;
+import com.taklip.yoda.model.*;
+import com.taklip.yoda.service.*;
 import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.AuthenticatedUtil;
@@ -50,10 +10,25 @@ import com.taklip.yoda.util.DateUtil;
 import com.taklip.yoda.util.SiteUtil;
 import com.taklip.yoda.validator.ContentEditValidator;
 import com.taklip.yoda.vo.ContentSearchForm;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.util.*;
 
 @Controller
+@RequestMapping(value = "/controlpanel/content")
 public class ContentController {
-
 	@Autowired
 	UserService userService;
 
@@ -75,11 +50,10 @@ public class ContentController {
 	@Autowired
 	BrandService brandService;
 
-	@RequestMapping(value="/controlpanel/content", method = RequestMethod.GET)
+	@GetMapping
 	public String showPanel(
 			Map<String, Object> model,
-			@RequestParam(name = "offset", required = false) String offset,
-			HttpServletRequest request) {
+			@RequestParam(name = "offset", required = false) String offset) {
 //		String offset = request.getParameter("offset");
 
 		int offsetInt = 0;
@@ -97,7 +71,8 @@ public class ContentController {
 		return "controlpanel/content/list";
 	}
 
-	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.GET)
+//	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.GET)
+	@GetMapping("/add")
 	public ModelAndView setupForm(Map<String, Object> model) {
 		Content content = new Content();
 
@@ -115,18 +90,15 @@ public class ContentController {
 		return new ModelAndView("controlpanel/content/edit", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/content/save", method = RequestMethod.POST)
+	@PostMapping(value = "/save")
 	public ModelAndView save(
-			@ModelAttribute Content content,
-			@RequestParam("categoryId") Long categoryId,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request)
-		throws Throwable {
+			@ModelAttribute Content content, @RequestParam("categoryId") Long categoryId,
+			BindingResult result, HttpServletRequest request) throws Throwable {
 		new ContentEditValidator().validate(content, result);
 
 		ModelMap model = new ModelMap();
 
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			List<Category> categories = categoryService.getCategories();
 
 			model.put("categories", categories);
@@ -207,17 +179,11 @@ public class ContentController {
 //		return new ModelAndView("controlpanel/content/edit", model);
 //	}
 
-	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.GET)
+	@GetMapping("/{contentId}/edit")
 	public String initUpdateForm(
 			@PathVariable("contentId") Long contentId,
-			Map<String, Object> model, HttpServletRequest request) {
+			Map<String, Object> model) {
 		Content content = contentService.getContent(contentId);
-
-//		content.setHomePage(false);
-//
-//		if (getHomePage(SiteUtil.getDefaultSite().getSiteId(), content.getContentId()) != null) {
-//			content.setHomePage(true);
-//		}
 
 		List<Category> categories = categoryService.getCategories();
 
@@ -227,7 +193,7 @@ public class ContentController {
 		return "controlpanel/content/edit";
 	}
 
-	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.GET)
+	@GetMapping("/{contentId}/brand/add")
 	public ModelAndView initCreationForm(
 			@PathVariable("contentId") Long contentId, Map<String, Object> model) {
 		ContentBrand contentBrand = new ContentBrand();
@@ -242,35 +208,8 @@ public class ContentController {
 		return new ModelAndView("controlpanel/content/editContentBrand", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/add", method = RequestMethod.POST)
-	public ModelAndView processCreationForm(
-			@ModelAttribute("contentBrand") ContentBrand contentBrand,
-			@RequestParam("brandId") Long brandId, BindingResult result,
-			SessionStatus status, HttpServletRequest request,
-			HttpServletResponse response) {
-		ModelMap model = new ModelMap();
-
-		String brandName = StringPool.BLANK;
-		String brandLogo = StringPool.BLANK;
-
-		Brand brand = null;
-
-		if (null != brandId) {
-			brand = brandService.getBrand(brandId);
-			brandName = brand.getName();
-			brandLogo = brand.getImagePath();
-		}
-
-		contentBrand.setBrandName(brandName);
-		contentBrand.setBrandLogo(brandLogo);
-
-		contentService.addContentBrand(contentBrand);
-
-		return new ModelAndView("redirect:/controlpanel/content/" + contentBrand.getContentId() + "/brand/" + contentBrand.getContentBrandId() + "/edit", model);
-	}
-
-	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/{contentBrandId}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("contentBrandId") Long contentBrandId, Map<String, Object> model) {
+	@RequestMapping(value = "/{contentId}/brand/{contentBrandId}/edit", method = RequestMethod.GET)
+	public String initContentBrandUpdateForm(@PathVariable("contentBrandId") Long contentBrandId, Map<String, Object> model) {
 		ContentBrand contentBrand = contentService.getContentBrand(contentBrandId);
 
 		List<Brand> brands = brandService.getBrands();
@@ -281,19 +220,18 @@ public class ContentController {
 		return "controlpanel/content/editContentBrand";
 	}
 
-	@RequestMapping(value = "/controlpanel/content/{contentId}/brand/{contentBrandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-	public ModelAndView processUpdateForm(
-			@ModelAttribute("contentBrand") ContentBrand contentBrand,
-			@RequestParam("brandId") Long brandId,
-			BindingResult result, SessionStatus status) {
+	@PostMapping(value = "/{contentId}/brand/save")
+	public ModelAndView processCreationForm(
+			@ModelAttribute("contentBrand") ContentBrand contentBrand) {
 		ModelMap model = new ModelMap();
 
 		String brandName = StringPool.BLANK;
 		String brandLogo = StringPool.BLANK;
+
 		Brand brand = null;
 
-		if (null != brandId) {
-			brand = brandService.getBrand(brandId);
+		if (null != contentBrand.getBrandId()) {
+			brand = brandService.getBrand(contentBrand.getBrandId());
 			brandName = brand.getName();
 			brandLogo = brand.getImagePath();
 		}
@@ -301,7 +239,9 @@ public class ContentController {
 		contentBrand.setBrandName(brandName);
 		contentBrand.setBrandLogo(brandLogo);
 
-		contentService.updateContentBrand(contentBrand);
+//		contentService.addContentBrand(contentBrand);
+
+		contentService.saveContentBrand(contentBrand);
 
 		List<Brand> brands = brandService.getBrands();
 
@@ -309,12 +249,45 @@ public class ContentController {
 		model.put("brands", brands);
 		model.put("success", "success");
 
-		status.setComplete();
-
 		return new ModelAndView("controlpanel/content/editContentBrand", model);
+
+//		return new ModelAndView("redirect:/controlpanel/content/" + contentBrand.getContentId() + "/brand/" + contentBrand.getContentBrandId() + "/edit", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/content/remove", method = RequestMethod.POST)
+//	@RequestMapping(value = "/{contentId}/brand/{contentBrandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
+//	public ModelAndView processUpdateForm(
+//			@ModelAttribute("contentBrand") ContentBrand contentBrand,
+//			@RequestParam("brandId") Long brandId,
+//			BindingResult result, SessionStatus status) {
+//		ModelMap model = new ModelMap();
+//
+//		String brandName = StringPool.BLANK;
+//		String brandLogo = StringPool.BLANK;
+//		Brand brand = null;
+//
+//		if (null != brandId) {
+//			brand = brandService.getBrand(brandId);
+//			brandName = brand.getName();
+//			brandLogo = brand.getImagePath();
+//		}
+//
+//		contentBrand.setBrandName(brandName);
+//		contentBrand.setBrandLogo(brandLogo);
+//
+//		contentService.updateContentBrand(contentBrand);
+//
+//		List<Brand> brands = brandService.getBrands();
+//
+//		model.put("contentBrand", contentBrand);
+//		model.put("brands", brands);
+//		model.put("success", "success");
+//
+//		status.setComplete();
+//
+//		return new ModelAndView("controlpanel/content/editContentBrand", model);
+//	}
+
+	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public String deleteContent(
 			@ModelAttribute Content content,
 			HttpServletRequest request) {
@@ -336,10 +309,10 @@ public class ContentController {
 //			contentImageService.deleteContentImage(contentImage);
 //		}
 
-		Iterator iterator = (Iterator)contentDb.getMenus().iterator();
+		Iterator iterator = (Iterator) contentDb.getMenus().iterator();
 
 		while (iterator.hasNext()) {
-			Menu menu = (Menu)iterator.next();
+			Menu menu = (Menu) iterator.next();
 			menu.setContent(null);
 		}
 
@@ -354,7 +327,7 @@ public class ContentController {
 	public void resetCounter(
 			@PathVariable("contentId") Long contentId,
 			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
+			throws Throwable {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
 		Content content = contentService.getContent(contentId);
@@ -383,7 +356,7 @@ public class ContentController {
 	}
 
 	public JSONObject createJsonSelectedMenus(int siteId, Content content)
-		throws Exception {
+			throws Exception {
 		JSONObject jsonResult = new JSONObject();
 
 		Iterator iterator = content.getMenus().iterator();
@@ -413,7 +386,7 @@ public class ContentController {
 			@PathVariable("contentId") Long contentId,
 			@RequestParam("removeMenus") int[] menuIds,
 			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
+			throws Throwable {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
 		Content content = contentService.getContent(contentId);
@@ -458,7 +431,7 @@ public class ContentController {
 			@RequestParam("menuWindowMode") String menuWindowMode,
 			@RequestParam("addMenus") int[] addMenus,
 			HttpServletRequest request, HttpServletResponse response)
-		throws Throwable {
+			throws Throwable {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
 		Content content = contentService.getContent(contentId);
@@ -466,8 +439,8 @@ public class ContentController {
 		if (addMenus != null) {
 			for (int i = 0; i < addMenus.length; i++) {
 				menuService.updateMenu(
-					SiteUtil.getDefaultSite().getSiteId(), addMenus[i], content, null, "",
-					menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
+						SiteUtil.getDefaultSite().getSiteId(), addMenus[i], content, null, "",
+						menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
 			}
 		}
 
@@ -497,7 +470,7 @@ public class ContentController {
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("contentId") long contentId,
 			HttpServletRequest request)
-		throws Throwable {
+			throws Throwable {
 //		User user = PortalUtil.getAuthenticatedUser();
 
 
@@ -510,7 +483,7 @@ public class ContentController {
 		}
 
 		contentService.updateContentImage(
-			SiteUtil.getDefaultSite().getSiteId(), contentId, file);
+				SiteUtil.getDefaultSite().getSiteId(), contentId, file);
 
 //		ImageScaler scaler = null;
 //
@@ -752,7 +725,7 @@ public class ContentController {
 		return null;
 	}
 
-	@RequestMapping(value="/controlpanel/content/remove")
+	@RequestMapping(value = "/controlpanel/content/remove")
 	public String removeContents(
 			@RequestParam("contentIds") String contentIds,
 			HttpServletRequest request) {
@@ -769,14 +742,14 @@ public class ContentController {
 		return "redirect:/controlpanel/content";
 	}
 
-	@RequestMapping(value="/controlpanel/content/search", method = RequestMethod.POST)
+	@RequestMapping(value = "/controlpanel/content/search", method = RequestMethod.POST)
 	public String search(
 			@ModelAttribute ContentSearchForm form, Map<String, Object> model)
-		throws Throwable {
+			throws Throwable {
 		List<Content> contents = contentService.search(
-			SiteUtil.getDefaultSite().getSiteId(), form.getTitle(), form.getPublished(),
-			null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
-			form.getExpireDateStart(), form.getExpireDateEnd());
+				SiteUtil.getDefaultSite().getSiteId(), form.getTitle(), form.getPublished(),
+				null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
+				form.getExpireDateStart(), form.getExpireDateEnd());
 
 		model.put("contents", contents);
 		model.put("searchForm", form);

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="fragments :: navbar"></div>
+<div class="section">
+    <div id="content-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-1">
+                    <div class="content-post">
+                        <div class="page-header">
+                            <h1 class="content-title">
+                                <strong th:text="${contentInfo.title}">Content Title</strong>
+                            </h1>
+                            <!--<p>$contentInfo.shortDescription</p>-->
+                            <!-- <p><img src="assets/img/user.png" width="50px" height="50px"> <bd></bd></p> -->
+                            <div class="content-flag">
+                                <span class="content-category" th:if="${contentInfo.category}" th:text="${contentInfo.category.name}">Category Name</span>
+                                <div class="content-post-meta text-right">
+                                    <ul class="list-unstyled list-inline">
+                                        <li>
+                                            <i class="glyphicon glyphicon-time"></i>
+                                            <span th:text="${#dates.format(contentInfo.updateDate, 'yyyy-MM-dd')}"/>
+                                        </li>
+                                        <li>
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                            <span th:text="${contentInfo.hitCounter}">Hit Counter</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#tab-should-know" th:text="#{should-know}">Should Know</a>
+                                </li>
+                                <li th:unless="${contentInfo.contentBrands.empty}">
+                                    <a data-toggle="tab" href="#tab-brand" th:text="#{related-brands}">Related Brands</a>
+                                </li>
+
+                                <li th:if="${not #lists.isEmpty(contentInfo.items)}">
+                                    <a data-toggle="tab" href="#tab-recommend" th:text="#{recommend-product}">Recommend Product</a>
+                                </li>
+                            </ul>
+                            <div class="content-post-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab-should-know">
+                                        <p>[(${contentInfo.description})]</p>
+                                        <!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
+                                        <div class="content-actions">
+                                            <button id="thumbUp" th:class="${(userLogin && isUserLike) ? ' fa fa-thumbs-up' : 'fa fa-thumbs-o-up'}"></button>
+                                            <button id="thumbDown" th:class="${(userLogin && isUserDislike) ? ' fa fa-thumbs-down' : 'fa fa-thumbs-o-down'}"></button>
+                                            <span id="score" class="label label-success">
+                                                <span th:if="${contentInfo.score > 0}" th:text="'+' + ${contentInfo.score}"/>
+                                                <span th:unless="${contentInfo.score > 0}" th:text="${contentInfo.score}"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab-brand">
+                                        <div class="row" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;" th:each="contentBrand : ${contentInfo.contentBrands}">
+                                            <div class="col-sm-4">
+                                                <a href="/brand/brand.html" th:href="@{'/brand/' + ${contentBrand.brandId}}">
+                                                    <img src="/images/demoUpload.jpg" th:src="${contentBrand.brandLogo}" th:alt-title="${contentBrand.brandName}" width="150" height="150"/>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div id="brand-name">
+                                                    <p>
+                                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${contentBrand.brandId}}" th:text="${contentBrand.brandName}">Brand Name</a>
+                                                    </p>
+                                                </div>
+                                                <div class="brand-description">
+                                                    <p th:text="${contentBrand.description}">ContentBrand Description</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab-recommend">
+                                        <div th:each="item : ${contentInfo.items}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}">
+                                                        <img src="/images/demoUpload.jpg" th:src="${item.imagePath}" th:alt-title="${item.name}" width="150" height="150"/>
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <dl class="dl-horizontal">
+                                                        <dt th:text="#{name}">Name</dt>
+                                                        <dd>
+                                                            <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}" th:text="${item.name}">Item Name</a>
+                                                        </dd>
+                                                        <dt th:text="#{brand}">brand</dt>
+                                                        <dd>
+                                                            <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.brandId}}" th:text="${item.brand.name}">Item Brand Name</a>
+                                                        </dd>
+                                                        <dt th:text="#{price}">Price</dt>
+                                                        <dd th:text="${item.price}">Item Price</dd>
+                                                        <span th:each="extraField : ${item.extraFieldList}">
+                                                            <dt th:text="${extraField.key}">ExtraField Key</dt>
+                                                            <dd th:text="${extraField.value}">ExtraField Value</dd>
+                                                        </span>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="item-description">
+                                                        <p th:text="${item.description}">Item Description</p>
+                                                        <p>
+                                                            <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}" th:text="#{more} + '>>>'">More >>></a>
+                                                        </p>
+                                                    </div>
+                                                    <div class="content-actions">
+                                                        <button th:id="'itemThumbUp' + ${item.id}" class="glyphicon glyphicon-thumbs-up" th:onclick="'return itemThumbUp(' + ${item.id} + ')'"></button>
+                                                        <button th:id="'itemThumbDown' + ${item.id}" class="glyphicon glyphicon-thumbs-down" th:onclick="'return itemThumbDown(' + ${item.id} + ')'"></button>
+                                                        <span th:id="'rating' + ${item.id}" class="label label-success">
+                                                            <span th:if="${item.rating > 0}" th:text="'+' + ${item.rating}"/>
+                                                            <span th:unless="${item.rating > 0}" th:text="${item.rating}"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comments">
+                        <h5 th:text="#{comments} + '('+ ${comments.size()} + ')'">Comments Size</h5>
+                        <ul class="list-unstyled">
+                            <li th:each="comment : ${comments}" class="left clearfix">
+                                    <span class="comments-img pull-left">
+                                        <span th:if="${comment.user.profilePhotoSmall} == null">
+                                            <img src="../images/defaultAvatar.jpg" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img" width="32" height="32"/>
+                                        </span>
+                                        <span th:unless="${comment.user.profilePhotoSmall} == null">
+                                            <img src="../images/defaultAvatar.jpg" th:src="${comment.user.profilePhotoSmall}" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img"/>
+                                        </span>
+                                    </span>
+                                <div class="comments-body clearfix">
+                                    <div>
+                                        <strong class="primary-font">
+                                            <a href="/user/user.html" th:href="@{'/user/' + ${comment.user.userId}}" th:text="${comment.user.username}">Comment User Username</a>
+                                        </strong>
+                                    </div>
+                                    <p class="comment-description" th:text="${comment.description}">Comment Description</p>
+                                    <span th:text="${#calendars.format(comment.createDate,'dd MMMM yyyy')}">13 May 2011</span>
+                                    <p class="comment-time" th:text="${#dates.format(comment.createDate, 'yyyy-MM-dd hh:mm')}">2019-09-25 22:10</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <div th:if="${userLogin}">
+                            <form role="form" th:action="@{/comment/new}" action="#" method="post">
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" id="description" name="description" th:placeholder="#{your-comment}" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary pull-right" th:text="#{submit}">Submit</button>
+                                </div>
+                                <div class="clearfix"></div>
+                                <input type="hidden" name="contentId" th:value="${contentInfo.contentId}"/>
+<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                            </form>
+                        </div>
+                        <span th:unless="${userLogin}">
+                            <p class="text-muted" th:text="#{please-login-to-make-comments}">Please login to make comments</p>
+                            <button type="button" class="btn btn-primary btn-xs" th:onclick="'return register()'" th:text="#{register}">Register</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-3 home-sidebar">
+                    <div class="home-sidebar-module">
+                        <h5 th:text="#{content-publisher}">Content Publisher</h5>
+                        <img th:if="${contentInfo.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contentInfo.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                        <img th:unless="${contentInfo.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${contentInfo.createBy.profilePhotoSmall}" th:alt-title="${contentInfo.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                        <span th:text="${contentInfo.createBy.username}">Publisher Name</span>
+                    </div>
+                    <div th:if="${contentInfo.contentContributors.size() > 0}" class="home-sidebar-module">
+                        <h5 th:text="content-contributor">Content Contributor</h5>
+                        <ul class="list-unstyled">
+                            <li th:each="contributor : ${contentInfo.contentContributors}">
+                                <img th:if="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25"/>
+                                <img th:unless="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall}" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                                <span th:text="${contributor.username}">Contributor Name</span>
+                            </li>
+                            <br>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 home-sidebar">
+                    <div class="sidebar-module article-module">
+                        <h5 class="custom-title">
+                            <i class="fa fa-book fa-fw icon"></i>
+                            <strong th:text="#{content-menu}">Content Menu</strong>
+                            <i class="fa fa-close pull-right close-article-menu pointer hide"></i>
+                            <small></small>
+                        </h5>
+                        <div id="article-menu" style="display: block;">
+                            <ul class="list-unstyled">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+</body>
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center" id="registerLabel" th:text="#{join} + ' taklip'">Join taklip</h4>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <p id="modalError" class="alert alert-danger" role="alert" hidden="true"></p>
+                    <div class="form-group">
+                        <input id="username" name="username" type="text" class="form-control" th:placeholder="#{username}" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <input id="email" name="email" type="email" class="form-control" th:placeholder="#{email}" required>
+                    </div>
+                    <div class="form-group">
+                        <input id="password" name="password" type="password" class="form-control" th:placeholder="#{password}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary btn-block" id="modalRegister" th:text="#{register}">Register</a>
+
+                    <span th:text="#{have-a-account}">Have a Account</span>
+                    <a class="text-center" href="/login.html" th:href="@{'/login'}" th:text="#{login}">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/content.js}"></script>
+</html>
+
+<script>
+    (function () {
+        var myLazyLoad1 = new LazyLoad({
+            container: document.getElementById('tab-should-know')
+        });
+        var myLazyLoad2 = new LazyLoad({
+            container: document.getElementById('tab-brand')
+        });
+        var myLazyLoad3 = new LazyLoad({
+            container: document.getElementById('tab-recommend')
+        });
+    }());
+</script>
+
+
+<script type='text/javascript' th:inline="javascript">
+    $(function () {
+        $('#modalRegister').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/user/register/ajax",
+                data: {
+                    username: $("#username").val(),
+                    email: $("#email").val(),
+                    password: $("#password").val()
+                },
+                dataType: "json",
+                success: function (data) {
+                    var modalError = $('#modalError');
+                    modalError.hide();
+
+                    if (data.error) {
+                        modalError.show();
+                        modalError.html(data.error);
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+        });
+    });
+
+    function register() {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+    }
+
+    $(function () {
+        $('#thumbUp').click(function () {
+            var userLogin = /*[[${userLogin}]]*/;
+            if (!userLogin) {
+                $('#loginModal').modal('show')
+                return;
+            }
+
+            var url = "/content/" + [[${contentInfo.contentId}]] + "/rate?thumb=";
+            var currentUpClass = $('#thumbUp').attr('class');
+            var currentDownClass = $('#thumbDown').attr('class');
+            var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
+            var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
+
+            if (currentUpClassNotActive) {
+                url = url + 'up';
+            } else {
+                url = url + 'neutral';
+            }
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                success: function (data) {
+                    var total = data.score;
+
+                    $('#score').empty();
+
+                    if (total > 0) {
+                        total = "+" + total;
+                    }
+
+                    $('#score').html(total);
+                    $('#thumbDown').attr('class', 'fa fa-thumbs-o-down');
+
+                    if (currentUpClassNotActive && currentDownClassNotActive) {
+                        $('#thumbUp').attr('class', 'fa fa-thumbs-up');
+                    } else {
+                        $('#thumbUp').attr('class', 'fa fa-thumbs-o-up');
+                    }
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#thumbDown').click(function () {
+            var userLogin = /*[[${userLogin}]]*/;
+            if (!userLogin) {
+                $('#loginModal').modal('show')
+                return;
+            }
+
+            var url = "/content/" + [[${contentInfo.contentId}]] + "/rate?thumb=";
+            var currentUpClass = $('#thumbUp').attr('class');
+            var currentDownClass = $('#thumbDown').attr('class');
+            var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
+            var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
+
+            if (currentDownClassNotActive) {
+                url = url + 'down';
+            } else {
+                url = url + 'neutral';
+            }
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                success: function (data) {
+                    var total = data.score;
+
+                    $('#score').empty();
+
+                    if (total > 0) {
+                        total = "+" + total;
+                    }
+
+                    $('#score').html(total);
+                    $('#thumbUp').attr('class', 'fa fa-thumbs-o-up');
+
+                    if (currentDownClassNotActive && currentUpClassNotActive) {
+                        $('#thumbDown').attr('class', 'fa fa-thumbs-down');
+                    } else {
+                        $('#thumbDown').attr('class', 'fa fa-thumbs-o-down');
+                    }
+                }
+            });
+        });
+    });
+
+    function contentRate(score) {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/content/' + [[${contentInfo.contentId}]] + '/rate?score=' + score,
+            dataType: "json",
+            success: function (data) {
+                var total = data.score;
+
+                $('#score').empty();
+
+                if (total > 0) {
+                    total = "+" + total;
+                }
+
+                $('#score').html(total);
+
+                if (score == 1) {
+                    $('#thumbUp').attr('class', 'fa fa-thumbs-up active');
+                    $('#thumbUp').attr('onclick', 'cancelContentRate(1)');
+                } else {
+                    $('#thumbDown').attr('class', 'fa fa-thumbs-down');
+                }
+            }
+        });
+    }
+
+    function cancelContentRate(score) {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/content/' + [[${contentInfo.contentId}]] + '/rate?score=' + score,
+            dataType: "json",
+            success: function (data) {
+                var total = data.score;
+
+                $('#score').empty();
+
+                if (total > 0) {
+                    total = "+" + total;
+                }
+
+                $('#score').html(total);
+
+                if (score == 1) {
+                    $('#thumbUp').class('fa fa-thumbs-up');
+                } else {
+                    $('#thumbDown').class('fa fa-thumbs-down');
+                }
+            }
+        });
+    }
+
+    function contentThumbDown(score) {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/content/' + [[${contentInfo.contentId}]] + '/score?thumb=down',
+            dataType: "json",
+            success: function (data) {
+                var score = data.score;
+
+                $('#score').empty();
+
+                if (score > 0) {
+                    score = "+" + score;
+                }
+
+                $('#score').html(score);
+            }
+        });
+    }
+
+    function itemThumbUp(id) {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/item/' + id + '/rating?thumb=up',
+            dataType: "json",
+            success: function (data) {
+                var rating = data.rating;
+
+                $('#rating' + id).empty();
+
+                if (rating > 0) {
+                    rating = "+" + rating;
+                }
+
+                $('#rating' + id).html(rating);
+            }
+        });
+    }
+
+    function itemThumbDown(id) {
+        var userLogin = /*[[${userLogin}]]*/;
+        if (!userLogin) {
+            $('#loginModal').modal('show')
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '/item/' + id + '/rating?thumb=down',
+            dataType: "json",
+            success: function (data) {
+                var rating = data.rating;
+
+                $('#rating' + id).empty();
+
+                if (rating > 0) {
+                    rating = "+" + rating;
+                }
+
+                $('#rating' + id).html(rating);
+            }
+        });
+    }
+</script>

@@ -28,7 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.csrf().disable()
+				.authorizeRequests()
 //				.antMatchers("/FCKeditor/**").permitAll()
 				.antMatchers("/file/**").permitAll()
 				.antMatchers("/controlpanel/**").hasRole("ADMIN")
@@ -48,18 +49,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new UserDetailsService() {
-			@Override
-			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				User user = (User) loginUserDetailsService.loadUserByUsername(username);
+		return username -> {
+			User user = (User) loginUserDetailsService.loadUserByUsername(username);
 
-				if (user != null) {
-					return user;
-				}
-
-				throw new UsernameNotFoundException("用户名或密码错误");
+			if (user != null) {
+				return user;
 			}
+
+			throw new UsernameNotFoundException("用户名或密码错误");
 		};
+//		return new UserDetailsService() {
+//			@Override
+//			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//				User user = (User) loginUserDetailsService.loadUserByUsername(username);
+//
+//				if (user != null) {
+//					return user;
+//				}
+//
+//				throw new UsernameNotFoundException("用户名或密码错误");
+//			}
+//		};
 	}
 
 	@Bean

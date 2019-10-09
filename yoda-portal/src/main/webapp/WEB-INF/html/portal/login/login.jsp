@@ -14,7 +14,7 @@
 
 	<link rel="icon" type="image/x-icon" href="<c:url value="/images/favicon.ico" />" />
 
-	<link rel="stylesheet" href="<c:url value="resources/bootstrap-3.2.0/css/bootstrap.min.css" />" type="text/css">
+	<link rel="stylesheet" href="resources/bootstrap-3.2.0/css/bootstrap.min.css" type="text/css">
 
 	<link rel="stylesheet" href="resources/css/login.css"  type="text/css">
 </head>

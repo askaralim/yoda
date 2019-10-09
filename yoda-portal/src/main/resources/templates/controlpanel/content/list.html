@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{content}">Content</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
+            <li><a href="/controlpanel/content/content.html" th:href="@{/controlpanel/content}">Content Listing</a></li>
+        </ol>
+
+        <form name="fm" th:action="@{/user/settings}" th:object="${searchForm}" action="#" method="post">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p th:text="#{search}"></p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="title" th:text="#{title}">Title</label>
+                                <input type="text" th:field="*{title}" th:class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="publishDateStart" th:text="#{publish-date}">publish-date</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" th:field="*{publishDateStart}" th:class="form-control">
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" th:field="*{publishDateEnd}" th:class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="expireDateStart" th:text="#{expire-date}">expire-date</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" th:field="*{expireDateStart}" th:class="form-control">
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" th:field="*{expireDateEnd}" th:class="form-control">
+                                </div>
+                            </div>
+
+                            <input type="submit" th:value="#{search}" class="btn btn-sm btn-primary" role="button" th:onclick=="'return submitSearch()'"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="page-header">
+                        <h4>Content Listing Result</h4>
+                    </div>
+                    <div class="text-right">
+                        <a class="btn btn-primary btn-sm" href="/controlpanel/content/edit.html" th:href="@{/controlpanel/content/add}" th:text="#{new}">New</a>
+                        <input type="submit" th:value="#{remove}" class="btn btn-sm btn-default" role="button" th:onclick="'return submitRemove()'"/>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th th:text="#{id}">ID</th>
+                                <th th:text="#{title}">Title</th>
+                                <th th:text="#{published}">Published</th>
+                                <th th:text="#{category}">Category</th>
+                                <th th:text="#{publish-date}">Publish Date</th>
+                                <th th:text="#{expire-date}">Expire Date</th>
+                                <th th:text="#{hit-counter}">Hit Counter</th>
+                                <th th:text="#{action}">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${page.data.empty}">
+                                <td colspan="3">No data</td>
+                            </tr>
+                            <tr th:each="content : ${page.data}">
+                                <td>
+                                    <input type="checkbox" id="contentIds" th:value="${content.contentId}">
+                                </td>
+                                <td th:text="${content.contentId}">1</td>
+                                <td th:text="${content.title}">Title</td>
+                                <td th:text="${content.published}">Yes</td>
+                                <td th:text="${content.category} != null ? content.category.name : ''">Category Name
+                                </td>
+                                <td th:text="${#calendars.format(content.publishDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#calendars.format(content.expireDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${content.hitCounter}"></td>
+                                <td>
+                                    <a href="/controlpanel/content/edit.html"
+                                       th:href="@{'/controlpanel/content/' + ${content.contentId} + '/edit'}"
+                                       th:text="#{edit}">Edit</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="pagination-info" role="alert" aria-live="polite" aria-relevant="all" th:text="'Showing ' + ${((page.currentPageNo - 1) * 10) + 1} + ' to ' + ${(page.currentPageNo) * 10} + ' of ' + ${page.totalCount} + ' entries'">
+                                Text
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="pagination-section">
+                                <div class="pagination-pages">
+                                    <ul class="pagination">
+                                        <li th:if="${page.hasPreviousPage}"><a
+                                                th:href="@{/controlpanel/content(offset=${page.currentPageNo - 2})}"
+                                                aria-label="Previous"><span>&laquo;</span></a></li>
+                                        <li th:unless="${page.hasPreviousPage}" class="disabled"><span>&laquo;</span>
+                                        </li>
+                                        <li th:if="${page.hasNextPage}"><a
+                                                th:href="@{/controlpanel/content(offset=${page.currentPageNo})}"
+                                                aria-label="Next"><span>&raquo;</span></a></li>
+                                        <li th:unless="${page.hasNextPage}" class="disabled"><span>&laquo;</span></li>
+                                        <!--                                        <li class="disabled"><span>&raquo;</span></li>-->
+                                    </ul>
+                                </div>
+                                <div class="pagination-nav"
+                                     th:text="${page.currentPageNo} + ' / ' + ${page.totalPageCount}"></div>
+                                <div class="pagination-go-input">
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="pagination-go-button">
+                                    <input type="button" class="btn btn-default" value="Go">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $('.input-daterange').datepicker({
+        format: "yyyy-mm-dd",
+        weekStart: 1,
+        language: "zh-CN",
+        todayHighlight: true
+    });
+
+    function submitSearch() {
+        document.fm.action = "/controlpanel/content/search";
+        document.fm.method = "POST";
+        document.fm.submit();
+    }
+
+    function submitRemove() {
+        var ids = getSelectedContentIds();
+
+        if (ids) {
+            location.href = "/controlpanel/content/remove?contentIds=" + ids;
+        }
+
+        return false;
+    }
+
+    function getSelectedContentIds() {
+        var selectBoxs = document.all("contentIds");
+
+        if (!selectBoxs) return null;
+
+        if (typeof (selectBoxs.length) == "undefined" && selectBoxs.checked) {
+            return selectBoxs.value;
+        } else {//many checkbox ,so is a array
+            var ids = "";
+            var split = "";
+            for (var i = 0; i < selectBoxs.length; i++) {
+                if (selectBoxs[i].checked) {
+                    ids += split + selectBoxs[i].value;
+                    split = ",";
+                }
+            }
+
+            return ids;
+        }
+    }
+</script>

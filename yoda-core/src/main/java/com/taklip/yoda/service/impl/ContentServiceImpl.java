@@ -130,12 +130,33 @@ public class ContentServiceImpl implements ContentService {
 		commentMapper.insert(comment);
 	}
 
+	public void saveContentBrand(ContentBrand contentBrand) {
+		if (null == contentBrand.getContentBrandId()) {
+			this.addContentBrand(contentBrand);
+		}
+		else {
+			this.updateContentBrand(contentBrand);
+		}
+
+		deleteContentFromCache(contentBrand.getContentId());
+	}
+
 	public void addContentBrand(ContentBrand contentBrand) {
 		contentBrand.preInsert();
 
 		contentBrandMapper.insert(contentBrand);
 
 		this.setContentBrandIntoCache(contentBrand);
+	}
+
+	public ContentBrand updateContentBrand(ContentBrand contentBrand) {
+		contentBrand.preUpdate();
+
+		contentBrandMapper.update(contentBrand);
+
+		deleteContentBrandFromCache(contentBrand.getContentBrandId());
+
+		return contentBrand;
 	}
 
 	public void deleteContent(Content content) {
@@ -175,7 +196,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	private Content getSimpleContent(Long contentId) {
+	public Content getSimpleContent(Long contentId) {
 		Content content = getSimpleContentFromCache(contentId);
 
 		if (null != content) {
@@ -496,14 +517,6 @@ public class ContentServiceImpl implements ContentService {
 		return content;
 	}
 
-	public ContentBrand updateContentBrand(ContentBrand contentBrand) {
-		contentBrand.preUpdate();
-
-		contentBrandMapper.update(contentBrand);
-
-		return contentBrand;
-	}
-
 	private Content getContentFromCache(Long contentId) {
 		Content content = null;
 
@@ -708,6 +721,10 @@ public class ContentServiceImpl implements ContentService {
 		redisService.delete(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST);
 		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
 		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
+	}
+
+	private void deleteContentBrandFromCache(Long id) {
+		redisService.delete(Constants.REDIS_CONTENT_BRAND + ":" + id);
 	}
 
 	private void setContentIntoCache(Content content) {

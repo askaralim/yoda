@@ -40,7 +40,7 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login(
 			@RequestParam(value = "error", required = false) String error,
-			HttpServletRequest request) throws Exception {
+			HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 
 		Site site = siteService.getSites().get(0);

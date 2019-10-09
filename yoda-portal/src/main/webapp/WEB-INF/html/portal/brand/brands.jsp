@@ -10,7 +10,7 @@
 				<div class="col-sm-3" style="text-align: -webkit-center;">
 					<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
 						<a href="${fn:escapeXml(brandUrl)}">
-							<img src="${brand.imagePath}" alt="..">
+							<img src="${brand.imagePath}" alt=".." style="height: 100%;">
 						</a>
 					</div>
 				</div>
@@ -26,7 +26,7 @@
 	</c:if>
 </div>
 
-<script type="text/javascript" src='<c:url value="/resources/js/jquery-1.11.1.min.js" />'></script>
+<script type="text/javascript" src="/resources/js/jquery-1.11.1.min.js"></script>
 
 <script type="text/javascript">
 	$(function(){
@@ -47,7 +47,7 @@
 						$('#brands').append(
 							'<div class="col-sm-3" style="text-align: -webkit-center;">'
 								+'<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">'
-									+'<a href="' + url + '"><img src="' + data[i].imagePath + '" alt=".."></a>'
+									+'<a href="' + url + '"><img src="' + data[i].imagePath + '" alt=".." style="height: 100%;"></a>'
 								+'</div>'
 							+'</div>'
 						);

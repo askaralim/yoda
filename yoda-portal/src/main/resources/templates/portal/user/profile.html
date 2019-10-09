@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="fragments :: navbar"></div>
+
+<div class="section">
+    <div class="container">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="thumbnail">
+                        <img th:if="${user.profilePhoto != null}" src="../images/defaultAvatar.jpg" th:src="${user.profilePhoto}" class="img-responsive" th:alt-title="${user.username}"/>
+                        <img th:unless="${user.profilePhoto != null}" src="../images/defaultAvatar.jpg" class="img-responsive" th:alt-title="${user.username}"/>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <h5 th:text="${user.username}">Username</h5>
+                    <small>
+                        <i class="fa fa-envelope"></i>
+                        <span th:text="${user.email}">User Email</span>
+                    </small>
+                    <span th:if="${user.phone}">
+                        <i class="fa fa-phone"></i>
+                        <span th:text="${user.phone}">User Phone</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <!-- <li class='${tab == "basic" ? "active" : ""}'> -->
+                        <li class="active">
+                            <a href="#post">
+                                <i class="glyphicon glyphicon-list"></i>
+                                &nbsp
+                                <span th:text="#{posts}">Posts</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="posts">
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th th:text="#{title}">Title</th>
+                                        <th th:text="#{published}">Published</th>
+                                        <th th:text="#{create-date}">Create Date</th>
+                                        <th th:text="#{hit-counter}">Hit Counter</th>
+                                    </tr>
+                                    </thead>
+                                    <tr th:each="content,iterStat : ${contents}">
+                                        <td th:text="${iterStat.count}">1</td>
+                                        <td><a href="/content/content.html" th:href="@{'/content/' + ${content.contentId}}" th:text="${content.title}">Content Title</a></td>
+                                        <td th:text="${content.published}? #{published} : #{unpublished}">Published</td>
+                                        <td th:text="${#dates.format(content.createDate, 'yyyy-MM-dd')}">2019-09-28</td>
+                                        <td th:text="${content.hitCounter}">1234</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments :: footer"></div>
+</body>

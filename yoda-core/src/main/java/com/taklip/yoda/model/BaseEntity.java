@@ -13,12 +13,12 @@ public class BaseEntity implements Serializable {
 
 	private User updateBy;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
 
 	private User createBy;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
 
 	public void preInsert(){

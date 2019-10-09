@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{control-panel}">control-panel</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{'/controlpanel/home'}">Administration</a></li>
+        </ol>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span th:text="#{welcome} + ' ' + ${homePageCommand.userName} + ', ' + #{last-login} + ' ' + ${homePageCommand.lastLoginDatetime}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading" th:text="#{statistics}">Statistics</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <span th:each="serverStat : ${homePageCommand.serverStats}">
+                                <label th:text="${serverStat.key}">Key</label>
+                                <p class="form-control-static" th:text="${serverStat.value}">Value</p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>

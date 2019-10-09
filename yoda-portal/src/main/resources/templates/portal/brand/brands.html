@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="fragments :: navbar"></div>
+
+<div class="container pt">
+    <div class="row">
+        <div id="brands" class="col-lg-8 col-lg-offset-2">
+            <div th:each="brand : ${page.data}" class="col-sm-3" style="text-align: -webkit-center;">
+                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.brandId}}">
+                    <div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
+                        <img th:src="${brand.imagePath}" th:alt-title="${brand.name}" style="height: auto;">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div th:if="${page.totalCount > 20}" class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(function () {
+        var offset = 20;
+
+        $('#more-brand').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/brand/page",
+                data: {offset: offset},
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var url = "/brand/" + data[i].brandId
+
+                        $('#brands').append(
+                            '<div class="col-sm-3" style="text-align: -webkit-center;">'
+                            + '<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">'
+                            + '<a href="' + url + '"><img src="' + data[i].imagePath + '" alt=".." style="height: 100%;"></a>'
+                            + '</div>'
+                            + '</div>'
+                        );
+                    }
+                }
+            });
+            offset = offset + 20;
+        });
+    });
+</script>

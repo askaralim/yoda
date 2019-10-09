@@ -45,7 +45,6 @@ public class BrandController {
 		Pagination<Brand> page = brandService.getBrands(new RowBounds(offsetInt, 10));
 
 		model.put("page", page);
-
 		return "controlpanel/brand/list";
 	}
 
@@ -129,7 +128,7 @@ public class BrandController {
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("id") Long id, HttpServletRequest request,
 			HttpServletResponse response)
-		throws Throwable {
+		throws Exception {
 		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/brand/" + id + "/edit";
 		}
