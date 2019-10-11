@@ -14,7 +14,7 @@
             <li><a href="/controlpanel/content/content.html" th:href="@{/controlpanel/content}">Content Listing</a></li>
         </ol>
 
-        <form name="fm" th:action="@{/user/settings}" th:object="${searchForm}" action="#" method="post">
+        <form name="fm" th:action="@{/content/search}" th:object="${searchForm}" action="#" method="post">
             <div class="row">
                 <div class="col-md-3">
                     <div class="panel panel-default">
@@ -86,11 +86,7 @@
                                 <td th:text="${#calendars.format(content.publishDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${#calendars.format(content.expireDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${content.hitCounter}"></td>
-                                <td>
-                                    <a href="/controlpanel/content/edit.html"
-                                       th:href="@{'/controlpanel/content/' + ${content.contentId} + '/edit'}"
-                                       th:text="#{edit}">Edit</a>
-                                </td>
+                                <td><a href="/controlpanel/content/edit.html" th:href="@{'/controlpanel/content/' + ${content.contentId} + '/edit'}" th:text="#{edit}">Edit</a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -105,20 +101,15 @@
                             <div class="pagination-section">
                                 <div class="pagination-pages">
                                     <ul class="pagination">
-                                        <li th:if="${page.hasPreviousPage}"><a
-                                                th:href="@{/controlpanel/content(offset=${page.currentPageNo - 2})}"
-                                                aria-label="Previous"><span>&laquo;</span></a></li>
+                                        <li th:if="${page.hasPreviousPage}"><a th:href="@{/controlpanel/content(offset=${page.currentPageNo - 2})}" aria-label="Previous"><span>&laquo;</span></a></li>
                                         <li th:unless="${page.hasPreviousPage}" class="disabled"><span>&laquo;</span>
                                         </li>
-                                        <li th:if="${page.hasNextPage}"><a
-                                                th:href="@{/controlpanel/content(offset=${page.currentPageNo})}"
-                                                aria-label="Next"><span>&raquo;</span></a></li>
+                                        <li th:if="${page.hasNextPage}"><a th:href="@{/controlpanel/content(offset=${page.currentPageNo})}" aria-label="Next"><span>&raquo;</span></a></li>
                                         <li th:unless="${page.hasNextPage}" class="disabled"><span>&laquo;</span></li>
                                         <!--                                        <li class="disabled"><span>&raquo;</span></li>-->
                                     </ul>
                                 </div>
-                                <div class="pagination-nav"
-                                     th:text="${page.currentPageNo} + ' / ' + ${page.totalPageCount}"></div>
+                                <div class="pagination-nav" th:text="${page.currentPageNo} + ' / ' + ${page.totalPageCount}"></div>
                                 <div class="pagination-go-input">
                                     <input type="text" class="form-control">
                                 </div>
