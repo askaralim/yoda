@@ -78,11 +78,10 @@ public class ElasticSearchController {
 
 	@RequestMapping(value = "/reindex/{type}", method = RequestMethod.GET)
 	public String reindex(
-			@PathVariable("type") String type,Map<String, Object> model,
-			HttpServletRequest request) {
+			@PathVariable("type") String type,Map<String, Object> model) {
 		try {
 			if (type.equals("content")) {
-				List<Content> contents = getContents(request);
+				List<Content> contents = getContents();
 
 				ContentIndexer indexer = new ContentIndexer();
 
@@ -119,7 +118,7 @@ public class ElasticSearchController {
 		return brandService.getBrands();
 	}
 
-	private List<Content> getContents(HttpServletRequest request) {
-		return contentService.getContents(SiteUtil.getDefaultSite().getSiteId());
+	private List<Content> getContents() {
+		return contentService.getContents();
 	}
 }

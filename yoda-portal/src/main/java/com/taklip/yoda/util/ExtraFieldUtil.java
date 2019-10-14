@@ -35,7 +35,7 @@ public class ExtraFieldUtil {
 	}
 
 	private static List<ExtraField> getExtraFields(String json) {
-		List<ExtraField> extraFields = new ArrayList<ExtraField>();
+		List<ExtraField> extraFields = new ArrayList<>();
 
 		if (StringUtils.isEmpty(json)) {
 			return extraFields;

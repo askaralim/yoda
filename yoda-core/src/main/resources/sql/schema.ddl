@@ -90,7 +90,7 @@
 
     create table contact_us (
         contact_us_id INT(4) not null AUTO_INCREMENT,
-        site_id INT(4) not null,
+        site_id INT(4),
         name varchar(50) not null comment '',
         address_line1 varchar(30) not null comment '',
         address_line2 varchar(30) not null comment '',
@@ -111,7 +111,7 @@
     create table content (
         content_id bigint not null AUTO_INCREMENT,
         category_id INT comment '',
-        site_id INT(4) not null,
+        site_id INT(4),
         natural_key varchar(255) not null comment '',
         title varchar(128) not null comment '',
         short_description text not null comment '',
@@ -173,7 +173,7 @@
 		extra_fields VARCHAR(2000),
 		price INT,
 		rating INT,
-		site_id INT(4) NOT NULL,
+		site_id INT(4),
 		update_by INT NOT NULL,
 		update_date DATETIME NOT NULL,
 		INDEX(name),
@@ -226,13 +226,13 @@
 		create_date DATETIME NOT NULL,
 		description VARCHAR(2000),
 		rating INT,
-		site_id INT(4) NOT NULL,
+		site_id INT(4),
 		FOREIGN KEY (content_id) REFERENCES content(content_id)
 	) engine=InnoDB;
 
     create table content_image (
         image_id bigint not null,
-        site_id bigint not null,
+        site_id bigint,
         seq_num INT not null comment '',
         content_type varchar(20) not null comment '',
         image_name varchar(40) not null comment '',
@@ -252,7 +252,7 @@
 		country_name varchar(40) not null comment '',
 		create_by varchar(20) not null comment '',
 		create_date datetime not null comment '',
-		site_id int not null,
+		site_id int,
 		update_by varchar(20) not null comment '',
 		update_date datetime not null comment '',
 	);
@@ -301,7 +301,7 @@
 
     create table home_page (
         home_page_id INT not null,
-        site_id INT(4) not null,
+        site_id INT(4),
         seq_num INT not null comment '',
         feature_data boolean not null comment '',
         update_by bigint not null comment '',
@@ -323,7 +323,7 @@
 
     create table menu (
         menu_id INT(4) not null,
-        site_id INT(4) not null,
+        site_id INT(4),
         set_name varchar(20) not null comment '',
         title varchar(20) not null comment '',
         name varchar(20) not null comment '',
@@ -343,34 +343,6 @@
         primary key (menu_id)
     ) comment='';
 
-    create table poll_detail (
-        poll_detail_id bigint not null,
-        site_id bigint not null,
-        poll_option varchar(80) not null comment '',
-        seq_num integer not null comment '',
-        poll_vote_count integer not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        poll_header_id bigint,
-        primary key (poll_detail_id)
-    ) comment='';
-
-    create table poll_header (
-        poll_header_id bigint not null,
-        site_id bigint not null,
-        poll_topic varchar(255) not null comment '',
-        poll_publish_on date not null comment '',
-        poll_expire_on date not null comment '',
-        published char(1) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        primary key (poll_header_id)
-    ) comment='';
-
 	CREATE TABLE private_message (
 		id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 		root_id INT NOT NULL,
@@ -382,23 +354,6 @@
 		update_date DATETIME NOT NULL,
 		description VARCHAR(2000),
 	) engine=InnoDB;
-
-    create table section (
-        section_id INT not null,
-        site_id INT(4) not null,
-        natural_key varchar(255) not null comment '',
-        title varchar(40) not null comment '',
-        seq_num INT not null comment '',
-        parent_id INT comment '',
-        short_title varchar(20) not null comment '',
-        description text not null comment '',
-        published boolean not null comment '',
-        update_by INT not null comment '',
-        update_date datetime not null comment '',
-        create_by INT not null comment '',
-        create_date datetime not null comment '',
-        primary key (section_id)
-    ) comment='';
 
     create table site (
 		site_id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -421,32 +376,6 @@
         theme_id INT(4),
         title varchar(100) NOT NULL,
         primary key (site_id)
-    ) comment='';
-
-    create table state (
-        state_id bigint not null,
-        site_id bigint not null,
-        state_code varchar(2) not null comment '',
-        state_name varchar(40) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        country_id bigint,
-        shipping_region_id bigint,
-        primary key (state_id)
-    ) comment='';
-
-    create table template (
-        template_id bigint not null,
-        site_id bigint not null,
-        template_name varchar(20) not null comment '',
-        template_desc varchar(40) not null comment '',
-        rec_update_by varchar(20) not null comment '',
-        rec_update_datetime datetime not null comment '',
-        rec_create_by varchar(20) not null comment '',
-        rec_create_datetime datetime not null comment '',
-        primary key (template_id)
     ) comment='';
 
     create table user_ (

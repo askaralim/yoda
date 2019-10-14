@@ -1,5 +1,8 @@
 package com.taklip.yoda.model;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 public class Item extends BaseEntity {
@@ -11,6 +14,7 @@ public class Item extends BaseEntity {
 
 	private Brand brand;
 
+//	@Value("${hitCounter:5}")
 	private int hitCounter;
 
 	private int rating;
@@ -23,6 +27,7 @@ public class Item extends BaseEntity {
 
 	private String level;
 
+	@NotEmpty(message = "required")
 	private String name;
 
 	private String buyLinks;

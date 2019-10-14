@@ -4,28 +4,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.taklip.yoda.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Content extends BaseEntity {
 	private Long contentId;
 
-	private boolean published;
+	private Boolean featureData = true;
 
-	private boolean homePage;
+	private Boolean published = true;
+
+	private Boolean homePage = true;
 
 	private Category category;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
-	private Date publishDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date publishDate = new Date();
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
-	private Date expireDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date expireDate = DateUtil.getHighDate();
 
-	private int hitCounter;
+	private Integer hitCounter = 0;
 
-	private int score;
+	private Integer score = 0;
 
-	private int siteId;
+	private Integer siteId;
 
 //	private int sectionId;
 
@@ -42,8 +45,6 @@ public class Content extends BaseEntity {
 	private String featuredImage;
 
 	private String contentUrl;
-
-	private boolean featureData;
 
 //	private Section section;
 
@@ -119,19 +120,19 @@ public class Content extends BaseEntity {
 		this.featuredImage = featuredImage;
 	}
 
-	public int getHitCounter() {
+	public Integer getHitCounter() {
 		return this.hitCounter;
 	}
 
-	public void setHitCounter(int hitCounter) {
+	public void setHitCounter(Integer hitCounter) {
 		this.hitCounter = hitCounter;
 	}
 
-	public int getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 
@@ -151,19 +152,19 @@ public class Content extends BaseEntity {
 		this.expireDate = expireDate;
 	}
 
-	public boolean isPublished() {
+	public Boolean isPublished() {
 		return this.published;
 	}
 
-	public void setPublished(boolean published) {
+	public void setPublished(Boolean published) {
 		this.published = published;
 	}
 
-	public boolean isHomePage() {
+	public Boolean isHomePage() {
 		return homePage;
 	}
 
-	public void setHomePage(boolean homePage) {
+	public void setHomePage(Boolean homePage) {
 		this.homePage = homePage;
 	}
 
@@ -174,54 +175,6 @@ public class Content extends BaseEntity {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-
-//	public long getUpdateBy() {
-//		return this.updateBy;
-//	}
-//
-//	public void setUpdateBy(long updateBy) {
-//		this.updateBy = updateBy;
-//	}
-//
-//	public Date getUpdateDate() {
-//		return this.updateDate;
-//	}
-//
-//	public void setUpdateDate(Date updateDate) {
-//		this.updateDate = updateDate;
-//	}
-//
-//	public long getCreateBy() {
-//		return this.createBy;
-//	}
-//
-//	public void setCreateBy(long createBy) {
-//		this.createBy = createBy;
-//	}
-//
-//	public Date getCreateDate() {
-//		return this.createDate;
-//	}
-//
-//	public void setCreateDate(Date createDate) {
-//		this.createDate = createDate;
-//	}
-
-//	public int getSectionId() {
-//		return this.sectionId;
-//	}
-//
-//	public void setSectionId(int sectionId) {
-//		this.sectionId = sectionId;
-//	}
-
-//	public Section getSection() {
-//		return this.section;
-//	}
-//
-//	public void setSection(Section section) {
-//		this.section = section;
-//	}
 
 	public List<Menu> getMenus() {
 		return this.menus;
@@ -265,7 +218,7 @@ public class Content extends BaseEntity {
 		getItems().add(item);
 	}
 
-	public boolean isNew() {
+	public Boolean isNew() {
 		return (this.contentId == null);
 	}
 
@@ -277,11 +230,11 @@ public class Content extends BaseEntity {
 		this.contentUrl = contentUrl;
 	}
 
-	public boolean isFeatureData() {
+	public Boolean isFeatureData() {
 		return featureData;
 	}
 
-	public void setFeatureData(boolean featureData) {
+	public void setFeatureData(Boolean featureData) {
 		this.featureData = featureData;
 	}
 }

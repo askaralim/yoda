@@ -87,20 +87,19 @@ public class ContentServiceImpl implements ContentService {
 	private FileService fileService;
 
 	@Override
-	public void saveContent(Integer siteId, Content content, Long categoryId) throws Exception {
+	public void saveContent(Content content, Long categoryId) throws Exception {
 		if (null == content.getContentId()) {
-			this.addContent(siteId, content, categoryId);
+			this.addContent(content, categoryId);
 		}
 		else {
-			this.updateContent(siteId, content, categoryId);
+			this.updateContent(content, categoryId);
 		}
 	}
 
-	public void addContent(int siteId, Content content, Long categoryId) throws Exception {
+	public void addContent(Content content, Long categoryId) throws Exception {
 		content.setContentId(idService.generateId());
 		content.setNaturalKey(encode(content.getTitle()));
 		content.setHitCounter(0);
-		content.setSiteId(siteId);
 		content.setScore(0);
 
 		if (null != categoryId) {
@@ -251,19 +250,17 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Content> getContents(int siteId) {
-		return contentMapper.getContentsBySiteId(siteId);
+	public List<Content> getContents() {
+		return contentMapper.getContents();
 	}
 
 	@Transactional(readOnly = true)
-	public Pagination<Content> getContents(int siteId, RowBounds rowBounds) {
+	public Pagination<Content> getContents(RowBounds rowBounds) {
 		Map<String, Object> params = new HashMap<String, Object>();
 
-		params.put("siteId", siteId);
+		List<Content> contents = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ContentMapper.getContents", params, rowBounds);
 
-		List<Content> contents = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ContentMapper.getContentsBySiteId", params, rowBounds);
-
-		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ContentMapper.getContentsBySiteIdCount", params);
+		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ContentMapper.getContentsCount", params);
 
 		Pagination<Content> page = new Pagination<Content>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), contents);
 
@@ -446,7 +443,7 @@ public class ContentServiceImpl implements ContentService {
 		deleteContentFromCache(content.getContentId());
 	}
 
-	public Content updateContent(int siteId, Content content, Long categoryId)
+	public Content updateContent(Content content, Long categoryId)
 		throws Exception {
 		Content contentDb = contentMapper.getById(content.getContentId());
 

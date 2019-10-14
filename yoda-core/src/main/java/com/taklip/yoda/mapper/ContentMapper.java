@@ -7,8 +7,6 @@ import com.taklip.yoda.model.Content;
 public interface ContentMapper extends BaseMapper<Content> {
 	List<Content> getContents();
 
-	List<Content> getContentsBySiteId(Integer siteId);
-
 	List<Content> getContentsByTitle(String title);
 
 	List<Content> getContentsByUserId(Long userId);

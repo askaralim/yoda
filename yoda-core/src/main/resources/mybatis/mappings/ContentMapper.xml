@@ -135,17 +135,15 @@
 		WHERE c.content_id = #{contentId}
 	</select>
 
-	<select id="getContentsBySiteId" resultMap="contentResult">
+	<select id="getContents" resultMap="contentResult">
 		SELECT 
 			<include refid="contentColumnsSimple"/>
 		FROM content c
-		WHERE c.site_id = #{siteId}
 		ORDER BY c.update_date DESC
 	</select>
 
-	<select id="getContentsBySiteIdCount" resultType="java.lang.Integer">
+	<select id="getContentsCount" resultType="java.lang.Integer">
 		SELECT count(*) from content c
-		WHERE c.site_id = #{siteId}
 	</select>
 
 	<select id="getContentsByTitle" resultType="Content">

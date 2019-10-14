@@ -54,16 +54,13 @@ public class ContentController {
 	public String showPanel(
 			Map<String, Object> model,
 			@RequestParam(name = "offset", required = false) String offset) {
-//		String offset = request.getParameter("offset");
-
 		int offsetInt = 0;
 
 		if (!StringUtils.isEmpty(offset)) {
 			offsetInt = Integer.valueOf(offset) * 10;
 		}
 
-		Pagination<Content> page = contentService.getContents(
-				SiteUtil.getDefaultSite().getSiteId(), new RowBounds(offsetInt, 10));
+		Pagination<Content> page = contentService.getContents(new RowBounds(offsetInt, 10));
 
 		model.put("page", page);
 		model.put("searchForm", new ContentSearchForm());
@@ -71,23 +68,22 @@ public class ContentController {
 		return "controlpanel/content/list";
 	}
 
-//	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.GET)
 	@GetMapping("/add")
 	public ModelAndView setupForm(Map<String, Object> model) {
 		Content content = new Content();
 
-		content.setPublished(true);
-		content.setHomePage(false);
-		content.setFeatureData(false);
-		content.setPublishDate(new Date());
-		content.setExpireDate(DateUtil.getHighDate());
+//		content.setPublished(true);
+//		content.setHomePage(false);
+//		content.setFeatureData(false);
+//		content.setPublishDate(new Date());
+//		content.setExpireDate(DateUtil.getHighDate());
 
 		List<Category> categories = categoryService.getCategories();
 
 		model.put("categories", categories);
 		model.put("content", content);
 
-		return new ModelAndView("controlpanel/content/edit", model);
+		return new ModelAndView("controlpanel/content/form", model);
 	}
 
 	@PostMapping(value = "/save")
@@ -104,10 +100,10 @@ public class ContentController {
 			model.put("categories", categories);
 			model.put("errors", "errors");
 
-			return new ModelAndView("controlpanel/content/edit", model);
+			return new ModelAndView("controlpanel/content/form", model);
 		}
 
-		contentService.saveContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
+		contentService.saveContent(content, categoryId);
 
 		saveContentContributors(request, content);
 
@@ -190,7 +186,7 @@ public class ContentController {
 		model.put("categories", categories);
 		model.put("content", content);
 
-		return "controlpanel/content/edit";
+		return "controlpanel/content/form";
 	}
 
 	@GetMapping("/{contentId}/brand/add")
@@ -323,7 +319,7 @@ public class ContentController {
 		return "redirect:/controlpanel/content/list";
 	}
 
-	@RequestMapping(value = "/controlpanel/content/resetCounter")
+	@RequestMapping(value = "/resetCounter")
 	public void resetCounter(
 			@PathVariable("contentId") Long contentId,
 			HttpServletRequest request, HttpServletResponse response)
@@ -465,7 +461,7 @@ public class ContentController {
 		outputStream.flush();
 	}
 
-	@RequestMapping(value = "/controlpanel/content/{contentId}/uploadImage", method = RequestMethod.POST)
+	@PostMapping("/{contentId}/uploadImage")
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("contentId") long contentId,
@@ -725,7 +721,7 @@ public class ContentController {
 		return null;
 	}
 
-	@RequestMapping(value = "/controlpanel/content/remove")
+	@RequestMapping(value = "/remove")
 	public String removeContents(
 			@RequestParam("contentIds") String contentIds,
 			HttpServletRequest request) {
@@ -742,7 +738,7 @@ public class ContentController {
 		return "redirect:/controlpanel/content";
 	}
 
-	@RequestMapping(value = "/controlpanel/content/search", method = RequestMethod.POST)
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public String search(
 			@ModelAttribute ContentSearchForm form, Map<String, Object> model)
 			throws Throwable {

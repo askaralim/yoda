@@ -28,14 +28,14 @@
 
 	<c:if test="${success != null}">
 		<div class="alert alert-success" role="alert">
-			<a class="panel-close close" data-dismiss="alert">×</a>
+			<a class="panel-close close" data-dismiss="alert">ï¿½</a>
 			<i class="glyphicon glyphicon-ok"></i><spring:message code="saved-success" />
 		</div>
 	</c:if>
 
 	<c:if test="${errors != null}">
 		<div class="alert alert-danger" role="alert">
-			<a class="panel-close close" data-dismiss="alert">×</a>
+			<a class="panel-close close" data-dismiss="alert">ï¿½</a>
 			<form:errors path="*" />
 		</div>
 	</c:if>

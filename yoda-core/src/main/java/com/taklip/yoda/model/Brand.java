@@ -13,7 +13,7 @@ public class Brand extends BaseEntity {
 
 	private String description;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd h:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date foundDate;
 
 	private int hitCounter;

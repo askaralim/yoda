@@ -11,9 +11,11 @@ import com.taklip.yoda.model.Pagination;
 public interface ItemService {
 	void save(Item item);
 
-	Item getItem(Long itemId);
+	void add(Item item);
 
 	Item update(Item item);
+
+	Item getItem(Long itemId);
 
 	int getItemHitCounter(Long itemId);
 
@@ -21,9 +23,7 @@ public interface ItemService {
 
 	void updateItemRating(Long itemId, int rating);
 
-	List<Item> getItems(int siteId);
-
-	Pagination<Item> getItems(int siteId, RowBounds rowBounds);
+	Pagination<Item> getItems(RowBounds rowBounds);
 
 	List<Item> getItemsByContentId(Long contentId);
 

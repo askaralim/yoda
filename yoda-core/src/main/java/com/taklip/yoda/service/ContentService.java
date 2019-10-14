@@ -14,7 +14,7 @@ import com.taklip.yoda.model.ContentUserRate;
 import com.taklip.yoda.model.Pagination;
 
 public interface ContentService {
-	void addContent(int siteId, Content content, Long categoryId) throws Exception;
+	void addContent(Content content, Long categoryId) throws Exception;
 
 	void addComment(Comment comment);
 
@@ -30,7 +30,7 @@ public interface ContentService {
 
 	void updateContent(Content content);
 
-	Content updateContent(int siteId, Content content, Long categoryId) throws Exception;
+	Content updateContent(Content content, Long categoryId) throws Exception;
 
 	void increaseContentHitCounter(Long id);
 
@@ -50,13 +50,13 @@ public interface ContentService {
 
 	List<Content> getContents(String title);
 
-	List<Content> getContents(int siteId);
+	List<Content> getContents();
 
 	List<Content> getContentsFeatureData();
 
 	Pagination<Content> getContentsNotFeatureData(int offset, int limit);
 
-	Pagination<Content> getContents(int siteId, RowBounds rowBounds);
+	Pagination<Content> getContents(RowBounds rowBounds);
 
 	List<Comment> getComments(long contentId);
 
@@ -80,5 +80,5 @@ public interface ContentService {
 
 	ContentUserRate getContentUserRateByContentIdAndUserId(Long contentId, Long userId);
 
-	void saveContent(Integer siteId, Content content, Long categoryId) throws Exception;
+	void saveContent(Content content, Long categoryId) throws Exception;
 }

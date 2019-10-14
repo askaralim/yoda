@@ -5,7 +5,7 @@ import java.util.List;
 import com.taklip.yoda.model.Item;
 
 public interface ItemMapper extends BaseMapper<Item> {
-	List<Item> getItemsBySiteId(int siteId);
+	List<Item> getItems();
 
 	List<Item> getItemsByContentId(Long contentId);
 

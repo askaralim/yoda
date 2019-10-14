@@ -11,12 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,16 +21,15 @@ import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.validator.BrandValidator;
 
 @Controller
+@RequestMapping(value = "/controlpanel/brand")
 public class BrandController {
 	@Autowired
 	BrandService brandService;
 
-	@RequestMapping(value = "/controlpanel/brand", method = RequestMethod.GET)
+	@GetMapping
 	public String showBrands(
-			Map<String, Object> model, HttpServletRequest request,
-			HttpServletResponse response) {
-		String offset = request.getParameter("offset");
-
+			Map<String, Object> model,
+			@RequestParam(name = "offset", required = false) String offset) {
 		int offsetInt = 0;
 
 		if (!StringUtils.isEmpty(offset)) {
@@ -48,86 +42,45 @@ public class BrandController {
 		return "controlpanel/brand/list";
 	}
 
-	@RequestMapping(value = "/controlpanel/brand/{brandId}", method = RequestMethod.GET)
-	public ModelAndView viewBrand(@PathVariable("brandId") Long brandId) {
+	@GetMapping("/add")
+	public String initCreationForm(@ModelAttribute Brand brand) {
+		return "controlpanel/brand/form";
+	}
+
+	@GetMapping(value = "/{brandId}/edit")
+	public ModelAndView initUpdateForm(
+			@PathVariable("brandId") Long brandId) {
 		Brand brand = brandService.getBrand(brandId);
 
-		return new ModelAndView(
-			"controlpanel/brand/view", "brand", brand);
+		return new ModelAndView("controlpanel/brand/form", "brand", brand);
 	}
 
-	@RequestMapping(value = "/controlpanel/brand/new", method = RequestMethod.GET)
-	public ModelAndView initCreationForm(Map<String, Object> model) {
-		Brand brand = new Brand();
-
-		model.put("brand", brand);
-
-		return new ModelAndView("controlpanel/brand/edit", model);
-	}
-
-	@RequestMapping(value = "/controlpanel/brand/new", method = RequestMethod.POST)
-	public ModelAndView processCreationForm(
-			@ModelAttribute("brand") Brand brand, BindingResult result,
-			SessionStatus status, HttpServletRequest request,
-			HttpServletResponse response) {
+	@PostMapping("/save")
+	public ModelAndView save(
+			@ModelAttribute("brand") Brand brand, BindingResult result) {
 		new BrandValidator().validate(brand, result);
 
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
 			model.put("errors", "errors");
-
 			return new ModelAndView("controlpanel/brand/form", model);
 		}
-		else {
-			brand.setHitCounter(0);
 
-			brandService.addBrand(brand);
+//		Brand brandDb = brandService.save(brand);
 
-			status.setComplete();
-
-			return new ModelAndView("redirect:/controlpanel/brand/" + brand.getBrandId() + "/edit", model);
-		}
-	}
-
-	@RequestMapping(value = "/controlpanel/brand/{brandId}/edit", method = RequestMethod.GET)
-	public String initUpdateForm(@PathVariable("brandId") Long brandId, Map<String, Object> model) {
-		Brand brand = brandService.getBrand(brandId);
+		brandService.save(brand);
 
 		model.put("brand", brand);
+		model.put("success", "success");
 
-		return "controlpanel/brand/edit";
+		return new ModelAndView("redirect:/controlpanel/brand/" + brand.getBrandId() + "/edit", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/brand/{brandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-	public ModelAndView processUpdateForm(
-			@ModelAttribute("brand") Brand brand, BindingResult result, SessionStatus status) {
-		new BrandValidator().validate(brand, result);
-
-		ModelMap model = new ModelMap();
-
-		if (result.hasErrors()) {
-			model.put("errors", "errors");
-
-			return new ModelAndView("controlpanel/brand/edit", model);
-		}
-		else {
-			Brand brandDb = brandService.update(brand);
-
-			model.put("brand", brandDb);
-			model.put("success", "success");
-
-			status.setComplete();
-
-			return new ModelAndView("controlpanel/brand/edit", model);
-		}
-	}
-
-	@RequestMapping(value = "/controlpanel/brand/{id}/uploadImage", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}/uploadImage", method = RequestMethod.POST)
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
-			@PathVariable("id") Long id, HttpServletRequest request,
-			HttpServletResponse response)
+			@PathVariable("id") Long id)
 		throws Exception {
 		if (file.getBytes().length <= 0) {
 			return "redirect:/controlpanel/brand/" + id + "/edit";

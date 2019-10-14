@@ -160,7 +160,7 @@ public class PortalContentController extends PortalBaseController {
 			return new ModelAndView("portal/user/contentEdit", model);
 		}
 
-		contentService.updateContent(site.getSiteId(), content, null);
+		contentService.updateContent(content, null);
 
 		model.put("success", "success");
 

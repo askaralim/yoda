@@ -76,19 +76,12 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItems(int siteId) {
-		return itemMapper.getItemsBySiteId(siteId);
-	}
-
-	@Transactional(readOnly = true)
-	public Pagination<Item> getItems(int siteId, RowBounds rowBounds) {
+	public Pagination<Item> getItems(RowBounds rowBounds) {
 		Map<String, Object> params = new HashMap<String, Object>();
 
-		params.put("siteId", siteId);
+		List<Item> items = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ItemMapper.getItems", params, rowBounds);
 
-		List<Item> items = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ItemMapper.getItemsBySiteId", params, rowBounds);
-
-		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ItemMapper.getItemsBySiteIdCount", params);
+		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ItemMapper.getItemsCount", params);
 
 		Pagination<Item> page = new Pagination<Item>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), items);
 
@@ -173,6 +166,15 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	public void save(Item item) {
+		if (null == item.getId()) {
+			this.add(item);
+		}
+		else {
+			this.update(item);
+		}
+	}
+
+	public void add(Item item) {
 		item.setId(idService.generateId());
 		item.preInsert();
 
@@ -203,7 +205,7 @@ public class ItemServiceImpl implements ItemService {
 		itemDB.preUpdate();
 
 		itemMapper.update(itemDB);
-logger.info("update item: " + item.getId() + " " + item.getImagePath());
+		logger.info("update item: " + item.getId() + " " + item.getImagePath());
 		deleteItemFromCached(item.getId());
 
 		return itemDB;

@@ -63,7 +63,6 @@
                                 <td th:text="${brand.country}">country</td>
                                 <td th:text="${brand.score}">score</td>
                                 <td>
-                                    <a href="/controlpanel/brand/view.html" th:href="@{'/controlpanel/brand/' + ${brand.brandId}}" th:text="#{view}">view</a>
                                     <a href="/controlpanel/brand/edit.html" th:href="@{'/controlpanel/brand/' + ${brand.brandId} + '/edit'}" th:text="#{edit}">Edit</a>
                                 </td>
                             </tr>

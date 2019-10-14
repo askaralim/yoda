@@ -73,18 +73,16 @@
 		WHERE i.id = #{id}
 	</select>
 
-	<select id="getItemsBySiteId" resultMap="itemResult">
+	<select id="getItems" resultMap="itemResult">
 		SELECT 
 			<include refid="itemColumns"/>
 		FROM item i
 		<include refid="itemJoins"/>
-		WHERE i.site_id = #{siteId} 
 		ORDER BY i.id DESC
 	</select>
 
-	<select id="getItemsBySiteIdCount" resultType="java.lang.Integer">
+	<select id="getItemsCount" resultType="java.lang.Integer">
 		SELECT count(*) from item i
-		WHERE i.site_id = #{siteId} 
 	</select>
 
 	<select id="getItemsByContentId" resultMap="itemResult">

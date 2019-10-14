@@ -1,24 +1,7 @@
 package com.taklip.yoda.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.taklip.yoda.elasticsearch.BrandIndexer;
-import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.mapper.BrandMapper;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
@@ -30,6 +13,21 @@ import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.ImageUploader;
 import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.DateUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -54,16 +52,50 @@ public class BrandServiceImpl implements BrandService {
 	@Autowired
 	FileService fileService;
 
-	public void addBrand(Brand brand) {
+	public Brand save(Brand brand) {
+		if (null == brand.getBrandId()) {
+			return this.add(brand);
+		}
+		else {
+			return this.update(brand);
+		}
+	}
+
+	public Brand add(Brand brand) {
 		brand.setBrandId(idService.generateId());
 
 		brand.preInsert();
 
 		brandMapper.insert(brand);
 
-		new BrandIndexer().createIndex(brand);
+//		new BrandIndexer().createIndex(brand);
 
 		this.setBrandIntoCached(brand);
+
+		return brand;
+	}
+
+	public Brand update(Brand brand) {
+		Brand brandDb = brandMapper.getById(brand.getBrandId());
+
+		brandDb.setCountry(brand.getCountry());
+		brandDb.setCompany(brand.getCompany());
+		brandDb.setDescription(brand.getDescription());
+		brandDb.setFoundDate(brand.getFoundDate());
+		brandDb.setName(brand.getName());
+		brandDb.setKind(brand.getKind());
+		brandDb.setHitCounter(brand.getHitCounter());
+		brandDb.setImagePath(brand.getImagePath());
+
+		brandDb.preUpdate();
+
+		brandMapper.update(brandDb);
+
+//		new BrandIndexer().updateIndex(brandDb);
+
+		deleteBrandFromCached(brandDb.getBrandId());
+
+		return brandDb;
 	}
 
 	@Transactional(readOnly = true)
@@ -126,32 +158,9 @@ public class BrandServiceImpl implements BrandService {
 	public void deleteBrand(Long brandId) {
 		Brand brand = brandMapper.getById(brandId);
 
-		new BrandIndexer().deleteIndex(brandId);
+//		new BrandIndexer().deleteIndex(brandId);
 
 		brandMapper.delete(brand);
-	}
-
-	public Brand update(Brand brand) {
-		Brand brandDb = brandMapper.getById(brand.getBrandId());
-
-		brandDb.setCountry(brand.getCountry());
-		brandDb.setCompany(brand.getCompany());
-		brandDb.setDescription(brand.getDescription());
-		brandDb.setFoundDate(brand.getFoundDate());
-		brandDb.setName(brand.getName());
-		brandDb.setKind(brand.getKind());
-		brandDb.setHitCounter(brand.getHitCounter());
-		brandDb.setImagePath(brand.getImagePath());
-
-		brandDb.preUpdate();
-
-		brandMapper.update(brandDb);
-
-		new BrandIndexer().updateIndex(brandDb);
-
-		deleteBrandFromCached(brandDb.getBrandId());
-
-		return brandDb;
 	}
 
 	public void increaseBrandHitCounter(Long id) {

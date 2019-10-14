@@ -9,7 +9,9 @@ import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
 
 public interface BrandService {
-	void addBrand(Brand brand);
+	Brand save(Brand brand);
+
+	Brand add(Brand brand);
 
 	List<Brand> getBrands();
 
