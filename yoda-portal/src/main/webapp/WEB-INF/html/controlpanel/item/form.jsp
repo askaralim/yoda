@@ -51,7 +51,7 @@
 				<select id="brandId" name="brandId" class="form-control input-sm">
 					<option value="" />
 					<c:forEach var="brand" items="${brands}">
-						<option value="${brand.brandId}" ${item.brand.brandId == brand.brandId ? "selected='selected'" : ""}>${brand.name}</option>
+						<option value="${brand.brandId}" ${item.brand.id == brand.brandId ? "selected='selected'" : ""}>${brand.name}</option>
 					</c:forEach>
 				</select>
 			</div>

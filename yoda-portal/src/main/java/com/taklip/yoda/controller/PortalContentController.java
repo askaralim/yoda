@@ -1,13 +1,16 @@
 package com.taklip.yoda.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+import com.taklip.yoda.enums.ContentTypeEnum;
+import com.taklip.yoda.model.*;
+import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.ItemService;
+import com.taklip.yoda.tool.Constants;
+import com.taklip.yoda.tool.StringPool;
+import com.taklip.yoda.util.AuthenticatedUtil;
+import com.taklip.yoda.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,33 +18,16 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.model.Comment;
-import com.taklip.yoda.model.Content;
-import com.taklip.yoda.model.ContentUserRate;
-import com.taklip.yoda.model.Item;
-import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.Site;
-import com.taklip.yoda.model.User;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.ItemService;
-import com.taklip.yoda.tool.Constants;
-import com.taklip.yoda.tool.StringPool;
-import com.taklip.yoda.util.AuthenticatedUtil;
-import com.taklip.yoda.util.PortalUtil;
-import com.taklip.yoda.validator.FrontendContentEditValidator;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 public class PortalContentController extends PortalBaseController {
@@ -53,14 +39,14 @@ public class PortalContentController extends PortalBaseController {
 	@Autowired
 	protected ItemService itemService;
 	
-	@RequestMapping(value="/content/{contentId}", method = RequestMethod.GET)
+	@RequestMapping(value="/content/{id}", method = RequestMethod.GET)
 	public ModelAndView showContent(
-			@PathVariable("contentId") String contentId,
+			@PathVariable("id") String id,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
 		ModelMap model = new ModelMap();
-		Content content = contentService.getContent(Long.valueOf(contentId));
+		Content content = contentService.getContent(Long.valueOf(id));
 
 		if (null == content || !PortalUtil.isContentPublished(content)) {
 			model.put("pageTitle", site.getSiteName() + " - " + "Page not found");
@@ -72,27 +58,27 @@ public class PortalContentController extends PortalBaseController {
 			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
 		}
 
-		formatContent(request, response, model, content);
+		formatContent(request, model, content);
 
 		setUserLoginStatus(request, response, model);
 
 		model.put("site", site);
 
-		pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getContentId());
+		pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getId());
 
 		return new ModelAndView("portal/content", model);
 	}
 
-	@RequestMapping(value = "/content/{contentId}/edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/content/{id}/edit", method = RequestMethod.GET)
 	public ModelAndView setupForm(
-			@PathVariable("contentId") String contentId,
+			@PathVariable("id") String id,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
-		Content content = new Content();
+		Content content;
 
 		try {
-			content = contentService.getContent(Long.valueOf(contentId));
+			content = contentService.getContent(Long.valueOf(id));
 		}
 		catch (Exception e) {
 			logger.error(e.getMessage());
@@ -142,17 +128,11 @@ public class PortalContentController extends PortalBaseController {
 		return new ModelAndView("portal/user/contentEdit", model);
 	}
 
-	@RequestMapping(value = "/content/{contentId}/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/content/{id}/edit", method = RequestMethod.POST)
 	public ModelAndView submitUpdate(
-			@ModelAttribute Content content,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request, HttpServletResponse response)
+			@Valid Content content, BindingResult result)
 		throws Exception {
-		Site site = getSite(request);
-
 		ModelMap model = new ModelMap();
-
-		new FrontendContentEditValidator().validate(content, result);
 
 		if(result.hasErrors()) {
 			model.put("errors", "errors");
@@ -164,19 +144,17 @@ public class PortalContentController extends PortalBaseController {
 
 		model.put("success", "success");
 
-		return new ModelAndView("redirect:/content/" + content.getContentId() + "/edit", model);
+		return new ModelAndView("redirect:/content/" + content.getId() + "/edit", model);
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/content/{contentId}/rate" ,method = RequestMethod.POST)
+	@RequestMapping(value="/content/{id}/rate" ,method = RequestMethod.POST)
 	public String score(
-			@PathVariable("contentId") Long contentId,
-			@RequestParam("thumb") String thumb,
-			HttpServletRequest request, HttpServletResponse response) {
+			@PathVariable("id") Long id, @RequestParam("thumb") String thumb) {
 
-		contentService.saveContentUserRate(contentId, thumb);
+		contentService.saveContentUserRate(id, thumb);
 
-		int score = contentService.getContentRate(contentId);
+		int score = contentService.getContentRate(id);
 
 		JSONObject jsonResult = new JSONObject();
 
@@ -206,7 +184,7 @@ public class PortalContentController extends PortalBaseController {
 
 				JSONObject jsonObject = new JSONObject();
 
-				String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
+				String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getId();
 
 				jsonObject.put("contentUrl", contentUrl);
 				jsonObject.put("defaultImageUrl", content.getFeaturedImage());
@@ -226,8 +204,7 @@ public class PortalContentController extends PortalBaseController {
 	}
 
 	public void formatContent(
-			HttpServletRequest request, HttpServletResponse response,
-			ModelMap model, Content content) {
+			HttpServletRequest request, ModelMap model, Content content) {
 		Site site = getSite(request);
 
 		try {
@@ -237,14 +214,14 @@ public class PortalContentController extends PortalBaseController {
 				model.put("_csrf", csrfToken);
 			}
 
-			List<Item> items = itemService.getItemsByContentId(content.getContentId());
-			List<Comment> comments = getComments(content.getContentId());
+			List<Item> items = itemService.getItemsByContentId(content.getId());
+			List<Comment> comments = getComments(content.getId());
 
 			for (Item item : items) {
 				shortenItemDescription(item);
 			}
 
-			String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
+			String contentUrl = StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getId();
 
 			String desc = content.getDescription();
 
@@ -260,7 +237,7 @@ public class PortalContentController extends PortalBaseController {
 			User loginUser = AuthenticatedUtil.getAuthenticatedUser();
 
 			if (loginUser != null) {
-				ContentUserRate rate = contentService.getContentUserRateByContentIdAndUserId(content.getContentId(), loginUser.getUserId());
+				ContentUserRate rate = contentService.getContentUserRateByContentIdAndUserId(content.getId(), loginUser.getUserId());
 
 				if (rate != null) {
 					if (rate.getScore() == 1) {

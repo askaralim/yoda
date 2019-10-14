@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 	private IdService idService;
 
 	public void addCategory(Category category) {
-		category.setCategoryId(idService.generateId());
+		category.setId(idService.generateId());
 		category.preInsert();
 
 		categoryMapper.insert(category);
@@ -66,18 +66,28 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryMapper.delete(category);
 	}
 
+	@Override
+	public void save(Category category) {
+		if (null == category.getId()) {
+			this.addCategory(category);
+		}
+		else {
+			this.update(category);
+		}
+	}
+
 	public Category update(Category category) {
 		category.preUpdate();
 
 		categoryMapper.update(category);
 
-		deleteCategoryFromCached(category.getCategoryId());
+		deleteCategoryFromCached(category.getId());
 
 		return category;
 	}
 
-	private void deleteCategoryFromCached(long categoryId) {
-		redisService.delete(Constants.REDIS_CATEGORY + ":" + categoryId);
+	private void deleteCategoryFromCached(long id) {
+		redisService.delete(Constants.REDIS_CATEGORY + ":" + id);
 	}
 
 	private Category getCategoryFromCached(long categoryId) {
@@ -99,7 +109,7 @@ public class CategoryServiceImpl implements CategoryService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			category.setCategoryId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
+			category.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			category.setDescription(StringUtils.isNoneBlank(description) && !"nil".equalsIgnoreCase(description) ? description : null);
 			category.setName(StringUtils.isNoneBlank(name) && !"nil".equalsIgnoreCase(name) ? name : null);
 			category.setParent(StringUtils.isNoneBlank(parent) && !"nil".equalsIgnoreCase(parent) ? Long.valueOf(parent) : null);
@@ -125,7 +135,7 @@ public class CategoryServiceImpl implements CategoryService {
 	private void setCategoryIntoCached(Category category) {
 		Map<String, String> value = new HashMap<>();
 
-		value.put("id", String.valueOf(category.getCategoryId()));
+		value.put("id", String.valueOf(category.getId()));
 		value.put("parent", (null != category.getParent() ? String.valueOf(category.getParent()) : StringPool.BLANK));
 		value.put("description", category.getDescription());
 		value.put("name", category.getName());
@@ -134,6 +144,6 @@ public class CategoryServiceImpl implements CategoryService {
 		value.put("createBy", String.valueOf(category.getCreateBy().getUserId()));
 		value.put("createDate", DateUtil.getDate(category.getCreateDate()));
 
-		redisService.setMap(Constants.REDIS_CATEGORY + ":" + category.getCategoryId(), value);
+		redisService.setMap(Constants.REDIS_CATEGORY + ":" + category.getId(), value);
 	}
 }

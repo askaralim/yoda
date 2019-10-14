@@ -121,7 +121,7 @@ public class MenuFactory {
 			else if (menu.getMenuType().equals(Constants.MENU_CONTENT) && menu.getContent() != null) {
 				Content content = menu.getContent();
 
-				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getContentId();
+				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getId();
 			}
 			else if (menu.getMenuType().equals(Constants.MENU_CONTACTUS)) {
 				url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName();

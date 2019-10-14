@@ -88,7 +88,7 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	public void saveContent(Content content, Long categoryId) throws Exception {
-		if (null == content.getContentId()) {
+		if (null == content.getId()) {
 			this.addContent(content, categoryId);
 		}
 		else {
@@ -97,7 +97,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void addContent(Content content, Long categoryId) throws Exception {
-		content.setContentId(idService.generateId());
+		content.setId(idService.generateId());
 		content.setNaturalKey(encode(content.getTitle()));
 		content.setHitCounter(0);
 		content.setScore(0);
@@ -113,11 +113,11 @@ public class ContentServiceImpl implements ContentService {
 		contentMapper.insert(content);
 
 		if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-			this.setContentNotFeatureDatasIntoCache(content.getContentId());
+			this.setContentNotFeatureDatasIntoCache(content.getId());
 			redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
 		}
 		else if (content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-			this.setContentFeatureDatasIntoCache(content.getContentId());
+			this.setContentFeatureDatasIntoCache(content.getId());
 		}
 
 		this.setContentIntoCache(content);
@@ -130,7 +130,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void saveContentBrand(ContentBrand contentBrand) {
-		if (null == contentBrand.getContentBrandId()) {
+		if (null == contentBrand.getId()) {
 			this.addContentBrand(contentBrand);
 		}
 		else {
@@ -153,13 +153,13 @@ public class ContentServiceImpl implements ContentService {
 
 		contentBrandMapper.update(contentBrand);
 
-		deleteContentBrandFromCache(contentBrand.getContentBrandId());
+		deleteContentBrandFromCache(contentBrand.getId());
 
 		return contentBrand;
 	}
 
 	public void deleteContent(Content content) {
-		new ContentIndexer().deleteIndex(content.getContentId());
+		new ContentIndexer().deleteIndex(content.getId());
 
 		contentMapper.delete(content);
 	}
@@ -176,14 +176,14 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Content getContent(Long contentId) {
-		Content content = getContentFromCache(contentId);
+	public Content getContent(Long id) {
+		Content content = getContentFromCache(id);
 
 		if (null != content) {
 			return content;
 		}
 
-		content = contentMapper.getById(contentId);
+		content = contentMapper.getById(id);
 
 		for (ContentBrand cb : content.getContentBrands()) {
 			cb.setDescription(cb.getDescription().replace("<img src=\"/upload", "<img src=\"/yoda/upload"));
@@ -195,14 +195,14 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Content getSimpleContent(Long contentId) {
-		Content content = getSimpleContentFromCache(contentId);
+	public Content getSimpleContent(Long id) {
+		Content content = getSimpleContentFromCache(id);
 
 		if (null != content) {
 			return content;
 		}
 
-		content = contentMapper.getById(contentId);
+		content = contentMapper.getById(id);
 
 		this.setContentIntoCache(content);
 
@@ -282,7 +282,7 @@ public class ContentServiceImpl implements ContentService {
 			contents = contentMapper.getContentsByFeatureData(true);
 
 			for (Content content : contents) {
-				this.setContentFeatureDatasIntoCache(content.getContentId());
+				this.setContentFeatureDatasIntoCache(content.getId());
 			}
 		}
 		else {
@@ -317,7 +317,7 @@ public class ContentServiceImpl implements ContentService {
 			setContentNotFeatureDataCountIntoCache(count.get(0));
 
 			for (Content content : contents) {
-				this.setContentNotFeatureDatasIntoCache(content.getContentId());
+				this.setContentNotFeatureDatasIntoCache(content.getId());
 			}
 		}
 		else {
@@ -334,20 +334,20 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Integer getContentRate(Long contentId) {
-		String rateCached = redisService.get(Constants.REDIS_CONTENT_RATE + ":" + contentId);
+	public Integer getContentRate(Long id) {
+		String rateCached = redisService.get(Constants.REDIS_CONTENT_RATE + ":" + id);
 
 		if (StringUtils.isNoneBlank(rateCached) && !"nil".equalsIgnoreCase(rateCached)) {
 			return Integer.valueOf(rateCached);
 		}
 
-		Integer rate = contentUserRateMapper.getContentRate(contentId);
+		Integer rate = contentUserRateMapper.getContentRate(id);
 
 		if (rate == null) {
 			rate = 0;
 		}
 
-		redisService.set(Constants.REDIS_CONTENT_RATE + ":" + contentId, String.valueOf(rate), 3600);
+		redisService.set(Constants.REDIS_CONTENT_RATE + ":" + id, String.valueOf(rate), 3600);
 
 		return rate;
 	}
@@ -440,12 +440,12 @@ public class ContentServiceImpl implements ContentService {
 	public void updateContent(Content content) {
 		content.preUpdate();
 		contentMapper.update(content);
-		deleteContentFromCache(content.getContentId());
+		deleteContentFromCache(content.getId());
 	}
 
 	public Content updateContent(Content content, Long categoryId)
 		throws Exception {
-		Content contentDb = contentMapper.getById(content.getContentId());
+		Content contentDb = contentMapper.getById(content.getId());
 
 		contentDb.setNaturalKey(encode(content.getTitle()));
 		contentDb.setTitle(content.getTitle());
@@ -469,7 +469,7 @@ public class ContentServiceImpl implements ContentService {
 
 		new ContentIndexer().updateIndex(content);
 
-		deleteContentFromCache(content.getContentId());
+		deleteContentFromCache(content.getId());
 
 		return contentDb;
 	}
@@ -493,13 +493,13 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public Content updateContentImage(
-			int siteId, Long contentId, MultipartFile image) {
-		Content content = contentMapper.getById(contentId);
+			int siteId, Long id, MultipartFile image) {
+		Content content = contentMapper.getById(id);
 
 		imageUpload.deleteImage(content.getFeaturedImage());
 
 		try {
-			String imagePath = fileService.save(ContentTypeEnum.CONTENT.getType(), contentId, image);
+			String imagePath = fileService.save(ContentTypeEnum.CONTENT.getType(), id, image);
 
 			content.setFeaturedImage(imagePath);
 		}
@@ -524,7 +524,7 @@ public class ContentServiceImpl implements ContentService {
 		if (null != map && map.size() > 0) {
 			content = new Content();
 
-			String id = redisService.getMap(key, "contentId");
+			String id = redisService.getMap(key, "id");
 			String title = redisService.getMap(key, "title");
 			String description = redisService.getMap(key, "description");
 			String shortDescription = redisService.getMap(key, "shortDescription");
@@ -544,7 +544,7 @@ public class ContentServiceImpl implements ContentService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			content.setContentId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
+			content.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			content.setTitle(StringUtils.isNoneBlank(title) && !"nil".equalsIgnoreCase(title) ? title : null);
 			content.setDescription(StringUtils.isNoneBlank(description) && !"nil".equalsIgnoreCase(description) ? description : null);
 			content.setNaturalKey(StringUtils.isNoneBlank(naturalKey) && !"nil".equalsIgnoreCase(naturalKey) ? naturalKey : null);
@@ -580,15 +580,14 @@ public class ContentServiceImpl implements ContentService {
 			content.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getFullDatetime(updateDate) : null);
 
 			content.setHitCounter(getContentHitCounter(contentId));
-			content.setScore(getContentRate(content.getContentId()));
+			content.setScore(getContentRate(content.getId()));
 
 			List<ContentBrand> contentBrands = new ArrayList<>();
-			List<String> contentBrandIds = redisService.getList(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getContentId());
+			List<String> contentBrandIds = redisService.getList(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getId());
 
 			if (null != contentBrandIds && !contentBrandIds.isEmpty()) {
 				for (String contentBrandId : contentBrandIds) {
-					ContentBrand contentBrand = new ContentBrand();
-					contentBrand = this.getContentBrand(Long.valueOf(contentBrandId));
+					ContentBrand contentBrand = this.getContentBrand(Long.valueOf(contentBrandId));
 
 					contentBrands.add(contentBrand);
 				}
@@ -597,12 +596,11 @@ public class ContentServiceImpl implements ContentService {
 			content.setContentBrands(contentBrands);
 
 			List<ContentContributor> contentContributors = new ArrayList<>();
-			List<String> contentContributorIds = redisService.getList(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getContentId());
+			List<String> contentContributorIds = redisService.getList(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getId());
 
 			if (null != contentContributorIds) {
 				for (String ccId : contentContributorIds) {
-					ContentContributor cc = new ContentContributor();
-					cc = this.getContentContributorFromCache(Long.valueOf(ccId));
+					ContentContributor cc = this.getContentContributorFromCache(Long.valueOf(ccId));
 
 					contentContributors.add(cc);
 				}
@@ -637,7 +635,7 @@ public class ContentServiceImpl implements ContentService {
 			String expireDate = redisService.getMap(key, "expireDate");
 			String publishDate = redisService.getMap(key, "publishDate");
 
-			content.setContentId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
+			content.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			content.setTitle(StringUtils.isNoneBlank(title) && !"nil".equalsIgnoreCase(title) ? title : null);
 			content.setDescription(StringUtils.isNoneBlank(description) && !"nil".equalsIgnoreCase(description) ? description : null);
 			content.setNaturalKey(StringUtils.isNoneBlank(naturalKey) && !"nil".equalsIgnoreCase(naturalKey) ? naturalKey : null);
@@ -667,7 +665,7 @@ public class ContentServiceImpl implements ContentService {
 		if (null != map && map.size() > 0) {
 			contentBrand = new ContentBrand();
 
-			String id = redisService.getMap(key, "contentBrandId");
+			String id = redisService.getMap(key, "id");
 			String brandId = redisService.getMap(key, "brandId");
 			String brandLogo = redisService.getMap(key, "brandLogo");
 			String brandName = redisService.getMap(key, "brandName");
@@ -677,7 +675,7 @@ public class ContentServiceImpl implements ContentService {
 			contentBrand.setBrandId(StringUtils.isNoneBlank(brandId) && !"nil".equalsIgnoreCase(brandId) ? Long.valueOf(brandId) : null);
 			contentBrand.setBrandLogo(StringUtils.isNoneBlank(brandLogo) && !"nil".equalsIgnoreCase(brandLogo) ? brandLogo : null);
 			contentBrand.setBrandName(StringUtils.isNoneBlank(brandName) && !"nil".equalsIgnoreCase(brandName) ? brandName : null);
-			contentBrand.setContentBrandId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
+			contentBrand.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			contentBrand.setContentId(StringUtils.isNoneBlank(contentId) && !"nil".equalsIgnoreCase(contentId) ? Long.valueOf(contentId) : null);
 			contentBrand.setDescription(StringUtils.isNoneBlank(description) && !"nil".equalsIgnoreCase(description) ? description : null);
 		}
@@ -733,12 +731,12 @@ public class ContentServiceImpl implements ContentService {
 		value.put("pageTitle", content.getPageTitle());
 
 		if (null != content.getCategory()) {
-			value.put("categoryId", String.valueOf(content.getCategory().getCategoryId()));
+			value.put("categoryId", String.valueOf(content.getCategory().getId()));
 		}
 
 		value.put("shortDescription", content.getShortDescription());
 		value.put("title", content.getTitle());
-		value.put("contentId", String.valueOf(content.getContentId()));
+		value.put("id", String.valueOf(content.getId()));
 		value.put("isFeature", String.valueOf(content.isFeatureData()));
 		value.put("isHomePage", String.valueOf(content.isHomePage()));
 		value.put("isPublished", String.valueOf(content.isPublished()));
@@ -751,34 +749,34 @@ public class ContentServiceImpl implements ContentService {
 		value.put("createByUserImage", content.getCreateBy().getProfilePhotoSmall());
 		value.put("createDate", DateUtil.getFullDatetime(content.getCreateDate()));
 
-		redisService.setMap(Constants.REDIS_CONTENT + ":" + content.getContentId(), value);
+		redisService.setMap(Constants.REDIS_CONTENT + ":" + content.getId(), value);
 
-		setContentHitCounterIntoCached(content.getContentId(), content.getHitCounter());
+		setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
 
-		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + content.getContentId());
+		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + content.getId());
 
 		for (ContentContributor cc : content.getContentContributors()) {
-			redisService.listRightPushAll(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getContentId(), String.valueOf(cc.getId()));
+			redisService.listRightPushAll(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getId(), String.valueOf(cc.getId()));
 		}
 
-		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + content.getContentId());
+		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + content.getId());
 
 		for (ContentBrand cb : content.getContentBrands()) {
-			redisService.listRightPushAll(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getContentId(), String.valueOf(cb.getContentBrandId()));
+			redisService.listRightPushAll(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getId(), String.valueOf(cb.getId()));
 		}
 	}
 
 	private void setContentBrandIntoCache(ContentBrand contentBrand) {
 		Map<String, String> value = new HashMap<>();
 
-		value.put("contentBrandId", String.valueOf(contentBrand.getContentBrandId()));
+		value.put("contentBrandId", String.valueOf(contentBrand.getId()));
 		value.put("brandId", String.valueOf(contentBrand.getBrandId()));
 		value.put("brandLogo", contentBrand.getBrandLogo());
 		value.put("brandName", contentBrand.getBrandName());
 		value.put("contentId", String.valueOf(contentBrand.getContentId()));
 		value.put("description", contentBrand.getDescription());
 
-		redisService.setMap(Constants.REDIS_CONTENT_BRAND + ":" + contentBrand.getContentBrandId(), value);
+		redisService.setMap(Constants.REDIS_CONTENT_BRAND + ":" + contentBrand.getId(), value);
 	}
 
 	private void setContentContributorIntoCache(ContentContributor contentContributor) {
@@ -799,8 +797,8 @@ public class ContentServiceImpl implements ContentService {
 		return ids;
 	}
 
-	private void setContentFeatureDatasIntoCache(long contentId) {
-		redisService.listRightPushAll(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST, String.valueOf(contentId));
+	private void setContentFeatureDatasIntoCache(long id) {
+		redisService.listRightPushAll(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST, String.valueOf(id));
 	}
 
 	private List<String> getContentNotFeatureDatasFromCache(int offset, int limit) {
@@ -809,8 +807,8 @@ public class ContentServiceImpl implements ContentService {
 		return ids;
 	}
 
-	private void setContentNotFeatureDatasIntoCache(long contentId) {
-		redisService.listRightPushAll(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, String.valueOf(contentId));
+	private void setContentNotFeatureDatasIntoCache(long id) {
+		redisService.listRightPushAll(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, String.valueOf(id));
 	}
 
 	private Integer getContentNotFeatureDataCountFromCache() {
@@ -836,23 +834,23 @@ public class ContentServiceImpl implements ContentService {
 		redisService.set(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST, String.valueOf(count));
 	}
 
-	public int getContentHitCounter(long contentId) {
-		String hit = redisService.get(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + contentId);
+	public int getContentHitCounter(long id) {
+		String hit = redisService.get(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + id);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
 			return Integer.valueOf(hit);
 		}
 		else {
-			Content content = contentMapper.getById(contentId);
+			Content content = contentMapper.getById(id);
 
-			setContentHitCounterIntoCached(content.getContentId(), content.getHitCounter());
+			setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
 
 			return content.getHitCounter();
 		}
 	}
 
-	private void setContentHitCounterIntoCached(long contentId, int hitCounter) {
-		redisService.set(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + contentId, String.valueOf(hitCounter));
+	private void setContentHitCounterIntoCached(long id, int hitCounter) {
+		redisService.set(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + id, String.valueOf(hitCounter));
 	}
 
 	public String encode(String input)

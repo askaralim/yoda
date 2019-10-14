@@ -17,19 +17,19 @@ public interface BrandService {
 
 	List<Brand> getBrandsTopViewed(int count);
 
-	Brand getBrand(Long brandId);
+	Brand getBrand(Long id);
 
 	Brand update(Brand brand);
 
-	Brand updateImage(Long brandId, MultipartFile file);
+	Brand updateImage(Long id, MultipartFile file);
 
-	int getBrandHitCounter(Long brandId);
+	int getBrandHitCounter(Long id);
 
 	void increaseBrandHitCounter(Long id);
 
 	void updateBrandRating(Long id, int rating);
 
-	void deleteBrand(Long brandId);
+	void deleteBrand(Long id);
 
 	Pagination<Brand> getBrands(RowBounds rowBounds);
 }

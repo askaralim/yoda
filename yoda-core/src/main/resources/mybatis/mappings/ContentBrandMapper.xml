@@ -5,7 +5,7 @@
 	<cache />
 
 	<sql id="contentBrandColumns">
-		c.content_brand_id AS contentBrandId,
+		c.content_brand_id AS id,
 		c.content_id AS contentId,
 		c.brand_id AS brandId,
 		c.brand_name AS brandName,
@@ -21,7 +21,7 @@
 		SELECT 
 			<include refid="contentBrandColumns"/>
 		FROM content_brand c
-		WHERE c.content_brand_id = #{contentBrandId}
+		WHERE c.content_brand_id = #{id}
 	</select>
 
 	<select id="getByBrandId" resultType="ContentBrand">
@@ -31,9 +31,9 @@
 		WHERE c.brand_id = #{brandId}
 	</select>
 
-	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="contentBrandId">
+	<insert id="insert" parameterType="ContentBrand" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO content_brand(content_brand_id, content_id, brand_id, brand_name, brand_logo, description, create_by, create_date, update_by, update_date)
-		VALUES(#{contentBrandId}, #{contentId}, #{brandId}, #{brandName}, #{brandLogo}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+		VALUES(#{id}, #{contentId}, #{brandId}, #{brandName}, #{brandLogo}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
 	</insert>
 
 	<update id="update" parameterType="ContentBrand">
@@ -44,10 +44,10 @@
 			description = #{description},
 			update_by = #{updateBy.userId},
 			update_date = #{updateDate}
-		WHERE content_brand_id = #{contentBrandId}
+		WHERE content_brand_id = #{id}
 	</update>
 
 	<delete id="delete">
-		DELETE FROM content_brand WHERE content_brand_id = #{contentBrandId}
+		DELETE FROM content_brand WHERE content_brand_id = #{id}
 	</delete>
 </mapper>

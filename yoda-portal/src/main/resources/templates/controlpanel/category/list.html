@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{category}">Category</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
+            <li><a href="/controlpanel/category/list.html" th:href="@{/controlpanel/category}">Category Listing</a></li>
+        </ol>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><p th:text="#{search}"></p></div>
+                    <div class="panel-body">
+                        <form name="fm">
+                            <div class="form-group">
+                                <label for="name" th:text="#{name}">Title</label>
+                                <input id="name" name="name" type="text" class="form-control"/>
+                            </div>
+                            <input type="submit" th:value="#{search}" class="btn btn-sm btn-primary" role="button" th:onclick=="'return submitSearch()'"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="page-header">
+                    <h4>Category Listing Result</h4>
+                </div>
+                <div class="text-right">
+                    <a class="btn btn-primary btn-sm" href="/controlpanel/category/form.html" th:href="@{/controlpanel/category/add}" th:text="#{new}">New</a>
+                    <input type="submit" th:value="#{remove}" class="btn btn-sm btn-default" role="button" th:onclick="'return submitRemove()'"/>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th th:text="#{id}">ID</th>
+                                <th th:text="#{name}">name</th>
+                                <th th:text="#{parent}">parent</th>
+                                <th th:text="#{create-date}">create-date</th>
+                                <th th:text="#{action}">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${categories.empty}">
+                                <td colspan="3">No data</td>
+                            </tr>
+                            <tr th:each="category : ${categories}">
+                                <td><input type="checkbox" id="ids" th:value="${category.id}"></td>
+                                <td th:text="${category.id}">1</td>
+                                <td th:text="${category.name}">1</td>
+                                <td th:text="${category.parent}">1</td>
+                                <td th:text="${#calendars.format(category.createDate, 'yyyy-MM-dd')}"></td>
+                                <td><a href="/controlpanel/category/form.html" th:href="@{'/controlpanel/category/' + ${category.id} + '/edit'}" th:text="#{edit}">Edit</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    function submitSearch() {
+        document.fm.action = "/controlpanel/category/search";
+        document.fm.method = "POST";
+        document.fm.submit();
+    }
+
+    function submitRemove() {
+        var ids = getSelectedCategoryIds();
+
+        if (ids) {
+            location.href = "/controlpanel/category/remove?ids=" + ids;
+        }
+
+        return false;
+    }
+
+    function getSelectedCategoryIds() {
+        var selectBoxs = document.all("ids");
+
+        if (!selectBoxs) return null;
+
+        if (typeof (selectBoxs.length) == "undefined" && selectBoxs.checked) {
+            return selectBoxs.value;
+        } else {//many checkbox ,so is a array
+            var ids = "";
+            var split = "";
+            for (var i = 0; i < selectBoxs.length; i++) {
+                if (selectBoxs[i].checked) {
+                    ids += split + selectBoxs[i].value;
+                    split = ",";
+                }
+            }
+
+            return ids;
+        }
+    }
+</script>

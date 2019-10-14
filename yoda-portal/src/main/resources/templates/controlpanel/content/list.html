@@ -76,9 +76,9 @@
                             </tr>
                             <tr th:each="content : ${page.data}">
                                 <td>
-                                    <input type="checkbox" id="contentIds" th:value="${content.contentId}">
+                                    <input type="checkbox" id="ids" th:value="${content.id}">
                                 </td>
-                                <td th:text="${content.contentId}">1</td>
+                                <td th:text="${content.id}">1</td>
                                 <td th:text="${content.title}">Title</td>
                                 <td th:text="${content.published}">Yes</td>
                                 <td th:text="${content.category} != null ? content.category.name : ''">Category Name
@@ -86,7 +86,7 @@
                                 <td th:text="${#calendars.format(content.publishDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${#calendars.format(content.expireDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${content.hitCounter}"></td>
-                                <td><a href="/controlpanel/content/edit.html" th:href="@{'/controlpanel/content/' + ${content.contentId} + '/edit'}" th:text="#{edit}">Edit</a></td>
+                                <td><a href="/controlpanel/content/edit.html" th:href="@{'/controlpanel/content/' + ${content.id} + '/edit'}" th:text="#{edit}">Edit</a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -144,17 +144,17 @@
     }
 
     function submitRemove() {
-        var ids = getSelectedContentIds();
+        var ids = getSelectedIds();
 
         if (ids) {
-            location.href = "/controlpanel/content/remove?contentIds=" + ids;
+            location.href = "/controlpanel/content/remove?ids=" + ids;
         }
 
         return false;
     }
 
-    function getSelectedContentIds() {
-        var selectBoxs = document.all("contentIds");
+    function getSelectedIds() {
+        var selectBoxs = document.all("ids");
 
         if (!selectBoxs) return null;
 

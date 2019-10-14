@@ -2,8 +2,7 @@ package com.taklip.yoda.controller;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.service.BrandService;
-import com.taklip.yoda.validator.BrandValidator;
 
 @Controller
 @RequestMapping(value = "/controlpanel/brand")
@@ -47,19 +45,17 @@ public class BrandController {
 		return "controlpanel/brand/form";
 	}
 
-	@GetMapping(value = "/{brandId}/edit")
+	@GetMapping(value = "/{id}/edit")
 	public ModelAndView initUpdateForm(
-			@PathVariable("brandId") Long brandId) {
-		Brand brand = brandService.getBrand(brandId);
+			@PathVariable("id") Long id) {
+		Brand brand = brandService.getBrand(id);
 
 		return new ModelAndView("controlpanel/brand/form", "brand", brand);
 	}
 
 	@PostMapping("/save")
 	public ModelAndView save(
-			@ModelAttribute("brand") Brand brand, BindingResult result) {
-		new BrandValidator().validate(brand, result);
-
+			@Valid Brand brand, BindingResult result) {
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
@@ -74,7 +70,7 @@ public class BrandController {
 		model.put("brand", brand);
 		model.put("success", "success");
 
-		return new ModelAndView("redirect:/controlpanel/brand/" + brand.getBrandId() + "/edit", model);
+		return new ModelAndView("redirect:/controlpanel/brand/" + brand.getId() + "/edit", model);
 	}
 
 	@RequestMapping(value = "/{id}/uploadImage", method = RequestMethod.POST)
@@ -98,8 +94,8 @@ public class BrandController {
 	}
 
 	@RequestMapping(value="/controlpanel/brand/remove")
-	public String removeBrands(@RequestParam("brandIds") String brandIds) {
-		String[] arrIds = brandIds.split(",");
+	public String removeBrands(@RequestParam("ids") String ids) {
+		String[] arrIds = ids.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
 			brandService.deleteBrand(Long.valueOf(arrIds[i]));

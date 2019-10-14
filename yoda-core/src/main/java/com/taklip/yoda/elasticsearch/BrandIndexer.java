@@ -45,7 +45,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 //							.field("store", "false")
 //						.endObject()
 						.startObject("properties")
-							.startObject("brandId")
+							.startObject("id")
 								.field("type", "long")
 								.field("store", "no")
 								.field("index", "not_analyzed")
@@ -76,7 +76,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 
 			for (Brand brand : brands) {
 				XContentBuilder builder = jsonBuilder().startObject()
-					.field("brandId", brand.getBrandId())
+					.field("id", brand.getId())
 					.field("name", brand.getName())
 					.field("description", brand.getDescription())
 					.field("imagePath", brand.getImagePath())
@@ -87,7 +87,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 					.field("updateDate", brand.getUpdateDate())
 					.endObject();
 
-				builders.put(brand.getBrandId().toString(), builder);
+				builders.put(brand.getId().toString(), builder);
 			}
 
 			createBulkIndex(builders, TYPE);
@@ -102,7 +102,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 	public void createIndex(Brand brand) {
 		try {
 			XContentBuilder builder = jsonBuilder().startObject()
-				.field("brandId", brand.getBrandId())
+				.field("id", brand.getId())
 				.field("name", brand.getName())
 				.field("description", brand.getDescription())
 				.field("imagePath", brand.getImagePath())
@@ -113,7 +113,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 //				.field("updateDate", brand.getUpdateDate())
 				.endObject();
 
-			createIndex(builder, TYPE, brand.getBrandId().toString());
+			createIndex(builder, TYPE, brand.getId().toString());
 		}
 		catch (IOException e) {
 			logger.error(e.getMessage());
@@ -124,7 +124,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 		List<String> ids = new ArrayList<String>();
 
 		for (Brand brand : brands) {
-			ids.add(brand.getBrandId().toString());
+			ids.add(brand.getId().toString());
 		}
 
 		deleteBulkIndex(TYPE, ids);
@@ -136,7 +136,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 
 	@Override
 	public void updateIndex(Brand brand) {
-		String responseSource = getIndexResponse(TYPE, brand.getBrandId().toString());
+		String responseSource = getIndexResponse(TYPE, brand.getId().toString());
 
 		if (StringUtils.isNoneBlank(responseSource)) {
 			createIndex(brand);
@@ -152,7 +152,7 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 //				.field("updateDate", brand.getUpdateDate())
 				.endObject();
 
-			updateIndex(builder, TYPE, brand.getBrandId().toString());
+			updateIndex(builder, TYPE, brand.getId().toString());
 		}
 		catch (DocumentMissingException e) {
 			logger.error(e.getMessage());
@@ -177,14 +177,14 @@ public class BrandIndexer extends ElasticSearchIndexer<Brand> {
 			SearchHits hits = response.getHits();
 
 			for (SearchHit hit : hits.getHits()) {
-				Long brandId = (Long)hit.getSource().get("brandId");
+				Long id = (Long)hit.getSource().get("id");
 				String name = (String)hit.getSource().get("name");
 				String description = (String)hit.getSource().get("description");
 				String imagePath = (String)hit.getSource().get("imagePath");
 
 				Brand brand = new Brand();
 
-				brand.setBrandId(brandId);
+				brand.setId(id);
 				brand.setName(name);
 				brand.setDescription(description);
 				brand.setImagePath(imagePath);

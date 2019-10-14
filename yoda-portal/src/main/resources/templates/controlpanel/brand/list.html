@@ -56,14 +56,14 @@
                                 <td colspan="3">No data</td>
                             </tr>
                             <tr th:each="brand : ${page.data}">
-                                <td><input type="checkbox" id="brandIds" th:value="${brand.brandId}"></td>
-                                <td th:text="${brand.brandId}">1</td>
+                                <td><input type="checkbox" id="brandIds" th:value="${brand.id}"></td>
+                                <td th:text="${brand.id}">1</td>
                                 <td th:text="${brand.name}">name</td>
                                 <td th:text="${brand.kind}">drink</td>
                                 <td th:text="${brand.country}">country</td>
                                 <td th:text="${brand.score}">score</td>
                                 <td>
-                                    <a href="/controlpanel/brand/edit.html" th:href="@{'/controlpanel/brand/' + ${brand.brandId} + '/edit'}" th:text="#{edit}">Edit</a>
+                                    <a href="/controlpanel/brand/edit.html" th:href="@{'/controlpanel/brand/' + ${brand.id} + '/edit'}" th:text="#{edit}">Edit</a>
                                 </td>
                             </tr>
                         </tbody>

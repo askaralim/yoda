@@ -67,10 +67,10 @@ public class ItemController {
 		return new ModelAndView("controlpanel/item/form", model);
 	}
 
-	@GetMapping("/{itemId}/edit")
+	@GetMapping("/{id}/edit")
 	public String initUpdateForm(
-			@PathVariable("itemId") Long itemId, Map<String, Object> model) {
-		Item item = itemService.getItem(itemId);
+			@PathVariable("id") Long id, Map<String, Object> model) {
+		Item item = itemService.getItem(id);
 
 		populageForm(model, item);
 

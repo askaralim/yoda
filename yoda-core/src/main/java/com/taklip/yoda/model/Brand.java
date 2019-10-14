@@ -4,8 +4,10 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
+
 public class Brand extends BaseEntity {
-	private Long brandId;
+	private Long id;
 
 	private String company;
 
@@ -22,16 +24,17 @@ public class Brand extends BaseEntity {
 
 	private String imagePath;
 
+	@NotEmpty(message = "required")
 	private String name;
 
 	private int score;
 
-	public Long getBrandId() {
-		return this.brandId;
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setBrandId(Long brandId) {
-		this.brandId = brandId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getCompany() {
@@ -107,6 +110,6 @@ public class Brand extends BaseEntity {
 	}
 
 	public boolean isNew() {
-		return (this.brandId == null);
+		return (this.id == null);
 	}
 }

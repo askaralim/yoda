@@ -17,7 +17,7 @@
 
         <form id="contentForm" name="fm" th:action="@{/controlpanel/content/save}" th:object="${content}" action="#" method="post">
 <!--            <input id="contentType" name="contentType" type="hidden" value="content">-->
-            <input type="hidden" th:field="*{contentId}"/>
+            <input type="hidden" th:field="*{id}"/>
 
             <div class="alert alert-success" role="alert" th:if="${success} != null">
                 <a class="panel-close close" data-dismiss="alert">X</a>
@@ -78,7 +78,7 @@
                                 <label for="categoryId" th:text="#{category}">category</label>
                                 <select name="categoryId" id="categoryId" class="form-control">
                                     <option value=""/>
-                                    <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}" th:selected="${content.category} != null ? (${content.category.categoryId} == ${category.categoryId}) : false"></option>
+                                    <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}" th:selected="${content.category} != null ? (${content.category.id} == ${category.id}) : false"></option>
                                 </select>
                             </div>
                             <div id="input_fields_wrap" th:if="${!content.new}">
@@ -144,7 +144,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" th:text="#{brand}">Brand</div>
                         <div class="panel-body">
-                            <a href="/controlpanel/content/editContentBrand.html" th:href="@{'/controlpanel/content/' + ${content.contentId} + '/brand/add'}" class="btn btn-sm btn-primary">Add Brand</a>
+                            <a href="/controlpanel/content/editContentBrand.html" th:href="@{'/controlpanel/content/' + ${content.id} + '/contentbrand/add'}" class="btn btn-sm btn-primary">Add Brand</a>
                         </div>
                         <table class="table">
                             <thead>
@@ -157,10 +157,10 @@
                             </thead>
                             <tbody>
                                 <tr th:each="contentBrand : ${content.contentBrands}">
-                                    <td><input type="checkbox" id="itemIds" th:value="${contentBrand.contentBrandId}"></td>
-                                    <td th:text="${contentBrand.contentBrandId}">123</td>
+                                    <td><input type="checkbox" id="itemIds" th:value="${contentBrand.id}"></td>
+                                    <td th:text="${contentBrand.id}">123</td>
                                     <td th:text="${contentBrand.brandName}">Taklip</td>
-                                    <td><a th:href="@{'/controlpanel/content/' + ${content.contentId} + '/brand/' + ${contentBrand.contentBrandId} + '/edit'}" th:text="#{edit}">edit</a></td>
+                                    <td><a th:href="@{'/controlpanel/contentbrand/' + ${contentBrand.id} + '/edit'}" th:text="#{edit}">edit</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -198,7 +198,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title" id="H2">Upload Image</h4>
                         </div>
-                        <form th:action="@{'/controlpanel/content/' + ${content.contentId} + '/uploadImage'}" action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
+                        <form th:action="@{'/controlpanel/content/' + ${content.id} + '/uploadImage'}" action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label class="control-label col-lg-4">Image</label>
@@ -229,7 +229,7 @@ $(".chosen-select").chosen();
 </script> -->
 
 <script type="text/javascript" th:inline="javascript">
-    contentId = [[${contentId}]];
+    contentId = [[${id}]];
     $(function () {
         yoda.wangEditor.init({
             container: "#editor",
@@ -265,7 +265,7 @@ $(".chosen-select").chosen();
     function resetCounter() {
         $.ajax({
             type: "POST",
-            url: "/controlpanel/content/" + [[${content.contentId}]] + "/edit/resetCounter",
+            url: "/controlpanel/content/" + [[${content.id}]] + "/edit/resetCounter",
             success: function (data) {
                 $('#hitCounter').empty();
                 $('#hitCounter').html(0);

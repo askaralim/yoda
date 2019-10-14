@@ -1,45 +1,35 @@
 package com.taklip.yoda.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.taklip.yoda.model.Category;
+import com.taklip.yoda.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.taklip.yoda.model.Category;
-import com.taklip.yoda.service.CategoryService;
-import com.taklip.yoda.validator.CategoryValidator;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @Controller
+@RequestMapping(value = "/controlpanel/category")
 public class CategoryController {
 	@Autowired
 	CategoryService categoryService;
 
-	@RequestMapping(value = "/controlpanel/category", method = RequestMethod.GET)
+	@GetMapping
 	public ModelAndView showCategories() {
 
-		List<Category> categories = new ArrayList<Category>();
-
-		categories = categoryService.getCategories();
+		List<Category> categories = categoryService.getCategories();
 
 		return new ModelAndView(
 			"controlpanel/category/list", "categories", categories);
 	}
 
-	@RequestMapping(value = "/controlpanel/category/new", method = RequestMethod.GET)
+	@GetMapping("/add")
 	public ModelAndView initCreationForm(Map<String, Object> model) {
 		Category category = new Category();
 
@@ -51,30 +41,7 @@ public class CategoryController {
 		return new ModelAndView("controlpanel/category/form", model);
 	}
 
-	@RequestMapping(value = "/controlpanel/category/new", method = RequestMethod.POST)
-	public ModelAndView processCreationForm(
-			@ModelAttribute("category") Category category, BindingResult result,
-			SessionStatus status, HttpServletRequest request,
-			HttpServletResponse response) {
-		new CategoryValidator().validate(category, result);
-
-		ModelMap model = new ModelMap();
-
-		if (result.hasErrors()) {
-			model.put("errors", "errors");
-
-			return new ModelAndView("controlpanel/category/form", model);
-		}
-		else {
-			this.categoryService.addCategory(category);
-
-			status.setComplete();
-
-			return new ModelAndView("redirect:/controlpanel/category/" + category.getCategoryId() + "/edit", model);
-		}
-	}
-
-	@RequestMapping(value = "/controlpanel/category/{id}/edit", method = RequestMethod.GET)
+	@GetMapping("/{id}/edit")
 	public String initUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
 		Category category = categoryService.getCategory(id);
 
@@ -86,39 +53,28 @@ public class CategoryController {
 		return "controlpanel/category/form";
 	}
 
-	@RequestMapping(value = "/controlpanel/category/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-	public ModelAndView processUpdateForm(
-			@ModelAttribute("category") Category category,
-			BindingResult result, SessionStatus status) {
-		new CategoryValidator().validate(category, result);
-
+	@PostMapping("/save")
+	public ModelAndView save(
+			@Valid Category category, BindingResult result,
+			SessionStatus status) {
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
 			model.put("errors", "errors");
-
 			return new ModelAndView("controlpanel/category/form", model);
 		}
-		else {
-			Category categoryDb = categoryService.update(category);
 
-			List<Category> categories = categoryService.getCategories();
+		this.categoryService.save(category);
 
-			model.put("categories", categories);
-			model.put("category", categoryDb);
-			model.put("success", "success");
+		status.setComplete();
 
-			status.setComplete();
-
-			return new ModelAndView("controlpanel/category/form", model);
-		}
+		return new ModelAndView("redirect:/controlpanel/category/" + category.getId() + "/edit", model);
 	}
 
 	@RequestMapping(value = "/controlpanel/category/remove", method = RequestMethod.GET)
 	public String removeCategories(
-			@RequestParam("categoryIds") String categoryIds,
-			HttpServletRequest request) {
-		String[] arrIds = categoryIds.split(",");
+			@RequestParam("ids") String ids) {
+		String[] arrIds = ids.split(",");
 
 		for (int i = 0; i < arrIds.length; i++) {
 			Category category = categoryService.getCategory(Long.valueOf(arrIds[i]));

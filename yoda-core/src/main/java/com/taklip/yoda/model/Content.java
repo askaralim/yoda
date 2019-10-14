@@ -7,8 +7,10 @@ import java.util.List;
 import com.taklip.yoda.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
+
 public class Content extends BaseEntity {
-	private Long contentId;
+	private Long id;
 
 	private Boolean featureData = true;
 
@@ -34,6 +36,7 @@ public class Content extends BaseEntity {
 
 	private String naturalKey;
 
+	@NotEmpty(message = "content-title-required")
 	private String title;
 
 	private String shortDescription;
@@ -56,12 +59,12 @@ public class Content extends BaseEntity {
 
 	private List<Menu> menus = new ArrayList<>();
 
-	public Long getContentId() {
-		return this.contentId;
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setContentId(Long contentId) {
-		this.contentId = contentId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public int getSiteId() {
@@ -219,7 +222,7 @@ public class Content extends BaseEntity {
 	}
 
 	public Boolean isNew() {
-		return (this.contentId == null);
+		return (this.id == null);
 	}
 
 	public String getContentUrl() {

@@ -110,7 +110,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="H2">Upload Image</h4>
 				</div>
-				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/brand/${brand.brandId}/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
+				<form class="form-horizontal" role="form" action='<spring:url value="/controlpanel/brand/${brand.id}/uploadImage?${_csrf.parameterName}=${_csrf.token}"/>' method="post" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
 							<label class="control-label col-lg-4">Image</label>

@@ -1,7 +1,7 @@
 package com.taklip.yoda.model;
 
 public class ContentBrand extends BaseEntity {
-	private Long contentBrandId;
+	private Long id;
 
 	private Long contentId;
 
@@ -13,12 +13,12 @@ public class ContentBrand extends BaseEntity {
 
 	private String brandLogo;
 
-	public Long getContentBrandId() {
-		return contentBrandId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setContentBrandId(Long contentBrandId) {
-		this.contentBrandId = contentBrandId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getBrandName() {

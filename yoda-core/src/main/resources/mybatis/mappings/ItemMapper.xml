@@ -26,7 +26,7 @@
 	</resultMap>
 
 	<resultMap id="brandResult" type="Brand">
-		<id property="brandId" column="brand_id" />
+		<id property="id" column="brand_id" />
 		<result property="name" column="brand_name" />
 	</resultMap>
 
@@ -132,12 +132,12 @@
 
 	<insert id="insert" parameterType="Item" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, hit_counter, description, image_path, buy_links, extra_fields, level, name, price, rating, site_id)
-		VALUES(#{id}, #{brand.brandId}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{buyLinks}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
+		VALUES(#{id}, #{brand.id}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{buyLinks}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
 	</insert>
 
 	<update id="update" parameterType="Item">
 		UPDATE item SET
-			brand_id = #{brand.brandId},
+			brand_id = #{brand.id},
 			category_id = #{categoryId},
 			content_id = #{contentId},
 			update_by = #{updateBy.userId},

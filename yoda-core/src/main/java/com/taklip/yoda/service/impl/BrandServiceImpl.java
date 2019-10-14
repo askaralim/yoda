@@ -53,7 +53,7 @@ public class BrandServiceImpl implements BrandService {
 	FileService fileService;
 
 	public Brand save(Brand brand) {
-		if (null == brand.getBrandId()) {
+		if (null == brand.getId()) {
 			return this.add(brand);
 		}
 		else {
@@ -62,7 +62,7 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	public Brand add(Brand brand) {
-		brand.setBrandId(idService.generateId());
+		brand.setId(idService.generateId());
 
 		brand.preInsert();
 
@@ -76,7 +76,7 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	public Brand update(Brand brand) {
-		Brand brandDb = brandMapper.getById(brand.getBrandId());
+		Brand brandDb = brandMapper.getById(brand.getId());
 
 		brandDb.setCountry(brand.getCountry());
 		brandDb.setCompany(brand.getCompany());
@@ -93,7 +93,7 @@ public class BrandServiceImpl implements BrandService {
 
 //		new BrandIndexer().updateIndex(brandDb);
 
-		deleteBrandFromCached(brandDb.getBrandId());
+		deleteBrandFromCached(brandDb.getId());
 
 		return brandDb;
 	}
@@ -104,23 +104,23 @@ public class BrandServiceImpl implements BrandService {
 	}
 
 	public List<Brand> getBrandsTopViewed(int count) {
-		List<String> brandsIds = getBrandsTopViewedListFromCache(count);
+		List<String> ids = getBrandsTopViewedListFromCache(count);
 		List<Brand> brands = new ArrayList<>();
 
-		if (null == brandsIds || brandsIds.isEmpty()) {
+		if (null == ids || ids.isEmpty()) {
 			brands = brandMapper.getBrandsTopViewed(count);
 
-			brandsIds = new ArrayList<>();
+			ids = new ArrayList<>();
 
 			for (Brand brand : brands) {
-				brandsIds.add(String.valueOf(brand.getBrandId()));
+				ids.add(String.valueOf(brand.getId()));
 			}
 
-			this.setBrandsTopViewedListIntoCache(brandsIds);
+			this.setBrandsTopViewedListIntoCache(ids);
 		}
 		else {
-			for (String brandId : brandsIds) {
-				Brand brand = this.getBrand(Long.valueOf(brandId));
+			for (String id : ids) {
+				Brand brand = this.getBrand(Long.valueOf(id));
 
 				brands.add(brand);
 			}
@@ -155,10 +155,10 @@ public class BrandServiceImpl implements BrandService {
 		return brand;
 	}
 
-	public void deleteBrand(Long brandId) {
-		Brand brand = brandMapper.getById(brandId);
+	public void deleteBrand(Long id) {
+		Brand brand = brandMapper.getById(id);
 
-//		new BrandIndexer().deleteIndex(brandId);
+//		new BrandIndexer().deleteIndex(id);
 
 		brandMapper.delete(brand);
 	}
@@ -214,8 +214,8 @@ public class BrandServiceImpl implements BrandService {
 		return result;
 	}
 
-	private void deleteBrandFromCached(Long brandId) {
-		redisService.delete(Constants.REDIS_BRAND + ":" + brandId);
+	private void deleteBrandFromCached(Long id) {
+		redisService.delete(Constants.REDIS_BRAND + ":" + id);
 	}
 
 	private Brand getBrandFromCached(Long brandId) {
@@ -228,7 +228,7 @@ public class BrandServiceImpl implements BrandService {
 		if (null != map && map.size() >0) {
 			brand = new Brand();
 
-			String id = redisService.getMap(key, "brandId");
+			String id = redisService.getMap(key, "id");
 			String company = redisService.getMap(key, "company");
 			String country = redisService.getMap(key, "country");
 			String foundedDate = redisService.getMap(key, "foundedDate");
@@ -241,7 +241,7 @@ public class BrandServiceImpl implements BrandService {
 			String updateBy = redisService.getMap(key, "updateBy");
 			String updateDate = redisService.getMap(key, "updateDate");
 
-			brand.setBrandId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
+			brand.setId(StringUtils.isNoneBlank(id) && !"nil".equalsIgnoreCase(id) ? Long.valueOf(id) : null);
 			brand.setCompany(StringUtils.isNoneBlank(company) && !"nil".equalsIgnoreCase(company) ? company : null);
 			brand.setCountry(StringUtils.isNoneBlank(country) && !"nil".equalsIgnoreCase(country) ? country : null);
 			brand.setFoundDate(StringUtils.isNoneBlank(foundedDate) && !"nil".equalsIgnoreCase(foundedDate) ? DateUtil.getDate(foundedDate) : null);
@@ -266,8 +266,8 @@ public class BrandServiceImpl implements BrandService {
 
 			brand.setUpdateDate(StringUtils.isNoneBlank(updateDate) && !"nil".equalsIgnoreCase(updateDate) ? DateUtil.getDate(updateDate) : null);
 
-			brand.setHitCounter(getBrandHitCounter(brand.getBrandId()));
-			brand.setScore(getBrandScoreFromCached(brand.getBrandId()));
+			brand.setHitCounter(getBrandHitCounter(brand.getId()));
+			brand.setScore(getBrandScoreFromCached(brand.getId()));
 		}
 
 		return brand;
@@ -282,54 +282,54 @@ public class BrandServiceImpl implements BrandService {
 		value.put("imagePath", brand.getImagePath());
 		value.put("kind", brand.getKind());
 		value.put("name", brand.getName());
-		value.put("brandId", String.valueOf(brand.getBrandId()));
+		value.put("id", String.valueOf(brand.getId()));
 		value.put("foundedDate", null != brand.getFoundDate() ? DateUtil.getDate(brand.getFoundDate()) : StringPool.BLANK);
 		value.put("updateBy", String.valueOf(brand.getUpdateBy().getUserId()));
 		value.put("updateDate", DateUtil.getDate(brand.getUpdateDate()));
 		value.put("createBy", String.valueOf(brand.getCreateBy().getUserId()));
 		value.put("createDate", DateUtil.getDate(brand.getCreateDate()));
 
-		redisService.setMap(Constants.REDIS_BRAND + ":" + brand.getBrandId(), value);
+		redisService.setMap(Constants.REDIS_BRAND + ":" + brand.getId(), value);
 
-		setBrandHitCounterIntoCached(brand.getBrandId(), brand.getHitCounter());
-		setBrandScoreIntoCached(brand.getBrandId(), brand.getScore());
+		setBrandHitCounterIntoCached(brand.getId(), brand.getHitCounter());
+		setBrandScoreIntoCached(brand.getId(), brand.getScore());
 	}
 
-	public int getBrandHitCounter(Long brandId) {
-		String hit = redisService.get(Constants.REDIS_BRAND_HIT_COUNTER + ":" + brandId);
+	public int getBrandHitCounter(Long id) {
+		String hit = redisService.get(Constants.REDIS_BRAND_HIT_COUNTER + ":" + id);
 
 		if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
 			return Integer.valueOf(hit);
 		}
 		else {
-			Brand brand = brandMapper.getById(brandId);
+			Brand brand = brandMapper.getById(id);
 
-			setBrandHitCounterIntoCached(brand.getBrandId(), brand.getHitCounter());
+			setBrandHitCounterIntoCached(brand.getId(), brand.getHitCounter());
 
 			return brand.getHitCounter();
 		}
 	}
 
-	private void setBrandHitCounterIntoCached(Long brandId, int hitCounter) {
-		redisService.set(Constants.REDIS_BRAND_HIT_COUNTER + ":" + brandId, String.valueOf(hitCounter));
+	private void setBrandHitCounterIntoCached(Long id, int hitCounter) {
+		redisService.set(Constants.REDIS_BRAND_HIT_COUNTER + ":" + id, String.valueOf(hitCounter));
 	}
 
-	private int getBrandScoreFromCached(Long brandId) {
-		String score = redisService.get(Constants.REDIS_BRAND_RATE + ":" + brandId);
+	private int getBrandScoreFromCached(Long id) {
+		String score = redisService.get(Constants.REDIS_BRAND_RATE + ":" + id);
 
 		if (StringUtils.isNoneBlank(score) && !"nil".equalsIgnoreCase(score)) {
 			return Integer.valueOf(score);
 		}
 		else {
-			Brand brand = brandMapper.getById(brandId);
+			Brand brand = brandMapper.getById(id);
 
-			setBrandScoreIntoCached(brand.getBrandId(), brand.getScore());
+			setBrandScoreIntoCached(brand.getId(), brand.getScore());
 
 			return brand.getScore();
 		}
 	}
 
-	private void setBrandScoreIntoCached(Long brandId, int score) {
-		redisService.set(Constants.REDIS_BRAND_RATE + ":" + brandId, String.valueOf(score));
+	private void setBrandScoreIntoCached(Long id, int score) {
+		redisService.set(Constants.REDIS_BRAND_RATE + ":" + id, String.valueOf(score));
 	}
 }

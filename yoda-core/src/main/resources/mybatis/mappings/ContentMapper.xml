@@ -5,7 +5,7 @@
 	<cache />
 
 	<resultMap id="contentResult" type="Content">
-		<id property="contentId" column="content_id" />
+		<id property="id" column="content_id" />
 		<result property="siteId" column="site_id" />
 		<result property="naturalKey" column="natural_key" />
 		<result property="title" column="title" />
@@ -33,7 +33,7 @@
 			<result property="profilePhotoSmall" column="content_contributor_profile_photo_small" />
 		</collection>
 		<collection property="contentBrands" ofType="ContentBrand">
-			<id property="contentBrandId" column="content_brand_id" />
+			<id property="id" column="content_brand_id" />
 			<result property="contentId" column="content_brand_content_id" />
 			<result property="brandId" column="content_brand_brand_id" />
 			<result property="description" column="content_brand_description" />
@@ -132,7 +132,7 @@
 			<include refid="contentColumns"/>
 		FROM content c
 		<include refid="contentJoins"/>
-		WHERE c.content_id = #{contentId}
+		WHERE c.content_id = #{id}
 	</select>
 
 	<select id="getContents" resultMap="contentResult">
@@ -205,9 +205,9 @@
 		order by c.content_id
 	</select>
 
-	<insert id="insert" parameterType="Content" useGeneratedKeys="true" keyProperty="contentId">
+	<insert id="insert" parameterType="Content" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO content(content_id, category_id, site_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, feature_data, featured_image, score)
-		VALUES(#{contentId}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featureData}, #{featuredImage}, #{score})
+		VALUES(#{id}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featureData}, #{featuredImage}, #{score})
 	</insert>
 
 	<update id="update" parameterType="Content">
@@ -227,10 +227,10 @@
 			feature_data = #{featureData},
 			featured_image = #{featuredImage},
 			score = #{score}
-		WHERE content_id = #{contentId}
+		WHERE content_id = #{id}
 	</update>
 
 	<delete id="delete">
-		DELETE FROM content WHERE content_id = #{contentId}
+		DELETE FROM content WHERE content_id = #{id}
 	</delete>
 </mapper>

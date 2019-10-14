@@ -1,7 +1,5 @@
 package com.taklip.yoda.model;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 

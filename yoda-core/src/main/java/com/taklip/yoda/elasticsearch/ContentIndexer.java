@@ -45,7 +45,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 //							.field("store", "false")
 //						.endObject()
 						.startObject("properties")
-							.startObject("contentId")
+							.startObject("id")
 								.field("type", "long")
 								.field("store", "no")
 								.field("index", "not_analyzed")
@@ -76,7 +76,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 
 			for (Content content : contents) {
 				XContentBuilder builder = jsonBuilder().startObject()
-					.field("contentId", content.getContentId())
+					.field("id", content.getId())
 					.field("title", content.getTitle())
 					.field("shortDescription", content.getShortDescription())
 					.field("description", content.getDescription())
@@ -88,7 +88,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 //					.field("updateDate", content.getUpdateDate())
 					.endObject();
 
-				builders.put(content.getContentId().toString(), builder);
+				builders.put(content.getId().toString(), builder);
 			}
 
 			createBulkIndex(builders, TYPE);
@@ -103,7 +103,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 	public void createIndex(Content content) {
 		try {
 			XContentBuilder builder = jsonBuilder().startObject()
-				.field("contentId", content.getContentId())
+				.field("id", content.getId())
 				.field("title", content.getTitle())
 				.field("shortDescription", content.getShortDescription())
 				.field("description", content.getDescription())
@@ -115,7 +115,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 //				.field("updateDate", content.getUpdateDate())
 				.endObject();
 
-			createIndex(builder, TYPE, content.getContentId().toString());
+			createIndex(builder, TYPE, content.getId().toString());
 		}
 		catch (IOException e) {
 			logger.error(e.getMessage());
@@ -130,7 +130,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 		List<String> ids = new ArrayList<String>();
 
 		for (Content content : contents) {
-			ids.add(content.getContentId().toString());
+			ids.add(content.getId().toString());
 		}
 
 		deleteBulkIndex(TYPE, ids);
@@ -138,7 +138,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 
 	@Override
 	public void updateIndex(Content content) {
-		String responseSource = getIndexResponse(TYPE, content.getContentId().toString());
+		String responseSource = getIndexResponse(TYPE, content.getId().toString());
 
 		if (StringUtils.isNoneBlank(responseSource)) {
 			createIndex(content);
@@ -155,7 +155,7 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 //				.field("updateDate", content.getUpdateDate())
 				.endObject();
 
-			updateIndex(builder, TYPE, content.getContentId().toString());
+			updateIndex(builder, TYPE, content.getId().toString());
 		}
 		catch (DocumentMissingException e) {
 			logger.error(e.getMessage());
@@ -182,13 +182,13 @@ public class ContentIndexer extends ElasticSearchIndexer<Content> {
 			SearchHits hits = response.getHits();
 
 			for (SearchHit hit : hits.getHits()) {
-				long contentId = (Integer)hit.getSource().get("contentId");
+				long id = (Integer)hit.getSource().get("id");
 				String title = (String)hit.getSource().get("title");
 				String shortDescription = (String)hit.getSource().get("shortDescription");
 
 				Content content = new Content();
 
-				content.setContentId(contentId);
+				content.setId(id);
 				content.setTitle(title);
 				content.setShortDescription(shortDescription);
 

@@ -38,21 +38,21 @@
                         <label for="brand" th:text="#{brand}">brand</label>
                         <select name="brandId" id="brandId" class="form-control input-sm">
                             <option value=""/>
-                            <option th:each="brand : ${brands}" th:value="${brand.brandId}" th:text="${brand.name}" th:selected="${item.brand} != null ? (${item.brand.brandId} == ${brand.brandId}) : false"></option>
+                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${item.brand} != null ? (${item.brand.id} == ${brand.id}) : false"></option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="category" th:text="#{category}">category</label>
                         <select name="categoryId" id="categoryId" class="form-control input-sm">
                             <option value=""/>
-                            <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.name}" th:selected="${item.categoryId} != null ? (${item.categoryId} == ${category.categoryId}) : false"></option>
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${item.categoryId} != null ? (${item.categoryId} == ${category.id}) : false"></option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="content" th:text="#{content}">content</label>
                         <select name="contentId" id="contentId" class="form-control input-sm">
                             <option value=""/>
-                            <option th:each="content : ${contents}" th:value="${content.contentId}" th:text="${content.title}" th:selected="${item.contentId} != null ? (${item.contentId} == ${content.contentId}) : false"></option>
+                            <option th:each="content : ${contents}" th:value="${content.id}" th:text="${content.title}" th:selected="${item.contentId} != null ? (${item.contentId} == ${content.id}) : false"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -138,9 +138,7 @@
                         </div>
                     </div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Buy Links
-                        </div>
+                        <div class="panel-heading">Buy Links</div>
                         <div class="panel-body">
                             <div id="buy_links_wrap">
                                 <label for="add-buy-link" th:text="#{add-buy-link}">add-buy-link</label>

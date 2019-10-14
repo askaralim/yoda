@@ -56,7 +56,7 @@ public class ElasticSearchHandler {
 			List<Content> result = handler.searcher(queryBuilder, indexname, type);
 			for (int i = 0; i < result.size(); i++) {
 				Content content = result.get(i);
-				System.out.println("(" + content.getContentId() + "):"
+				System.out.println("(" + content.getId() + "):"
 						+ content.getDescription());
 			}
 		} catch (ElasticsearchException e) {
@@ -124,7 +124,7 @@ public class ElasticSearchHandler {
 
 	public void createIndex4() throws JsonProcessingException {
 		Content content = new Content();
-		content.setContentId(2l);
+		content.setId(2l);
 		content.setDescription("简介");
 
 		// instance a json mapper
@@ -207,7 +207,7 @@ public class ElasticSearchHandler {
 				Long contentId = (Long) hit.getSource().get("contentId");
 				String description = (String) hit.getSource().get("description");
 				Content content = new Content();
-				content.setContentId(contentId);
+				content.setId(contentId);
 				content.setDescription(description);
 				list.add(content);
 			}

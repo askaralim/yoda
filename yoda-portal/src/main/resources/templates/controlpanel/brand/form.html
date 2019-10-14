@@ -15,7 +15,7 @@
             <li>Brand Maintenance</li>
         </ol>
         <form id="brandForm" th:action="@{/controlpanel/brand/save}" th:object="${brand}" action="#" method="post">
-            <input type="hidden" th:field="*{brandId}"/>
+            <input type="hidden" th:field="*{id}"/>
 
             <div class="alert alert-success" role="alert" th:if="${success} != null">
                 <a class="panel-close close" data-dismiss="alert">X</a>
@@ -88,7 +88,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title" id="H2">Upload Image</h4>
                         </div>
-                        <form class="form-horizontal" th:action="@{'/controlpanel/brand/' + ${brand.brandId} + '/uploadImage'}" action="#" method="post" enctype="multipart/form-data">
+                        <form class="form-horizontal" th:action="@{'/controlpanel/brand/' + ${brand.id} + '/uploadImage'}" action="#" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label class="control-label col-lg-4">Image</label>

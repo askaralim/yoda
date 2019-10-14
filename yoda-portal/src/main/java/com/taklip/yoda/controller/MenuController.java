@@ -273,7 +273,7 @@ public class MenuController {
 
 		if (menu.getMenuType().equals(Constants.MENU_CONTENT)
 				&& menu.getContent() != null) {
-			menuEditCommand.setContentId(menu.getContent().getContentId());
+			menuEditCommand.setContentId(menu.getContent().getId());
 			menuEditCommand.setContentTitle(menu.getContent().getTitle());
 		}
 

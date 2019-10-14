@@ -86,7 +86,7 @@ public class PortalBrandController extends PortalBaseController {
 			for (Brand brand : page.getData()) {
 				JSONObject jsonObject = new JSONObject();
 
-				jsonObject.put("brandId", brand.getBrandId());
+				jsonObject.put("id", brand.getId());
 				jsonObject.put("imagePath", brand.getImagePath());
 
 				array.add(jsonObject);
@@ -99,15 +99,15 @@ public class PortalBrandController extends PortalBaseController {
 		return array.toString();
 	}
 
-	@RequestMapping(value="/{brandId}", method = RequestMethod.GET)
+	@RequestMapping(value="/{id}", method = RequestMethod.GET)
 	public ModelAndView showBrand(
-			@PathVariable("brandId") Long brandId,
+			@PathVariable("id") Long id,
 			HttpServletRequest request, HttpServletResponse response) {
 		Site site = getSite(request);
 
-		Brand brand = brandService.getBrand(brandId);
+		Brand brand = brandService.getBrand(id);
 
-		List<Item> items = itemService.getItemsByBrandId(brandId);
+		List<Item> items = itemService.getItemsByBrandId(id);
 
 		ModelMap model = new ModelMap();
 
@@ -127,7 +127,7 @@ public class PortalBrandController extends PortalBaseController {
 
 		model.put("currentUser", currentUser);
 
-		pageViewHandler.add(request, ContentTypeEnum.BRAND.getType(), brand.getName(), brand.getBrandId());
+		pageViewHandler.add(request, ContentTypeEnum.BRAND.getType(), brand.getName(), brand.getId());
 
 		return new ModelAndView("portal/brand/brand", model);
 	}

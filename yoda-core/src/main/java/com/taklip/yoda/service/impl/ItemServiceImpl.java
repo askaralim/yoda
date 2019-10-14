@@ -59,7 +59,6 @@ public class ItemServiceImpl implements ItemService {
 	@Autowired
 	FileService fileService;
 
-
 	@Transactional(readOnly = true)
 	public Item getItem(Long itemId) {
 		Item item = getItemFromCached(itemId);
@@ -344,7 +343,7 @@ public class ItemServiceImpl implements ItemService {
 		value.put("buyLinks", StringUtils.isNoneBlank(item.getBuyLinks()) ? item.getBuyLinks() : StringPool.BLANK);
 		value.put("categoryId", String.valueOf(item.getCategoryId()));
 		value.put("contentId", String.valueOf(item.getContentId()));
-		value.put("brandId", String.valueOf(item.getBrand().getBrandId()));
+		value.put("brandId", String.valueOf(item.getBrand().getId()));
 		value.put("description", item.getDescription());
 		value.put("extraFields", StringUtils.isNoneBlank(item.getExtraFields()) ? item.getExtraFields() : StringPool.BLANK);
 		value.put("imagePath", item.getImagePath());

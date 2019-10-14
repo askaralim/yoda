@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -110,7 +109,7 @@ public class ContentController {
 		model.put("content", content);
 		model.put("success", "success");
 
-		return new ModelAndView("redirect:/controlpanel/content/" + content.getContentId() + "/edit", model);
+		return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
 	}
 
 //	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.POST)
@@ -175,11 +174,11 @@ public class ContentController {
 //		return new ModelAndView("controlpanel/content/edit", model);
 //	}
 
-	@GetMapping("/{contentId}/edit")
+	@GetMapping("/{id}/edit")
 	public String initUpdateForm(
-			@PathVariable("contentId") Long contentId,
+			@PathVariable("id") Long id,
 			Map<String, Object> model) {
-		Content content = contentService.getContent(contentId);
+		Content content = contentService.getContent(id);
 
 		List<Category> categories = categoryService.getCategories();
 
@@ -189,7 +188,7 @@ public class ContentController {
 		return "controlpanel/content/form";
 	}
 
-	@GetMapping("/{contentId}/brand/add")
+	@GetMapping("/{contentId}/contentbrand/add")
 	public ModelAndView initCreationForm(
 			@PathVariable("contentId") Long contentId, Map<String, Object> model) {
 		ContentBrand contentBrand = new ContentBrand();
@@ -204,9 +203,9 @@ public class ContentController {
 		return new ModelAndView("controlpanel/content/editContentBrand", model);
 	}
 
-	@RequestMapping(value = "/{contentId}/brand/{contentBrandId}/edit", method = RequestMethod.GET)
-	public String initContentBrandUpdateForm(@PathVariable("contentBrandId") Long contentBrandId, Map<String, Object> model) {
-		ContentBrand contentBrand = contentService.getContentBrand(contentBrandId);
+	@GetMapping("/contentbrand/{id}/edit")
+	public String initContentBrandUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
+		ContentBrand contentBrand = contentService.getContentBrand(id);
 
 		List<Brand> brands = brandService.getBrands();
 
@@ -216,7 +215,7 @@ public class ContentController {
 		return "controlpanel/content/editContentBrand";
 	}
 
-	@PostMapping(value = "/{contentId}/brand/save")
+	@PostMapping(value = "/contentbrand/save")
 	public ModelAndView processCreationForm(
 			@ModelAttribute("contentBrand") ContentBrand contentBrand) {
 		ModelMap model = new ModelMap();
@@ -224,7 +223,7 @@ public class ContentController {
 		String brandName = StringPool.BLANK;
 		String brandLogo = StringPool.BLANK;
 
-		Brand brand = null;
+		Brand brand;
 
 		if (null != contentBrand.getBrandId()) {
 			brand = brandService.getBrand(contentBrand.getBrandId());
@@ -234,8 +233,6 @@ public class ContentController {
 
 		contentBrand.setBrandName(brandName);
 		contentBrand.setBrandLogo(brandLogo);
-
-//		contentService.addContentBrand(contentBrand);
 
 		contentService.saveContentBrand(contentBrand);
 
@@ -285,9 +282,8 @@ public class ContentController {
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public String deleteContent(
-			@ModelAttribute Content content,
-			HttpServletRequest request) {
-		long contentId = content.getContentId();
+			@ModelAttribute Content content) {
+		long contentId = content.getId();
 
 		Content contentDb = contentService.getContent(contentId);
 
@@ -691,13 +687,13 @@ public class ContentController {
 				ContentContributor contributor = new ContentContributor();
 
 				contributor.setApproved(true);
-				contributor.setContentId(content.getContentId());
+				contributor.setContentId(content.getId());
 				contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
 				contributor.setUserId(user.getUserId());
 				contributor.setUsername(user.getUsername());
 				contributor.setVersion("1.0");
 
-				List<ContentContributor> results = contentService.getContentContributor(content.getContentId(), user.getUserId());
+				List<ContentContributor> results = contentService.getContentContributor(content.getId(), user.getUserId());
 
 				if (results.isEmpty()) {
 					contentService.addContentContributor(contributor);
@@ -712,7 +708,7 @@ public class ContentController {
 		for (HomePage homePage : homePages) {
 			Content homePageContent = homePage.getContent();
 			if (homePageContent != null) {
-				if (homePageContent.getContentId().longValue() == contentId.longValue()) {
+				if (homePageContent.getId().longValue() == contentId.longValue()) {
 					return homePage;
 				}
 			}
