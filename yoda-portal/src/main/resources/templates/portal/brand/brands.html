@@ -11,7 +11,7 @@
     <div class="row">
         <div id="brands" class="col-lg-8 col-lg-offset-2">
             <div th:each="brand : ${page.data}" class="col-sm-3" style="text-align: -webkit-center;">
-                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.brandId}}">
+                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.Id}}">
                     <div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
                         <img th:src="${brand.imagePath}" th:alt-title="${brand.name}" style="height: auto;">
                     </div>
@@ -42,7 +42,7 @@
                 dataType: "json",
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var url = "/brand/" + data[i].brandId
+                        var url = "/brand/" + data[i].id
 
                         $('#brands').append(
                             '<div class="col-sm-3" style="text-align: -webkit-center;">'

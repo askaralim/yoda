@@ -17,6 +17,12 @@
 		c.update_date AS updateDate
 	</sql>
 
+	<select id="getContentBrands" resultType="ContentBrand">
+		SELECT
+		<include refid="contentBrandColumns"/>
+		FROM content_brand c
+	</select>
+
 	<select id="getById" resultType="ContentBrand">
 		SELECT 
 			<include refid="contentBrandColumns"/>

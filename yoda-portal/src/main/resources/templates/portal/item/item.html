@@ -26,7 +26,7 @@
                             <dl class="dl-horizontal">
                                 <dt th:text="#{brand}">Brand</dt>
                                 <dd>
-                                    <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.brandId}}" th:text="${item.brand.name}">Brand Name</a>
+                                    <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.id}}" th:text="${item.brand.name}">Brand Name</a>
                                 </dd>
                                 <dt th:text="#{price}">Price</dt>
                                 <dd th:text="${item.price}">$100</dd>

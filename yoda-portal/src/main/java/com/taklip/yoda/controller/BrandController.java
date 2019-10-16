@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.service.BrandService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(value = "/controlpanel/brand")
@@ -55,7 +56,7 @@ public class BrandController {
 
 	@PostMapping("/save")
 	public ModelAndView save(
-			@Valid Brand brand, BindingResult result) {
+			@Valid Brand brand, BindingResult result, RedirectAttributes redirect) {
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
@@ -63,17 +64,16 @@ public class BrandController {
 			return new ModelAndView("controlpanel/brand/form", model);
 		}
 
-//		Brand brandDb = brandService.save(brand);
-
 		brandService.save(brand);
 
 		model.put("brand", brand);
-		model.put("success", "success");
+
+		redirect.addFlashAttribute("globalMessage", "success");
 
 		return new ModelAndView("redirect:/controlpanel/brand/" + brand.getId() + "/edit", model);
 	}
 
-	@RequestMapping(value = "/{id}/uploadImage", method = RequestMethod.POST)
+	@PostMapping("/{id}/uploadImage")
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
 			@PathVariable("id") Long id)
@@ -93,7 +93,7 @@ public class BrandController {
 		return "redirect:/controlpanel/brand/" + id + "/edit";
 	}
 
-	@RequestMapping(value="/controlpanel/brand/remove")
+	@GetMapping("/controlpanel/brand/remove")
 	public String removeBrands(@RequestParam("ids") String ids) {
 		String[] arrIds = ids.split(",");
 

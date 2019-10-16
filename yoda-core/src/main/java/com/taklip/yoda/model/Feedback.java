@@ -1,5 +1,6 @@
 package com.taklip.yoda.model;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 public class Feedback extends BaseEntity {
@@ -9,10 +10,12 @@ public class Feedback extends BaseEntity {
 
 	private String description;
 
+	@NotEmpty(message = "error.string.required")
 	private String email;
 
 	private String phone;
 
+	@NotEmpty(message = "error.string.required")
 	private String username;
 
 	public Long getId() {

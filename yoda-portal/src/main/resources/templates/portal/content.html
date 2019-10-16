@@ -96,7 +96,7 @@
                                                         </dd>
                                                         <dt th:text="#{brand}">brand</dt>
                                                         <dd>
-                                                            <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.brandId}}" th:text="${item.brand.name}">Item Brand Name</a>
+                                                            <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.id}}" th:text="${item.brand.name}">Item Brand Name</a>
                                                         </dd>
                                                         <dt th:text="#{price}">Price</dt>
                                                         <dd th:text="${item.price}">Item Price</dd>
@@ -135,14 +135,14 @@
                         <h5 th:text="#{comments} + '('+ ${comments.size()} + ')'">Comments Size</h5>
                         <ul class="list-unstyled">
                             <li th:each="comment : ${comments}" class="left clearfix">
-                                    <span class="comments-img pull-left">
-                                        <span th:if="${comment.user.profilePhotoSmall} == null">
-                                            <img src="../images/defaultAvatar.jpg" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img" width="32" height="32"/>
-                                        </span>
-                                        <span th:unless="${comment.user.profilePhotoSmall} == null">
-                                            <img src="../images/defaultAvatar.jpg" th:src="${comment.user.profilePhotoSmall}" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img"/>
-                                        </span>
+                                <span class="comments-img pull-left">
+                                    <span th:if="${comment.user.profilePhotoSmall} == null">
+                                        <img src="../images/defaultAvatar.jpg" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img" width="32" height="32"/>
                                     </span>
+                                    <span th:unless="${comment.user.profilePhotoSmall} == null">
+                                        <img src="../images/defaultAvatar.jpg" th:src="${comment.user.profilePhotoSmall}" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img"/>
+                                    </span>
+                                </span>
                                 <div class="comments-body clearfix">
                                     <div>
                                         <strong class="primary-font">

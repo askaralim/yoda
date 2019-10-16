@@ -23,6 +23,8 @@ public interface ItemService {
 
 	void updateItemRating(Long itemId, int rating);
 
+	List<Item> getItems();
+
 	Pagination<Item> getItems(RowBounds rowBounds);
 
 	List<Item> getItemsByContentId(Long contentId);

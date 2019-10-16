@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,7 +89,7 @@ public class ContentController {
 	@PostMapping(value = "/save")
 	public ModelAndView save(
 			@ModelAttribute Content content, @RequestParam("categoryId") Long categoryId,
-			BindingResult result, HttpServletRequest request) throws Throwable {
+			BindingResult result, HttpServletRequest request, RedirectAttributes redirect) throws Throwable {
 		new ContentEditValidator().validate(content, result);
 
 		ModelMap model = new ModelMap();
@@ -107,7 +108,8 @@ public class ContentController {
 		saveContentContributors(request, content);
 
 		model.put("content", content);
-		model.put("success", "success");
+
+		redirect.addFlashAttribute("globalMessage", "success");
 
 		return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
 	}
@@ -217,7 +219,7 @@ public class ContentController {
 
 	@PostMapping(value = "/contentbrand/save")
 	public ModelAndView processCreationForm(
-			@ModelAttribute("contentBrand") ContentBrand contentBrand) {
+			@ModelAttribute("contentBrand") ContentBrand contentBrand, RedirectAttributes redirect) {
 		ModelMap model = new ModelMap();
 
 		String brandName = StringPool.BLANK;
@@ -236,15 +238,9 @@ public class ContentController {
 
 		contentService.saveContentBrand(contentBrand);
 
-		List<Brand> brands = brandService.getBrands();
+		redirect.addFlashAttribute("globalMessage", "success");
 
-		model.put("contentBrand", contentBrand);
-		model.put("brands", brands);
-		model.put("success", "success");
-
-		return new ModelAndView("controlpanel/content/editContentBrand", model);
-
-//		return new ModelAndView("redirect:/controlpanel/content/" + contentBrand.getContentId() + "/brand/" + contentBrand.getContentBrandId() + "/edit", model);
+		return new ModelAndView("redirect:/controlpanel/contentbrand/" + contentBrand.getId() + "/edit", model);
 	}
 
 //	@RequestMapping(value = "/{contentId}/brand/{contentBrandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})

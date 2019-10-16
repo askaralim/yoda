@@ -225,6 +225,11 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Transactional(readOnly = true)
+	public List<ContentBrand> getContentBrands() {
+		return contentBrandMapper.getContentBrands();
+	}
+
+	@Transactional(readOnly = true)
 	public List<ContentBrand> getContentBrandByBrandId(long brandId) {
 		return contentBrandMapper.getByBrandId(brandId);
 	}

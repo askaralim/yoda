@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -55,8 +56,7 @@ public class CategoryController {
 
 	@PostMapping("/save")
 	public ModelAndView save(
-			@Valid Category category, BindingResult result,
-			SessionStatus status) {
+			@Valid Category category, BindingResult result, RedirectAttributes redirect) {
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {
@@ -66,7 +66,7 @@ public class CategoryController {
 
 		this.categoryService.save(category);
 
-		status.setComplete();
+		redirect.addFlashAttribute("globalMessage", "success");
 
 		return new ModelAndView("redirect:/controlpanel/category/" + category.getId() + "/edit", model);
 	}

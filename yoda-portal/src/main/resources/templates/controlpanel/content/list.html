@@ -52,7 +52,7 @@
                         <h4>Content Listing Result</h4>
                     </div>
                     <div class="text-right">
-                        <a class="btn btn-primary btn-sm" href="/controlpanel/content/edit.html" th:href="@{/controlpanel/content/add}" th:text="#{new}">New</a>
+                        <a class="btn btn-primary btn-sm" href="/controlpanel/content/form.html" th:href="@{/controlpanel/content/add}" th:text="#{new}">New</a>
                         <input type="submit" th:value="#{remove}" class="btn btn-sm btn-default" role="button" th:onclick="'return submitRemove()'"/>
                     </div>
                     <div class="table-responsive">
@@ -86,7 +86,7 @@
                                 <td th:text="${#calendars.format(content.publishDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${#calendars.format(content.expireDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${content.hitCounter}"></td>
-                                <td><a href="/controlpanel/content/edit.html" th:href="@{'/controlpanel/content/' + ${content.id} + '/edit'}" th:text="#{edit}">Edit</a></td>
+                                <td><a href="/controlpanel/content/form.html" th:href="@{'/controlpanel/content/' + ${content.id} + '/edit'}" th:text="#{edit}">Edit</a></td>
                             </tr>
                             </tbody>
                         </table>

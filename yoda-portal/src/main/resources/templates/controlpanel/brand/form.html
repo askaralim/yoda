@@ -17,7 +17,7 @@
         <form id="brandForm" th:action="@{/controlpanel/brand/save}" th:object="${brand}" action="#" method="post">
             <input type="hidden" th:field="*{id}"/>
 
-            <div class="alert alert-success" role="alert" th:if="${success} != null">
+            <div class="alert alert-success" role="alert" th:if="${globalMessage} != null">
                 <a class="panel-close close" data-dismiss="alert">X</a>
                 <i class="glyphicon glyphicon-ok"></i> <span th:text="#{saved-success}">Success!</span>
             </div>
@@ -114,7 +114,7 @@
 </html>
 
 <script type="text/javascript" th:inline="javascript">
-    contentId = [[${brandId}]];
+    contentId = [[${id}]];
     $(function () {
         yoda.wangEditor.init({
             container: "#editor",

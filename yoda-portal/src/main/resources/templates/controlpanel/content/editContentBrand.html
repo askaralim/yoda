@@ -21,7 +21,7 @@
             <input type="hidden" th:field="*{id}"/>
             <input type="hidden" th:field="*{contentId}"/>
 
-            <div class="alert alert-success" role="alert" th:if="${success} != null">
+            <div class="alert alert-success" role="alert" th:if="${globalMessage} != null">
                 <a class="panel-close close" data-dismiss="alert">X</a>
                 <i class="glyphicon glyphicon-ok"></i> <span th:text="#{saved-success}">Success!</span>
             </div>

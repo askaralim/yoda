@@ -38,6 +38,8 @@ public interface ContentService {
 
 	ContentBrand getContentBrand(long id);
 
+	List<ContentBrand> getContentBrands();
+
 	int getContentHitCounter(long contentId);
 
 	List<ContentBrand> getContentBrandByBrandId(long brandId);

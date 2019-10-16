@@ -103,8 +103,6 @@ public class ItemController {
 
 		itemService.save(item);
 
-//		Item itemDb = itemService.update(item);
-
 		redirect.addFlashAttribute("globalMessage", "success");
 
 		return new ModelAndView("redirect:/controlpanel/item/" + item.getId() + "/edit", model);

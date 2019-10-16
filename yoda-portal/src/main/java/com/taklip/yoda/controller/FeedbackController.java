@@ -1,61 +1,37 @@
 package com.taklip.yoda.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.taklip.yoda.model.Feedback;
+import com.taklip.yoda.service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.taklip.yoda.model.Feedback;
-import com.taklip.yoda.service.FeedbackService;
-import com.taklip.yoda.validator.FeedbackAddValidator;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
+@RequestMapping(value = "/controlpanel/feedback")
 public class FeedbackController {
 	@Autowired
 	FeedbackService feedbackService;
 
-	@RequestMapping(value = "/controlpanel/feedback", method = RequestMethod.GET)
-	public ModelAndView showPanel() {
-		List<Feedback> feedbacks = new ArrayList<Feedback>();
-
-		try {
-			feedbacks = feedbackService.getFeedbacks();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
+	@GetMapping
+	public ModelAndView list() {
 		return new ModelAndView(
-			"controlpanel/feedback/list", "feedbacks", feedbacks);
+			"controlpanel/feedback/list", "feedbacks", feedbackService.getFeedbacks());
 	}
 
-	@RequestMapping(value = "/controlpanel/feedback/{id}", method = RequestMethod.GET)
+	@GetMapping(value = "/{id}")
 	public ModelAndView viewFeedback(@PathVariable("id") long id) {
-		Feedback feedback = feedbackService.getFeedback(id);
-
 		return new ModelAndView(
-			"controlpanel/feedback/view", "feedback", feedback);
+			"controlpanel/feedback/view", "feedback", feedbackService.getFeedback(id));
 	}
 
-	@RequestMapping(value = "/feedback/add", method = RequestMethod.POST)
+	@PostMapping("/add")
 	public ModelAndView addFeedback(
-			@ModelAttribute Feedback feedback,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request) {
-
-		new FeedbackAddValidator().validate(feedback, result);
-
+			@Valid Feedback feedback, BindingResult result) {
 		ModelAndView model = new ModelAndView();
 
 		model.setViewName("redirect:/");
@@ -66,12 +42,10 @@ public class FeedbackController {
 
 		feedbackService.addFeedback(feedback);
 
-//		model.addObject("successMessage", "successfully-submit");
-
 		return model;
 	}
 
-	@RequestMapping(value = "/controlpanel/feedback/remove", method = RequestMethod.GET)
+	@GetMapping("/controlpanel/feedback/remove")
 	public String removeFeedbacks(
 			@RequestParam("feedbackIds") String feedbackIds,
 			HttpServletRequest request) {

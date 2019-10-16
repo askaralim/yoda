@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{user}">User</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
+            <li><a href="/controlpanel/user/list.html" th:href="@{/controlpanel/user}">User Listing</a></li>
+        </ol>
+
+        <form name="fm" th:action="@{/user/search}" th:object="${searchForm}" action="#" method="post">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p th:text="#{search}"></p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="username" th:text="#{username}">username</label>
+                                <input type="text" th:field="*{username}" th:class="form-control">
+                            </div>
+                            <input type="submit" th:value="#{search}" class="btn btn-sm btn-primary" role="button" th:onclick=="'return submitSearch()'"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="page-header">
+                        <h4>User Listing Result</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <div class="text-right">
+                                <a class="btn btn-primary btn-sm" href="/controlpanel/user/form.html" th:href="@{/controlpanel/user/add}" th:text="#{new}">New</a>
+                                <input type="submit" th:value="#{remove}" class="btn btn-sm btn-default" role="button" th:onclick="'return submitRemove()'"/>
+                            </div>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th th:text="#{id}">ID</th>
+                                    <th th:text="#{username}">username</th>
+                                    <th th:text="#{role}">role</th>
+                                    <th th:text="#{enabled}">enabled</th>
+                                    <th th:text="#{action}">action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${users.empty}">
+                                    <td colspan="3">No data</td>
+                                </tr>
+                                <tr th:each="user : ${users}">
+                                    <td>
+                                        <input type="checkbox" id="ids" th:value="${user.userId}">
+                                    </td>
+                                    <td th:text="${user.userId}">1</td>
+                                    <td th:text="${user.username}">username</td>
+                                    <td th:text="${#strings.toString(user.authorities)}">authorities</td>
+                                    <td th:text="${user.enabled}">enabled</td>
+                                    <td><a href="/controlpanel/user/form.html" th:href="@{'/controlpanel/user/' + ${user.userId} + '/edit'}" th:text="#{edit}">Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>
+<script type="text/javascript">
+    function submitSearch() {
+        document.fm.action = "/controlpanel/user/search";
+        document.fm.submit();
+        return false;
+    }
+
+    function getSelectedUserIds() {
+        var selectBoxs = document.all("ids");
+
+        if (!selectBoxs) return null;
+
+        if (typeof (selectBoxs.length) == "undefined" && selectBoxs.checked) {
+            return selectBoxs.value;
+        } else {//many checkbox ,so is a array
+            var ids = "";
+            var split = "";
+            for (var i = 0; i < selectBoxs.length; i++) {
+                if (selectBoxs[i].checked) {
+                    ids += split + selectBoxs[i].value;
+                    split = ",";
+                }
+            }
+
+            return ids;
+        }
+    }
+
+    function submitRemove() {
+        var ids = getSelectedUserIds();
+
+        if (ids) {
+            var url = "/controlpanel/user/list/remove?ids=" + ids;
+            location.href = url;
+        }
+
+        //document.fm.action = '<c:url value="/controlpanel/user/list/remove"/>';
+        //document.fm.submit();
+        return false;
+    }
+</script>

@@ -75,6 +75,11 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Transactional(readOnly = true)
+	public List<Item> getItems() {
+		return itemMapper.getItems();
+	}
+
+	@Transactional(readOnly = true)
 	public Pagination<Item> getItems(RowBounds rowBounds) {
 		Map<String, Object> params = new HashMap<String, Object>();
 

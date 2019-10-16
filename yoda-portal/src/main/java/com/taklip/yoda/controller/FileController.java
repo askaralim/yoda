@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.taklip.yoda.model.ImageFile;
-import com.taklip.yoda.model.JsonResponse;
+import com.taklip.yoda.model.Response;
 import com.taklip.yoda.service.FileService;
 
 @RestController
@@ -28,9 +28,7 @@ public class FileController {
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public List<ImageFile> list(
 		@RequestParam(name = "contentId", required = false) Long contentId,
-		@RequestParam(name = "contentType", required = false) String contentType,
-		HttpServletRequest request, HttpServletResponse response)
-		throws Exception {
+		@RequestParam(name = "contentType", required = false) String contentType) {
 
 		List<ImageFile> files = fileService.getFilesByContent(contentType, contentId);
 
@@ -39,7 +37,7 @@ public class FileController {
 
 	@ResponseBody
 	@RequestMapping(value="/add", method = RequestMethod.POST)
-	public JsonResponse<Object> save(
+	public Response<Object> save(
 		Map<String, Object> model,
 		@RequestParam(name = "modalContentId", required = false) Long contentId,
 		@RequestParam(name = "modalContentType", required = false) String contentType,
@@ -49,16 +47,16 @@ public class FileController {
 
 		for (MultipartFile file : files) {
 			if (file.getBytes().length <= 0) {
-				new JsonResponse<>(500, "fail", null);
+				new Response<>(500, "fail", null);
 			}
 
 			if (StringUtils.isEmpty(file.getName())) {
-				new JsonResponse<>(500, "fail", null);
+				new Response<>(500, "fail", null);
 			}
 
 			fileService.save(contentType, contentId, file);
 		}
 
-		return new JsonResponse<>(200, "success", null);
+		return new Response<>(200, "success", null);
 	}
 }

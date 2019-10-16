@@ -61,12 +61,12 @@
                             <div class="row">
                                 <div class="col-sm-3" style="text-align: -webkit-center;" th:each="brand : ${topViewedBrands}">
                                     <div class="home-brand">
-                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.brandId}}">
+                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.id}}">
                                             <div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
                                                 <img src="/images/demoUpload.jpg" th:src="${brand.imagePath}" th:alt-title="${brand.name}" class="img-responsive lazy-img" />
                                             </div>
                                         </a>
-                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.brandId}}">
+                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.id}}">
                                             <p th:text="${brand.name}">Brand Name</p>
                                         </a>
                                     </div>
