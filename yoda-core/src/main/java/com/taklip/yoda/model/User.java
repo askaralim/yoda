@@ -21,7 +21,7 @@ public class User extends BaseEntity implements UserDetails {
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
 	//~ Instance fields ================================================================================================
-	private Long userId;
+	private Long id;
 
 	private boolean accountNonExpired;
 
@@ -29,13 +29,9 @@ public class User extends BaseEntity implements UserDetails {
 
 	private boolean credentialsNonExpired;
 
-	private boolean enabled;
+	private Boolean enabled = true;
 
-	private int lastVisitSiteId;
-
-	/* Should be removed, use enabled instead. */
-//	@Column(name = "active")
-//	private Character active;
+	private Integer lastVisitSiteId;
 
 	private Date lastLoginDate;
 
@@ -63,28 +59,25 @@ public class User extends BaseEntity implements UserDetails {
 
 	private String username;
 
-//	private String userType;
-
 	private String zipCode;
 
 	private Set<Site> sites = new HashSet<Site>();
 
-	private Set<UserAuthority> authorities = new HashSet<UserAuthority>();
+	private Set<UserAuthority> authorities = new HashSet<>();
 
 	//~ Constructors ===================================================================================================
 	public User(){
 	}
 
 	public User(
-			Long userId, boolean enabled, User createBy, User updateBy,
-			int lastVisitSiteId, Character active, Date lastLoginDate,
+			Long id, Boolean enabled, User createBy, User updateBy,
+			Integer lastVisitSiteId, Character active, Date lastLoginDate,
 			Date createDate, Date updateDate, Set<UserAuthority> authorities,
 			Set<Site> sites, String addressLine1, String addressLine2,
 			String cityName, String countryName, String email, String password,
 			String phone, String profilePhoto, String profilePhotoSmall,
 			String stateName, String username, String userType, String zipCode) {
-		this(
-			userId, true, true, true, enabled, createBy, updateBy,
+		this(id, true, true, true, enabled, createBy, updateBy,
 			lastVisitSiteId, active, lastLoginDate, createDate, updateDate,
 			authorities, sites, addressLine1, addressLine2, cityName,
 			countryName, email, password, phone, profilePhoto, profilePhotoSmall,
@@ -92,8 +85,8 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	public User(
-			Long userId, boolean accountNonExpired, boolean accountNonLocked,
-			boolean credentialsNonExpired, boolean enabled, User createBy,
+			Long id, Boolean accountNonExpired, Boolean accountNonLocked,
+			Boolean credentialsNonExpired, Boolean enabled, User createBy,
 			User updateBy, int lastVisitSiteId, Character active,
 			Date lastLoginDate, Date createDate, Date updateDate,
 			Set<UserAuthority> authorities, Set<Site> sites,
@@ -106,17 +99,13 @@ public class User extends BaseEntity implements UserDetails {
 				"Cannot pass null or empty values to constructor");
 		}
 
-		this.userId = userId;
+		this.id = id;
 		this.accountNonExpired = accountNonExpired;
 		this.accountNonLocked = accountNonLocked;
 		this.credentialsNonExpired = credentialsNonExpired;
 		this.enabled = enabled;
-//		this.createBy = createBy;
-//		this.updateBy = updateBy;
 		this.lastVisitSiteId = lastVisitSiteId;
 		this.lastLoginDate = lastLoginDate;
-//		this.createDate = createDate;
-//		this.updateDate = updateDate;
 		this.authorities =
 			Collections.unmodifiableSet(sortAuthorities(authorities));
 		this.sites = sites;
@@ -137,12 +126,9 @@ public class User extends BaseEntity implements UserDetails {
 	//~ Methods ========================================================================================================
 
 	private static SortedSet<UserAuthority> sortAuthorities(
-//			Collection<? extends GrantedAuthority> authorities) {
 			Collection<? extends UserAuthority> authorities) {
 		Assert.notNull(
 			authorities, "Cannot pass a null GrantedAuthority collection");
-		// Ensure array iteration order is predictable (as per
-		// UserDetails.getAuthorities() contract and SEC-717)
 
 		SortedSet<UserAuthority> sortedAuthorities =
 			new TreeSet<UserAuthority>(new AuthorityComparator());
@@ -231,12 +217,12 @@ public class User extends BaseEntity implements UserDetails {
 
 	//~ Getter and Setter ========================================================================================================
 
-	public Long getUserId() {
-		return this.userId;
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -367,38 +353,6 @@ public class User extends BaseEntity implements UserDetails {
 		this.lastVisitSiteId = lastVisitSiteId;
 	}
 
-//	public User getUpdateBy() {
-//		return this.updateBy;
-//	}
-//
-//	public void setUpdateBy(User updateBy) {
-//		this.updateBy = updateBy;
-//	}
-//
-//	public Date getUpdateDate() {
-//		return this.updateDate;
-//	}
-//
-//	public void setUpdateDate(Date updateDate) {
-//		this.updateDate = updateDate;
-//	}
-//
-//	public User getCreateBy() {
-//		return this.createBy;
-//	}
-//
-//	public void setCreateBy(User createBy) {
-//		this.createBy = createBy;
-//	}
-//
-//	public Date getCreateDate() {
-//		return this.createDate;
-//	}
-//
-//	public void setCreateDate(Date createDate) {
-//		this.createDate = createDate;
-//	}
-
 	public Set<UserAuthority> getAuthorities() {
 		return this.authorities;
 	}
@@ -444,6 +398,6 @@ public class User extends BaseEntity implements UserDetails {
 //	}
 
 	public boolean isNew() {
-		return (this.userId == null);
+		return (this.id == null);
 	}
 }

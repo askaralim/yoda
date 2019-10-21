@@ -109,7 +109,7 @@
     ) comment='';
 
     create table content (
-        content_id bigint not null AUTO_INCREMENT,
+        id bigint not null AUTO_INCREMENT,
         category_id INT comment '',
         site_id INT(4),
         natural_key varchar(255) not null comment '',

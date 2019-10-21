@@ -118,13 +118,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 			if (StringUtils.isNoneBlank(createBy) && !"nil".equalsIgnoreCase(createBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(createBy));
+				user.setId(Long.valueOf(createBy));
 				category.setCreateBy(user);
 			}
 
 			if (StringUtils.isNoneBlank(updateBy) && !"nil".equalsIgnoreCase(updateBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(updateBy));
+				user.setId(Long.valueOf(updateBy));
 				category.setUpdateBy(user);
 			}
 		}
@@ -139,9 +139,9 @@ public class CategoryServiceImpl implements CategoryService {
 		value.put("parent", (null != category.getParent() ? String.valueOf(category.getParent()) : StringPool.BLANK));
 		value.put("description", category.getDescription());
 		value.put("name", category.getName());
-		value.put("updateBy", String.valueOf(category.getUpdateBy().getUserId()));
+		value.put("updateBy", String.valueOf(category.getUpdateBy().getId()));
 		value.put("updateDate", DateUtil.getDate(category.getUpdateDate()));
-		value.put("createBy", String.valueOf(category.getCreateBy().getUserId()));
+		value.put("createBy", String.valueOf(category.getCreateBy().getId()));
 		value.put("createDate", DateUtil.getDate(category.getCreateDate()));
 
 		redisService.setMap(Constants.REDIS_CATEGORY + ":" + category.getId(), value);

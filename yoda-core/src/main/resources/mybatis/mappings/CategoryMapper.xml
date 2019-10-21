@@ -5,13 +5,13 @@
 	<cache />
 
 	<sql id="categoryColumns">
-		c.category_id AS id,
+		c.id AS id,
 		c.name,
 		c.parent,
 		c.description,
-		c.create_by AS "createBy.userId",
+		c.create_by AS "createBy.id",
 		c.create_date AS createDate,
-		c.update_by AS "updateBy.userId",
+		c.update_by AS "updateBy.id",
 		c.update_date AS updateDate
 	</sql>
 
@@ -19,19 +19,19 @@
 		SELECT 
 			<include refid="categoryColumns"/>
 		FROM category c
-		WHERE c.category_id = #{id}
+		WHERE c.id = #{id}
 	</select>
 
 	<select id="getCategories" resultType="Category">
 		SELECT 
 			<include refid="categoryColumns"/>
 		FROM category c
-		ORDER BY c.category_id DESC
+		ORDER BY c.id DESC
 	</select>
 
 	<insert id="insert" parameterType="Category" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO category(category_id, name, parent, description, create_by, create_date, update_by, update_date)
-		VALUES(#{id}, #{name}, #{parent}, #{description}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+		INSERT INTO category(id, name, parent, description, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{name}, #{parent}, #{description}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
 	</insert>
 
 	<update id="update" parameterType="Category">
@@ -39,12 +39,12 @@
 			name = #{name},
 			parent = #{parent},
 			description = #{description},
-			update_by = #{updateBy.userId},
+			update_by = #{updateBy.id},
 			update_date = #{updateDate}
-		WHERE category_id = #{id}
+		WHERE id = #{id}
 	</update>
 
 	<delete id="delete">
-		DELETE FROM category WHERE category_id = #{id}
+		DELETE FROM category WHERE id = #{id}
 	</delete>
 </mapper>

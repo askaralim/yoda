@@ -24,9 +24,9 @@
 		c.profile_photo_small AS profilePhotoSmall,
 		c.version,
 		c.approved,
-		c.create_by AS "createBy.userId",
+		c.create_by AS "createBy.id",
 		c.create_date AS createDate,
-		c.update_by AS "updateBy.userId",
+		c.update_by AS "updateBy.id",
 		c.update_date AS updateDate
 	</sql>
 
@@ -53,7 +53,7 @@
 
 	<insert id="insert" parameterType="ContentContributor" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO content_contributor(id, content_id, user_id, username, profile_photo_small, version, approved, create_by, create_date, update_by, update_date)
-		VALUES(#{id}, #{contentId}, #{userId}, #{username}, #{profilePhotoSmall}, #{version}, #{approved}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+		VALUES(#{id}, #{contentId}, #{userId}, #{username}, #{profilePhotoSmall}, #{version}, #{approved}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
 	</insert>
 
 	<update id="update" parameterType="ContentContributor">

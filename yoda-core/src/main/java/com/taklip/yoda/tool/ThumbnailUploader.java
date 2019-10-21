@@ -48,8 +48,8 @@ public class ThumbnailUploader extends FileUploader {
 
 		try {
 			String userHome = System.getProperties().getProperty("user.home");
-			String abolutePath = userHome + properties.getFileLocation() + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH;
-			String imagePath = UPLOAD_BASE_FOLDER + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH;
+			String abolutePath = userHome + properties.getFileLocation() + AuthenticatedUtil.getAuthenticatedUser().getId() + StringPool.FORWARD_SLASH;
+			String imagePath = UPLOAD_BASE_FOLDER + AuthenticatedUtil.getAuthenticatedUser().getId() + StringPool.FORWARD_SLASH;
 
 			image = ImageIO.read(imageInputStream);
 

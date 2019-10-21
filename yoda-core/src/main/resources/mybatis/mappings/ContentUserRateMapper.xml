@@ -9,11 +9,11 @@
 		<result property="contentId" column="content_id" />
 		<result property="createDate" column="create_date" />
 		<result property="score" column="score" />
-		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
+		<association property="createBy" column="id" javaType="User" resultMap="userResult" />
 	</resultMap>
 
 	<resultMap id="userResult" type="User">
-		<id property="userId" column="user_id" />
+		<id property="id" column="id" />
 		<result property="username" column="username" />
 	</resultMap>
 
@@ -22,12 +22,12 @@
 		c.content_id AS content_id,
 		c.create_date AS create_date,
 		c.score,
-		u.user_id,
+		u.id,
 		u.username
 	</sql>
 
 	<sql id="contentUserRateJoins">
-		LEFT OUTER JOIN user_ u on c.create_by = u.user_id
+		LEFT OUTER JOIN user_ u on c.create_by = u.id
 	</sql>
 
 	<!-- <select id="getById" resultMap="contentUserRateResult">
@@ -60,7 +60,7 @@
 
 	<insert id="insert" parameterType="ContentUserRate" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO content_user_rate(id, content_id, create_by, create_date, score)
-		VALUES(#{id}, #{contentId}, #{createBy.userId}, #{createDate}, #{score})
+		VALUES(#{id}, #{contentId}, #{createBy.id}, #{createDate}, #{score})
 	</insert>
 
 	<delete id="delete">

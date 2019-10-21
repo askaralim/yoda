@@ -1,14 +1,17 @@
 package com.taklip.yoda.service.impl;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.taklip.jediorder.service.IdService;
+import com.taklip.yoda.enums.ContentTypeEnum;
+import com.taklip.yoda.mapper.*;
+import com.taklip.yoda.model.*;
+import com.taklip.yoda.service.CategoryService;
+import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.FileService;
+import com.taklip.yoda.service.RedisService;
+import com.taklip.yoda.tool.Constants;
+import com.taklip.yoda.tool.ImageUploader;
+import com.taklip.yoda.util.AuthenticatedUtil;
+import com.taklip.yoda.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -19,31 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.taklip.jediorder.service.IdService;
-import com.taklip.yoda.elasticsearch.ContentIndexer;
-import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.mapper.CategoryMapper;
-import com.taklip.yoda.mapper.CommentMapper;
-import com.taklip.yoda.mapper.ContentBrandMapper;
-import com.taklip.yoda.mapper.ContentContributorMapper;
-import com.taklip.yoda.mapper.ContentMapper;
-import com.taklip.yoda.mapper.ContentUserRateMapper;
-import com.taklip.yoda.model.Category;
-import com.taklip.yoda.model.Comment;
-import com.taklip.yoda.model.Content;
-import com.taklip.yoda.model.ContentBrand;
-import com.taklip.yoda.model.ContentContributor;
-import com.taklip.yoda.model.ContentUserRate;
-import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.User;
-import com.taklip.yoda.service.CategoryService;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.FileService;
-import com.taklip.yoda.service.RedisService;
-import com.taklip.yoda.tool.Constants;
-import com.taklip.yoda.tool.ImageUploader;
-import com.taklip.yoda.util.AuthenticatedUtil;
-import com.taklip.yoda.util.DateUtil;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -122,7 +108,7 @@ public class ContentServiceImpl implements ContentService {
 
 		this.setContentIntoCache(content);
 
-		new ContentIndexer().createIndex(content);
+//		new ContentIndexer().createIndex(content);
 	}
 
 	public void addComment(Comment comment) {
@@ -159,7 +145,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	public void deleteContent(Content content) {
-		new ContentIndexer().deleteIndex(content.getId());
+//		new ContentIndexer().deleteIndex(content.getId());
 
 		contentMapper.delete(content);
 	}
@@ -317,7 +303,7 @@ public class ContentServiceImpl implements ContentService {
 
 			List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ContentMapper.getContentsByFeatureDataCount", params);
 
-			page = new Pagination<Content>(offset, count.get(0), limit, contents);
+			page = new Pagination<>(offset, count.get(0), limit, contents);
 
 			setContentNotFeatureDataCountIntoCache(count.get(0));
 
@@ -331,7 +317,7 @@ public class ContentServiceImpl implements ContentService {
 
 				contents.add(content);
 
-				page = new Pagination<Content>(offset, getContentNotFeatureDataCountFromCache(), limit, contents);
+				page = new Pagination<>(offset, getContentNotFeatureDataCountFromCache(), limit, contents);
 			}
 		}
 
@@ -393,7 +379,7 @@ public class ContentServiceImpl implements ContentService {
 
 		rate.setContentId(contentId);
 
-		ContentUserRate rateDb = getContentUserRateByContentIdAndUserId(contentId, loginUser.getUserId());
+		ContentUserRate rateDb = getContentUserRateByContentIdAndUserId(contentId, loginUser.getId());
 
 		if ((rateDb != null) && thumb.equals(Constants.USER_RATE_THUMB_NEUTRAL)) {
 			contentUserRateMapper.delete(rateDb);
@@ -472,7 +458,7 @@ public class ContentServiceImpl implements ContentService {
 
 		contentMapper.update(contentDb);
 
-		new ContentIndexer().updateIndex(content);
+//		new ContentIndexer().updateIndex(content);
 
 		deleteContentFromCache(content.getId());
 
@@ -515,6 +501,8 @@ public class ContentServiceImpl implements ContentService {
 		content.preUpdate();
 
 		contentMapper.update(content);
+
+		deleteContentFromCache(content.getId());
 
 		return content;
 	}
@@ -569,7 +557,7 @@ public class ContentServiceImpl implements ContentService {
 
 			if (StringUtils.isNoneBlank(createById) && !"nil".equalsIgnoreCase(createById)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(createById));
+				user.setId(Long.valueOf(createById));
 				user.setUsername(createByUsername);
 				user.setProfilePhotoSmall(createByUserImage);
 				content.setCreateBy(user);
@@ -577,7 +565,7 @@ public class ContentServiceImpl implements ContentService {
 
 			if (StringUtils.isNoneBlank(updateBy) && !"nil".equalsIgnoreCase(updateBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(updateBy));
+				user.setId(Long.valueOf(updateBy));
 				content.setUpdateBy(user);
 			}
 
@@ -627,7 +615,7 @@ public class ContentServiceImpl implements ContentService {
 		if (null != map && map.size() > 0) {
 			content = new Content();
 
-			String id = redisService.getMap(key, "contentId");
+			String id = redisService.getMap(key, "id");
 			String title = redisService.getMap(key, "title");
 			String description = redisService.getMap(key, "description");
 			String shortDescription = redisService.getMap(key, "shortDescription");
@@ -714,7 +702,7 @@ public class ContentServiceImpl implements ContentService {
 		return contentContributor;
 	}
 
-	private void deleteContentFromCache(Long id) {
+	public void deleteContentFromCache(Long id) {
 		redisService.delete(Constants.REDIS_CONTENT + ":" + id);
 		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + id);
 		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + id);
@@ -747,9 +735,9 @@ public class ContentServiceImpl implements ContentService {
 		value.put("isPublished", String.valueOf(content.isPublished()));
 		value.put("expireDate", DateUtil.getFullDatetime(content.getExpireDate()));
 		value.put("publishDate", DateUtil.getFullDatetime(content.getPublishDate()));
-		value.put("updateBy", String.valueOf(content.getUpdateBy().getUserId()));
+		value.put("updateBy", String.valueOf(content.getUpdateBy().getId()));
 		value.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
-		value.put("createById", String.valueOf(content.getCreateBy().getUserId()));
+		value.put("createById", String.valueOf(content.getCreateBy().getId()));
 		value.put("createByUsername", content.getCreateBy().getUsername());
 		value.put("createByUserImage", content.getCreateBy().getProfilePhotoSmall());
 		value.put("createDate", DateUtil.getFullDatetime(content.getCreateDate()));

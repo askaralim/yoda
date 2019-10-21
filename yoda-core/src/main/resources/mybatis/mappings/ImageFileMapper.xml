@@ -5,7 +5,7 @@
 	<cache />
 
 	<sql id="fileColumns">
-		f.file_id AS fileId,
+		f.id,
 		f.file_name AS fileName,
 		f.file_path AS filePath,
 		f.file_small_path AS fileSmallPath,
@@ -17,9 +17,9 @@
 		f.size,
 		f.width,
 		f.height,
-		f.create_by AS "createBy.userId",
+		f.create_by AS "createBy.id",
 		f.create_date AS createDate,
-		f.update_by AS "updateBy.userId",
+		f.update_by AS "updateBy.id",
 		f.update_date AS updateDate
 	</sql>
 
@@ -27,7 +27,7 @@
 		SELECT 
 			<include refid="fileColumns"/>
 		FROM file f
-		WHERE f.file_id = #{id}
+		WHERE f.id = #{id}
 	</select>
 
 	<select id="getFiles" resultType="ImageFile">
@@ -42,12 +42,12 @@
 		FROM file f
 		WHERE f.content_type = #{param1} and f.content_id = #{param2} ORDER BY create_date DESC
 	</select>
-	<insert id="insert" parameterType="ImageFile" useGeneratedKeys="true" keyProperty="fileId">
-		INSERT INTO file(file_id, file_name, file_path, file_small_path, file_full_path, file_type, content_type, content_id, suffix, size, width, height, create_by, create_date, update_by, update_date)
-		VALUES(#{fileId}, #{fileName}, #{filePath}, #{fileSmallPath}, #{fileFullPath}, #{fileType}, #{contentType}, #{contentId}, #{suffix}, #{size}, #{width}, #{height}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
+	<insert id="insert" parameterType="ImageFile" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO file(id, file_name, file_path, file_small_path, file_full_path, file_type, content_type, content_id, suffix, size, width, height, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{fileName}, #{filePath}, #{fileSmallPath}, #{fileFullPath}, #{fileType}, #{contentType}, #{contentId}, #{suffix}, #{size}, #{width}, #{height}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
 	</insert>
 
 	<delete id="delete">
-		DELETE FROM file WHERE file_id = #{fileId}
+		DELETE FROM file WHERE id = #{id}
 	</delete>
 </mapper>

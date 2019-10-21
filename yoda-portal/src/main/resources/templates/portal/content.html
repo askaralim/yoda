@@ -53,8 +53,8 @@
                                         <p>[(${contentInfo.description})]</p>
                                         <!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
                                         <div class="content-actions">
-                                            <button id="thumbUp" th:class="${(userLogin && isUserLike) ? ' fa fa-thumbs-up' : 'fa fa-thumbs-o-up'}"></button>
-                                            <button id="thumbDown" th:class="${(userLogin && isUserDislike) ? ' fa fa-thumbs-down' : 'fa fa-thumbs-o-down'}"></button>
+                                            <button id="thumbUp" th:class="${(isUserLike != null && isUserLike && userLogin) ? ' fa fa-thumbs-up' : 'fa fa-thumbs-o-up'}"></button>
+                                            <button id="thumbDown" th:class="${(isUserDislike != null && isUserDislike && userLogin) ? ' fa fa-thumbs-down' : 'fa fa-thumbs-o-down'}"></button>
                                             <span id="score" class="label label-success">
                                                 <span th:if="${contentInfo.score > 0}" th:text="'+' + ${contentInfo.score}"/>
                                                 <span th:unless="${contentInfo.score > 0}" th:text="${contentInfo.score}"/>
@@ -164,7 +164,7 @@
                                     <button type="submit" class="btn btn-primary pull-right" th:text="#{submit}">Submit</button>
                                 </div>
                                 <div class="clearfix"></div>
-                                <input type="hidden" name="contentId" th:value="${contentInfo.contentId}"/>
+                                <input type="hidden" name="id" th:value="${contentInfo.id}"/>
 <!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
                             </form>
                         </div>
@@ -182,11 +182,11 @@
                         <span th:text="${contentInfo.createBy.username}">Publisher Name</span>
                     </div>
                     <div th:if="${contentInfo.contentContributors.size() > 0}" class="home-sidebar-module">
-                        <h5 th:text="content-contributor">Content Contributor</h5>
+                        <h5 th:text="#{content-contributor}">Content Contributor</h5>
                         <ul class="list-unstyled">
                             <li th:each="contributor : ${contentInfo.contentContributors}">
-                                <img th:if="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25"/>
-                                <img th:unless="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall}" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+<!--                                <img th:if="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25"/>-->
+                                <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall != null ? contributor.profilePhotoSmall : '../images/defaultAvatar.jpg'}" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="32" height="32" />
                                 <span th:text="${contributor.username}">Contributor Name</span>
                             </li>
                             <br>
@@ -211,9 +211,6 @@
         </div>
     </div>
 </div>
-
-<div th:replace="fragments :: footer"></div>
-</body>
 
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -248,7 +245,10 @@
     </div>
 </div>
 
+<div th:replace="fragments :: footer"></div>
+
 <script th:src="@{/js/content.js}"></script>
+</body>
 </html>
 
 <script>
@@ -264,7 +264,6 @@
         });
     }());
 </script>
-
 
 <script type='text/javascript' th:inline="javascript">
     $(function () {
@@ -309,7 +308,7 @@
                 return;
             }
 
-            var url = "/content/" + [[${contentInfo.contentId}]] + "/rate?thumb=";
+            var url = "/content/" + [[${contentInfo.id}]] + "/rate?thumb=";
             var currentUpClass = $('#thumbUp').attr('class');
             var currentDownClass = $('#thumbDown').attr('class');
             var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
@@ -354,7 +353,7 @@
                 return;
             }
 
-            var url = "/content/" + [[${contentInfo.contentId}]] + "/rate?thumb=";
+            var url = "/content/" + [[${contentInfo.id}]] + "/rate?thumb=";
             var currentUpClass = $('#thumbUp').attr('class');
             var currentDownClass = $('#thumbDown').attr('class');
             var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
@@ -400,7 +399,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.contentId}]] + '/rate?score=' + score,
+            url: '/content/' + [[${contentInfo.id}]] + '/rate?score=' + score,
             dataType: "json",
             success: function (data) {
                 var total = data.score;
@@ -431,7 +430,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.contentId}]] + '/rate?score=' + score,
+            url: '/content/' + [[${contentInfo.id}]] + '/rate?score=' + score,
             dataType: "json",
             success: function (data) {
                 var total = data.score;
@@ -461,7 +460,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.contentId}]] + '/score?thumb=down',
+            url: '/content/' + [[${contentInfo.id}]] + '/score?thumb=down',
             dataType: "json",
             success: function (data) {
                 var score = data.score;

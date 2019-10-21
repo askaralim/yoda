@@ -34,11 +34,11 @@ public class PortalContactUsController extends PortalBaseController {
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 
-		Site site = getSite(request);
+		Site site = getSite();
 
 		List<ContactUs> contactUsList = contactUsService.getContactUs(site.getSiteId(), true);
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("contactUsList", contactUsList);
 		model.put("site", site);

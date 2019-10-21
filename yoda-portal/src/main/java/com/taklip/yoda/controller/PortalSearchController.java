@@ -31,7 +31,7 @@ public class PortalSearchController extends PortalBaseController {
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 
-		Site site = getSite(request);
+		Site site = getSite();
 
 		String q = StringPool.BLANK;
 
@@ -42,7 +42,7 @@ public class PortalSearchController extends PortalBaseController {
 			e.printStackTrace();
 		}
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("site", site);
 
@@ -61,13 +61,12 @@ public class PortalSearchController extends PortalBaseController {
 		return "portal/search/search";
 	}
 
-	public PageInfo getSearch(
-			HttpServletRequest request, HttpServletResponse response) {
-		Site site = getSite(request);
+	public PageInfo getSearch(HttpServletRequest request) {
+		Site site = getSite();
 
 		PageInfo pageInfo = new PageInfo();
 
-		String value = (String) request.getParameter("pageNum");
+		String value = request.getParameter("pageNum");
 
 		if (value == null) {
 			value = "1";

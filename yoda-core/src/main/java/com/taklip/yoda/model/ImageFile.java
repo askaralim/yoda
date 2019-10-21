@@ -1,7 +1,7 @@
 package com.taklip.yoda.model;
 
 public class ImageFile extends BaseEntity {
-	private Long fileId;
+	private Long id;
 	private String fileName;
 	private String filePath;
 	private String fileSmallPath;
@@ -15,10 +15,10 @@ public class ImageFile extends BaseEntity {
 	private Integer height;
 
 	public Long getFileId() {
-		return fileId;
+		return id;
 	}
-	public void setFileId(Long fileId) {
-		this.fileId = fileId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getFileName() {
 		return fileName;

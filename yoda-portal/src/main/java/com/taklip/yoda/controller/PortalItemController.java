@@ -30,15 +30,14 @@ public class PortalItemController extends PortalBaseController {
 
 	@RequestMapping(value="/{itemId}", method = RequestMethod.GET)
 	public ModelAndView showItem(
-			@PathVariable("itemId") Long itemId,
-			HttpServletRequest request, HttpServletResponse response) {
+			@PathVariable("itemId") Long itemId, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 
-		Site site = getSite(request);
+		Site site = getSite();
 
 		Item item = itemService.getItem(itemId);
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("site", site);
 		model.put("item", item);

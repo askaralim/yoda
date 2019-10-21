@@ -24,7 +24,7 @@ public class BaseEntity implements Serializable {
 	public void preInsert(){
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		if ((user != null) && (user.getUserId() != null)){
+		if ((user != null) && (user.getId() != null)){
 			this.updateBy = user;
 			this.createBy = user;
 		}
@@ -36,7 +36,7 @@ public class BaseEntity implements Serializable {
 	public void preUpdate(){
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		if ((user != null) && (user.getUserId() != null)){
+		if ((user != null) && (user.getId() != null)){
 			this.updateBy = user;
 		}
 

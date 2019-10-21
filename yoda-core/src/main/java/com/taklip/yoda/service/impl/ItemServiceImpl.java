@@ -204,7 +204,6 @@ public class ItemServiceImpl implements ItemService {
 		itemDB.setPrice(item.getPrice());
 		itemDB.setExtraFields(item.getExtraFields());
 		itemDB.setBuyLinks(item.getBuyLinks());
-		itemDB.setImagePath(item.getImagePath());
 
 		itemDB.preUpdate();
 
@@ -317,13 +316,13 @@ public class ItemServiceImpl implements ItemService {
 
 			if (StringUtils.isNoneBlank(createBy) && !"nil".equalsIgnoreCase(createBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(createBy));
+				user.setId(Long.valueOf(createBy));
 				item.setCreateBy(user);
 			}
 
 			if (StringUtils.isNoneBlank(updateBy) && !"nil".equalsIgnoreCase(updateBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(updateBy));
+				user.setId(Long.valueOf(updateBy));
 				item.setUpdateBy(user);
 			}
 
@@ -356,9 +355,9 @@ public class ItemServiceImpl implements ItemService {
 		value.put("name", item.getName());
 		value.put("price", String.valueOf(item.getPrice()));
 		value.put("siteId", String.valueOf(item.getSiteId()));
-		value.put("updateBy", String.valueOf(item.getUpdateBy().getUserId()));
+		value.put("updateBy", String.valueOf(item.getUpdateBy().getId()));
 		value.put("updateDate", DateUtil.getDate(item.getUpdateDate()));
-		value.put("createBy", String.valueOf(item.getCreateBy().getUserId()));
+		value.put("createBy", String.valueOf(item.getCreateBy().getId()));
 		value.put("createDate", DateUtil.getDate(item.getCreateDate()));
 
 		redisService.setMap(Constants.REDIS_ITEM + ":" + item.getId(), value);

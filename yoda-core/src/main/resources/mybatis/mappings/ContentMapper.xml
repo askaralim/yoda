@@ -5,7 +5,7 @@
 	<cache />
 
 	<resultMap id="contentResult" type="Content">
-		<id property="id" column="content_id" />
+		<id property="id" column="id" />
 		<result property="siteId" column="site_id" />
 		<result property="naturalKey" column="natural_key" />
 		<result property="title" column="title" />
@@ -18,13 +18,16 @@
 		<result property="pageTitle" column="page_title" />
 		<result property="hitCounter" column="hit_counter" />
 		<result property="published" column="published" />
-		<!-- <result property="sectionId" column="section_id" /> -->
 		<result property="featureData" column="feature_data" />
 		<result property="featuredImage" column="featured_image" />
 		<result property="score" column="score" />
-		<association property="category" column="category_id" javaType="Category" resultMap="categoryResult" />
-		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
-		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
+		<association property="category" javaType="Category">
+			<id property="id" column="category_id"/>
+			<result property="name" column="category_name" />
+			<result property="parent" column="category_parent" />
+		</association>
+		<association property="createBy" column="id" javaType="User" resultMap="userResult" columnPrefix="c_" />
+		<association property="updateBy" column="id" javaType="User" resultMap="userResult" columnPrefix="u_" />
 		<collection property="contentContributors" ofType="ContentContributor">
 			<id property="id" column="content_contributor_id" />
 			<result property="contentId" column="content_contributor_content_id" />
@@ -42,89 +45,58 @@
 		</collection>
 	</resultMap>
 
-	<resultMap id="categoryResult" type="Category">
-		<id property="categoryId" column="category_id" />
-		<result property="name" column="name" />
-		<result property="parent" column="parent" />
-	</resultMap>
-
 	<resultMap id="userResult" type="User">
-		<id property="userId" column="user_id" />
+		<id property="id" column="id" />
 		<result property="username" column="username" />
 		<result property="profilePhotoSmall" column="profile_photo_small" />
 	</resultMap>
 
-	<sql id="contentColumnsSimple">
-		c.content_id AS content_id,
-		<!-- c.category_id AS "category.categoryId", -->
-		c.site_id AS site_id,
-		c.natural_key AS natural_key,
-		c.title,
-		<!-- c.create_by AS "createBy.userId", -->
-		c.create_date AS create_date,
-		<!-- c.update_by AS "updateBy.userId", -->
-		c.update_date AS update_date,
-		c.publish_date AS publish_date,
-		c.expire_date AS expire_date,
-		c.short_description AS short_description,
-		c.description,
-		c.page_title AS page_title,
-		c.hit_counter AS hit_counter,
-		c.published,
-		c.feature_data AS feature_data,
-		<!-- c.section_id AS section_id, -->
-		c.featured_image AS featured_image,
-		c.score
-	</sql>
-
 	<sql id="contentColumns">
-		c.content_id AS content_id,
-		<!-- c.category_id AS "category.categoryId", -->
-		c.site_id AS site_id,
-		c.natural_key AS natural_key,
+		c.id,
+		c.category_id,
+		c.site_id,
+		c.natural_key,
 		c.title,
-		<!-- c.create_by AS "createBy.userId", -->
-		c.create_date AS create_date,
-		<!-- c.update_by AS "updateBy.userId", -->
-		c.update_date AS update_date,
-		c.publish_date AS publish_date,
-		c.expire_date AS expire_date,
-		c.short_description AS short_description,
+		c.create_date,
+		c.update_date,
+		c.publish_date,
+		c.expire_date,
+		c.short_description,
 		c.description,
-		c.page_title AS page_title,
-		c.hit_counter AS hit_counter,
+		c.page_title,
+		c.hit_counter,
 		c.published,
-		c.feature_data AS feature_data,
-		<!-- c.section_id AS section_id, -->
-		c.featured_image AS featured_image,
+		c.feature_data,
+		c.featured_image,
 		c.score,
 		cc.id as content_contributor_id,
 		cc.content_id as content_contributor_content_id,
 		cc.user_id as content_contributor_user_id,
 		cc.username as content_contributor_username,
 		cc.profile_photo_small as content_contributor_profile_photo_small,
-		cb.content_brand_id AS content_brand_id,
+		cb.id as content_brand_id,
 		cb.content_id AS content_brand_content_id,
 		cb.brand_id AS content_brand_brand_id,
 		cb.description AS content_brand_description,
 		cb.brand_name AS content_brand_brand_name,
 		cb.brand_logo AS content_brand_brand_logo,
-		ca.category_id,
-		ca.name,
-		ca.parent,
-		u.user_id,
-		u.username,
-		u.profile_photo_small,
-		uu.user_id AS u_user_id,
-		uu.username AS u_username
+		ca.id AS category_id,
+		ca.name AS category_name,
+		ca.parent AS category_parent,
+		u.id AS c_id,
+		u.username AS c_username,
+		u.profile_photo_small AS c_profile_photo_small,
+		uu.id AS u_id,
+		uu.username AS u_username,
+		uu.profile_photo_small AS u_profile_photo_small
 	</sql>
 
 	<sql id="contentJoins">
-		LEFT OUTER JOIN content_brand cb ON c.content_id = cb.content_id
-		LEFT OUTER JOIN content_contributor cc ON c.content_id = cc.content_id
-		LEFT OUTER JOIN category ca on c.category_id = ca.category_id
-		LEFT OUTER JOIN user_ u on c.create_by = u.user_id
-		LEFT OUTER JOIN user_ uu on c.update_by = uu.user_id
+		LEFT OUTER JOIN content_brand cb ON c.id = cb.content_id
+		LEFT OUTER JOIN content_contributor cc ON c.id = cc.content_id
+		LEFT OUTER JOIN category ca on c.category_id = ca.id
+		LEFT OUTER JOIN user_ u on c.create_by = u.id
+		LEFT OUTER JOIN user_ uu on c.update_by = uu.id
 	</sql>
 
 	<select id="getById" resultMap="contentResult">
@@ -132,13 +104,32 @@
 			<include refid="contentColumns"/>
 		FROM content c
 		<include refid="contentJoins"/>
-		WHERE c.content_id = #{id}
+		WHERE c.id = #{id}
 	</select>
 
 	<select id="getContents" resultMap="contentResult">
-		SELECT 
-			<include refid="contentColumnsSimple"/>
+		SELECT
+			c.id,
+			c.site_id,
+			c.natural_key,
+			c.title,
+			c.create_date,
+			c.update_date,
+			c.publish_date,
+			c.expire_date,
+			c.short_description,
+			c.description,
+			c.page_title,
+			c.hit_counter,
+			c.published,
+			c.feature_data,
+			c.featured_image,
+			c.score,
+			ca.id AS category_id,
+			ca.name AS category_name,
+			ca.parent AS category_parent
 		FROM content c
+		LEFT OUTER JOIN category ca on c.category_id = ca.id
 		ORDER BY c.update_date DESC
 	</select>
 
@@ -163,8 +154,23 @@
 	</select>
 
 	<select id="getContentsByFeatureData" resultType="Content">
-		SELECT 
-			<include refid="contentColumnsSimple"/>
+		SELECT
+			c.id,
+			c.site_id,
+			c.natural_key,
+			c.title,
+			c.create_date,
+			c.update_date,
+			c.publish_date,
+			c.expire_date,
+			c.short_description,
+			c.description,
+			c.page_title,
+			c.hit_counter,
+			c.published,
+			c.feature_data,
+			c.featured_image,
+			c.score
 		FROM content c
 		WHERE c.feature_data = #{featureData}
 		AND c.published = true
@@ -202,20 +208,20 @@
 				AND c.expire_date between #{param8} and #{param9}
 			</if> -->
 		</where>
-		order by c.content_id
+		order by c.id
 	</select>
 
 	<insert id="insert" parameterType="Content" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO content(content_id, category_id, site_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, feature_data, featured_image, score)
-		VALUES(#{id}, #{category.categoryId}, #{siteId}, #{naturalKey}, #{title}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featureData}, #{featuredImage}, #{score})
+		INSERT INTO content(id, category_id, natural_key, title, create_by, create_date, update_by, update_date, publish_date, expire_date, short_description, description, page_title, hit_counter, published, feature_data, featured_image, score)
+		VALUES(#{id}, #{category.id}, #{naturalKey}, #{title}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate}, #{publishDate}, #{expireDate}, #{shortDescription}, #{description}, #{pageTitle}, #{hitCounter}, #{published}, #{featureData}, #{featuredImage}, #{score})
 	</insert>
 
 	<update id="update" parameterType="Content">
 		UPDATE content SET
-			category_id = #{category.categoryId},
+			category_id = #{category.id},
 			natural_key = #{naturalKey},
 			title = #{title},
-			update_by = #{updateBy.userId},
+			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			publish_date = #{publishDate},
 			expire_date = #{expireDate},
@@ -227,10 +233,10 @@
 			feature_data = #{featureData},
 			featured_image = #{featuredImage},
 			score = #{score}
-		WHERE content_id = #{id}
+		WHERE id = #{id}
 	</update>
 
 	<delete id="delete">
-		DELETE FROM content WHERE content_id = #{id}
+		DELETE FROM content WHERE id = #{id}
 	</delete>
 </mapper>

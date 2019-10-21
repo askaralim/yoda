@@ -126,7 +126,7 @@ public class FileUploader {
 		String prefix = "";
 
 		if (null != user) {
-			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getUserId() + StringPool.FORWARD_SLASH);
+			prefix = prefix.concat(StringPool.FORWARD_SLASH + user.getId() + StringPool.FORWARD_SLASH);
 		}
 
 		prefix = prefix.concat(folder);
@@ -150,7 +150,7 @@ public class FileUploader {
 		String prefix = "";
 
 		if (null != user) {
-			prefix = prefix.concat(user.getUserId() + StringPool.FORWARD_SLASH);
+			prefix = prefix.concat(user.getId() + StringPool.FORWARD_SLASH);
 		}
 
 		prefix = prefix.concat(folder);
@@ -161,6 +161,6 @@ public class FileUploader {
 	protected String getRandomFileName() {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		return String.valueOf(System.currentTimeMillis()) + user.getUserId();
+		return String.valueOf(System.currentTimeMillis()) + user.getId();
 	}
 }

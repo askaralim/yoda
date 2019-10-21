@@ -29,14 +29,12 @@ public class PortalBaseController {
 	@Autowired
 	protected KafkaTemplate<String, String> kafkaTemplate;
 
-	public void setUserLoginStatus(
-			HttpServletRequest request, HttpServletResponse response,
-			ModelMap model) {
+	public void setUserLoginStatus(ModelMap model) {
 		User loginUser = AuthenticatedUtil.getAuthenticatedUser();
 
 		if (loginUser != null) {
 			model.put("userLogin", true);
-			model.put("userId", loginUser.getUserId());
+			model.put("userId", loginUser.getId());
 			model.put("username", loginUser.getUsername());
 
 			if (PortalUtil.isAdminRole(loginUser)) {
@@ -45,14 +43,14 @@ public class PortalBaseController {
 		}
 
 		// csrf is disabled
-		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
-
-		if (csrfToken != null) {
-			model.put("_csrf", csrfToken);
-		}
+//		CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
+//
+//		if (csrfToken != null) {
+//			model.put("_csrf", csrfToken);
+//		}
 	}
 
-	public Site getSite(HttpServletRequest request) {
+	public Site getSite() {
 		return siteService.getSites().get(0);
 	}
 }

@@ -20,18 +20,16 @@
 		<result property="price" column="price" />
 		<result property="rating" column="rating" />
 		<result property="siteId" column="site_id" />
-		<association property="brand" column="brand_id" javaType="Brand" resultMap="brandResult" />
-		<association property="createBy" column="user_id" javaType="User" resultMap="userResult" />
-		<association property="updateBy" column="user_id" javaType="User" resultMap="userResult" columnPrefix="u_" />
-	</resultMap>
-
-	<resultMap id="brandResult" type="Brand">
-		<id property="id" column="brand_id" />
-		<result property="name" column="brand_name" />
+		<association property="brand" javaType="Brand">
+			<id property="id" column="brand_id"/>
+			<result property="name" column="brand_name" />
+		</association>
+		<association property="createBy" column="id" javaType="User" resultMap="userResult" />
+		<association property="updateBy" column="id" javaType="User" resultMap="userResult" columnPrefix="u_" />
 	</resultMap>
 
 	<resultMap id="userResult" type="User">
-		<id property="userId" column="user_id" />
+		<id property="id" column="id" />
 		<result property="username" column="username" />
 	</resultMap>
 
@@ -51,18 +49,18 @@
 		i.buy_links AS buy_links,
 		i.extra_fields AS extra_fields,
 		i.description,
-		b.brand_id,
+		b.id AS brand_id,
 		b.name AS brand_name,
-		u.user_id,
+		u.id,
 		u.username,
-		uu.user_id AS u_user_id,
+		uu.id AS u_id,
 		uu.username AS u_username
 	</sql>
 
 	<sql id="itemJoins">
-		LEFT OUTER JOIN brand b on i.brand_id = b.brand_id
-		LEFT OUTER JOIN user_ u on i.create_by = u.user_id
-		LEFT OUTER JOIN user_ uu on i.update_by = uu.user_id
+		LEFT OUTER JOIN brand b on i.brand_id = b.id
+		LEFT OUTER JOIN user_ u on i.create_by = u.id
+		LEFT OUTER JOIN user_ uu on i.update_by = uu.id
 	</sql>
 
 	<select id="getById" resultMap="itemResult">
@@ -132,7 +130,7 @@
 
 	<insert id="insert" parameterType="Item" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO item(id, brand_id, category_id, content_id, create_by, create_date, update_by, update_date, hit_counter, description, image_path, buy_links, extra_fields, level, name, price, rating, site_id)
-		VALUES(#{id}, #{brand.id}, #{categoryId}, #{contentId}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{buyLinks}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
+		VALUES(#{id}, #{brand.id}, #{categoryId}, #{contentId}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate}, #{hitCounter}, #{description}, #{imagePath}, #{buyLinks}, #{extraFields}, #{level}, #{name}, #{price}, #{rating}, #{siteId})
 	</insert>
 
 	<update id="update" parameterType="Item">
@@ -140,7 +138,7 @@
 			brand_id = #{brand.id},
 			category_id = #{categoryId},
 			content_id = #{contentId},
-			update_by = #{updateBy.userId},
+			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			description = #{description},
 			hit_counter = #{hitCounter},

@@ -13,5 +13,5 @@ public interface UserMapper extends BaseMapper<User> {
 
 	List<User> getUsers();
 
-	List<User> search(Long userId, String username, String authorityName, Boolean enabled);
+	List<User> search(Long id, String username, String authorityName, Boolean enabled);
 }

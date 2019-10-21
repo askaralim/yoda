@@ -46,7 +46,7 @@
 		ORDER BY c.seq_num
 	</select>
 
-	<insert id="insert" parameterType="ContactUs" useGeneratedKeys="true" keyProperty="categoryId">
+	<insert id="insert" parameterType="ContactUs" useGeneratedKeys="true" keyProperty="contactUsId">
 		INSERT INTO contact_us(contact_us_id, site_id, name, address_line1, address_line2, city_name, zip_code, email, phone, description, seq_num, active, create_by, create_date, update_by, update_date)
 		VALUES(#{contactUsId}, #{siteId}, #{name}, #{addressLine1}, #{addressLine2}, #{cityName}, #{zipCode}, #{email}, #{phone}, #{description}, #{seqNum}, #{active}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate})
 	</insert>

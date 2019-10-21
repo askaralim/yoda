@@ -51,7 +51,7 @@ public class PortalBrandController extends PortalBaseController {
 			HttpServletRequest request, HttpServletResponse response) {
 		ModelMap model = new ModelMap();
 
-		Site site = getSite(request);
+		Site site = getSite();
 
 		String offsetStr = request.getParameter("offset");
 		int offset = 0;
@@ -62,7 +62,7 @@ public class PortalBrandController extends PortalBaseController {
 
 		Pagination<Brand> page = brandService.getBrands(new RowBounds(offset, 20));
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("site", site);
 		model.put("page", page);
@@ -103,7 +103,7 @@ public class PortalBrandController extends PortalBaseController {
 	public ModelAndView showBrand(
 			@PathVariable("id") Long id,
 			HttpServletRequest request, HttpServletResponse response) {
-		Site site = getSite(request);
+		Site site = getSite();
 
 		Brand brand = brandService.getBrand(id);
 
@@ -111,7 +111,7 @@ public class PortalBrandController extends PortalBaseController {
 
 		ModelMap model = new ModelMap();
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("site", site);
 		model.put("brand", brand);

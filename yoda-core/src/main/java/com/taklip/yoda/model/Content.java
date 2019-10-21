@@ -32,8 +32,6 @@ public class Content extends BaseEntity {
 
 	private Integer siteId;
 
-//	private int sectionId;
-
 	private String naturalKey;
 
 	@NotEmpty(message = "content-title-required")
@@ -46,10 +44,6 @@ public class Content extends BaseEntity {
 	private String pageTitle;
 
 	private String featuredImage;
-
-	private String contentUrl;
-
-//	private Section section;
 
 	private List<ContentContributor> contentContributors = new ArrayList<>();
 
@@ -223,14 +217,6 @@ public class Content extends BaseEntity {
 
 	public Boolean isNew() {
 		return (this.id == null);
-	}
-
-	public String getContentUrl() {
-		return contentUrl;
-	}
-
-	public void setContentUrl(String contentUrl) {
-		this.contentUrl = contentUrl;
 	}
 
 	public Boolean isFeatureData() {

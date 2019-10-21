@@ -85,7 +85,6 @@ public class BrandServiceImpl implements BrandService {
 		brandDb.setName(brand.getName());
 		brandDb.setKind(brand.getKind());
 		brandDb.setHitCounter(brand.getHitCounter());
-		brandDb.setImagePath(brand.getImagePath());
 
 		brandDb.preUpdate();
 
@@ -252,7 +251,7 @@ public class BrandServiceImpl implements BrandService {
 
 			if (StringUtils.isNoneBlank(createBy) && !"nil".equalsIgnoreCase(createBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(createBy));
+				user.setId(Long.valueOf(createBy));
 				brand.setCreateBy(user);
 			}
 
@@ -260,7 +259,7 @@ public class BrandServiceImpl implements BrandService {
 
 			if (StringUtils.isNoneBlank(updateBy) && !"nil".equalsIgnoreCase(updateBy)) {
 				User user = new User();
-				user.setUserId(Long.valueOf(updateBy));
+				user.setId(Long.valueOf(updateBy));
 				brand.setUpdateBy(user);
 			}
 
@@ -284,9 +283,9 @@ public class BrandServiceImpl implements BrandService {
 		value.put("name", brand.getName());
 		value.put("id", String.valueOf(brand.getId()));
 		value.put("foundedDate", null != brand.getFoundDate() ? DateUtil.getDate(brand.getFoundDate()) : StringPool.BLANK);
-		value.put("updateBy", String.valueOf(brand.getUpdateBy().getUserId()));
+		value.put("updateBy", String.valueOf(brand.getUpdateBy().getId()));
 		value.put("updateDate", DateUtil.getDate(brand.getUpdateDate()));
-		value.put("createBy", String.valueOf(brand.getCreateBy().getUserId()));
+		value.put("createBy", String.valueOf(brand.getCreateBy().getId()));
 		value.put("createDate", DateUtil.getDate(brand.getCreateDate()));
 
 		redisService.setMap(Constants.REDIS_BRAND + ":" + brand.getId(), value);

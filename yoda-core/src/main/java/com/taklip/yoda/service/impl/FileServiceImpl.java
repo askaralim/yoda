@@ -27,7 +27,7 @@ public class FileServiceImpl implements FileService {
 	private IdService idService;
 
 	@Override
-	public String save(String contentType, Long contentId, MultipartFile image) throws IOException {
+	public String save(String contentType, Long contentId, MultipartFile image) {
 		ImageFile imageFile = imageUploader.uploadImage(image, contentType + StringPool.FORWARD_SLASH + contentId);
 
 		if (null != imageFile) {
@@ -36,7 +36,7 @@ public class FileServiceImpl implements FileService {
 			imageFile.setContentType(ContentTypeEnum.getCode(contentType));
 		}
 
-		imageFile.setFileId(idService.generateId());
+		imageFile.setId(idService.generateId());
 		imageFile.preInsert();
 
 		fileMapper.insert(imageFile);
@@ -45,8 +45,8 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public void save(ImageFile file) throws IOException {
-		file.setFileId(idService.generateId());
+	public void save(ImageFile file) {
+		file.setId(idService.generateId());
 		file.preInsert();
 
 		fileMapper.insert(file);

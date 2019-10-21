@@ -107,79 +107,14 @@ public class ContentController {
 
 		saveContentContributors(request, content);
 
-		model.put("content", content);
-
 		redirect.addFlashAttribute("globalMessage", "success");
 
 		return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
 	}
 
-//	@RequestMapping(value = "/controlpanel/content/add", method = RequestMethod.POST)
-//	public ModelAndView processSubmit(
-//			@ModelAttribute Content content,
-//			@RequestParam("categoryId") Integer categoryId,
-//			BindingResult result, SessionStatus status,
-//			HttpServletRequest request)
-//		throws Throwable {
-//		new ContentEditValidator().validate(content, result);
-//
-//		ModelMap model = new ModelMap();
-//
-//		if(result.hasErrors()) {
-//			model.put("errors", "errors");
-//
-//			List<Category> categories = categoryService.getCategories();
-//
-//			model.put("categories", categories);
-//
-//			return new ModelAndView("controlpanel/content/edit", model);
-//		}
-//
-//		contentService.addContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
-//
-//		return new ModelAndView("redirect:/controlpanel/content/" + content.getContentId() + "/edit", model);
-//	}
-//
-//	@RequestMapping(value = "/controlpanel/content/{contentId}/edit", method = RequestMethod.POST)
-//	public ModelAndView updateContent(
-//			@ModelAttribute Content content,
-//			@RequestParam("categoryId") Integer categoryId,
-//			BindingResult result, SessionStatus status,
-//			HttpServletRequest request)
-//		throws Throwable {
-//		new ContentEditValidator().validate(content, result);
-//
-//		ModelMap model = new ModelMap();
-//
-//		if(result.hasErrors()) {
-//			model.put("errors", "errors");
-//
-//			return new ModelAndView("controlpanel/content/edit", model);
-//		}
-//
-//		Content contentDb = contentService.updateContent(SiteUtil.getDefaultSite().getSiteId(), content, categoryId);
-//
-//		saveContentContributors(request, contentDb);
-//
-//		if (getHomePage(SiteUtil.getDefaultSite().getSiteId(), content.getContentId()) != null) {
-//			contentDb.setHomePage(true);
-//		}
-//
-//		List<Category> categories = categoryService.getCategories();
-//
-//		model.put("categories", categories);
-//		model.put("content", contentDb);
-//		model.put("success", "success");
-//
-//		new ContentIndexer().updateIndex(content);
-//
-//		return new ModelAndView("controlpanel/content/edit", model);
-//	}
-
 	@GetMapping("/{id}/edit")
 	public String initUpdateForm(
-			@PathVariable("id") Long id,
-			Map<String, Object> model) {
+			@PathVariable("id") Long id, Map<String, Object> model) {
 		Content content = contentService.getContent(id);
 
 		List<Category> categories = categoryService.getCategories();
@@ -453,25 +388,25 @@ public class ContentController {
 		outputStream.flush();
 	}
 
-	@PostMapping("/{contentId}/uploadImage")
+	@PostMapping("/{id}/uploadImage")
 	public String uploadImage(
 			@RequestParam("file") MultipartFile file,
-			@PathVariable("contentId") long contentId,
+			@PathVariable("id") long id,
 			HttpServletRequest request)
 			throws Throwable {
 //		User user = PortalUtil.getAuthenticatedUser();
 
 
 		if (file.getBytes().length <= 0) {
-			return "redirect:/controlpanel/content/" + contentId + "/edit";
+			return "redirect:/controlpanel/content/" + id + "/edit";
 		}
 
 		if (StringUtils.isEmpty(file.getName())) {
-			return "redirect:/controlpanel/content/" + contentId + "/edit";
+			return "redirect:/controlpanel/content/" + id + "/edit";
 		}
 
 		contentService.updateContentImage(
-				SiteUtil.getDefaultSite().getSiteId(), contentId, file);
+				SiteUtil.getDefaultSite().getSiteId(), id, file);
 
 //		ImageScaler scaler = null;
 //
@@ -514,7 +449,7 @@ public class ContentController {
 //		outputStream.write(jsonString.getBytes());
 //		outputStream.flush();
 
-		return "redirect:/controlpanel/content/" + contentId + "/edit";
+		return "redirect:/controlpanel/content/" + id + "/edit";
 	}
 
 	public JSONObject createJsonImages(int siteId, Content content)
@@ -685,11 +620,11 @@ public class ContentController {
 				contributor.setApproved(true);
 				contributor.setContentId(content.getId());
 				contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
-				contributor.setUserId(user.getUserId());
+				contributor.setUserId(user.getId());
 				contributor.setUsername(user.getUsername());
 				contributor.setVersion("1.0");
 
-				List<ContentContributor> results = contentService.getContentContributor(content.getId(), user.getUserId());
+				List<ContentContributor> results = contentService.getContentContributor(content.getId(), user.getId());
 
 				if (results.isEmpty()) {
 					contentService.addContentContributor(contributor);
@@ -715,11 +650,10 @@ public class ContentController {
 
 	@RequestMapping(value = "/remove")
 	public String removeContents(
-			@RequestParam("contentIds") String contentIds,
-			HttpServletRequest request) {
-		String[] arrIds = contentIds.split(",");
+			@RequestParam("ids") String ids) {
+		String[] arrIds = ids.split(",");
 
-		Content content = new Content();
+		Content content;
 
 		for (int i = 0; i < arrIds.length; i++) {
 			content = contentService.getContent(Long.valueOf(arrIds[i]));

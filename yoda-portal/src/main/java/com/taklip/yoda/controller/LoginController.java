@@ -71,7 +71,7 @@ public class LoginController {
 			}
 			catch (Exception e) {
 				logger.info("Site " + currentUser.getLastVisitSiteId()
-					+ " not found for use " + currentUser.getUserId());
+					+ " not found for use " + currentUser.getId());
 
 			}
 		}

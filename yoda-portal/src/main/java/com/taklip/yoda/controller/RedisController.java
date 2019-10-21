@@ -29,14 +29,20 @@ public class RedisController {
 	@Autowired
 	private ItemService itemService;
 
-
 	@RequestMapping("/delete/content")
 	@ResponseBody
 	public Response deleteContents() {
 		List<Content> contents = contentService.getContents();
 
 		for (Content content : contents) {
-			redisService.delete(Constants.REDIS_CONTENT + ":" + content.getId());
+			contentService.deleteContentFromCache(content.getId());
+//			redisService.delete(Constants.REDIS_CONTENT + ":" + content.getId());
+//
+//			List<ContentContributor> cc = content.getContentContributors();
+//
+//			for (ContentContributor c : cc) {
+//				redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getId());
+//			}
 		}
 
 		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);

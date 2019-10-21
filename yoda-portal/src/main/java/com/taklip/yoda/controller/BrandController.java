@@ -47,11 +47,13 @@ public class BrandController {
 	}
 
 	@GetMapping(value = "/{id}/edit")
-	public ModelAndView initUpdateForm(
-			@PathVariable("id") Long id) {
+	public String initUpdateForm(
+			@PathVariable("id") Long id, Map<String, Object> model) {
 		Brand brand = brandService.getBrand(id);
 
-		return new ModelAndView("controlpanel/brand/form", "brand", brand);
+		model.put("brand", brand);
+
+		return"controlpanel/brand/form";
 	}
 
 	@PostMapping("/save")
@@ -65,8 +67,6 @@ public class BrandController {
 		}
 
 		brandService.save(brand);
-
-		model.put("brand", brand);
 
 		redirect.addFlashAttribute("globalMessage", "success");
 

@@ -26,6 +26,8 @@ public interface ContentService {
 
 	void deleteContent(Content content);
 
+	void deleteContentFromCache(Long id);
+
 	void deleteComment(Long commentId);
 
 	void updateContent(Content content);

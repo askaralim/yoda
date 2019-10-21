@@ -46,8 +46,8 @@ public class ImageUploader extends FileUploader {
 			String filename = image.getOriginalFilename();
 
 			String userHome = System.getProperties().getProperty("user.home");
-			String abolutePath = userHome + properties.getFileLocation() + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH + folder +StringPool.FORWARD_SLASH; 
-			String imagePath = UPLOAD_BASE_FOLDER + AuthenticatedUtil.getAuthenticatedUser().getUserId() + StringPool.FORWARD_SLASH + folder + StringPool.FORWARD_SLASH;
+			String abolutePath = userHome + properties.getFileLocation() + AuthenticatedUtil.getAuthenticatedUser().getId() + StringPool.FORWARD_SLASH + folder +StringPool.FORWARD_SLASH;
+			String imagePath = UPLOAD_BASE_FOLDER + AuthenticatedUtil.getAuthenticatedUser().getId() + StringPool.FORWARD_SLASH + folder + StringPool.FORWARD_SLASH;
 
 			String imageExtension = getFileExtension(filename);
 			String imageNameWithoutExt = getFileNameWithoutExtension(filename);

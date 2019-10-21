@@ -81,7 +81,7 @@
                                 <td th:text="${content.id}">1</td>
                                 <td th:text="${content.title}">Title</td>
                                 <td th:text="${content.published}">Yes</td>
-                                <td th:text="${content.category} != null ? content.category.name : ''">Category Name
+                                <td th:text="${content.category} != null ? ${content.category.name} : ''">Category Name
                                 </td>
                                 <td th:text="${#calendars.format(content.publishDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${#calendars.format(content.expireDate, 'yyyy-MM-dd')}"></td>

@@ -70,7 +70,7 @@ public class PageViewHandler {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
 		if (null != user) {
-			pageView.setUserId(user.getUserId());
+			pageView.setUserId(user.getId());
 			pageView.setUsername(user.getUsername());
 		}
 

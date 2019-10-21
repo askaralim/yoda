@@ -5,7 +5,7 @@
 	<cache />
 
 	<resultMap id="userResult" type="User">
-		<id property="userId" column="user_id" />
+		<id property="id" column="id" />
 		<result property="accountNonExpired" column="account_non_expired" />
 		<result property="accountNonLocked" column="account_non_locked" />
 		<result property="credentialsNonExpired" column="credentials_non_expired" />
@@ -28,8 +28,8 @@
 		<result property="profilePhotoSmall" column="profile_photo_small" />
 		<result property="lastLoginDate" column="last_login_date" />
 		<result property="lastVisitSiteId" column="last_visit_site_id" />
-		<association property="createBy" column="user_id" javaType="User" resultMap="createOrUpdateUserResult" />
-		<association property="updateBy" column="user_id" javaType="User" resultMap="createOrUpdateUserResult" columnPrefix="u_" />
+		<association property="createBy" column="id" javaType="User" resultMap="createOrUpdateUserResult" />
+		<association property="updateBy" column="id" javaType="User" resultMap="createOrUpdateUserResult" columnPrefix="u_" />
 		<collection property="authorities" ofType="UserAuthority">
 			<id property="id" column="authority_id" />
 			<result property="userId" column="authority_user_id" />
@@ -93,7 +93,7 @@
 		au.id AS authority_id,
 		au.user_id AS authority_user_id,
 		au.authority_name AS authority_name -->
-		u.user_id AS user_id,
+		u.id,
 		u.account_non_expired AS account_non_expired,
 		u.account_non_locked AS account_non_locked,
 		u.credentials_non_expired AS credentials_non_expired,
@@ -122,16 +122,16 @@
 		au.id AS authority_id,
 		au.user_id AS authority_user_id,
 		au.authority_name AS authority_name,
-		cu.user_id,
+		cu.id,
 		cu.username,
-		uu.user_id AS u_user_id,
+		uu.id AS u_id,
 		uu.username AS u_username
 	</sql>
 
 	<sql id="userJoins">
-		LEFT OUTER JOIN authority au ON u.user_id = au.user_id
-		LEFT OUTER JOIN user_ cu on u.create_by = u.user_id
-		LEFT OUTER JOIN user_ uu on u.update_by = uu.user_id
+		LEFT OUTER JOIN authority au ON u.id = au.user_id
+		LEFT OUTER JOIN user_ cu on u.create_by = u.id
+		LEFT OUTER JOIN user_ uu on u.update_by = uu.id
 	</sql>
 
 	<select id="getById" resultMap="userResult">
@@ -139,7 +139,7 @@
 			<include refid="userColumns"/>
 		FROM user_ u
 		<include refid="userJoins"/>
-		WHERE u.user_id = #{userId}
+		WHERE u.id = #{id}
 	</select>
 
 	<select id="getUserByUsername" resultMap="userResult">
@@ -163,7 +163,7 @@
 			<include refid="userColumns"/>
 		FROM user_ u
 		<include refid="userJoins"/>
-		ORDER BY u.user_id ASC
+		ORDER BY u.id ASC
 	</select>
 
 	<select id="search" resultMap="userResult">
@@ -174,24 +174,24 @@
 		<where>
 			1 = 1
 			<if test="userId != null and userId != ''">
-				AND u.user_id = #{userId}
+				AND u.id = #{id}
 			</if>
 			<if test="username != null and username != ''">
 				AND u.username like CONCAT('%', #{username}, '%')
 			</if>
 			<if test="authorityName != null and authorityName != ''">
-				JOIN authority au ON au.user_id = u.user_id AND au.authorityName = #{authorityName}
+				JOIN authority au ON au.user_id = u.id AND au.authorityName = #{authorityName}
 			</if>
 			<if test="enable != null and enable != ''">
 				AND u.enable = #{enable}
 			</if>
 		</where>
-		ORDER BY u.user_id
+		ORDER BY u.id
 	</select>
 
 	<insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
-		INSERT INTO user_(user_id, account_non_expired, account_non_locked, credentials_non_expired, address_line1, address_line2, username, password, city_name, create_by, create_date, update_by, update_date, enabled, state_name, country_name, zip_code, email, phone, profile_photo, profile_photo_small, last_login_date, last_visit_site_id)
-		VALUES(#{userId}, #{accountNonExpired}, #{accountNonLocked}, #{credentialsNonExpired}, #{addressLine1}, #{addressLine2}, #{username}, #{password}, #{cityName}, #{createBy.userId}, #{createDate}, #{updateBy.userId}, #{updateDate}, #{enabled}, #{stateName}, #{countryName}, #{zipCode}, #{email}, #{phone}, #{profilePhoto}, #{profilePhotoSmall}, #{lastLoginDate}, #{lastVisitSiteId})
+		INSERT INTO user_(id, account_non_expired, account_non_locked, credentials_non_expired, address_line1, address_line2, username, password, city_name, create_by, create_date, update_by, update_date, enabled, state_name, country_name, zip_code, email, phone, profile_photo, profile_photo_small, last_login_date, last_visit_site_id)
+		VALUES(#{id}, #{accountNonExpired}, #{accountNonLocked}, #{credentialsNonExpired}, #{addressLine1}, #{addressLine2}, #{username}, #{password}, #{cityName}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate}, #{enabled}, #{stateName}, #{countryName}, #{zipCode}, #{email}, #{phone}, #{profilePhoto}, #{profilePhotoSmall}, #{lastLoginDate}, #{lastVisitSiteId})
 	</insert>
 
 	<update id="update" parameterType="User">
@@ -204,7 +204,7 @@
 			username = #{username},
 			password = #{password},
 			city_name = #{cityName},
-			update_by = #{updateBy.userId},
+			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			enabled = #{enabled},
 			state_name = #{stateName},
@@ -216,11 +216,11 @@
 			profile_photo_small = #{profilePhotoSmall},
 			last_login_date = #{lastLoginDate},
 			last_visit_site_id = #{lastVisitSiteId}
-		WHERE user_id = #{userId}
+		WHERE id = #{id}
 	</update>
 
 	<delete id="delete">
-		DELETE FROM user_ WHERE user_id = #{userId}
+		DELETE FROM user_ WHERE id = #{id}
 	</delete>
 
 	<insert id="insertUserRole">

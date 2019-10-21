@@ -1,31 +1,5 @@
 package com.taklip.yoda.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.RequestContext;
-
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.taklip.yoda.model.Content;
@@ -38,8 +12,28 @@ import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.Validator;
 import com.taklip.yoda.validator.UserSettingsValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
+@RequestMapping(value = "/user")
 public class PortalUserController extends PortalBaseController {
 	private final Logger logger = LoggerFactory.getLogger(PortalUserController.class);
 
@@ -52,26 +46,25 @@ public class PortalUserController extends PortalBaseController {
 	@Autowired
 	protected AuthenticationManager authenticationManager;
 
-	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+	@GetMapping("/{id}")
 	public ModelAndView setupForm(
-			@PathVariable("userId") long userId,
-			HttpServletRequest request, HttpServletResponse response) {
+			@PathVariable("id") long id, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 
-		Site site = getSite(request);
+		Site site = getSite();
 
-		User user = userService.getUser(userId);
+		User user = userService.getUser(id);
 
 		if (null == user) {
-			return new ModelAndView("/404", "requestURL", userId);
+			return new ModelAndView("/404", "requestURL", id);
 		}
 
-		List<Content> contents = contentService.getContentByUserId(user.getUserId());
+		List<Content> contents = contentService.getContentByUserId(user.getId());
 
 		model.put("user", user);
 		model.put("contents", contents);
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
 		model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
@@ -87,10 +80,9 @@ public class PortalUserController extends PortalBaseController {
 		return new ModelAndView("portal/user/profile", model);
 	}
 
-	@RequestMapping(value = "/user/settings", method = RequestMethod.GET)
-	public ModelAndView setupForm(
-			HttpServletRequest request, HttpServletResponse response) {
-		Site site = getSite(request);
+	@GetMapping("/settings")
+	public ModelAndView setupForm(HttpServletRequest request) {
+		Site site = getSite();
 
 		ModelMap model = new ModelMap();
 
@@ -103,7 +95,7 @@ public class PortalUserController extends PortalBaseController {
 		model.put("user", user);
 		model.put("tab", "basic");
 
-		setUserLoginStatus(request, response, model);
+		setUserLoginStatus(model);
 
 		model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
 		model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
@@ -115,30 +107,28 @@ public class PortalUserController extends PortalBaseController {
 		return new ModelAndView("portal/user/settings", model);
 	}
 
-	@RequestMapping(value = "/user/settings", method = RequestMethod.POST)
+	@PostMapping("/settings")
 	public ModelAndView update(
 			@ModelAttribute User user,
 			@RequestParam("photo") MultipartFile photo,
-			BindingResult result, SessionStatus status,
-			HttpServletRequest request, HttpServletResponse response) {
-		ModelMap model = new ModelMap();
-
-		Site site = getSite(request);
-
-		setUserLoginStatus(request, response, model);
-
-		model.put("site", site);
-
+			BindingResult result) {
 		new UserSettingsValidator().validate(user, result);
+
+		ModelMap model = new ModelMap();
 
 		if(result.hasErrors()) {
 			logger.error(result.toString());
-			return new ModelAndView("portal/user/settings", "errors", result.getAllErrors());
+			model.put("errors", "errors");
+			return new ModelAndView("portal/user/settings", model);
 		}
 
-		User userDb = userService.updateUser(
-			site.getSiteId(), user.getUserId(), user.getUsername(),
-			user.getPassword(), user.getEmail(), photo);
+		Site site = getSite();
+
+		setUserLoginStatus(model);
+
+		model.put("site", site);
+
+		User userDb = userService.update(user, photo);
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
 
@@ -150,17 +140,16 @@ public class PortalUserController extends PortalBaseController {
 		return new ModelAndView("portal/user/settings", model);
 	}
 
-	@RequestMapping(value = "/user/register", method = RequestMethod.GET)
-	public String setupForm() {
+	@GetMapping("/register")
+	public String setupForm(@ModelAttribute User user) {
 		return "portal/user/register";
 	}
 
-	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
+	@PostMapping("/register")
 	public ModelAndView submit(
 			@RequestParam("username") String username,
 			@RequestParam("email") String email,
-			@RequestParam("password") String password,
-			HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("password") String password) {
 		ModelAndView model = new ModelAndView();
 
 		User userDb = userService.getUserByUserName(username);
@@ -191,12 +180,12 @@ public class PortalUserController extends PortalBaseController {
 			return model;
 		}
 
-		int siteId = siteService.getSites().get(0).getSiteId();
-
 		try {
-			userService.addUser(
-				username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true);
+			User user = new User();
+			user.setPassword(password);
+			user.setUsername(username);
+			user.setEmail(email);
+			userService.add(user);
 		}
 		catch (Exception e) {
 			logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
@@ -225,12 +214,12 @@ public class PortalUserController extends PortalBaseController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/user/register/ajax", method = RequestMethod.POST)
+	@PostMapping("/register/ajax")
 	public String ajaxRegister(
 			@RequestParam("username") String username,
 			@RequestParam("email") String email,
 			@RequestParam("password") String password,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request) {
 		User userDb = userService.getUserByUserName(username);
 
 		RequestContext requestContext = new RequestContext(request);
@@ -257,12 +246,12 @@ public class PortalUserController extends PortalBaseController {
 		}
 
 		if (jsonResult.isEmpty()) {
-			int siteId = siteService.getSites().get(0).getSiteId();
-
 			try {
-				userService.addUser(
-					username, password, email, StringPool.BLANK, Constants.USER_ROLE_USER,
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, siteId, true);
+				User user = new User();
+				user.setPassword(password);
+				user.setUsername(username);
+				user.setEmail(email);
+				userService.add(user);
 			}
 			catch (Exception e) {
 				logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());

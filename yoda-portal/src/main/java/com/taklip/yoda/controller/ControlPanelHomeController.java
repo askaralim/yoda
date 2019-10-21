@@ -57,7 +57,7 @@ public class ControlPanelHomeController {
 			e.printStackTrace();
 		}
 
-		homePageCommand.setUserId(user.getUserId());
+		homePageCommand.setUserId(user.getId());
 		homePageCommand.setUserName(user.getUsername());
 		homePageCommand.setEmail(user.getEmail());
 		homePageCommand.setAddressLine1(user.getAddressLine1());
@@ -246,10 +246,10 @@ public class ControlPanelHomeController {
 			if (!found) {
 				logger.equals(
 					"Security violated - unable to switch site: userId = "
-					+ user.getUserId() + ", siteId = " + siteId);
+					+ user.getId() + ", siteId = " + siteId);
 
 				throw new Exception(
-						"Unable to switch site: userId = " + user.getUserId()
+						"Unable to switch site: userId = " + user.getId()
 						+ ", siteId = " + siteId);
 			}
 

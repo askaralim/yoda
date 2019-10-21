@@ -19,14 +19,14 @@
                                     <div class="row content-preview-wrapper-row">
                                         <div class="col-sm-12 content-preview-item">
                                             <div class="content-preview-image">
-                                                <a href="/content.html" th:href="${contentInfo.contentUrl}">
+                                                <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}">
                                                     <img src="/images/demoUpload.jpg" th:src="${contentInfo.featuredImage}" th:alt-title="${contentInfo.title}" width="100%" />
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 content-preview-item">
                                             <h4>
-                                                <a href="/content.html" th:href="${contentInfo.contentUrl}" th:text="${contentInfo.title}">Content Title</a>
+                                                <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}" th:text="${contentInfo.title}">Content Title</a>
                                             </h4>
                                             <p class="text-left">
                                                 <bd>
@@ -129,8 +129,7 @@
     </div>
     <div th:replace="fragments :: footer"></div>
 </body>
-
-<script th:src="@{/js/jquery-1.11.1.min.js}"></script>
+</html>
 
 <script type='text/javascript' th:inline="javascript">
 	$(function(){
@@ -159,11 +158,11 @@
 							+'<div class="row content-preview-wrapper-row">'
 								+ '<div class="col-sm-12 content-preview-item">'
 									+ '<div class="content-preview-image">'
-										+ '<a href="' + info.contentUrl + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
+										+ '<a href="/content/' + info.id + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
 									+ '</div>'
 								+ '</div>'
 								+ '<div class="col-sm-12 content-preview-item">'
-									+ '<h4><a href="' + info.contentUrl + '" class="">' + info.title + '</a></h4>'
+									+ '<h4><a href="/content/' + info.id + '" class="">' + info.title + '</a></h4>'
 									+ '<p class="text-left">'
 										+ '<bd>'
 											+ '<i class="fa fa-eye"></i>'
