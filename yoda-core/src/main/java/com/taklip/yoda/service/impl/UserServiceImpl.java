@@ -67,16 +67,14 @@ public class UserServiceImpl implements UserService {
 
 		String hashedPassword;
 
-		if (StringUtils.isBlank(user.getPassword())) {
-			hashedPassword = userDb.getPassword();
-		}
-		else {
+		if (!StringUtils.isBlank(user.getPassword())) {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 			hashedPassword = passwordEncoder.encode(user.getPassword());
+
+			userDb.setPassword(hashedPassword);
 		}
 
-		userDb.setPassword(hashedPassword);
 		userDb.setUsername(user.getUsername());
 		userDb.setEmail(user.getEmail());
 		userDb.setEnabled(user.isEnabled());

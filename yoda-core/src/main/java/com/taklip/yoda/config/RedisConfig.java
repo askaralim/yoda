@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Configuration
 @EnableCaching
 public class RedisConfig {
-	private static final int DEFAULT_EXPIRE_TIME = 3600 * 24;
+	private static final int DEFAULT_EXPIRE_TIME = 3600;
 
 	@Bean
 	public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {

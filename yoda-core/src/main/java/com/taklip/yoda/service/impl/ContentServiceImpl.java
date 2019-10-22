@@ -122,8 +122,6 @@ public class ContentServiceImpl implements ContentService {
 		else {
 			this.updateContentBrand(contentBrand);
 		}
-
-		deleteContentFromCache(contentBrand.getContentId());
 	}
 
 	public void addContentBrand(ContentBrand contentBrand) {
@@ -421,8 +419,7 @@ public class ContentServiceImpl implements ContentService {
 	public List<Content> search(
 			int siteId, String title, Boolean published,
 			String updateBy, String createBy, String publishDateStart,
-			String publishDateEnd, String expireDateStart, String expireDateEnd)
-		throws ParseException {
+			String publishDateEnd, String expireDateStart, String expireDateEnd) {
 		return contentMapper.search(
 			siteId, title, published, createBy, updateBy, publishDateStart,
 			publishDateEnd, expireDateStart, expireDateEnd);
@@ -431,7 +428,8 @@ public class ContentServiceImpl implements ContentService {
 	public void updateContent(Content content) {
 		content.preUpdate();
 		contentMapper.update(content);
-		deleteContentFromCache(content.getId());
+
+		deleteContentFromCache(content);
 	}
 
 	public Content updateContent(Content content, Long categoryId)
@@ -460,7 +458,7 @@ public class ContentServiceImpl implements ContentService {
 
 //		new ContentIndexer().updateIndex(content);
 
-		deleteContentFromCache(content.getId());
+		deleteContentFromCache(content);
 
 		return contentDb;
 	}
@@ -502,7 +500,7 @@ public class ContentServiceImpl implements ContentService {
 
 		contentMapper.update(content);
 
-		deleteContentFromCache(content.getId());
+		deleteContentFromCache(content);
 
 		return content;
 	}
@@ -702,17 +700,29 @@ public class ContentServiceImpl implements ContentService {
 		return contentContributor;
 	}
 
-	public void deleteContentFromCache(Long id) {
-		redisService.delete(Constants.REDIS_CONTENT + ":" + id);
-		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + id);
-		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + id);
+	public void deleteContentFromCache(Content content) {
+		redisService.delete(Constants.REDIS_CONTENT + ":" + content.getId());
+		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"  + content.getId());
+		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getId());
 		redisService.delete(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST);
 		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
 		redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
+
+		for (ContentBrand cb : content.getContentBrands()) {
+			deleteContentBrandFromCache(cb.getId());
+		}
+
+		for (ContentContributor cc : content.getContentContributors()) {
+			deleteContentContributorFromCache(cc.getId());
+		}
 	}
 
 	private void deleteContentBrandFromCache(Long id) {
 		redisService.delete(Constants.REDIS_CONTENT_BRAND + ":" + id);
+	}
+
+	private void deleteContentContributorFromCache(Long id) {
+		redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR + ":" + id);
 	}
 
 	private void setContentIntoCache(Content content) {
@@ -750,12 +760,14 @@ public class ContentServiceImpl implements ContentService {
 
 		for (ContentContributor cc : content.getContentContributors()) {
 			redisService.listRightPushAll(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getId(), String.valueOf(cc.getId()));
+			setContentContributorIntoCache(cc);
 		}
 
 		redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":"  + content.getId());
 
 		for (ContentBrand cb : content.getContentBrands()) {
 			redisService.listRightPushAll(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getId(), String.valueOf(cb.getId()));
+			setContentBrandIntoCache(cb);
 		}
 	}
 

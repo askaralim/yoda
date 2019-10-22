@@ -186,7 +186,7 @@
                         <ul class="list-unstyled">
                             <li th:each="contributor : ${contentInfo.contentContributors}">
 <!--                                <img th:if="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25"/>-->
-                                <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall != null ? contributor.profilePhotoSmall : '../images/defaultAvatar.jpg'}" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                                <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall} != null ? ${contributor.profilePhotoSmall} : 'images/defaultAvatar.jpg'" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25" />
                                 <span th:text="${contributor.username}">Contributor Name</span>
                             </li>
                             <br>

@@ -8,7 +8,6 @@ import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.DateUtil;
 import com.taklip.yoda.util.SiteUtil;
-import com.taklip.yoda.validator.ContentEditValidator;
 import com.taklip.yoda.vo.ContentSearchForm;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -90,8 +89,6 @@ public class ContentController {
 	public ModelAndView save(
 			@ModelAttribute Content content, @RequestParam("categoryId") Long categoryId,
 			BindingResult result, HttpServletRequest request, RedirectAttributes redirect) throws Throwable {
-		new ContentEditValidator().validate(content, result);
-
 		ModelMap model = new ModelMap();
 
 		if (result.hasErrors()) {

@@ -56,13 +56,13 @@
                                 </tr>
                                 <tr th:each="user : ${users}">
                                     <td>
-                                        <input type="checkbox" id="ids" th:value="${user.userId}">
+                                        <input type="checkbox" id="ids" th:value="${user.id}">
                                     </td>
-                                    <td th:text="${user.userId}">1</td>
+                                    <td th:text="${user.id}">1</td>
                                     <td th:text="${user.username}">username</td>
                                     <td th:text="${#strings.toString(user.authorities)}">authorities</td>
                                     <td th:text="${user.enabled}">enabled</td>
-                                    <td><a href="/controlpanel/user/form.html" th:href="@{'/controlpanel/user/' + ${user.userId} + '/edit'}" th:text="#{edit}">Edit</a></td>
+                                    <td><a href="/controlpanel/user/form.html" th:href="@{'/controlpanel/user/' + ${user.id} + '/edit'}" th:text="#{edit}">Edit</a></td>
                                 </tr>
                             </tbody>
                         </table>

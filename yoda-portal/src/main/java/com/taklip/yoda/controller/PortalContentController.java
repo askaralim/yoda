@@ -202,11 +202,11 @@ public class PortalContentController extends PortalBaseController {
 		Site site = getSite();
 
 		try {
-			CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
-
-			if (csrfToken != null) {
-				model.put("_csrf", csrfToken);
-			}
+//			CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
+//
+//			if (csrfToken != null) {
+//				model.put("_csrf", csrfToken);
+//			}
 
 			List<Item> items = itemService.getItemsByContentId(content.getId());
 			List<Comment> comments = getComments(content.getId());

@@ -16,9 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/mainAdmin.css}" href="../css/mainAdmin.css"/>
     <link rel="stylesheet" th:href="@{/css/datepicker.css}" href="../css/datepicker.css"/>
     <link rel="stylesheet" th:href="@{/css/chosen.min.css}" href="../css/chosen.min.css"/>
-<!--    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat:400,700"/>-->
     <link rel="stylesheet" th:href="@{/css/chosen.min.css}" href="../font-awesome-4.1.0/font-awesome.min.css"/>
-<!--    <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.1.0/css/font-awesome.min.css">-->
 </head>
 
 <body>
@@ -50,7 +48,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Module<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a th:href="@{/controlpanel/contactus/list}" href="controlpanel/contactus/list.html" th:text="#{contact-us}">Contact Us</a></li>
+                        <li><a th:href="@{/controlpanel/contactus}" href="controlpanel/contactus/list.html" th:text="#{contact-us}">Contact Us</a></li>
                         <li><a th:href="@{/controlpanel/feedback}" href="controlpanel/feedback/list.html" th:text="#{feedback}">Feedback</a></li>
                     </ul>
                 </li>
@@ -62,8 +60,8 @@
                         <li><a th:href="@{/controlpanel/pageview}" href="controlpanel/pageview/list.html">Page View</a>
                         </li>
                         <li><a th:href="@{/controlpanel/elasticsearch}" href="controlpanel/elasticsearch/indices.html">Elastic Search</a></li>
-                        <li><a th:href="@{/controlpanel/site/list}" href="controlpanel/site/list.html">Sites</a></li>
-                        <li><a th:href="@{/controlpanel/user/list}" href="controlpanel/user/list.html">Users</a></li>
+                        <li><a th:href="@{/controlpanel/site}" href="controlpanel/site/list.html">Sites</a></li>
+                        <li><a th:href="@{/controlpanel/user}" href="controlpanel/user/list.html">Users</a></li>
                     </ul>
                 </li>
             </ul>

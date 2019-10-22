@@ -35,7 +35,7 @@ public class RedisController {
 		List<Content> contents = contentService.getContents();
 
 		for (Content content : contents) {
-			contentService.deleteContentFromCache(content.getId());
+			contentService.deleteContentFromCache(content);
 //			redisService.delete(Constants.REDIS_CONTENT + ":" + content.getId());
 //
 //			List<ContentContributor> cc = content.getContentContributors();

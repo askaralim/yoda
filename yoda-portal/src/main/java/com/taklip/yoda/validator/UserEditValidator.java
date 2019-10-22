@@ -19,7 +19,11 @@ public class UserEditValidator implements Validator {
 			errors.rejectValue("username", "error.string.required", "Required");
 		}
 
-		if (StringUtils.isNotBlank(user.getUsername())) {
+		if (user.isNew() && StringUtils.isBlank(user.getPassword())) {
+			errors.rejectValue("password", "error.string.required", "Required");
+		}
+
+		if (!StringUtils.isBlank(user.getPassword())) {
 			if (!user.getPassword().equals(user.getVerifyPassword())) {
 				errors.rejectValue("password", "error.password.nomatch");
 			}

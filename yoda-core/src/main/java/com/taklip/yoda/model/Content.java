@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 public class Content extends BaseEntity {
 	private Long id;
 
-	private Boolean featureData = true;
+	private Boolean featureData = false;
 
 	private Boolean published = true;
 

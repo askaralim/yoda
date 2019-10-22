@@ -18,7 +18,7 @@
 
         <h2 th:text="#{${user.new} ? 'new' : 'edit'}">New</h2>
 
-        <form id="userForm" th:action="@{/controlpanel/user/save}" th:object="${user}" action="#" method="post">
+        <form id="userForm" th:action="@{/controlpanel/user/save}" th:object="${user}" action="#" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}"/>
 
             <div class="alert alert-success" role="alert" th:if="${globalMessage} != null">
@@ -42,10 +42,8 @@
                         <input type="password" th:field="*{password}" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <div class="form-group">
-                            <label for="verifyPassword" th:text="#{verify-password}">verifyPassword</label>
-                            <input type="password" th:field="*{verifyPassword}" class="form-control"/>
-                        </div>
+                        <label for="verifyPassword" th:text="#{verify-password}">verifyPassword</label>
+                        <input type="password" th:field="*{verifyPassword}" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <label for="email" th:text="#{email}">email</label>
