@@ -6,6 +6,7 @@ import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +55,13 @@ public class RedisController {
 		List<ContentBrand> list = contentService.getContentBrands();
 
 		for (ContentBrand contentBrand : list) {
-			redisService.delete(Constants.REDIS_CONTENT_BRAND + ":" + contentBrand.getId());
+			if (StringUtils.isBlank(contentBrand.getBrandLogo())) {
+				Brand brand = brandService.getBrand(contentBrand.getBrandId());
+				contentBrand.setBrandLogo(brand.getImagePath());
+			}
+			String logo = contentBrand.getBrandLogo().replace("//", "/");
+			contentBrand.setBrandLogo(logo);
+			contentService.saveContentBrand(contentBrand);
 		}
 
 		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);

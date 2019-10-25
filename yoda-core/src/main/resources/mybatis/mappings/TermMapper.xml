@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.TermMapper">
+	<cache />
+
+	<sql id="termColumns">
+		id,
+		title,
+		description,
+		content_id AS contentId,
+		category_id AS categoryId,
+		create_by AS "createBy.id",
+		create_date AS createDate,
+		update_by AS "updateBy.id",
+		update_date AS updateDate
+	</sql>
+
+	<select id="getById" parameterType="long" resultType="Term">
+		SELECT
+			<include refid="termColumns"/>
+		FROM term
+		WHERE term.id = #{id}
+	</select>
+
+	<select id="getTerms" resultType="Term">
+		SELECT
+			<include refid="termColumns"/>
+		FROM term
+		ORDER BY update_date DESC
+	</select>
+
+	<select id="getTermsByContentId" resultType="Term">
+		SELECT
+		<include refid="termColumns"/>
+		FROM term
+		WHERE content_id = #{contentId}
+		ORDER BY update_date DESC
+	</select>
+
+	<select id="getTermsByCategoryId" resultType="Term">
+		SELECT
+		<include refid="termColumns"/>
+		FROM term
+		WHERE category_id = #{categoryId}
+		ORDER BY update_date DESC
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(*) from term
+	</select>
+
+	<insert id="insert" parameterType="Term" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO term(id, title, description, content_id, category_id, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{title}, #{description}, #{contentId}, #{categoryId}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="Term">
+		UPDATE term SET
+			title = #{title},
+			description = #{description},
+			content_id = #{contentId},
+			category_id = #{categoryId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM term WHERE id = #{id}
+	</delete>
+</mapper>

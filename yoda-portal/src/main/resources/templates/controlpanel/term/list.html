@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
-    <title th:text="#{brand}">Brand</title>
+    <title th:text="#{term}">Term</title>
 </head>
 
 <body id="page-top" class="index">
@@ -11,7 +11,7 @@
     <div class="section">
         <ol class="breadcrumb">
             <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
-            <li><a href="/controlpanel/brand/list.html" th:href="@{/controlpanel/brand}">Brand Listing</a></li>
+            <li><a href="/controlpanel/term/list.html" th:href="@{/controlpanel/term}">Term Listing</a></li>
         </ol>
         <div class="row">
             <div class="col-md-3">
@@ -32,10 +32,10 @@
             </div>
             <div class="col-md-9">
                 <div class="page-header">
-                    <h4>Brand Listing Result</h4>
+                    <h4>Term Listing Result</h4>
                 </div>
                 <div class="text-right">
-                    <a class="btn btn-primary btn-sm" href="/controlpanel/brand/edit.html" th:href="@{/controlpanel/brand/add}" th:text="#{new}">New</a>
+                    <a class="btn btn-primary btn-sm" href="/controlpanel/term/edit.html" th:href="@{/controlpanel/term/add}" th:text="#{new}">New</a>
                     <input type="submit" th:value="#{remove}" class="btn btn-sm btn-default" role="button" th:onclick="'return submitRemove()'"/>
                 </div>
                 <div class="table-responsive">
@@ -44,26 +44,23 @@
                         <tr>
                             <th></th>
                             <th th:text="#{id}">ID</th>
-                            <th th:text="#{name}">name</th>
-                            <th th:text="#{kind}">kind</th>
-                            <th th:text="#{country}">country</th>
-                            <th th:text="#{score}">score</th>
-                            <th th:text="#{action}">Action</th>
+                            <th th:text="#{title}">title</th>
+                            <th th:text="#{content}">content</th>
+                            <th th:text="#{category}">category</th>
                         </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${page.data.empty}">
                                 <td colspan="3">No data</td>
                             </tr>
-                            <tr th:each="brand : ${page.data}">
-                                <td><input type="checkbox" id="ids" th:value="${brand.id}"></td>
-                                <td th:text="${brand.id}">1</td>
-                                <td th:text="${brand.name}">name</td>
-                                <td th:text="${brand.kind}">drink</td>
-                                <td th:text="${brand.country}">country</td>
-                                <td th:text="${brand.score}">score</td>
+                            <tr th:each="term : ${page.data}">
+                                <td><input type="checkbox" id="ids" th:value="${term.id}"></td>
+                                <td th:text="${term.id}">1</td>
+                                <td th:text="${term.title}">Single Malt</td>
+                                <td th:text="${term.contentId}">123</td>
+                                <td th:text="${term.categoryId}">321</td>
                                 <td>
-                                    <a href="/controlpanel/brand/edit.html" th:href="@{'/controlpanel/brand/' + ${brand.id} + '/edit'}" th:text="#{edit}">Edit</a>
+                                    <a href="/controlpanel/term/edit.html" th:href="@{'/controlpanel/term/' + ${term.id} + '/edit'}" th:text="#{edit}">Edit</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -79,10 +76,10 @@
                         <div class="pagination-section">
                             <div class="pagination-pages">
                                 <ul class="pagination">
-                                    <li th:if="${page.hasPreviousPage}"><a th:href="@{/controlpanel/brand(offset=${page.currentPageNo - 2})}" aria-label="Previous"><span>&laquo;</span></a></li>
+                                    <li th:if="${page.hasPreviousPage}"><a th:href="@{/controlpanel/term(offset=${page.currentPageNo - 2})}" aria-label="Previous"><span>&laquo;</span></a></li>
                                     <li th:unless="${page.hasPreviousPage}" class="disabled"><span>&laquo;</span>
                                     </li>
-                                    <li th:if="${page.hasNextPage}"><a th:href="@{/controlpanel/brand(offset=${page.currentPageNo})}" aria-label="Next"><span>&raquo;</span></a></li>
+                                    <li th:if="${page.hasNextPage}"><a th:href="@{/controlpanel/term(offset=${page.currentPageNo})}" aria-label="Next"><span>&raquo;</span></a></li>
                                     <li th:unless="${page.hasNextPage}" class="disabled"><span>&laquo;</span></li>
                                 </ul>
                             </div>
@@ -107,7 +104,7 @@
 
 <script type="text/javascript">
     function submitSearch() {
-        document.fm.action = "/controlpanel/brand/search";
+        document.fm.action = "/controlpanel/term/search";
         document.fm.method = "POST";
         document.fm.submit();
     }
@@ -116,7 +113,7 @@
         var ids = getSelectedIds();
 
         if (ids) {
-            var url = "/controlpanel/brand/remove?Ids=" + ids;
+            var url = "/controlpanel/term/remove?Ids=" + ids;
             location.href = url;
         }
 
@@ -131,16 +128,16 @@
         if (typeof (selectBoxs.length) == "undefined" && selectBoxs.checked) {
             return selectBoxs.value;
         } else {//many checkbox ,so is a array
-            var brandIds = "";
+            var termIds = "";
             var split = "";
             for (var i = 0; i < selectBoxs.length; i++) {
                 if (selectBoxs[i].checked) {
-                    brandIds += split + selectBoxs[i].value;
+                    termIds += split + selectBoxs[i].value;
                     split = ",";
                 }
             }
 
-            return brandIds;
+            return termIds;
         }
     }
 </script>

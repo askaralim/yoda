@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{term}">Content Edit</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
+            <li><a href="/controlpanel/term/list.html" th:href="@{/controlpanel/term}">Term Listing</a></li>
+            <li>Term Maintenance</li>
+        </ol>
+        <form id="termForm" th:action="@{/controlpanel/term/save}" th:object="${term}" action="#" method="post">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="alert alert-success" role="alert" th:if="${globalMessage} != null">
+                <a class="panel-close close" data-dismiss="alert">X</a>
+                <i class="glyphicon glyphicon-ok"></i> <span th:text="#{saved-success}">Success!</span>
+            </div>
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                <a class="panel-close close" data-dismiss="alert">X</a>
+                <p th:each="error : ${#fields.errors('*')}" class="m-0" th:text="${error}">Validation error</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="title" th:text="#{title}">Title</label>
+                        <input type="text" th:field="*{title}" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="content" th:text="#{content}">content</label>
+                        <select name="contentId" id="contentId" class="form-control input-sm">
+                            <option value=""/>
+                            <option th:each="content : ${contents}" th:value="${content.id}" th:text="${content.title}" th:selected="${term.contentId} != null ? (${term.contentId} == ${content.id}) : false"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category" th:text="#{category}">category</label>
+                        <select name="categoryId" id="categoryId" class="form-control input-sm">
+                            <option value=""/>
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${term.categoryId} != null ? (${term.categoryId} == ${category.id}) : false"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" th:text="#{text}">text</label>
+                        <textarea th:field="*{description}" class="form-control" value="" display="none" style="display: none"></textarea>
+                        <div id="editor" style="width: 100%;height: 300px;">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <input id="saveTerm" class="btn btn-sm btn-primary" th:value="#{submit}" role="button">
+                        <a class="btn btn-default btn-sm" href="/controlpanel/term/list.html" th:href="@{/controlpanel/term}" th:text="#{cancel}">cancel</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default" th:if="${!term.new}">
+                        <div class="panel-heading" th:text="#{details}">details</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="createBy" th:text="#{create-by}">createBy</label>
+                                <p class="form-control-static" th:text="${term.createBy.username}">Askar</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="createDate" th:text="#{create-date}">create-date</label>
+                                <p class="form-control-static" th:text="${#calendars.format(term.createDate, 'yyyy-MM-dd')}">2019-10-23</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="updateBy" th:text="#{update-by}">updateBy</label>
+                                <p class="form-control-static" th:text="${term.updateBy.username}">Askar</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="updateDate" th:text="#{update-date}">update-date</label>
+                                <p class="form-control-static" th:text="${#dates.format(term.updateDate, 'yyyy-MM-dd')}">2019-10-23</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: chooseImgModal"></div>
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>
+
+<script type="text/javascript" th:inline="javascript">
+    contentId = [[${id}]];
+    $(function () {
+        yoda.wangEditor.init({
+            container: "#editor",
+            textareaName: "description",
+            /* textareaContent: "${content.description}", */
+            uploadUrl: "/api/uploadFile",
+            uploadFileName: "file",
+            uploadType: "term",
+            customCss: {
+                "height": "100%",
+                "max-height": "250px"
+            }
+        })
+    });
+
+    $('#saveTerm').click(function () {
+        $("#description").text(editor.txt.html());
+        $("#termForm").submit();
+    });
+</script>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <title th:text="#{term}">term</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="fragments :: navbar"></div>
+<div class="section">
+    <div id="content-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-1">
+                    <div class="content-post">
+                        <div class="nav-tabs-custom">
+                            <div class="content-post-body">
+                                <div class="tab-content" id="terms">
+                                    <div th:each="term : ${page.data}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
+                                        <div class="row">
+                                            <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="${term.title}">Term Title</a>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="item-description">
+                                                    <p>[(${term.description})]</p>
+                                                    <p>
+                                                        <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="#{more} + '>>>'">More >>></a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(function () {
+        var offset = 10;
+
+        $('#more-brand').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/term/page",
+                data: {offset: offset},
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var url = "/term/" + data[i].id
+
+                        $('#terms').append(
+                            '<div style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">' +
+                                '<div class="row">' +
+                                    '<a href="' + url + '">' + data[i].title + '</a>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                    '<div class="col-sm-12">' +
+                                        '<div class="item-description">' +
+                                            '<p>' + data[i].description + '</p>' +
+                                            '<p>' +
+                                                '<a href="' + url + '">More >>></a>' +
+                                            '</p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                    }
+                }
+            });
+            offset = offset + 10;
+        });
+    });
+</script>

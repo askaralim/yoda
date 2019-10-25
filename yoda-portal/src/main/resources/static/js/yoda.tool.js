@@ -94,35 +94,35 @@
     $.extend({
         modal: {
             material: {
-                _loadData: function(config, callback){
-                	var $contentType = $("#contentType").val();
-    				var $contentId = $("#contentId").val();
+                _loadData: function (config, callback) {
+                    var $contentType = $("#contentType").val();
+                    var $contentId = $("#contentId").val();
                     $("#selectable").html(config.selectable), $("#selected").html(0);
                     yoda.mask.loading($(".material-body"), "加载中...");
                     $.ajax({
                         url: "/file/list",
                         data: {
-                        	contentType: $contentType,
-                			contentId: $contentId,
+                            contentType: $contentType,
+                            contentId: $contentId,
                         },
                         type: "GET",
                         success: function (json) {
-                        	yoda.mask.closeAll($(".material-body"));
+                            yoda.mask.closeAll($(".material-body"));
                             var $box = $(".list-file");
                             var tpl = "";
-                            for(var i = 0; i < json.length; i++) {
-                            	tpl = tpl + '<li class="material-item" data-imgUrl="' + json[i].filePath + '">'
-	                        		+ '<div style="position: relative;">'
-	                        			+ '<div class="selected-mask mask-xs">'
-	                        				+ '<div class="inner">'
-	                        				+ '</div>'
-	                        				+ '<div class="icon">'
-	                        				+ '</div>'
-	                        			+ '</div>'
-//	                        			+ '<img class="lazy-img" data-original="' + json[i].filePath + '" alt="image">'
-	                        			+ '<img class="lazy-img" src="' + json[i].filePath + '" alt="image">'
-	                    			+'</div>'
-	                    		+ '</li>'
+                            for (var i = 0; i < json.length; i++) {
+                                tpl = tpl + '<li class="material-item" data-imgUrl="' + json[i].filePath + '">'
+                                    + '<div style="position: relative;">'
+                                    + '<div class="selected-mask mask-xs">'
+                                    + '<div class="inner">'
+                                    + '</div>'
+                                    + '<div class="icon">'
+                                    + '</div>'
+                                    + '</div>'
+                                    //	                        			+ '<img class="lazy-img" data-original="' + json[i].filePath + '" alt="image">'
+                                    + '<img class="lazy-img" src="' + json[i].filePath + '" alt="image">'
+                                    + '</div>'
+                                    + '</li>'
                             }
 //                            var tpl = 
 //                            	'{{#list}}'
@@ -172,16 +172,16 @@
                             var $li = $box.find("li.material-item");
                             $li.unbind("click").click(function () {
                                 var $this = $(this);
-                                if(config.multiSelect) {
-                                    if($this.hasClass("active") || $this.hasClass("selected")) {
-                                        selectable --;
+                                if (config.multiSelect) {
+                                    if ($this.hasClass("active") || $this.hasClass("selected")) {
+                                        selectable--;
                                         $this.removeClass("active selected");
                                     } else {
-                                        if(selectable >= config.selectable) {
+                                        if (selectable >= config.selectable) {
                                             $.alert.error("最多只能选择" + config.selectable + "张图片！");
                                             return false;
                                         }
-                                        selectable ++;
+                                        selectable++;
                                         $this.addClass("active selected");
                                     }
 
@@ -192,7 +192,7 @@
                                         !$(this).hasClass("current") && $(this).removeClass("active selected");
                                     });
                                     $this.toggleClass("active selected").removeClass("current");
-                                    if($this.hasClass("active") || $this.hasClass("selected")) {
+                                    if ($this.hasClass("active") || $this.hasClass("selected")) {
                                         $("#selected").html(1);
                                     } else {
                                         $("#selected").html(0);
@@ -204,11 +204,11 @@
                             callback && callback($box);
                         },
                         error: function () {
-                        	yoda.mask.closeAll($(".material-body"));
+                            yoda.mask.closeAll($(".material-body"));
                         }
                     })
                 },
-                open: function (config, callback){
+                open: function (config, callback) {
                     config = $.extend({
                         // 是否多选
                         multiSelect: false,
@@ -223,12 +223,12 @@
                             var imgUrls = [];
                             $box.find("li").each(function () {
                                 var $thisLi = $(this);
-                                if($thisLi.hasClass("active") || $thisLi.hasClass("selected") ){
+                                if ($thisLi.hasClass("active") || $thisLi.hasClass("selected")) {
                                     var imgUrl = $thisLi.attr("data-imgUrl");
                                     imgUrls.push(imgUrl);
                                 }
                             });
-                            if(config.multiSelect) {
+                            if (config.multiSelect) {
                                 callback(imgUrls);
                             } else {
                                 callback(imgUrls[0]);
@@ -239,7 +239,7 @@
                             var $input = $("#input-material-upload");
                             $input.click().unbind("change").change(function () {
                                 var selectedFiles = document.getElementById("input-material-upload").files;
-                                if(!selectedFiles || selectedFiles.length <= 0) {
+                                if (!selectedFiles || selectedFiles.length <= 0) {
                                     return false;
                                 }
                                 var $form = $("#materialForm");

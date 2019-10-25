@@ -43,6 +43,8 @@
                         <li><a th:href="@{/controlpanel/item}" href="controlpanel/item/list.html" th:text="#{items}">Item</a></li>
                         <li><a th:href="@{/controlpanel/comment}" href="controlpanel/content/comments.html" th:text="#{comments}">Comments</a></li>
                         <li><a th:href="@{/controlpanel/category}" href="controlpanel/category/list.html" th:text="#{category}">Category</a></li>
+                        <li><a th:href="@{/controlpanel/term}" href="controlpanel/term/list.html" th:text="#{term}">Term</a></li>
+                        <li><a th:href="@{/controlpanel/solution}" href="controlpanel/solution/list.html" th:text="#{solution}">Solution</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -77,8 +79,7 @@
     </div>
 </nav>
 
-<div th:fragment="chooseImgModal" class="modal fade chooseImgModal" id="chooseImgModal" tabindex="-1" role="dialog"
-     aria-labelledby="chooseImgLabelledby" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div th:fragment="chooseImgModal" class="modal fade chooseImgModal" id="chooseImgModal" tabindex="-1" role="dialog" aria-labelledby="chooseImgLabelledby" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -90,9 +91,8 @@
                 <div class="btn-group" style="width: 100%;margin: 0 5px 5px 5px;padding: 0 0 10px 0;border-bottom: 1px solid #e7e7eb;">
                     <form action="" id="materialForm">
                         <input id="modalContentType" name="modalContentType" type="hidden" value="content">
-                        <input id="modalContentId" name="modalContentId" type="hidden" value="${content.contentId}">
-                        <input id="input-material-upload" type="file" name="file" multiple="multiple"
-                               accept="image/bmp,image/png,image/jpeg,image/jpg,image/gif" style="display: none;">
+                        <input id="modalContentId" name="modalContentId" type="hidden" th:value="${id}">
+                        <input id="input-material-upload" type="file" name="file" multiple="multiple" accept="image/bmp,image/png,image/jpeg,image/jpg,image/gif" style="display: none;">
                         <button id="btn-material-upload" type="button" class="btn btn-success btn-md" title="本地上传">
                             <i class="fa fa-cloud-upload fa-fw"></i> 本地上传
                         </button>

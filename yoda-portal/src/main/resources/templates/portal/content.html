@@ -75,7 +75,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="brand-description">
-                                                    <p th:text="${contentBrand.description}">ContentBrand Description</p>
+                                                    <p>[(${contentBrand.description})]</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="item-description">
-                                                        <p th:text="${item.description}">Item Description</p>
+                                                        <p>[(${item.description})]</p>
                                                         <p>
                                                             <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}" th:text="#{more} + '>>>'">More >>></a>
                                                         </p>
@@ -185,7 +185,6 @@
                         <h5 th:text="#{content-contributor}">Content Contributor</h5>
                         <ul class="list-unstyled">
                             <li th:each="contributor : ${contentInfo.contentContributors}">
-<!--                                <img th:if="${contributor.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25"/>-->
                                 <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall} != null ? ${contributor.profilePhotoSmall} : 'images/defaultAvatar.jpg'" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25" />
                                 <span th:text="${contributor.username}">Contributor Name</span>
                             </li>

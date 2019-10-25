@@ -48,7 +48,7 @@
 			brand_name = #{brandName},
 			brand_logo = #{brandLogo},
 			description = #{description},
-			update_by = #{updateBy.userId},
+			update_by = #{updateBy.id},
 			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
