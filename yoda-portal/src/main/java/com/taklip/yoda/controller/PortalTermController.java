@@ -44,7 +44,7 @@ public class PortalTermController extends PortalBaseController {
 			offset = Integer.valueOf(offsetStr);
 		}
 
-		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 10));
+		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 5));
 
 		for (Term term : page.getData()) {
 			shortenTermDescription(term);
@@ -60,7 +60,7 @@ public class PortalTermController extends PortalBaseController {
 	@GetMapping("/page")
 	public String showPagination(
 			@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 10));
+		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 5));
 
 		JSONArray array = new JSONArray();
 
@@ -115,6 +115,8 @@ public class PortalTermController extends PortalBaseController {
 			if (desc.indexOf("img") > 0) {
 				desc = desc.substring(0, desc.indexOf("<img"));
 			}
+
+			desc = desc.concat("...");
 
 			term.setDescription(desc);
 		}

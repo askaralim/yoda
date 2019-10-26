@@ -8,18 +8,25 @@
 <div th:replace="fragments :: navbar"></div>
 
 <div class="section">
-    <div class="container">
-        <div class="col-lg-10 col-lg-offset-1">
-            <h4 class="page-header" th:text="${term.title}">Single Malt</h4>
+    <div id="content-body">
+        <div class="container">
             <div class="row">
-                <div class="brand-detail">
-                    <div class="col-sm-12">
-                        <div class="item-description">[(${term.description})]</div>
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="content-post">
+                        <h4 th:text="${term.title}">Single Malt</h4>
+                        <div class="row">
+                            <div class="brand-detail">
+                                <div class="col-sm-12">
+                                    <div class="item-description">[(${term.description})]</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <div th:replace="fragments :: footer"></div>
 </body>
