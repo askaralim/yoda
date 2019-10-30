@@ -90,7 +90,7 @@
             <div class="modal-body material-body">
                 <div class="btn-group" style="width: 100%;margin: 0 5px 5px 5px;padding: 0 0 10px 0;border-bottom: 1px solid #e7e7eb;">
                     <form action="" id="materialForm">
-                        <input id="modalContentType" name="modalContentType" type="hidden" value="content">
+                        <input id="modalContentType" name="modalContentType" type="hidden" th:value="${contentType}">
                         <input id="modalContentId" name="modalContentId" type="hidden" th:value="${id}">
                         <input id="input-material-upload" type="file" name="file" multiple="multiple" accept="image/bmp,image/png,image/jpeg,image/jpg,image/gif" style="display: none;">
                         <button id="btn-material-upload" type="button" class="btn btn-success btn-md" title="本地上传">

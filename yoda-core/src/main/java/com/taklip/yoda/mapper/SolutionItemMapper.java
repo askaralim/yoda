@@ -8,6 +8,4 @@ public interface SolutionItemMapper extends BaseMapper<SolutionItem> {
 	List<SolutionItem> getSolutionItems();
 
 	List<SolutionItem> getSolutionItemsBySolutionId(Long solutionId);
-
-	List<SolutionItem> getSolutionItemsByItemId(Long itemId);
 }

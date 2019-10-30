@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.SolutionItemMapper">
+	<cache />
+
+	<sql id="solutionItemColumns">
+		s.id,
+		s.solution_id as solutionId,
+		s.item_id as itemId,
+		s.description,
+		s.create_by AS "createBy.id",
+		s.create_date AS createDate,
+		s.update_by AS "updateBy.id",
+		s.update_date AS updateDate
+	</sql>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(*) from solution_item
+	</select>
+
+	<select id="getById" resultType="SolutionItem">
+		SELECT 
+			<include refid="solutionItemColumns"/>
+		FROM solution_item s
+		WHERE s.id = #{id}
+	</select>
+
+	<select id="getSolutionItemsBySolutionId" resultType="SolutionItem">
+		SELECT
+		<include refid="solutionItemColumns"/>
+		FROM solution_item s
+		WHERE s.solution_id = #{solutionId}
+	</select>
+
+	<select id="getSolutionItems" resultType="SolutionItem">
+		SELECT 
+			<include refid="solutionItemColumns"/>
+		FROM solution_item s
+		ORDER BY s.id DESC
+	</select>
+
+	<insert id="insert" parameterType="SolutionItem" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO solution_item(id, solution_id, item_id, description, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{solutionId}, #{itemId}, #{description}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
+	</insert>
+
+	<update id="update" parameterType="SolutionItem">
+		UPDATE solution_item SET
+			solution_id = #{solutionId},
+			item_id = #{itemId},
+			description = #{description},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM solution_item WHERE id = #{id}
+	</delete>
+</mapper>

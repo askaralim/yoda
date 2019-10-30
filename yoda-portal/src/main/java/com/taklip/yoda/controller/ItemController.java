@@ -175,5 +175,7 @@ public class ItemController {
 		model.put("contents", contents);
 		model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
 		model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
+
+		model.put("contentType", "item");
 	}
 }

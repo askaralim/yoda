@@ -1,5 +1,6 @@
 package com.taklip.yoda.controller;
 
+import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.Term;
 import com.taklip.yoda.service.TermService;
@@ -39,8 +40,13 @@ public class TermController {
 	}
 
 	@GetMapping("/add")
-	public String initCreationForm(@ModelAttribute Term term) {
-		return "controlpanel/term/form";
+	public ModelAndView initCreationForm(Map<String, Object> model) {
+		Term term = new Term();
+
+		model.put("term", term);
+		model.put("contentType", "term");
+
+		return new ModelAndView("controlpanel/term/form", model);
 	}
 
 	@GetMapping(value = "/{id}/edit")
@@ -49,6 +55,7 @@ public class TermController {
 		Term term = termService.getTerm(id);
 
 		model.put("term", term);
+		model.put("contentType", "term");
 
 		return"controlpanel/term/form";
 	}

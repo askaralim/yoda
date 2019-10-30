@@ -81,6 +81,7 @@ public class ContentController {
 
 		model.put("categories", categories);
 		model.put("content", content);
+		model.put("contentType", "content");
 
 		return new ModelAndView("controlpanel/content/form", model);
 	}
@@ -118,6 +119,7 @@ public class ContentController {
 
 		model.put("categories", categories);
 		model.put("content", content);
+		model.put("contentType", "content");
 
 		return "controlpanel/content/form";
 	}
@@ -149,7 +151,7 @@ public class ContentController {
 		return "controlpanel/content/editContentBrand";
 	}
 
-	@PostMapping(value = "/contentbrand/save")
+	@PostMapping("/contentbrand/save")
 	public ModelAndView processCreationForm(
 			@ModelAttribute("contentBrand") ContentBrand contentBrand, RedirectAttributes redirect) {
 		ModelMap model = new ModelMap();

@@ -50,4 +50,8 @@ public class SolutionItem extends BaseEntity {
 	public void setItem(Item item) {
 		this.item = item;
 	}
+
+	public boolean isNew() {
+		return (this.id == null);
+	}
 }

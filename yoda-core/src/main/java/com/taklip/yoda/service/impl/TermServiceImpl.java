@@ -35,8 +35,6 @@ import java.util.Map;
 @Transactional
 @Service
 public class TermServiceImpl implements TermService {
-	private static Logger logger = LoggerFactory.getLogger(TermServiceImpl.class);
-
 	@Autowired
 	TermMapper termMapper;
 

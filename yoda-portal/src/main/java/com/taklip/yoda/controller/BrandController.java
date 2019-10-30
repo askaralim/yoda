@@ -42,8 +42,13 @@ public class BrandController {
 	}
 
 	@GetMapping("/add")
-	public String initCreationForm(@ModelAttribute Brand brand) {
-		return "controlpanel/brand/form";
+	public ModelAndView initCreationForm(Map<String, Object> model) {
+		Brand brand = new Brand();
+
+		model.put("brand", brand);
+		model.put("contentType", "brand");
+
+		return new ModelAndView("controlpanel/brand/form", model);
 	}
 
 	@GetMapping(value = "/{id}/edit")
@@ -51,6 +56,7 @@ public class BrandController {
 			@PathVariable("id") Long id, Map<String, Object> model) {
 		Brand brand = brandService.getBrand(id);
 
+		model.put("contentType", "brand");
 		model.put("brand", brand);
 
 		return"controlpanel/brand/form";

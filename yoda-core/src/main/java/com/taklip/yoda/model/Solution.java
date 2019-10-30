@@ -8,6 +8,8 @@ public class Solution extends BaseEntity {
 	@NotEmpty(message = "required")
 	private String title;
 	private String description;
+	private String imagePath;
+	private Long categoryId;
 	private List<SolutionItem> solutionItems;
 
 	public Long getId() {
@@ -34,11 +36,31 @@ public class Solution extends BaseEntity {
 		this.description = description;
 	}
 
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public Long getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	public List<SolutionItem> getSolutionItems() {
 		return solutionItems;
 	}
 
 	public void setSolutionItems(List<SolutionItem> solutionItems) {
 		this.solutionItems = solutionItems;
+	}
+
+	public boolean isNew() {
+		return (this.id == null);
 	}
 }

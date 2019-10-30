@@ -14,7 +14,7 @@ public class ImageFile extends BaseEntity {
 	private Integer width;
 	private Integer height;
 
-	public Long getFileId() {
+	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {

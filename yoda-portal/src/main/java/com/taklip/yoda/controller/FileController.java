@@ -1,42 +1,60 @@
 package com.taklip.yoda.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.taklip.yoda.model.ImageFile;
 import com.taklip.yoda.model.Response;
 import com.taklip.yoda.service.FileService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/file")
 public class FileController {
+	private final Logger logger = LoggerFactory.getLogger(FileController.class);
+
 	@Autowired
 	FileService fileService;
 
-	@RequestMapping(value="/list", method = RequestMethod.GET)
-	public List<ImageFile> list(
+	@ResponseBody
+	@GetMapping("/list")
+	public Response<Object> list(
 		@RequestParam(name = "contentId", required = false) Long contentId,
 		@RequestParam(name = "contentType", required = false) String contentType) {
-
 		List<ImageFile> files = fileService.getFilesByContent(contentType, contentId);
 
-		return files;
+		JSONArray array = new JSONArray();
+
+		try {
+			for (ImageFile file : files) {
+				JSONObject jsonObject = new JSONObject();
+
+				jsonObject.put("id", file.getId());
+				jsonObject.put("filePath", file.getFilePath());
+
+				array.add(jsonObject);
+			}
+		}
+		catch (JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+//		return array.toString();
+		return new Response<>(200, "success", array);
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/add", method = RequestMethod.POST)
+	@PostMapping("/add")
 	public Response<Object> save(
 		Map<String, Object> model,
 		@RequestParam(name = "modalContentId", required = false) Long contentId,

@@ -116,7 +116,7 @@ public class PortalTermController extends PortalBaseController {
 				desc = desc.substring(0, desc.indexOf("<img"));
 			}
 
-			desc = desc.concat("...");
+			desc = desc.trim().concat("...");
 
 			term.setDescription(desc);
 		}

@@ -1,7 +1,13 @@
 package com.taklip.yoda.enums;
 
 public enum ContentTypeEnum {
-	CONTENT(1, "content"), BRAND(2, "brand"), ITEM(3, "item"), USER(4, "user"), HOME(5, "home"), TERM(6, "term");
+	CONTENT(1, "content"),
+	BRAND(2, "brand"),
+	ITEM(3, "item"),
+	USER(4, "user"),
+	HOME(5, "home"),
+	TERM(6, "term"),
+	SOLUTION(6, "solution");
 
 	private int code;
 	private String type;

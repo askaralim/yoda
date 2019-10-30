@@ -95,8 +95,8 @@
         modal: {
             material: {
                 _loadData: function (config, callback) {
-                    var $contentType = $("#contentType").val();
-                    var $contentId = $("#contentId").val();
+                    var $contentType = $("#modalContentType").val();
+                    var $contentId = $("#modalContentId").val();
                     $("#selectable").html(config.selectable), $("#selected").html(0);
                     yoda.mask.loading($(".material-body"), "加载中...");
                     $.ajax({
@@ -110,8 +110,8 @@
                             yoda.mask.closeAll($(".material-body"));
                             var $box = $(".list-file");
                             var tpl = "";
-                            for (var i = 0; i < json.length; i++) {
-                                tpl = tpl + '<li class="material-item" data-imgUrl="' + json[i].filePath + '">'
+                            for (var i = 0; i < json.data.length; i++) {
+                                tpl = tpl + '<li class="material-item" data-imgUrl="' + json.data[i].filePath + '">'
                                     + '<div style="position: relative;">'
                                     + '<div class="selected-mask mask-xs">'
                                     + '<div class="inner">'
@@ -120,7 +120,7 @@
                                     + '</div>'
                                     + '</div>'
                                     //	                        			+ '<img class="lazy-img" data-original="' + json[i].filePath + '" alt="image">'
-                                    + '<img class="lazy-img" src="' + json[i].filePath + '" alt="image">'
+                                    + '<img class="lazy-img" src="' + json.data[i].filePath + '" alt="image">'
                                     + '</div>'
                                     + '</li>'
                             }
