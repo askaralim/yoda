@@ -31,18 +31,10 @@
 		s.id,
 		s.title,
 		s.description,
-		s.image_path AS imagePath,
-		s.category_id AS categoryId,
-		s.create_date AS createDate,
-		s.update_date AS updateDate,
-		si.id as solution_item_id,
-		si.solution_id AS solution_item_solution_id,
-		si.item_id AS solution_item_item_id,
-		si.description AS solution_item_description,
-		u.id,
-		u.username,
-		uu.id AS u_id,
-		uu.username AS u_username
+		s.image_path,
+		s.category_id,
+		s.create_date,
+		s.update_date
 	</sql>
 
 	<select id="count" resultType="java.lang.Integer">
@@ -52,8 +44,16 @@
 	<select id="getById" resultMap="solutionResult">
 		SELECT 
 			<include refid="solutionColumns"/>
+		,si.id as solution_item_id,
+		si.solution_id AS solution_item_solution_id,
+		si.item_id AS solution_item_item_id,
+		si.description AS solution_item_description,
+		u.id,
+		u.username,
+		uu.id AS u_id,
+		uu.username AS u_username
 		FROM solution s
-		LEFT OUTER JOIN solution_item si on si.solution_id = s.id
+		LEFT OUTER JOIN solution_item si on s.id = si.solution_id
 		LEFT OUTER JOIN user_ u on s.create_by = u.id
 		LEFT OUTER JOIN user_ uu on s.update_by = uu.id
 		WHERE s.id = #{id}
@@ -63,9 +63,6 @@
 		SELECT 
 			<include refid="solutionColumns"/>
 		FROM solution s
-		LEFT OUTER JOIN solution_item si on si.solution_id = s.id
-		LEFT OUTER JOIN user_ u on s.create_by = u.id
-		LEFT OUTER JOIN user_ uu on s.update_by = uu.id
 		ORDER BY s.id DESC
 	</select>
 

@@ -84,7 +84,7 @@
                                 <td><input type="checkbox" id="itemIds" th:value="${solutionItem.id}"></td>
                                 <td th:text="${solutionItem.id}">123</td>
                                 <td th:text="${solutionItem.item.name}">AE86</td>
-                                <td><a th:href="@{'/controlpanel/solutionItem/' + ${solutionItem.id} + '/edit'}" th:text="#{edit}">edit</a></td>
+                                <td><a th:href="@{'/controlpanel/solution/solutionItem/' + ${solutionItem.id} + '/edit'}" th:text="#{edit}">edit</a></td>
                             </tr>
                             </tbody>
                         </table>

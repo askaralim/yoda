@@ -177,39 +177,6 @@ public class ContentController {
 		return new ModelAndView("redirect:/controlpanel/contentbrand/" + contentBrand.getId() + "/edit", model);
 	}
 
-//	@RequestMapping(value = "/{contentId}/brand/{contentBrandId}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-//	public ModelAndView processUpdateForm(
-//			@ModelAttribute("contentBrand") ContentBrand contentBrand,
-//			@RequestParam("brandId") Long brandId,
-//			BindingResult result, SessionStatus status) {
-//		ModelMap model = new ModelMap();
-//
-//		String brandName = StringPool.BLANK;
-//		String brandLogo = StringPool.BLANK;
-//		Brand brand = null;
-//
-//		if (null != brandId) {
-//			brand = brandService.getBrand(brandId);
-//			brandName = brand.getName();
-//			brandLogo = brand.getImagePath();
-//		}
-//
-//		contentBrand.setBrandName(brandName);
-//		contentBrand.setBrandLogo(brandLogo);
-//
-//		contentService.updateContentBrand(contentBrand);
-//
-//		List<Brand> brands = brandService.getBrands();
-//
-//		model.put("contentBrand", contentBrand);
-//		model.put("brands", brands);
-//		model.put("success", "success");
-//
-//		status.setComplete();
-//
-//		return new ModelAndView("controlpanel/content/editContentBrand", model);
-//	}
-
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public String deleteContent(
 			@ModelAttribute Content content) {

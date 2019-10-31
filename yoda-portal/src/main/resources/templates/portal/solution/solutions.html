@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+    <title th:text="#{title}">Solution</title>
+</head>
+
+<body id="page-top" class="index">
+    <div th:replace="fragments :: navbar"></div>
+    <div class="section">
+        <div class="container">
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="home-main">
+                    <div class="home-content">
+                        <div class="row">
+                            <tr th:each="solution : ${page.data}">
+                                <div class="col-sm-4">
+                                    <div class="content-preview">
+                                        <div class="row content-preview-wrapper-row">
+                                            <div class="col-sm-12 content-preview-item">
+                                                <div class="content-preview-image">
+                                                    <a href="/solution.html" th:href="@{'/solution/' + ${solution.id}}">
+                                                        <img src="/images/demoUpload.jpg" th:src="${solution.imagePath}" th:alt-title="${solution.title}" width="100%" />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 content-preview-item">
+                                                <h4>
+                                                    <a href="/solution.html" th:href="@{'/solution/' + ${solution.id}}" th:text="${solution.title}">Solution Title</a>
+                                                </h4>
+    <!--                                            <p th:text="${solution.shortDescription}">Short Description</p>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${page.totalCount > 3}">
+                        <div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
+                            <button id="more-solution" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments :: footer"></div>
+</body>
+</html>
+
+<script type='text/javascript' th:inline="javascript">
+	$(function(){
+		var offset = 3;
+
+		$('#more-solution').click(function(){
+			$.ajax({
+				type: "GET",
+				url: '/solution/page',
+				data:{
+					offset:offset
+				},
+				contentType: 'text/json,charset=utf-8',
+				dataType: "json",
+				success: function(data){
+					var text = '<div class="row">';
+					for(var i = 0; i < data.length; i++) {
+						var info = data[i];
+
+						text += '<div class="col-sm-4">'
+							+'<div class="content-preview">'
+							+'<div class="row content-preview-wrapper-row">'
+								+ '<div class="col-sm-12 content-preview-item">'
+									+ '<div class="content-preview-image">'
+										+ '<a href="/solution/' + info.id + '"><img src="'+ info.imagePath + '" width="100%" alt="' + info.title + '"></a>'
+									+ '</div>'
+								+ '</div>'
+								+ '<div class="col-sm-12 content-preview-item">'
+									+ '<h4><a href="/solution/' + info.id + '" class="">' + info.title + '</a></h4>'
+									// + '<p>' + info.shortDescription + '</p>'
+								+ '</div>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>';
+					}
+
+					text += '</div>';
+
+					$('.home-content').append(text);
+				}
+			});
+			offset = offset + 3;
+		});
+	});
+</script>

@@ -41,7 +41,7 @@ public class PortalSolutionController extends PortalBaseController {
 			offset = Integer.valueOf(offsetStr);
 		}
 
-		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 5));
+		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 3));
 
 		model.put("site", site);
 		model.put("page", page);
@@ -53,7 +53,7 @@ public class PortalSolutionController extends PortalBaseController {
 	@GetMapping("/page")
 	public String showPagination(
 			@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 5));
+		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 3));
 
 		JSONArray array = new JSONArray();
 

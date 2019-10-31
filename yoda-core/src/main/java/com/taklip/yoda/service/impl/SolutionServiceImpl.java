@@ -132,7 +132,7 @@ public class SolutionServiceImpl implements SolutionService {
 	public Pagination<Solution> getSolutions(RowBounds rowBounds) {
 		List<Solution> solutions = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.SolutionMapper.getSolutions", null, rowBounds);
 
-		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.TermMapper.count");
+		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.SolutionMapper.count");
 
 		Pagination<Solution> page = new Pagination<>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), solutions);
 
@@ -164,6 +164,8 @@ public class SolutionServiceImpl implements SolutionService {
 	}
 
 	public void addSolutionItem(SolutionItem solutionItem) {
+		solutionItem.setId(idService.generateId());
+
 		solutionItem.preInsert();
 
 		solutionItemMapper.insert(solutionItem);

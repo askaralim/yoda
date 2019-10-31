@@ -122,7 +122,7 @@ public class SolutionController {
 		model.put("solutionItem", solutionItem);
 		model.put("items", items);
 
-		return "controlpanel/solution/solutionItem";
+		return "controlpanel/solution/editSolutionItem";
 	}
 
 	@PostMapping(value = "/solutionItem/save")
