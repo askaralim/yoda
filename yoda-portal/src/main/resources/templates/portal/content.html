@@ -14,21 +14,21 @@
                     <div class="content-post">
                         <div class="page-header">
                             <h1 class="content-title">
-                                <strong th:text="${contentInfo.title}">Content Title</strong>
+                                <strong th:text="${content.title}">Content Title</strong>
                             </h1>
-                            <!--<p>$contentInfo.shortDescription</p>-->
+                            <!--<p>$content.shortDescription</p>-->
                             <!-- <p><img src="assets/img/user.png" width="50px" height="50px"> <bd></bd></p> -->
                             <div class="content-flag">
-                                <span class="content-category" th:if="${contentInfo.category}" th:text="${contentInfo.category.name}">Category Name</span>
+                                <span class="content-category" th:if="${content.category}" th:text="${content.category.name}">Category Name</span>
                                 <div class="content-post-meta text-right">
                                     <ul class="list-unstyled list-inline">
                                         <li>
                                             <i class="glyphicon glyphicon-time"></i>
-                                            <span th:text="${#dates.format(contentInfo.updateDate, 'yyyy-MM-dd')}"/>
+                                            <span th:text="${#dates.format(content.updateDate, 'yyyy-MM-dd')}"/>
                                         </li>
                                         <li>
                                             <i class="glyphicon glyphicon-eye-open"></i>
-                                            <span th:text="${contentInfo.hitCounter}">Hit Counter</span>
+                                            <span th:text="${content.hitCounter}">Hit Counter</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -39,30 +39,30 @@
                                 <li class="active">
                                     <a data-toggle="tab" href="#tab-should-know" th:text="#{should-know}">Should Know</a>
                                 </li>
-                                <li th:unless="${contentInfo.contentBrands.empty}">
+                                <li th:unless="${content.contentBrands.empty}">
                                     <a data-toggle="tab" href="#tab-brand" th:text="#{related-brands}">Related Brands</a>
                                 </li>
 
-                                <li th:if="${not #lists.isEmpty(contentInfo.items)}">
+                                <li th:if="${not #lists.isEmpty(content.items)}">
                                     <a data-toggle="tab" href="#tab-recommend" th:text="#{recommend-product}">Recommend Product</a>
                                 </li>
                             </ul>
                             <div class="content-post-body">
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab-should-know">
-                                        <p>[(${contentInfo.description})]</p>
+                                        <p>[(${content.description})]</p>
                                         <!-- <p><bt>TAGS: <a href="#">Wordpress</a> - <a href="#">Web Design</a></bt></p> -->
                                         <div class="content-actions">
                                             <button id="thumbUp" th:class="${(isUserLike != null && isUserLike && userLogin) ? ' fa fa-thumbs-up' : 'fa fa-thumbs-o-up'}"></button>
                                             <button id="thumbDown" th:class="${(isUserDislike != null && isUserDislike && userLogin) ? ' fa fa-thumbs-down' : 'fa fa-thumbs-o-down'}"></button>
                                             <span id="score" class="label label-success">
-                                                <span th:if="${contentInfo.score > 0}" th:text="'+' + ${contentInfo.score}"/>
-                                                <span th:unless="${contentInfo.score > 0}" th:text="${contentInfo.score}"/>
+                                                <span th:if="${content.score > 0}" th:text="'+' + ${content.score}"/>
+                                                <span th:unless="${content.score > 0}" th:text="${content.score}"/>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab-brand">
-                                        <div class="row" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;" th:each="contentBrand : ${contentInfo.contentBrands}">
+                                        <div class="row" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;" th:each="contentBrand : ${content.contentBrands}">
                                             <div class="col-sm-4">
                                                 <a href="/brand/brand.html" th:href="@{'/brand/' + ${contentBrand.brandId}}">
                                                     <img src="/images/demoUpload.jpg" th:src="${contentBrand.brandLogo}" th:alt-title="${contentBrand.brandName}" width="150" height="150"/>
@@ -81,7 +81,7 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab-recommend">
-                                        <div th:each="item : ${contentInfo.items}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
+                                        <div th:each="item : ${content.items}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
                                             <div class="row">
                                                 <div class="col-sm-4">
                                                     <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}">
@@ -164,7 +164,7 @@
                                     <button type="submit" class="btn btn-primary pull-right" th:text="#{submit}">Submit</button>
                                 </div>
                                 <div class="clearfix"></div>
-                                <input type="hidden" name="id" th:value="${contentInfo.id}"/>
+                                <input type="hidden" name="id" th:value="${content.id}"/>
 <!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
                             </form>
                         </div>
@@ -177,14 +177,14 @@
                 <div class="col-lg-3 home-sidebar">
                     <div class="home-sidebar-module">
                         <h5 th:text="#{content-publisher}">Content Publisher</h5>
-                        <img th:if="${contentInfo.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${contentInfo.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
-                        <img th:unless="${contentInfo.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${contentInfo.createBy.profilePhotoSmall}" th:alt-title="${contentInfo.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
-                        <span th:text="${contentInfo.createBy.username}">Publisher Name</span>
+                        <img th:if="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                        <img th:unless="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${content.createBy.profilePhotoSmall}" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                        <span th:text="${content.createBy.username}">Publisher Name</span>
                     </div>
-                    <div th:if="${contentInfo.contentContributors.size() > 0}" class="home-sidebar-module">
+                    <div th:if="${content.contentContributors.size() > 0}" class="home-sidebar-module">
                         <h5 th:text="#{content-contributor}">Content Contributor</h5>
                         <ul class="list-unstyled">
-                            <li th:each="contributor : ${contentInfo.contentContributors}">
+                            <li th:each="contributor : ${content.contentContributors}">
                                 <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall} != null ? ${contributor.profilePhotoSmall} : 'images/defaultAvatar.jpg'" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25" />
                                 <span th:text="${contributor.username}">Contributor Name</span>
                             </li>
@@ -307,7 +307,7 @@
                 return;
             }
 
-            var url = "/content/" + [[${contentInfo.id}]] + "/rate?thumb=";
+            var url = "/content/" + [[${content.id}]] + "/rate?thumb=";
             var currentUpClass = $('#thumbUp').attr('class');
             var currentDownClass = $('#thumbDown').attr('class');
             var currentUpClassNotActive = (currentUpClass == 'fa fa-thumbs-o-up');
@@ -352,7 +352,7 @@
                 return;
             }
 
-            var url = "/content/" + [[${contentInfo.id}]] + "/rate?thumb=";
+            var url = "/content/" + [[${content.id}]] + "/rate?thumb=";
             var currentUpClass = $('#thumbUp').attr('class');
             var currentDownClass = $('#thumbDown').attr('class');
             var currentDownClassNotActive = (currentDownClass == 'fa fa-thumbs-o-down');
@@ -398,7 +398,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.id}]] + '/rate?score=' + score,
+            url: '/content/' + [[${content.id}]] + '/rate?score=' + score,
             dataType: "json",
             success: function (data) {
                 var total = data.score;
@@ -429,7 +429,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.id}]] + '/rate?score=' + score,
+            url: '/content/' + [[${content.id}]] + '/rate?score=' + score,
             dataType: "json",
             success: function (data) {
                 var total = data.score;
@@ -459,7 +459,7 @@
         }
         $.ajax({
             type: "POST",
-            url: '/content/' + [[${contentInfo.id}]] + '/score?thumb=down',
+            url: '/content/' + [[${content.id}]] + '/score?thumb=down',
             dataType: "json",
             success: function (data) {
                 var score = data.score;

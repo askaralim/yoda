@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -23,11 +24,11 @@ public class User extends BaseEntity implements UserDetails {
 	//~ Instance fields ================================================================================================
 	private Long id;
 
-	private boolean accountNonExpired;
+	private Boolean accountNonExpired = true;
 
-	private boolean accountNonLocked;
+	private Boolean accountNonLocked = true;
 
-	private boolean credentialsNonExpired;
+	private Boolean credentialsNonExpired = true;
 
 	private Boolean enabled = true;
 
@@ -345,7 +346,7 @@ public class User extends BaseEntity implements UserDetails {
 		this.lastLoginDate = lastLoginDate;
 	}
 
-	public int getLastVisitSiteId() {
+	public Integer getLastVisitSiteId() {
 		return this.lastVisitSiteId;
 	}
 

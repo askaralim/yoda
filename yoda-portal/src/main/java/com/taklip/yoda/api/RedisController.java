@@ -1,4 +1,4 @@
-package com.taklip.yoda.controller;
+package com.taklip.yoda.api;
 
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.BrandService;

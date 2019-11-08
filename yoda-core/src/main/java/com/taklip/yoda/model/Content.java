@@ -51,6 +51,8 @@ public class Content extends BaseEntity {
 
 	private List<Item> items = new ArrayList<>();
 
+	private List<Comment> comments = new ArrayList<>();
+
 	private List<Menu> menus = new ArrayList<>();
 
 	public Long getId() {
@@ -61,11 +63,11 @@ public class Content extends BaseEntity {
 		this.id = id;
 	}
 
-	public int getSiteId() {
+	public Integer getSiteId() {
 		return this.siteId;
 	}
 
-	public void setSiteId(int siteId) {
+	public void setSiteId(Integer siteId) {
 		this.siteId = siteId;
 	}
 
@@ -209,6 +211,14 @@ public class Content extends BaseEntity {
 
 	public void setItems(List<Item> items) {
 		this.items = items;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public void addItem(Item item) {

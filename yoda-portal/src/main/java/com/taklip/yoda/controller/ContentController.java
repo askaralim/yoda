@@ -71,12 +71,6 @@ public class ContentController {
 	public ModelAndView setupForm(Map<String, Object> model) {
 		Content content = new Content();
 
-//		content.setPublished(true);
-//		content.setHomePage(false);
-//		content.setFeatureData(false);
-//		content.setPublishDate(new Date());
-//		content.setExpireDate(DateUtil.getHighDate());
-
 		List<Category> categories = categoryService.getCategories();
 
 		model.put("categories", categories);
@@ -214,8 +208,7 @@ public class ContentController {
 
 	@RequestMapping(value = "/resetCounter")
 	public void resetCounter(
-			@PathVariable("contentId") Long contentId,
-			HttpServletRequest request, HttpServletResponse response)
+			@PathVariable("contentId") Long contentId, HttpServletResponse response)
 			throws Throwable {
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 

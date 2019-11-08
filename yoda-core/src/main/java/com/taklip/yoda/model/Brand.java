@@ -1,10 +1,10 @@
 package com.taklip.yoda.model;
 
-import java.util.Date;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
+import java.util.List;
 
 public class Brand extends BaseEntity {
 	private Long id;
@@ -28,6 +28,8 @@ public class Brand extends BaseEntity {
 	private String name;
 
 	private int score;
+
+	private List<Item> items;
 
 	public Long getId() {
 		return this.id;
@@ -107,6 +109,14 @@ public class Brand extends BaseEntity {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
 	}
 
 	public boolean isNew() {
