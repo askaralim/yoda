@@ -13,7 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 
-import com.taklip.yoda.tool.YodaProperties;
+import com.taklip.yoda.properties.YodaProperties;
 
 @Configuration
 @EnableKafka

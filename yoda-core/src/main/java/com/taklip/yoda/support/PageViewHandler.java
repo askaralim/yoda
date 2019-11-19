@@ -19,7 +19,7 @@ import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.PageViewService;
 import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.tool.Constants;
-import com.taklip.yoda.tool.YodaProperties;
+import com.taklip.yoda.properties.YodaProperties;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.DateUtil;
 import com.taklip.yoda.util.PortalUtil;
