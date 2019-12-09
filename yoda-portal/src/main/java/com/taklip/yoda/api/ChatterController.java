@@ -13,8 +13,8 @@ public class ChatterController {
 	@Autowired
 	ChatterService chatterService;
 
-	@PostMapping
-	public ResponseEntity<ChatResponse> getAnswer(@RequestParam(value="question") String question) {
+	@GetMapping
+	public ResponseEntity<ChatResponse> getAnswer(@RequestParam("question") String question) {
 		// TODO save questions
 		ChatResponse chatResponse = chatterService.getAnswer(question);
 		if (chatResponse != null) {
@@ -24,7 +24,7 @@ public class ChatterController {
 		return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
 	}
 
-	@GetMapping
+	@GetMapping("/train")
 	public ResponseEntity<String> train() {
 
 

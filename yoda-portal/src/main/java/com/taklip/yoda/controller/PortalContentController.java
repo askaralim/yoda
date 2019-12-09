@@ -220,7 +220,7 @@ public class PortalContentController extends PortalBaseController {
 			content.setDescription(desc.replace("img src", "img data-src"));
 			content.setItems(items);
 
-			model.put("contentInfo", content);
+			model.put("content", content);
 			model.put("comments", comments);
 			model.put("date", new Date());
 			model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));

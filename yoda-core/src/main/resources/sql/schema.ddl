@@ -219,6 +219,15 @@ create table solution_item
     update_date DATETIME NOT NULL
 );
 
+create table chat_question
+(
+    id          bigint       not null PRIMARY KEY,
+    open_id     varchar(100),
+    union_id    varchar(100),
+    question    VARCHAR(300),
+    create_date DATETIME     NOT NULL
+) engine = InnoDB;
+
 create table content_image
 (
     image_id     bigint      not null,
