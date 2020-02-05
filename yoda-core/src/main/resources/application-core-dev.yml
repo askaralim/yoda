@@ -6,10 +6,17 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
       url: jdbc:mysql://localhost:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
       druid:
-         min-idle: 0
-         max-active: 8
-         initial-size: 5
-         max-wait: 10000
+         initialSize: 5
+         min-idle: 5
+         max-active: 20
+         max-wait: 60000
+         timeBetweenEvictionRunsMillis: 60000
+         minEvictableIdleTimeMillis: 300000
+         validationQuery: SELECT 1 FROM DUAL
+         testWhileIdle: true
+         testOnBorrow: false
+         testOnReturn: false
+         poolPreparedStatements: true
    kafka:
       bootstrap-servers: localhost:9092
       producer:
@@ -22,12 +29,14 @@ spring:
 #auto-offset-reset: earliest
       port: 6379
       pool:
-         max-idle: 300
          min-idle: 0
-         max-yotal: 600
+         max-total: 600
          max-wait: 1000
       host: localhost
       timeout: 100000
+      jedis:
+         pool:
+            max-idle: 300
 logging:
    level:
       org:
@@ -45,6 +54,9 @@ yoda:
 
 jediorder: 
    machine-id: 1022
+
+chatter:
+   base-url: http://127.0.0.1:5000
 # MyBatis
 # ----------------
 # Orphan comments:

@@ -1,6 +1,5 @@
 package com.taklip.yoda.service.impl;
 
-import com.taklip.yoda.model.ChatRequest;
 import com.taklip.yoda.model.ChatResponse;
 import com.taklip.yoda.properties.ChatterProperties;
 import com.taklip.yoda.service.ChatterBotApi;
@@ -41,9 +40,7 @@ public class ChatterServiceImpl implements ChatterService {
 		ChatResponse chatResponse;
 
 		try {
-			ChatRequest chatRequest = new ChatRequest(text);
-
-			Call<ChatResponse> chatResponseCall = api.getAnswer(chatRequest);
+			Call<ChatResponse> chatResponseCall = api.getAnswer(text);
 
 			Response<ChatResponse> response = chatResponseCall.execute();
 
@@ -51,6 +48,8 @@ public class ChatterServiceImpl implements ChatterService {
 				chatResponse = response.body();
 
 				return chatResponse;
+			} else {
+				logger.error(response.message());
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());

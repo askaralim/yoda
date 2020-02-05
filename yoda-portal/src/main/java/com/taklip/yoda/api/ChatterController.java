@@ -34,8 +34,13 @@ public class ChatterController {
 	@Autowired
 	private TermService termService;
 
+	@GetMapping("/echo")
+	public ResponseEntity<ChatResponse> echo() {
+		return new ResponseEntity("Success", HttpStatus.OK);
+	}
+
 	@GetMapping
-	public ResponseEntity<ChatResponse> getAnswer(@RequestParam("question") String question) {
+	public ResponseEntity<String> getAnswer(@RequestParam("question") String question) {
 		// TODO save questions
 		ChatResponse chatResponse = chatterService.getAnswer(question);
 		if (chatResponse != null) {
