@@ -2,40 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.taklip.yoda.mapper.ChatQuestionMapper">
-	<cache />
+    <cache/>
 
-	<sql id="chatQuestionColumns">
+    <sql id="chatQuestionColumns">
 		c.id,
 		c.open_id AS openId,
 		c.union_id AS unionId,
 		c.question,
+		c.answer,
 		c.create_date AS createDate
 	</sql>
 
-	<select id="count" resultType="java.lang.Integer">
+    <select id="count" resultType="java.lang.Integer">
 		SELECT count(*) from chat_question
 	</select>
 
-	<select id="getById" resultType="ChatQuestion">
-		SELECT 
-			<include refid="chatQuestionColumns"/>
-		FROM chat_question c
-		WHERE c.id = #{id}
-	</select>
+    <select id="getById" resultType="ChatQuestion">
+        SELECT
+        <include refid="chatQuestionColumns"/>
+        FROM chat_question c
+        WHERE c.id = #{id}
+    </select>
 
-	<select id="getChatQuestions" resultType="ChatQuestion">
-		SELECT 
-			<include refid="chatQuestionColumns"/>
-		FROM chat_question c
-		ORDER BY c.create_date DESC
-	</select>
+    <select id="getChatQuestions" resultType="ChatQuestion">
+        SELECT
+        <include refid="chatQuestionColumns"/>
+        FROM chat_question c
+        ORDER BY c.create_date DESC
+    </select>
 
-	<insert id="insert" parameterType="ChatQuestion" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO chat_question(open_id, union_id, question, create_date)
-		VALUES(#{openId}, #{unionId}, #{question}, #{createDate})
+    <insert id="insert" parameterType="ChatQuestion" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO chat_question(open_id, union_id, answer, question, persona, create_date)
+		VALUES(#{openId}, #{unionId}, #{answer}, #{question}, #{persona}, #{createDate})
 	</insert>
 
-	<delete id="delete">
+    <delete id="delete">
 		DELETE FROM chat_question WHERE id = #{id}
 	</delete>
 </mapper>

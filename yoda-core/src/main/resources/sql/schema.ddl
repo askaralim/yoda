@@ -221,11 +221,13 @@ create table solution_item
 
 create table chat_question
 (
-    id          bigint       not null PRIMARY KEY,
+    id          bigint   not null PRIMARY KEY,
     open_id     varchar(100),
     union_id    varchar(100),
     question    VARCHAR(300),
-    create_date DATETIME     NOT NULL
+    answer      VARCHAR(1000),
+    persona     VARCHAR(100),
+    create_date DATETIME NOT NULL
 ) engine = InnoDB;
 
 create table content_image

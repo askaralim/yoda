@@ -7,7 +7,11 @@ public class ChatQuestion extends BaseEntity {
 
 	private String unionId;
 
+	private String answer;
+
 	private String question;
+
+	private String persona;
 
 	public Long getId() {
 		return id;
@@ -39,5 +43,21 @@ public class ChatQuestion extends BaseEntity {
 
 	public void setQuestion(String question) {
 		this.question = question;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public String getPersona() {
+		return persona;
+	}
+
+	public void setPersona(String persona) {
+		this.persona = persona;
 	}
 }

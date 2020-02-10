@@ -1,11 +1,14 @@
 package com.taklip.yoda.service.impl;
 
+import com.taklip.yoda.model.ChatQuestion;
 import com.taklip.yoda.model.ChatResponse;
 import com.taklip.yoda.properties.WXProperties;
+import com.taklip.yoda.service.ChatQuestionService;
 import com.taklip.yoda.service.ChatterService;
 import com.taklip.yoda.service.WXMessageService;
 import com.taklip.yoda.tool.SHA1;
 import com.taklip.yoda.util.WXMessageUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class WXMessageServiceImpl implements WXMessageService {
 
 	@Autowired
 	ChatterService chatterService;
+
+	@Autowired
+	ChatQuestionService chatQuestionService;
 
 	@Autowired
 	public WXMessageServiceImpl(WXProperties properties) {
@@ -63,12 +69,27 @@ public class WXMessageServiceImpl implements WXMessageService {
 	private String processTextMessage(Map<String, String> map) {
 		Map<String, String> replyMap = new HashMap<>();
 
-		replyMap.put("ToUserName", map.get("FromUserName"));
+		Date createTime = new Date();
+		String text = map.get("Content");
+		String openId = map.get("FromUserName");
+
+		replyMap.put("ToUserName", openId);
 		replyMap.put("FromUserName", map.get("ToUserName"));
-		replyMap.put("CreateTime", String.valueOf(new Date().getTime()));
+		replyMap.put("CreateTime", String.valueOf(createTime.getTime()));
 		replyMap.put("MsgType", WXMessageUtil.MESSAGE_TYPE_TEXT);
 
-		ChatResponse chatResponse = chatterService.getAnswer(map.get("Content"));
+		ChatResponse chatResponse = chatterService.getAnswer(text);
+
+		ChatQuestion chatQuestion = new ChatQuestion();
+
+		chatQuestion.setCreateDate(createTime);
+		chatQuestion.setAnswer(chatResponse.getText());
+		chatQuestion.setOpenId(openId);
+		chatQuestion.setPersona(chatResponse.getPersona());
+		chatQuestion.setQuestion(chatResponse.getInResponseTo());
+		chatQuestion.setUnionId(StringUtils.EMPTY);
+
+		chatQuestionService.addChatQuestion(chatQuestion);
 
 		replyMap.put("Content", chatResponse.getText());
 
@@ -88,7 +109,7 @@ public class WXMessageServiceImpl implements WXMessageService {
 
 		if (eventType.equals(WXMessageUtil.EVENT_TYPE_SUBSCRIBE)) {
 			replyMap.put("MsgType", WXMessageUtil.MESSAGE_TYPE_TEXT);
-			replyMap.put("Content", "欢迎关注 taklip，任何问题都可以直接回复信息，会尽量回答。");
+			replyMap.put("Content", "欢迎关注 taklip。\\n任何问题都可以直接在输入框发送信息，会尽量回答。\\n如想加入「taklip太离谱」交流群，请添加微信：asikar\\n Cheers!");
 
 			response = WXMessageUtil.transferMapToXML(replyMap);
 		} else if (eventType.equals(WXMessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {

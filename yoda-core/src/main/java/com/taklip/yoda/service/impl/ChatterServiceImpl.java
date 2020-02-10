@@ -59,7 +59,23 @@ public class ChatterServiceImpl implements ChatterService {
 	}
 
 	@Override
-	public void train() {
+	public boolean train() {
+		try {
+			Response<com.taklip.yoda.model.Response> response = api.train().execute();
 
+			if (response.isSuccessful()) {
+				com.taklip.yoda.model.Response trainResponse = response.body();
+
+				if (trainResponse.getMessage().equalsIgnoreCase("true")) {
+					return true;
+				}
+			} else {
+				logger.error(response.message());
+			}
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+
+		return false;
 	}
 }

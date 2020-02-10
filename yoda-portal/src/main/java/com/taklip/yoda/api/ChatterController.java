@@ -41,8 +41,8 @@ public class ChatterController {
 
 	@GetMapping
 	public ResponseEntity<String> getAnswer(@RequestParam("question") String question) {
-		// TODO save questions
 		ChatResponse chatResponse = chatterService.getAnswer(question);
+
 		if (chatResponse != null) {
 			return new ResponseEntity(chatResponse, HttpStatus.OK);
 		}
@@ -54,7 +54,7 @@ public class ChatterController {
 	public ResponseEntity<String> exportTrainingData() {
 		exportContents();
 		exportBrands();
-		exportItems();
+//		exportItems();
 		exportTerms();
 
 		return new ResponseEntity("", HttpStatus.OK);
@@ -62,9 +62,11 @@ public class ChatterController {
 
 	@GetMapping("/train")
 	public ResponseEntity<String> train() {
+		if (chatterService.train()) {
+			return new ResponseEntity("", HttpStatus.OK);
+		}
 
-
-		return new ResponseEntity("", HttpStatus.OK);
+		return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
 	}
 
 	private void exportBrands() {
@@ -85,10 +87,10 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + name + "】\\n");
+			sb.append("【" + name + "】\\\n");
 			sb.append(desc);
-			sb.append("\\n");
-			sb.append("详细内容请<a href=\"localhost/brand/" + brand.getId() + "\">点击这里</a>");
+			sb.append("\\\n");
+			sb.append("详细内容请<a href=\"taklip.com/brand/" + brand.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
 
@@ -123,10 +125,10 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + title + "】\\n");
+			sb.append("【" + title + "】\\\n");
 			sb.append(shortDesc);
-			sb.append("\\n");
-			sb.append("详细内容请<a href=\"localhost/content/" + content.getId() + "\">点击这里</a>");
+			sb.append("\\\n");
+			sb.append("详细内容请<a href=\"taklip.com/content/" + content.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
 
@@ -163,10 +165,10 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + name + "】\\n");
+			sb.append("【" + name + "】\\\n");
 			sb.append(desc);
-			sb.append("\\n");
-			sb.append("详细内容请<a href=\"localhost/item/" + item.getId() + "\">点击这里</a>");
+			sb.append("\\\n");
+			sb.append("详细内容请<a href=\"taklip.com/item/" + item.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
 
@@ -203,10 +205,10 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + title + "】\\n");
+			sb.append("【" + title + "】\\\n");
 			sb.append(desc);
-			sb.append("\\n");
-			sb.append("详细内容请<a href=\"localhost/term/" + term.getId() + "\">点击这里</a>");
+			sb.append("\\\n");
+			sb.append("详细内容请<a href=\"taklip.com/term/" + term.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
 
