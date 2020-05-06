@@ -6,6 +6,7 @@ import com.taklip.yoda.properties.WXProperties;
 import com.taklip.yoda.service.ChatQuestionService;
 import com.taklip.yoda.service.ChatterService;
 import com.taklip.yoda.service.WXMessageService;
+import com.taklip.yoda.tool.Constants;
 import com.taklip.yoda.tool.SHA1;
 import com.taklip.yoda.util.WXMessageUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -80,10 +81,14 @@ public class WXMessageServiceImpl implements WXMessageService {
 
 		ChatResponse chatResponse = chatterService.getAnswer(text);
 
+		String answer = chatResponse.getText();
+
+		answer = answer.replaceAll(Constants.NEWLINE, "\n");
+
 		ChatQuestion chatQuestion = new ChatQuestion();
 
 		chatQuestion.setCreateDate(createTime);
-		chatQuestion.setAnswer(chatResponse.getText());
+		chatQuestion.setAnswer(answer);
 		chatQuestion.setOpenId(openId);
 		chatQuestion.setPersona(chatResponse.getPersona());
 		chatQuestion.setQuestion(chatResponse.getInResponseTo());
@@ -91,7 +96,7 @@ public class WXMessageServiceImpl implements WXMessageService {
 
 		chatQuestionService.addChatQuestion(chatQuestion);
 
-		replyMap.put("Content", chatResponse.getText());
+		replyMap.put("Content", answer);
 
 		return WXMessageUtil.transferMapToXML(replyMap);
 	}
@@ -109,7 +114,7 @@ public class WXMessageServiceImpl implements WXMessageService {
 
 		if (eventType.equals(WXMessageUtil.EVENT_TYPE_SUBSCRIBE)) {
 			replyMap.put("MsgType", WXMessageUtil.MESSAGE_TYPE_TEXT);
-			replyMap.put("Content", "欢迎关注 taklip。\\n任何问题都可以直接在输入框发送信息，会尽量回答。\\n如想加入「taklip太离谱」交流群，请添加微信：asikar\\n Cheers!");
+			replyMap.put("Content", "hello，欢迎关注「taklip太离谱」！\n如果有想了解的问题，可以直接在输入框发送信息，如果小助手无法回答就会去联系管事儿的。\n\n「taklip太离谱」还有个交流群，用于分享交流，有意加入可以添加微信：asikar\n Cheers!");
 
 			response = WXMessageUtil.transferMapToXML(replyMap);
 		} else if (eventType.equals(WXMessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {

@@ -66,7 +66,7 @@ public class ChatterServiceImpl implements ChatterService {
 			if (response.isSuccessful()) {
 				com.taklip.yoda.model.Response trainResponse = response.body();
 
-				if (trainResponse.getMessage().equalsIgnoreCase("true")) {
+				if (trainResponse.getMessage().equalsIgnoreCase("success")) {
 					return true;
 				}
 			} else {

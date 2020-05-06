@@ -4,6 +4,7 @@ import com.taklip.yoda.json.JSONArray;
 import com.taklip.yoda.json.JSONObject;
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.*;
+import com.taklip.yoda.tool.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +81,7 @@ public class ChatterController {
 			String desc = brand.getDescription();
 
 			desc = desc.replaceAll("\\<.*?\\>", "");
+			desc = desc.replaceAll("\\r\\n", Constants.NEWLINE);
 
 			JSONArray conversation = new JSONArray();
 
@@ -87,9 +89,12 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + name + "】\\\n");
+			sb.append("【" + name + "】");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append(desc);
-			sb.append("\\\n");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append("详细内容请<a href=\"taklip.com/brand/" + brand.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
@@ -103,7 +108,6 @@ public class ChatterController {
 		try (FileWriter file = new FileWriter("brands.json")) {
 			file.write(obj.toJSONString());
 			file.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -125,9 +129,12 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + title + "】\\\n");
+			sb.append("【" + title + "】");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append(shortDesc);
-			sb.append("\\\n");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append("详细内容请<a href=\"taklip.com/content/" + content.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
@@ -141,7 +148,6 @@ public class ChatterController {
 		try (FileWriter file = new FileWriter("contents.json")) {
 			file.write(obj.toJSONString());
 			file.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -158,6 +164,7 @@ public class ChatterController {
 			String desc = item.getDescription();
 
 			desc = desc.replaceAll("\\<.*?\\>", "");
+			desc = desc.replaceAll("\\r\\n", Constants.NEWLINE);
 
 			JSONArray conversation = new JSONArray();
 
@@ -165,9 +172,12 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + name + "】\\\n");
+			sb.append("【" + name + "】");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append(desc);
-			sb.append("\\\n");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append("详细内容请<a href=\"taklip.com/item/" + item.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
@@ -198,6 +208,7 @@ public class ChatterController {
 			String desc = term.getDescription();
 
 			desc = desc.replaceAll("\\<.*?\\>", "");
+			desc = desc.replaceAll("\\r\\n", Constants.NEWLINE);
 
 			JSONArray conversation = new JSONArray();
 
@@ -205,9 +216,12 @@ public class ChatterController {
 
 			StringBuffer sb = new StringBuffer();
 
-			sb.append("【" + title + "】\\\n");
+			sb.append("【" + title + "】");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append(desc);
-			sb.append("\\\n");
+			sb.append(Constants.NEWLINE);
+			sb.append(Constants.NEWLINE);
 			sb.append("详细内容请<a href=\"taklip.com/term/" + term.getId() + "\">点击这里</a>");
 
 			conversation.add(sb.toString());
@@ -221,7 +235,6 @@ public class ChatterController {
 		try (FileWriter file = new FileWriter("terms.json")) {
 			file.write(obj.toJSONString());
 			file.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

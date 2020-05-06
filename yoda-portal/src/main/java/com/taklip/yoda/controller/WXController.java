@@ -28,7 +28,6 @@ public class WXController {
 			@RequestParam("timestamp") String timestamp,
 			@RequestParam("nonce") String nonce,
 			@RequestParam("echostr") String echostr) {
-
 		if (wxMessageService.checkSignature(signature, timestamp, nonce)) {
 			logger.info("WeChat checkSignature success.");
 

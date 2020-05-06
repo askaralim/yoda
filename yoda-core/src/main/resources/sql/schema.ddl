@@ -153,7 +153,7 @@ create table content_brand
     content_id  bigint   not null,
     brand_id    INT      not null,
     brand_name  VARCHAR(30),
-    brand_logo  VARCHAR(50),
+    brand_logo  VARCHAR(255),
     description VARCHAR(5000),
     create_by   bigint   NOT NULL,
     create_date DATETIME NOT NULL,
@@ -221,7 +221,7 @@ create table solution_item
 
 create table chat_question
 (
-    id          bigint   not null PRIMARY KEY,
+    id          bigint   not null AUTO_INCREMENT PRIMARY KEY,
     open_id     varchar(100),
     union_id    varchar(100),
     question    VARCHAR(300),

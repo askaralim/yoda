@@ -194,4 +194,6 @@ public class Constants {
 	public static final String REDIS_ITEM_RATE = "itemRate";
 
 	public static final String REDIS_CATEGORY = "category";
+
+	public static final String NEWLINE = "#NEWLINE#";
 }
