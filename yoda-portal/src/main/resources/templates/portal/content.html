@@ -177,9 +177,11 @@
                 <div class="col-lg-3 home-sidebar">
                     <div class="home-sidebar-module">
                         <h5 th:text="#{content-publisher}">Content Publisher</h5>
-                        <img th:if="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
-                        <img th:unless="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${content.createBy.profilePhotoSmall}" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
-                        <span th:text="${content.createBy.username}">Publisher Name</span>
+                        <a th:href="@{'/user/' + ${content.createBy.id}}">
+                            <img th:if="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                            <img th:unless="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${content.createBy.profilePhotoSmall}" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                            <span th:text="${content.createBy.username}">Publisher Name</span>
+                        </a>
                     </div>
                     <div th:if="${content.contentContributors.size() > 0}" class="home-sidebar-module">
                         <h5 th:text="#{content-contributor}">Content Contributor</h5>

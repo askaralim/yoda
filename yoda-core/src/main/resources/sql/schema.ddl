@@ -194,6 +194,17 @@ create table term
     update_date DATETIME     NOT NULL
 ) engine = InnoDB;
 
+create table post
+(
+    id          bigint        not null PRIMARY KEY,
+    user_id     bigint,
+    description VARCHAR(2000) NOT NULL,
+    create_by   bigint        NOT NULL,
+    create_date DATETIME      NOT NULL,
+    update_by   bigint        NOT NULL,
+    update_date DATETIME      NOT NULL
+) engine = InnoDB;
+
 create table solution
 (
     id          bigint       not null AUTO_INCREMENT PRIMARY KEY,
@@ -420,6 +431,22 @@ create table user_
     update_date             datetime    not null comment '',
     primary key (id)
 ) comment ='';
+
+create table user_follower
+(
+    id          bigint   not null PRIMARY KEY,
+    user_id     bigint   NOT NULL,
+    follower_id bigint   NOT NULL,
+    create_date DATETIME NOT NULL
+) engine = InnoDB;
+
+create table user_followee
+(
+    id          bigint   not null PRIMARY KEY,
+    user_id     bigint   NOT NULL,
+    followee_id bigint   NOT NULL,
+    create_date DATETIME NOT NULL
+) engine = InnoDB;
 
 CREATE TABLE page_view
 (

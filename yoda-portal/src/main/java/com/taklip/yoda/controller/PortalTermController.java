@@ -50,6 +50,10 @@ public class PortalTermController extends PortalBaseController {
 			shortenTermDescription(term);
 		}
 
+		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
+		setUserLoginStatus(model);
+
+		model.put("currentUser", currentUser);
 		model.put("site", site);
 		model.put("page", page);
 

@@ -3,12 +3,10 @@ package com.taklip.yoda.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.model.Site;
-import com.taklip.yoda.model.Solution;
-import com.taklip.yoda.model.Term;
+import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.SolutionService;
 import com.taklip.yoda.service.TermService;
+import com.taklip.yoda.util.AuthenticatedUtil;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +41,10 @@ public class PortalSolutionController extends PortalBaseController {
 
 		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 3));
 
+		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
+		setUserLoginStatus(model);
+
+		model.put("currentUser", currentUser);
 		model.put("site", site);
 		model.put("page", page);
 

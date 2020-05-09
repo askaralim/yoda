@@ -1,13 +1,5 @@
 package com.taklip.yoda.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.ui.ModelMap;
-
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.SiteService;
@@ -15,6 +7,9 @@ import com.taklip.yoda.service.UserService;
 import com.taklip.yoda.support.PageViewHandler;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.PortalUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.ui.ModelMap;
 
 public class PortalBaseController {
 	@Autowired

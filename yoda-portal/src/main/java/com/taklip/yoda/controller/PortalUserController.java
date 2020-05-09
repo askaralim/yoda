@@ -1,17 +1,14 @@
 package com.taklip.yoda.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.model.Content;
-import com.taklip.yoda.model.Site;
-import com.taklip.yoda.model.User;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.UserService;
-import com.taklip.yoda.tool.Constants;
-import com.taklip.yoda.tool.StringPool;
+import com.taklip.yoda.model.*;
+import com.taklip.yoda.service.*;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.Validator;
 import com.taklip.yoda.validator.UserSettingsValidator;
+import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +20,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Controller
@@ -42,6 +39,15 @@ public class PortalUserController extends PortalBaseController {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+	protected UserFollowerService userFollowerService;
+
+	@Autowired
+	protected UserFolloweeService userFolloweeService;
+
+	@Autowired
+	protected PostService postService;
 
 	@Autowired
 	protected AuthenticationManager authenticationManager;
@@ -59,10 +65,16 @@ public class PortalUserController extends PortalBaseController {
 			return new ModelAndView("/404", "requestURL", id);
 		}
 
+		Pagination<Post> page = postService.getPostsByUser(id, new RowBounds(0, 10));
 		List<Content> contents = contentService.getContentByUserId(user.getId());
+		int followerCount = userFollowerService.getUserFollowerCount(user.getId());
+		int followeeCount = userFolloweeService.getUserFolloweeCount(user.getId());
 
 		model.put("user", user);
 		model.put("contents", contents);
+		model.put("page", page);
+		model.put("followerCount", followerCount);
+		model.put("followeeCount", followeeCount);
 
 		setUserLoginStatus(model);
 
@@ -88,7 +100,7 @@ public class PortalUserController extends PortalBaseController {
 
 		User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		if(null == user) {
+		if (null == user) {
 			return new ModelAndView("redirect:/login", model);
 		}
 
@@ -116,7 +128,7 @@ public class PortalUserController extends PortalBaseController {
 
 		ModelMap model = new ModelMap();
 
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			logger.error(result.toString());
 			model.put("errors", "errors");
 			return new ModelAndView("portal/user/settings", model);
@@ -186,8 +198,7 @@ public class PortalUserController extends PortalBaseController {
 			user.setUsername(username);
 			user.setEmail(email);
 			userService.add(user);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
 		}
 
@@ -203,8 +214,7 @@ public class PortalUserController extends PortalBaseController {
 
 				return model;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.debug("Problem authenticating user" + username, e);
 		}
 
@@ -240,8 +250,7 @@ public class PortalUserController extends PortalBaseController {
 			if (null != userDb) {
 				jsonResult.put("error", requestContext.getMessage("duplicate-email"));
 			}
-		}
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		}
 
@@ -252,8 +261,7 @@ public class PortalUserController extends PortalBaseController {
 				user.setUsername(username);
 				user.setEmail(email);
 				userService.add(user);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
 			}
 
@@ -266,8 +274,7 @@ public class PortalUserController extends PortalBaseController {
 				if (result.isAuthenticated()) {
 					SecurityContextHolder.getContext().setAuthentication(result);
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				logger.debug("Problem authenticating user" + username, e);
 			}
 		}
@@ -275,5 +282,43 @@ public class PortalUserController extends PortalBaseController {
 		String jsonString = jsonResult.toString();
 
 		return jsonString;
+	}
+
+	@RequestMapping(value = "/post/new", method = RequestMethod.POST)
+	public String addPost(@ModelAttribute Post post) {
+
+		post.setDescription(HtmlUtils.htmlEscape(post.getDescription()));
+
+		postService.save(post);
+
+		return "redirect:/user/" + post.getUserId();
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/post/page", method = RequestMethod.GET)
+	public String showPagination(
+			@RequestParam("userId") Long userId,
+			@RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+		Pagination<Post> page = postService.getPostsByUser(userId, new RowBounds(offset, 10));
+
+		JSONArray array = new JSONArray();
+
+		SimpleDateFormat datetimeformat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+		try {
+			for (Post post : page.getData()) {
+				JSONObject jsonObject = new JSONObject();
+
+				jsonObject.put("id", post.getId());
+				jsonObject.put("description", post.getDescription());
+				jsonObject.put("createDate", datetimeformat.format(post.getCreateDate()));
+
+				array.add(jsonObject);
+			}
+		} catch (JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		return array.toString();
 	}
 }

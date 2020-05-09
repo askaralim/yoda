@@ -101,8 +101,7 @@ public class PortalBrandController extends PortalBaseController {
 
 	@RequestMapping(value="/{id}", method = RequestMethod.GET)
 	public ModelAndView showBrand(
-			@PathVariable("id") Long id,
-			HttpServletRequest request, HttpServletResponse response) {
+			@PathVariable("id") Long id, HttpServletRequest request) {
 		Site site = getSite();
 
 		Brand brand = brandService.getBrand(id);
