@@ -31,12 +31,20 @@
 		WHERE user_id = #{userId}
 	</select>
 
+    <select id="isFollowing" resultType="UserFollower">
+        SELECT
+        <include refid="userFolloweeColumns"/>
+        FROM user_followee
+        WHERE user_id = #{userId} AND followee_id = #{followeeId}
+        ORDER BY create_date DESC
+    </select>
+
     <insert id="insert" parameterType="UserFollowee" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO user_followee(id, user_id, followee_id, create_date)
 		VALUES(#{id}, #{userId}, #{followeeId}, #{createDate})
 	</insert>
 
-    <delete id="deleteUserFollowee">
+    <delete id="delete">
 		DELETE FROM user_followee
 		WHERE user_id = #{userId} AND followee_id = #{followeeId}
 	</delete>

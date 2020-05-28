@@ -30,8 +30,8 @@ public class RedisController {
 	@Autowired
 	private ItemService itemService;
 
-	@RequestMapping("/delete/content")
 	@ResponseBody
+	@RequestMapping("/delete/content")
 	public Response deleteContents() {
 		List<Content> contents = contentService.getContents();
 

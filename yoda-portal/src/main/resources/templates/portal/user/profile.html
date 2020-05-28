@@ -20,6 +20,17 @@
                         <div class="username-box">
                             <p class="username" th:text="${user.username}">User Name</p>
                         </div>
+                        <div th:if="${userLogin}">
+                            <div th:if="${currentUser.id != user.id}">
+                                <span th:if="${isFollowing}" id="follow-status">
+                                    <button type="button" class="btn btn-default btn-xs" id="unfollow" th:text="#{unfollow}">Un Follow</button>
+                                </span>
+                                <span th:unless="${isFollowing}" id="follow-status">
+                                    <button type="button" class="btn btn-primary btn-xs" id="follow" th:text="#{follow}">Follow</button>
+                                </span>
+                                <button type="button" class="btn btn-default btn-xs" disabled="disabled" th:text="#{private-message}">Private Message</button>
+                            </div>
+                        </div>
                     </div>
                     <ul class="list-unstyled list-inline user-relation">
                         <li>
@@ -44,8 +55,8 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div th:if="${currentUser}" class="user-post">
-                    <div th:if="${currentUser.id == user.id}">
+                <div th:if="${currentUser}">
+                    <div th:if="${currentUser.id == user.id}" class="user-post">
                         <form role="form" th:action="@{/user/post/new}" action="#" method="post">
                             <input type="hidden" name="userId" th:value="${user.id}"/>
                             <div class="form-group">
@@ -84,6 +95,47 @@
 
 <script type="text/javascript">
     userId = [[${user.id}]];
+    userLogin = [[${userLogin}]];
+    loginUserId = "";
+
+    if (userLogin != null) {
+        loginUserId = [[${currentUser.id}]];
+    }
+
+    $(function () {
+        $('#follow').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/user/follow",
+                data: {userId: userId, loginUserId: loginUserId},
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#follow-status').empty();
+                        $('#follow-status').html('<button type="button" class="btn btn-default btn-xs" id="unfollow">[[#{unfollow}]]</button>');
+                    }
+                }
+            });
+        });
+    });
+
+    $(function () {
+        $('#unfollow').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/user/unfollow",
+                data: {userId: userId, loginUserId: loginUserId},
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#follow-status').empty();
+                        $('#follow-status').html('<button type="button" class="btn btn-primary btn-xs" id="follow">[[#{follow}]]</button>');
+                    }
+                }
+            });
+        });
+    });
+
     $(function () {
         var offset = 10;
 

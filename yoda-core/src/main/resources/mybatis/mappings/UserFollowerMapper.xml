@@ -36,7 +36,7 @@
 		VALUES(#{id}, #{userId}, #{followerId}, #{createDate})
 	</insert>
 
-    <delete id="deleteUserFollower">
+    <delete id="delete">
 		DELETE FROM user_follower
 		WHERE user_id = #{userId} AND follower_id = #{followerId}
 	</delete>

@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.taklip.yoda.model.*;
-import com.taklip.yoda.service.*;
+import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.PostService;
+import com.taklip.yoda.service.UserFollowRelationService;
+import com.taklip.yoda.service.UserService;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import com.taklip.yoda.util.Validator;
 import com.taklip.yoda.validator.UserSettingsValidator;
@@ -12,6 +15,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,10 +45,7 @@ public class PortalUserController extends PortalBaseController {
 	protected UserService userService;
 
 	@Autowired
-	protected UserFollowerService userFollowerService;
-
-	@Autowired
-	protected UserFolloweeService userFolloweeService;
+	protected UserFollowRelationService userFollowRelationService;
 
 	@Autowired
 	protected PostService postService;
@@ -67,8 +68,8 @@ public class PortalUserController extends PortalBaseController {
 
 		Pagination<Post> page = postService.getPostsByUser(id, new RowBounds(0, 10));
 		List<Content> contents = contentService.getContentByUserId(user.getId());
-		int followerCount = userFollowerService.getUserFollowerCount(user.getId());
-		int followeeCount = userFolloweeService.getUserFolloweeCount(user.getId());
+		int followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
+		int followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
 
 		model.put("user", user);
 		model.put("contents", contents);
@@ -88,6 +89,11 @@ public class PortalUserController extends PortalBaseController {
 		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
 		model.put("currentUser", currentUser);
+
+		if (currentUser != null) {
+			Boolean isFollowing = userFollowRelationService.isFollowing(currentUser.getId(), user.getId());
+			model.put("isFollowing", isFollowing);
+		}
 
 		return new ModelAndView("portal/user/profile", model);
 	}
@@ -320,5 +326,27 @@ public class PortalUserController extends PortalBaseController {
 		}
 
 		return array.toString();
+	}
+
+	@ResponseBody
+	@PostMapping("/follow")
+	public Response follow(
+			@RequestParam("userId") Long userId,
+			@RequestParam("loginUserId") Long loginUserId) {
+
+		userFollowRelationService.follow(loginUserId, userId);
+
+		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
+	}
+
+	@ResponseBody
+	@PostMapping("/unfollow")
+	public Response unfollow(
+			@RequestParam("userId") Long userId,
+			@RequestParam("loginUserId") Long loginUserId) {
+
+		userFollowRelationService.unFollow(loginUserId, userId);
+
+		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
 	}
 }

@@ -9,5 +9,5 @@ public interface UserFollowerMapper extends BaseMapper<UserFollower> {
 
 	List<Integer> getUserFollowerCount(Long userId);
 
-	void deleteUserFollower(Long userId, Long followerId);
+	void delete(Long userId, Long followerId);
 }
