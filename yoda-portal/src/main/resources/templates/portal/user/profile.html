@@ -93,13 +93,12 @@
 </body>
 </html>
 
-<script type="text/javascript">
-    userId = [[${user.id}]];
-    userLogin = [[${userLogin}]];
-    loginUserId = "";
+<script type="text/javascript" th:inline="javascript">
+    var userLogin = /*[[${userLogin}]]*/;
+    var loginUserId = "";
 
-    if (userLogin != null) {
-        loginUserId = [[${currentUser.id}]];
+    if (userLogin) {
+        loginUserId = /*[[${userId}]]*/;
     }
 
     $(function () {
@@ -107,7 +106,7 @@
             $.ajax({
                 type: "POST",
                 url: "/user/follow",
-                data: {userId: userId, loginUserId: loginUserId},
+                data: {userId: [[${user.id}]], loginUserId: loginUserId},
                 dataType: "json",
                 success: function (data) {
                     if (data.status == 200) {
