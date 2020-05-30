@@ -11,41 +11,43 @@
             <div class="home-main">
                 <!-- <div class="col-sm-12"> -->
                 <div id="content-body">
-                    <div class="row">
-                        <!--<h1 style="text-align: center">选购参考</h1>-->
-                        <tr th:each="contentInfo : ${homeInfo.homePageDatas}">
-                            <div class="col-sm-3">
-                                <div class="content-preview">
-                                    <div class="row content-preview-wrapper-row">
-                                        <div class="col-sm-12 content-preview-item">
-                                            <div class="content-preview-image">
-                                                <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}">
-                                                    <img src="/images/demoUpload.jpg" th:src="${contentInfo.featuredImage}" th:alt-title="${contentInfo.title}" width="100%" />
-                                                </a>
+                    <div class="home-content">
+                        <div class="row">
+                            <!--<h1 style="text-align: center">选购参考</h1>-->
+                            <tr th:each="contentInfo : ${homeInfo.homePageDatas}">
+                                <div class="col-sm-3">
+                                    <div class="content-preview">
+                                        <div class="row content-preview-wrapper-row">
+                                            <div class="col-sm-12 content-preview-item">
+                                                <div class="content-preview-image">
+                                                    <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}">
+                                                        <img src="/images/demoUpload.jpg" th:src="${contentInfo.featuredImage}" th:alt-title="${contentInfo.title}" width="100%" />
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-12 content-preview-item">
-                                            <h4>
-                                                <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}" th:text="${contentInfo.title}">Content Title</a>
-                                            </h4>
-                                            <p class="text-left">
-                                                <bd>
-                                                    <i class="fa fa-eye"></i>
-                                                    <span th:text="${contentInfo.hitCounter}">Hit Counter</span>
-                                                    &nbsp
-                                                    <i class="fa fa-heart"></i>
-                                                    <span id="score" >
-                                                        <span th:if="${contentInfo.score > 0}" th:text="'+' + ${contentInfo.score}" />
-                                                        <span th:unless="${contentInfo.score > 0}" th:text="${contentInfo.score}" />
-                                                    </span>
-                                                </bd>
-                                            </p>
-                                            <p th:text="${contentInfo.shortDescription}">Short Description</p>
+                                            <div class="col-sm-12 content-preview-item">
+                                                <h4>
+                                                    <a href="/content.html" th:href="@{'/content/' + ${contentInfo.id}}" th:text="${contentInfo.title}">Content Title</a>
+                                                </h4>
+                                                <p class="text-left">
+                                                    <bd>
+                                                        <i class="fa fa-eye"></i>
+                                                        <span th:text="${contentInfo.hitCounter}">Hit Counter</span>
+                                                        &nbsp
+                                                        <i class="fa fa-heart"></i>
+                                                        <span id="score" >
+                                                            <span th:if="${contentInfo.score > 0}" th:text="'+' + ${contentInfo.score}" />
+                                                            <span th:unless="${contentInfo.score > 0}" th:text="${contentInfo.score}" />
+                                                        </span>
+                                                    </bd>
+                                                </p>
+                                                <p th:text="${contentInfo.shortDescription}">Short Description</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </tr>
+                            </tr>
+                        </div>
                     </div>
                 </div>
                 <!-- </div> -->
