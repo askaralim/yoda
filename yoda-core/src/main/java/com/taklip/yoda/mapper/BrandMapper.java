@@ -5,7 +5,7 @@ import java.util.List;
 import com.taklip.yoda.model.Brand;
 
 public interface BrandMapper extends BaseMapper<Brand> {
-	List<Brand> getBrands();
+    List<Brand> getBrands();
 
-	List<Brand> getBrandsTopViewed(int count);
+    List<Brand> getBrandsTopViewed(int count);
 }

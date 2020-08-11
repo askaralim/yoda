@@ -20,6 +20,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping("/")
 public class PortalHomeController extends PortalBaseController {
@@ -44,7 +47,7 @@ public class PortalHomeController extends PortalBaseController {
 	FileService fileService;
 
 	@GetMapping
-	public ModelAndView setupForm(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView setupForm(HttpServletRequest request) {
 		ModelMap modelMap = new ModelMap();
 
 		try {

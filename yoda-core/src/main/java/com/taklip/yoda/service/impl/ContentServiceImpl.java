@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +81,8 @@ public class ContentServiceImpl implements ContentService {
 		}
 	}
 
-	public void addContent(Content content, Long categoryId) throws Exception {
+	@Override
+    public void addContent(Content content, Long categoryId) throws Exception {
 		content.setId(idService.generateId());
 		content.setNaturalKey(encode(content.getTitle()));
 		content.setHitCounter(0);
@@ -285,7 +285,8 @@ public class ContentServiceImpl implements ContentService {
 		return contents;
 	}
 
-	@Transactional(readOnly = true)
+	@Override
+    @Transactional(readOnly = true)
 	public Pagination<Content> getContentsNotFeatureData(int offset, int limit) {
 		List<Content> contents = new ArrayList<>();
 		Pagination<Content> page = new Pagination<Content>();
@@ -774,7 +775,7 @@ public class ContentServiceImpl implements ContentService {
 	private void setContentBrandIntoCache(ContentBrand contentBrand) {
 		Map<String, String> value = new HashMap<>();
 
-		value.put("contentBrandId", String.valueOf(contentBrand.getId()));
+		value.put("id", String.valueOf(contentBrand.getId()));
 		value.put("brandId", String.valueOf(contentBrand.getBrandId()));
 		value.put("brandLogo", contentBrand.getBrandLogo());
 		value.put("brandName", contentBrand.getBrandName());

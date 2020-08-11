@@ -10,6 +10,7 @@
 		description,
 		content_id AS contentId,
 		category_id AS categoryId,
+		hit_counter AS hitCounter,
 		create_by AS "createBy.id",
 		create_date AS createDate,
 		update_by AS "updateBy.id",
@@ -51,8 +52,8 @@
 	</select>
 
 	<insert id="insert" parameterType="Term" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO term(id, title, description, content_id, category_id, create_by, create_date, update_by, update_date)
-		VALUES(#{id}, #{title}, #{description}, #{contentId}, #{categoryId}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
+		INSERT INTO term(id, title, description, content_id, category_id, hit_counter, create_by, create_date, update_by, update_date)
+		VALUES(#{id}, #{title}, #{description}, #{contentId}, #{categoryId}, #{hitCounter}, #{createBy.id}, #{createDate}, #{updateBy.id}, #{updateDate})
 	</insert>
 
 	<update id="update" parameterType="Term">
@@ -61,6 +62,7 @@
 			description = #{description},
 			content_id = #{contentId},
 			category_id = #{categoryId},
+			hit_counter = #{hitCounter},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate}
 		WHERE id = #{id}

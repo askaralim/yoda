@@ -1,35 +1,39 @@
 package com.taklip.yoda.service;
 
-import java.util.List;
-
+import com.taklip.yoda.model.Brand;
+import com.taklip.yoda.model.Pagination;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.taklip.yoda.model.Brand;
-import com.taklip.yoda.model.Pagination;
+import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface BrandService {
-	Brand save(Brand brand);
+    Brand save(Brand brand);
 
-	Brand add(Brand brand);
+    Brand add(Brand brand);
 
-	List<Brand> getBrands();
+    List<Brand> getBrands();
 
-	List<Brand> getBrandsTopViewed(int count);
+    List<Brand> getBrandsTopViewed(int count);
 
-	Brand getBrand(Long id);
+    Pagination<Brand> getHotBrands(RowBounds rowBounds);
 
-	Brand update(Brand brand);
+    Brand getBrand(Long id);
 
-	Brand updateImage(Long id, MultipartFile file);
+    Brand update(Brand brand);
 
-	int getBrandHitCounter(Long id);
+    Brand updateImage(Long id, MultipartFile file);
 
-	void increaseBrandHitCounter(Long id);
+    int getBrandHitCounter(Long id);
 
-	void updateBrandRating(Long id, int rating);
+    void increaseBrandHitCounter(Long id);
 
-	void deleteBrand(Long id);
+    void updateBrandRating(Long id, int rating);
 
-	Pagination<Brand> getBrands(RowBounds rowBounds);
+    void deleteBrand(Long id);
+
+    Pagination<Brand> getBrands(RowBounds rowBounds);
 }

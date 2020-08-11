@@ -188,6 +188,7 @@ create table term
     description VARCHAR(2000),
     content_id  bigint,
     category_id INT,
+    hit_counter INT,
     create_by   bigint       NOT NULL,
     create_date DATETIME     NOT NULL,
     update_by   bigint       NOT NULL,
@@ -236,7 +237,7 @@ create table chat_question
     open_id     varchar(100),
     union_id    varchar(100),
     question    VARCHAR(300),
-    answer      VARCHAR(1000),
+    answer      VARCHAR(2000),
     persona     VARCHAR(100),
     create_date DATETIME NOT NULL
 ) engine = InnoDB;

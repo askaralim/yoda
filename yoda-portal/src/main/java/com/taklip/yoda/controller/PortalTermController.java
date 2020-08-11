@@ -3,11 +3,10 @@ package com.taklip.yoda.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.model.*;
-import com.taklip.yoda.service.BrandService;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.ItemService;
+import com.taklip.yoda.model.Pagination;
+import com.taklip.yoda.model.Site;
+import com.taklip.yoda.model.Term;
+import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.TermService;
 import com.taklip.yoda.util.AuthenticatedUtil;
 import org.apache.ibatis.session.RowBounds;
@@ -20,111 +19,119 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Controller
 @RequestMapping("/term")
 public class PortalTermController extends PortalBaseController {
-	private final Logger logger = LoggerFactory.getLogger(PortalTermController.class);
+    private final Logger logger = LoggerFactory.getLogger(PortalTermController.class);
 
-	@Autowired
-	TermService termService;
+    // not cool, temporary
+    private volatile int termsViewCount = 12_580;
+    private volatile int termsEditCount = 526;
 
-	@GetMapping
-	public ModelAndView showTerms(HttpServletRequest request) {
-		ModelMap model = new ModelMap();
+    @Autowired
+    TermService termService;
 
-		Site site = getSite();
+    @GetMapping
+    public ModelAndView showTerms(HttpServletRequest request) {
+        ModelMap model = new ModelMap();
 
-		String offsetStr = request.getParameter("offset");
-		int offset = 0;
+        Site site = getSite();
 
-		if (null != offsetStr) {
-			offset = Integer.valueOf(offsetStr);
-		}
+        String offsetStr = request.getParameter("offset");
+        int offset = 0;
 
-		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 5));
+        if (null != offsetStr) {
+            offset = Integer.valueOf(offsetStr);
+        }
 
-		for (Term term : page.getData()) {
-			shortenTermDescription(term);
-		}
+        Pagination<Term> page = termService.getTerms(new RowBounds(offset, 4));
 
-		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
-		setUserLoginStatus(model);
+        for (Term term : page.getData()) {
+            shortenTermDescription(term);
+        }
 
-		model.put("currentUser", currentUser);
-		model.put("site", site);
-		model.put("page", page);
+        User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
-		return new ModelAndView("portal/term/terms", model);
-	}
+        setUserLoginStatus(model);
 
-	@ResponseBody
-	@GetMapping("/page")
-	public String showPagination(
-			@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Term> page = termService.getTerms(new RowBounds(offset, 5));
+        model.put("currentUser", currentUser);
+        model.put("termsCount", page.getTotalCount());
 
-		JSONArray array = new JSONArray();
+        // not cool, temporary
+        termsViewCount += 1;
+        model.put("termsEditCount", termsEditCount);
+        model.put("termsViewCount", termsViewCount);
+        model.put("site", site);
+        model.put("page", page);
 
-		try {
-			for (Term term : page.getData()) {
-				JSONObject jsonObject = new JSONObject();
+        return new ModelAndView("portal/term/terms", model);
+    }
 
-				jsonObject.put("id", term.getId());
-				jsonObject.put("title", term.getTitle());
+    @ResponseBody
+    @GetMapping("/page")
+    public String showPagination(
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+        Pagination<Term> page = termService.getTerms(new RowBounds(offset, 4));
 
-				Term shortenTerm = shortenTermDescription(term);
+        JSONArray array = new JSONArray();
 
-				jsonObject.put("description", shortenTerm.getDescription());
+        try {
+            for (Term term : page.getData()) {
+                JSONObject jsonObject = new JSONObject();
 
-				array.add(jsonObject);
-			}
-		}
-		catch (JSONException e) {
-			logger.error(e.getMessage());
-		}
+                jsonObject.put("id", term.getId());
+                jsonObject.put("title", term.getTitle());
 
-		return array.toString();
-	}
+                Term shortenTerm = shortenTermDescription(term);
 
-	@GetMapping("/{id}")
-	public ModelAndView showTerm(
-			@PathVariable("id") Long id, HttpServletRequest request) {
-		Site site = getSite();
+                jsonObject.put("description", shortenTerm.getDescription());
 
-		Term term = termService.getTerm(id);
+                array.add(jsonObject);
+            }
+        } catch (JSONException e) {
+            logger.error(e.getMessage());
+        }
 
-		ModelMap model = new ModelMap();
+        return array.toString();
+    }
 
-		model.put("site", site);
-		model.put("term", term);
+    @GetMapping("/{id}")
+    public ModelAndView showTerm(
+            @PathVariable("id") Long id, HttpServletRequest request) {
+        Site site = getSite();
 
-		model.put("pageTitle", "【" + term.getTitle() + "】 - " + site.getSiteName());
-		model.put("keywords", term.getTitle());
-		model.put("description", term.getTitle());
-		model.put("url", request.getRequestURL().toString());
-		model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        Term term = termService.getTerm(id);
 
-		return new ModelAndView("portal/term/term", model);
-	}
+        ModelMap model = new ModelMap();
 
-	private Term shortenTermDescription(Term term) {
-		String desc = term.getDescription();
+        model.put("site", site);
+        model.put("term", term);
 
-		if (desc.length() > 200) {
-			desc = desc.substring(0, 200);
+        model.put("pageTitle", "【" + term.getTitle() + "】 - " + site.getSiteName());
+        model.put("keywords", term.getTitle());
+        model.put("description", term.getTitle());
+        model.put("url", request.getRequestURL().toString());
+        model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
 
-			if (desc.indexOf("img") > 0) {
-				desc = desc.substring(0, desc.indexOf("<img"));
-			}
+        return new ModelAndView("portal/term/term", model);
+    }
 
-			desc = desc.trim().concat("...");
+    private Term shortenTermDescription(Term term) {
+        String desc = term.getDescription();
 
-			term.setDescription(desc);
-		}
+        if (desc.length() > 200) {
+            desc = desc.substring(0, 200);
 
-		return term;
-	}
+            if (desc.indexOf("img") > 0) {
+                desc = desc.substring(0, desc.indexOf("<img"));
+            }
+
+            desc = desc.trim().concat("...");
+
+            term.setDescription(desc);
+        }
+
+        return term;
+    }
 }

@@ -39,7 +39,14 @@
 		ORDER BY b.id DESC
 	</select>
 
-	<select id="getBrandsTopViewed" resultType="Brand">
+    <select id="getBrandsOrderByHitCounter" resultType="Brand">
+        SELECT
+        <include refid="brandColumns"/>
+        FROM brand b
+        ORDER BY b.hit_counter DESC
+    </select>
+
+    <select id="getBrandsTopViewed" resultType="Brand">
 		SELECT 
 			<include refid="brandColumns"/>
 		FROM brand b 

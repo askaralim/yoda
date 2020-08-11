@@ -5,28 +5,44 @@
 </head>
 
 <body id="page-top" class="index">
-<div th:replace="fragments :: navbar"></div>
+    <div th:replace="fragments :: navbar"></div>
 
-<div class="container pt">
-    <div class="row">
-        <div id="brands" class="col-lg-8 col-lg-offset-2">
-            <div th:each="brand : ${page.data}" class="col-sm-3" style="text-align: -webkit-center;">
-                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.Id}}">
-                    <div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">
-                        <img th:src="${brand.imagePath}" th:alt-title="${brand.name}" style="height: auto;">
+    <section class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="terms-title" th:text="#{hot-brands}">Hot Brands</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="home-brand-all">
+                    <div id="brands" class="col-lg-12">
+                        <div th:each="brand : ${page.data}" class="col-sm-3" style="text-align: -webkit-center;">
+                            <div class="home-brand">
+                                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.id}}">
+                                    <div class="thumbnail" style="height: 150px; display: flex;align-items: center;">
+                                        <img src="/images/demoUpload.jpg" th:src="${brand.imagePath}" th:alt-title="${brand.name}" class="img-responsive lazy-img" style="max-height: 150px;" />
+                                    </div>
+                                </a>
+                                <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.id}}">
+                                    <p th:text="${brand.name}">Brand Name</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </a>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div th:if="${page.totalCount > 5}" class="row">
+                    <div class="col-lg-4 col-lg-offset-4">
+                        <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div th:if="${page.totalCount > 5}" class="row">
-        <div class="col-lg-4 col-lg-offset-4">
-            <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
-        </div>
-    </div>
-</div>
+    </section>
 
-<div th:replace="fragments :: footer"></div>
+    <div th:replace="fragments :: footer"></div>
 </body>
 </html>
 
@@ -46,9 +62,12 @@
 
                         $('#brands').append(
                             '<div class="col-sm-3" style="text-align: -webkit-center;">'
-                            + '<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">'
-                            + '<a href="' + url + '"><img src="' + data[i].imagePath + '" alt=".." style="height: 100%;"></a>'
-                            + '</div>'
+                                + '<div class="home-brand">'
+                                    + '<a href="' + url + '">'
+                                        + '<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">'
+                                        + '<img src="' + data[i].imagePath + '" alt=".." class="img-responsive">'
+                                    + '</a>'
+                                + '</div>'
                             + '</div>'
                         );
                     }

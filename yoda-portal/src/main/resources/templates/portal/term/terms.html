@@ -5,47 +5,70 @@
 </head>
 
 <body id="page-top" class="index">
-<div th:replace="fragments :: navbar"></div>
-<div class="section">
-    <div id="content-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <div class="content-post">
-                        <div class="tab-content" id="terms">
-                            <div th:each="term : ${page.data}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
-                                <div class="row">
-                                    <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="${term.title}">Term Title</a>
-                                </div>
-                                <div class="row">
-                                    <div class="item-description">
-                                        <p>[(${term.description})]</p>
-                                        <p>
-                                            <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="#{more} + '>>>'">More >>></a>
-                                        </p>
+    <div th:replace="fragments :: navbar"></div>
+
+    <main id="main">
+        <section class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="terms-title" th:text="#{term}">Term</h1>
+                        <p class="terms-description" th:text="#{terms-description}">Terms Description</p>
+                        <ul class="list-unstyled terms-statistics">
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-count}">词条</div>
+                            </li>
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsEditCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-edit-count}">Edit Count</div>
+                            </li>
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsViewCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-view-count}">阅读量</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="terms">
+                        <div class="row">
+                            <div class="col-sm-3" th:each="term : ${page.data}">
+                                <div class="term-preview">
+                                    <div class="row content-preview-wrapper-row">
+                                        <div class="col-sm-12 content-preview-item">
+                                            <h4>
+                                                <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="${term.title}">Term Title</a>
+                                            </h4>
+                                            <p>[(${term.description})]</p>
+                                            <p>
+                                                <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="#{more} + '>>>'">More >>></a>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div th:if="${page.totalCount > 5}" class="row">
+                </div>
+                <div class="col-md-12">
+                    <div th:if="${page.totalCount > 4}" class="row">
                         <div class="col-lg-4 col-lg-offset-4">
                             <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </section>
+    </main>
 
-<div th:replace="fragments :: footer"></div>
+    <div th:replace="fragments :: footer"></div>
 </body>
 </html>
 
 <script type="text/javascript">
     $(function () {
-        var offset = 5;
+        var offset = 4;
 
         $('#more-brand').click(function () {
             $.ajax({
@@ -54,30 +77,31 @@
                 data: {offset: offset},
                 dataType: "json",
                 success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var url = "/term/" + data[i].id
+                    var text = '<div class="row">';
 
-                        $('#terms').append(
-                            '<div style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">' +
-                                '<div class="row">' +
-                                    '<a href="' + url + '">' + data[i].title + '</a>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                    '<div class="col-sm-12">' +
-                                        '<div class="item-description">' +
+                    for (var i = 0; i < data.length; i++) {
+                        var url = "/term/" + data[i].id;
+
+                        text += '<div class="col-sm-3">' +
+                                '<div class="term-preview">' +
+                                    '<div class="row content-preview-wrapper-row">' +
+                                        '<div class="col-sm-12 content-preview-item">' +
+                                            '<h4><a href="' + url + '">' + data[i].title + '</a></h4>' +
                                             '<p>' + data[i].description + '</p>' +
-                                            '<p>' +
-                                                '<a href="' + url + '">More >>></a>' +
-                                            '</p>' +
+                                            '<p><a href="' + url + '">More >>></a></p>' +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
-                            '</div>'
-                        );
+                            '</div>';
                     }
+
+                    text += '</div>';
+
+                    $('.terms').append(text);
                 }
             });
-            offset = offset + 5;
+
+            offset = offset + 4;
         });
     });
 </script>

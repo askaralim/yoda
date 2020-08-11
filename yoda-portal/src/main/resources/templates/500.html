@@ -9,7 +9,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
 
-    <title>403</title>
+    <title>500</title>
 
     <link rel="stylesheet" th:href="@{/bootstrap-3.2.0/css/bootstrap.min.css}" href="../bootstrap-3.2.0/css/bootstrap.min.css"/>
 
@@ -28,18 +28,19 @@
                 <p th:text="#{server-error}">server-error</p>
             </h3>
             <p>
-                <a th:href="@{/}" href="/home.html" th:text="#{go-to-home-page}">go-to-home-page</a><span th:text="#{or-try-using-the-search-form}"></span>
+                <a th:href="@{/}" href="/home.html" th:text="#{go-to-home-page}">go-to-home-page</a>
+<!--                <span th:text="#{or-try-using-the-search-form}"></span>-->
             </p>
-            <form class='search-form' th:action="@{/(search)}" action="#">
-                <div class='input-group'>
-                    <input type="text" class="form-control" id="q" name="q" th:placeholder="#{search}">
-                    <div class="input-group-btn">
-                        <button type="submit" name="submit" class="btn btn-primary">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
+<!--            <form class='search-form' th:action="@{/(search)}" action="#">-->
+            <!--                <div class='input-group'>-->
+            <!--                    <input type="text" class="form-control" id="q" name="q" th:placeholder="#{search}">-->
+            <!--                    <div class="input-group-btn">-->
+            <!--                        <button type="submit" name="submit" class="btn btn-primary">-->
+            <!--                            <i class="fa fa-search"></i>-->
+            <!--                        </button>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </form>-->
         </div>
     </div>
 </div>

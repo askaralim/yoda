@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="description" th:text="#{text}">text</label>
                         <textarea th:field="*{description}" class="form-control" value="" display="none" style="display: none"></textarea>
-                        <div id="editor" style="width: 100%;height: 500px;"></div>
+                        <div id="editor" style="width: 100%;height: 600px;"></div>
                     </div>
                     <div class="form-group">
                         <label for="pageTitle" th:text="#{keywords}">keywords</label>
@@ -159,7 +159,7 @@
                                     <td><input type="checkbox" id="itemIds" th:value="${contentBrand.id}"></td>
                                     <td th:text="${contentBrand.id}">123</td>
                                     <td th:text="${contentBrand.brandName}">Taklip</td>
-                                    <td><a th:href="@{'/controlpanel/contentbrand/' + ${contentBrand.id} + '/edit'}" th:text="#{edit}">edit</a></td>
+                                    <td><a th:href="@{'/controlpanel/content/contentbrand/' + ${contentBrand.id} + '/edit'}" th:text="#{edit}">edit</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -239,7 +239,7 @@ $(".chosen-select").chosen();
             uploadType: "content",
             customCss: {
                 "height": "100%",
-                "max-height": "450px"
+                "max-height": "600px"
             }
         })
     });

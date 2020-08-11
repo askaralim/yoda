@@ -15,6 +15,9 @@ import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 
 import com.taklip.yoda.properties.YodaProperties;
 
+/**
+ * @author askar
+ */
 @Configuration
 @EnableKafka
 public class KafkaConfig {

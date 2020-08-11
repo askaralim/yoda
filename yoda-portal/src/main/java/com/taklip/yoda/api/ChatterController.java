@@ -58,16 +58,16 @@ public class ChatterController {
 //		exportItems();
 		exportTerms();
 
-		return new ResponseEntity("", HttpStatus.OK);
+		return new ResponseEntity("Success", HttpStatus.OK);
 	}
 
 	@GetMapping("/train")
 	public ResponseEntity<String> train() {
 		if (chatterService.train()) {
-			return new ResponseEntity("", HttpStatus.OK);
+			return new ResponseEntity("Success", HttpStatus.OK);
 		}
 
-		return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity("Failed", HttpStatus.BAD_REQUEST);
 	}
 
 	private void exportBrands() {
@@ -80,26 +80,31 @@ public class ChatterController {
 			String name = brand.getName();
 			String desc = brand.getDescription();
 
+			desc = desc.replaceAll("</p>", Constants.NEWLINE);
 			desc = desc.replaceAll("\\<.*?\\>", "");
 			desc = desc.replaceAll("\\r\\n", Constants.NEWLINE);
 
-			JSONArray conversation = new JSONArray();
+			String[] names = name.split(" ");
 
-			conversation.add(name);
+			for (String str : names) {
+				JSONArray conversation = new JSONArray();
 
-			StringBuffer sb = new StringBuffer();
+				conversation.add(str);
 
-			sb.append("【" + name + "】");
-			sb.append(Constants.NEWLINE);
-			sb.append(Constants.NEWLINE);
-			sb.append(desc);
-			sb.append(Constants.NEWLINE);
-			sb.append(Constants.NEWLINE);
-			sb.append("详细内容请<a href=\"taklip.com/brand/" + brand.getId() + "\">点击这里</a>");
+				StringBuffer sb = new StringBuffer();
 
-			conversation.add(sb.toString());
+				sb.append("【" + name + "】");
+				sb.append(Constants.NEWLINE);
+				sb.append(Constants.NEWLINE);
+				sb.append(desc);
+				sb.append(Constants.NEWLINE);
+				sb.append(Constants.NEWLINE);
+				sb.append("详细内容请<a href=\"taklip.com/brand/" + brand.getId() + "\">点击这里</a>");
 
-			questions.add(conversation);
+				conversation.add(sb.toString());
+
+				questions.add(conversation);
+			}
 		}
 
 		obj.put("conversations", questions);
@@ -191,7 +196,6 @@ public class ChatterController {
 		try (FileWriter file = new FileWriter("items.json")) {
 			file.write(obj.toJSONString());
 			file.flush();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -207,6 +211,7 @@ public class ChatterController {
 			String title = term.getTitle();
 			String desc = term.getDescription();
 
+			desc = desc.replaceAll("</p>", Constants.NEWLINE);
 			desc = desc.replaceAll("\\<.*?\\>", "");
 			desc = desc.replaceAll("\\r\\n", Constants.NEWLINE);
 
