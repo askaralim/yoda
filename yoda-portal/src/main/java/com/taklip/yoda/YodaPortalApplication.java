@@ -24,9 +24,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @SpringBootApplication
 public class YodaPortalApplication {
-	private final Logger logger = LoggerFactory.getLogger(YodaPortalApplication.class);
+    private final Logger logger = LoggerFactory.getLogger(YodaPortalApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(YodaPortalApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(YodaPortalApplication.class, args);
+    }
 }

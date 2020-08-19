@@ -1,4 +1,24 @@
 spring:
-   profiles:
-#active: '@profileActive@'
-      active: dev
+  profiles:
+    active: dev
+  application:
+    name: yoda-portal
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      #location: /yoda/uploads/
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      # ----------------
+      force: true
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+  banner:
+    charset: UTF-8
+
+app:
+  id: ${spring.application.name}

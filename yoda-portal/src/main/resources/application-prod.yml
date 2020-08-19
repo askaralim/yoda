@@ -6,14 +6,14 @@ server:
 spring:
   profiles:
     include:
-      - core-dev
+      - core-prod
 
 logging:
 #  level:
-#    root: INFO
+#    root: WARN
 #    org.springframework.web: INFO
 #    org.springframework.security: INFO
-#    com.taklip: DEBUG
-#    sample.mybatis.mapper: DEBUG
+#    com.taklip: INFO
+#    sample.mybatis.mapper: INFO
   file:
     path: /var/tmp/yoda-portal-log

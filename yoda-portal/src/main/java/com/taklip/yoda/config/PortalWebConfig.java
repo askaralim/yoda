@@ -6,15 +6,18 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+/**
+ * @author askar
+ */
 //@EnableWebMvc
 //@ComponentScan(basePackages = "com.taklip.yoda.controller", includeFilters = @Filter(Controller.class))
 @Configuration
 public class PortalWebConfig implements WebMvcConfigurer {
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new LocaleChangeInterceptor());
-	}
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LocaleChangeInterceptor());
+    }
 
 //	@Override
 //	public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -36,9 +39,9 @@ public class PortalWebConfig implements WebMvcConfigurer {
 //		return resolver;
 //	}
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 //		registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/static/");
-		registry.addResourceHandler("/uploads/**").addResourceLocations("file:///" + System.getProperties().getProperty("user.home") + "/yoda/uploads/");
-	}
+        registry.addResourceHandler("/uploads/**").addResourceLocations("file:///" + System.getProperties().getProperty("user.home") + "/yoda/uploads/");
+    }
 }
