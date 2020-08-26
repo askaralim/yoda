@@ -1,19 +1,21 @@
 package com.taklip.yoda.service;
 
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Post;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface PostService {
-	Post getPost(Long id);
+    Post getPost(Long id);
 
-	Post save(Post post);
+    Post save(Post post);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	List<Post> getPostsByUser(Long userId);
+    List<Post> getPostsByUser(Long userId);
 
-	Pagination<Post> getPostsByUser(Long userId, RowBounds rowBounds);
+    PageInfo<Post> getPostsByUser(Long userId, Integer offset, Integer limit);
 }

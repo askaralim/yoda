@@ -1,15 +1,11 @@
 package com.taklip.yoda.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.Term;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.TermService;
 import com.taklip.yoda.util.AuthenticatedUtil;
-import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping("/term")
 public class PortalTermController extends PortalBaseController {
@@ -33,21 +32,14 @@ public class PortalTermController extends PortalBaseController {
     TermService termService;
 
     @GetMapping
-    public ModelAndView showTerms(HttpServletRequest request) {
+    public ModelAndView showTerms(@RequestParam(value = "offset", defaultValue = "0") Integer offset) {
         ModelMap model = new ModelMap();
 
         Site site = getSite();
 
-        String offsetStr = request.getParameter("offset");
-        int offset = 0;
+        PageInfo<Term> page = termService.getTerms(offset, 4);
 
-        if (null != offsetStr) {
-            offset = Integer.valueOf(offsetStr);
-        }
-
-        Pagination<Term> page = termService.getTerms(new RowBounds(offset, 4));
-
-        for (Term term : page.getData()) {
+        for (Term term : page.getList()) {
             shortenTermDescription(term);
         }
 
@@ -56,7 +48,7 @@ public class PortalTermController extends PortalBaseController {
         setUserLoginStatus(model);
 
         model.put("currentUser", currentUser);
-        model.put("termsCount", page.getTotalCount());
+        model.put("termsCount", page.getTotal());
 
         // not cool, temporary
         termsViewCount += 1;
@@ -70,30 +62,15 @@ public class PortalTermController extends PortalBaseController {
 
     @ResponseBody
     @GetMapping("/page")
-    public String showPagination(
+    public PageInfo<Term> showPagination(
             @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
-        Pagination<Term> page = termService.getTerms(new RowBounds(offset, 4));
+        PageInfo<Term> page = termService.getTerms(offset, 4);
 
-        JSONArray array = new JSONArray();
-
-        try {
-            for (Term term : page.getData()) {
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("id", term.getId());
-                jsonObject.put("title", term.getTitle());
-
-                Term shortenTerm = shortenTermDescription(term);
-
-                jsonObject.put("description", shortenTerm.getDescription());
-
-                array.add(jsonObject);
-            }
-        } catch (JSONException e) {
-            logger.error(e.getMessage());
+        for (Term term : page.getList()) {
+            shortenTermDescription(term);
         }
 
-        return array.toString();
+        return page;
     }
 
     @GetMapping("/{id}")

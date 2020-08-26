@@ -153,7 +153,7 @@
 		WHERE c.create_by = #{userId}
 	</select>
 
-	<select id="getContentsByFeatureData" resultType="Content">
+	<select id="getContentsByFeatureData" resultMap="contentResult">
 		SELECT
 			c.id,
 			c.site_id,
@@ -177,7 +177,7 @@
 		ORDER BY c.update_date DESC
 	</select>
 
-	<select id="getContentsByFeatureDataCount" resultType="java.lang.Integer">
+	<select id="getContentsByFeatureDataCount" resultType="java.lang.Long">
 		SELECT count(*) from content c
 		WHERE c.feature_data = #{featureData}
 	</select>

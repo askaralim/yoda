@@ -1,12 +1,11 @@
 package com.taklip.yoda.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.mapper.ChatQuestionMapper;
 import com.taklip.yoda.model.ChatQuestion;
-import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.service.ChatQuestionService;
-import org.apache.ibatis.session.RowBounds;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,43 +13,47 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author askar
+ */
 @Service
 @Transactional
 public class ChatQuestionServiceImpl implements ChatQuestionService {
-	@Autowired
-	ChatQuestionMapper chatQuestionMapper;
+    @Autowired
+    ChatQuestionMapper chatQuestionMapper;
 
-	@Autowired
-	private IdService idService;
+    @Autowired
+    private IdService idService;
 
-	@Autowired
-	private SqlSessionTemplate sqlSessionTemplate;
+    @Override
+    public void addChatQuestion(ChatQuestion chatQuestion) {
+        chatQuestion.setId(idService.generateId());
 
-	public void addChatQuestion(ChatQuestion chatQuestion) {
-		chatQuestion.setId(idService.generateId());
+        chatQuestion.setCreateDate(new Date());
 
-		chatQuestion.setCreateDate(new Date());
+        chatQuestionMapper.insert(chatQuestion);
+    }
 
-		chatQuestionMapper.insert(chatQuestion);
-	}
+    @Override
+    public List<ChatQuestion> getChatQuestions() {
+        return chatQuestionMapper.getChatQuestions();
+    }
 
-	public List<ChatQuestion> getChatQuestions() {
-		return chatQuestionMapper.getChatQuestions();
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public PageInfo<ChatQuestion> getChatQuestions(Integer offset, Integer limit) {
+        PageHelper.offsetPage(offset, limit);
 
-	@Transactional(readOnly = true)
-	public Pagination<ChatQuestion> getChatQuestions(RowBounds rowBounds) {
-		List<ChatQuestion> chatQuestions = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ChatQuestionMapper.getChatQuestions", null, rowBounds);
+        List<ChatQuestion> chatQuestions = chatQuestionMapper.getChatQuestions();
 
-		List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.ChatQuestionMapper.count");
+        PageInfo<ChatQuestion> pageInfo = new PageInfo<>(chatQuestions);
 
-		Pagination<ChatQuestion> page = new Pagination<ChatQuestion>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), chatQuestions);
+        return pageInfo;
+    }
 
-		return page;
-	}
-
-	@Transactional(readOnly = true)
-	public ChatQuestion getChatQuestion(int id) {
-		return chatQuestionMapper.getById(id);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public ChatQuestion getChatQuestion(int id) {
+        return chatQuestionMapper.getById(id);
+    }
 }

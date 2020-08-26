@@ -1,28 +1,31 @@
 package com.taklip.yoda.service;
 
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.UserFollowee;
 import com.taklip.yoda.model.UserFollower;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface UserFollowRelationService {
-	List<UserFollower> getUserFollowers(Long userId);
+    List<UserFollower> getUserFollowers(Long userId);
 
-	List<UserFollowee> getUserFollowees(Long userId);
+    List<UserFollowee> getUserFollowees(Long userId);
 
-	int getUserFollowerCount(Long userId);
+    int getUserFollowerCount(Long userId);
 
-	int getUserFolloweeCount(Long userId);
+    int getUserFolloweeCount(Long userId);
 
-	Pagination<UserFollower> getUserFollowers(Long userId, RowBounds rowBounds);
+    PageInfo<UserFollower> getUserFollowers(Long userId, Integer offset, Integer limit);
 
-	Pagination<UserFollowee> getUserFollowees(Long userId, RowBounds rowBounds);
+    PageInfo<UserFollowee> getUserFollowees(Long userId, Integer offset, Integer limit);
 
-	Boolean isFollowing(long followerId, long followeeId);
+    Boolean isFollowing(long followerId, long followeeId);
 
-	void follow(long followerId, long followeeId);
+    void follow(long followerId, long followeeId);
 
-	void unFollow(long followerId, long followeeId);
+    void unFollow(long followerId, long followeeId);
 }

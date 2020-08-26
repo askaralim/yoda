@@ -18,7 +18,6 @@ import com.taklip.yoda.elasticsearch.BrandIndexer;
 import com.taklip.yoda.elasticsearch.ContentIndexer;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Content;
-import com.taklip.yoda.model.PageInfo;
 import com.taklip.yoda.model.SearchInfo;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.tool.StringPool;
@@ -61,36 +60,36 @@ public class PortalSearchController extends PortalBaseController {
 		return "portal/search/search";
 	}
 
-	public PageInfo getSearch(HttpServletRequest request) {
-		Site site = getSite();
-
-		PageInfo pageInfo = new PageInfo();
-
-		String value = request.getParameter("pageNum");
-
-		if (value == null) {
-			value = "1";
-		}
-
-		int pageNum = Integer.valueOf(value);
-
-		String query = (String) request.getParameter("keyword");
-
-//		SearchInfo searchInfo = getSearch(templateEngine.site.getSiteId(), query, templateEngine.pageSize, Constants.PAGE_NAV_COUNT, pageNum);
-		SearchInfo searchInfo = new SearchInfo();
-
-		Map<String, Object> model = new HashMap<String, Object>();
-
-		model.put("searchInfo", searchInfo);
-
-//		String text = DefaultTemplateEngine.getTemplate(request, response, "search/search.vm", model);
+//	public PageInfo getSearch(HttpServletRequest request) {
+//		Site site = getSite();
 //
-//		pageInfo.setPageBody(text);
-
-		pageInfo.setPageTitle(site + " - " + "Search");
-
-		return pageInfo;
-	}
+//		PageInfo pageInfo = new PageInfo();
+//
+//		String value = request.getParameter("pageNum");
+//
+//		if (value == null) {
+//			value = "1";
+//		}
+//
+//		int pageNum = Integer.valueOf(value);
+//
+//		String query = (String) request.getParameter("keyword");
+//
+////		SearchInfo searchInfo = getSearch(templateEngine.site.getSiteId(), query, templateEngine.pageSize, Constants.PAGE_NAV_COUNT, pageNum);
+//		SearchInfo searchInfo = new SearchInfo();
+//
+//		Map<String, Object> model = new HashMap<String, Object>();
+//
+//		model.put("searchInfo", searchInfo);
+//
+////		String text = DefaultTemplateEngine.getTemplate(request, response, "search/search.vm", model);
+////
+////		pageInfo.setPageBody(text);
+//
+//		pageInfo.setPageTitle(site + " - " + "Search");
+//
+//		return pageInfo;
+//	}
 
 	public SearchInfo getSearch(
 			long siteId, String query, int pageSize, int pageNavCount,

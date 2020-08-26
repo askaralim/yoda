@@ -3,6 +3,7 @@ package com.taklip.yoda.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.PostService;
@@ -33,320 +34,320 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/user")
 public class PortalUserController extends PortalBaseController {
-	private final Logger logger = LoggerFactory.getLogger(PortalUserController.class);
+    private final Logger logger = LoggerFactory.getLogger(PortalUserController.class);
 
-	@Autowired
-	protected ContentService contentService;
+    @Autowired
+    protected ContentService contentService;
 
-	@Autowired
-	protected UserService userService;
+    @Autowired
+    protected UserService userService;
 
-	@Autowired
-	protected UserFollowRelationService userFollowRelationService;
+    @Autowired
+    protected UserFollowRelationService userFollowRelationService;
 
-	@Autowired
-	protected PostService postService;
+    @Autowired
+    protected PostService postService;
 
-	@Autowired
-	protected AuthenticationManager authenticationManager;
+    @Autowired
+    protected AuthenticationManager authenticationManager;
 
-	@GetMapping("/{id}")
-	public ModelAndView setupForm(
-			@PathVariable("id") long id, HttpServletRequest request) {
-		ModelMap model = new ModelMap();
+    @GetMapping("/{id}")
+    public ModelAndView setupForm(
+            @PathVariable("id") long id, HttpServletRequest request) {
+        ModelMap model = new ModelMap();
 
-		Site site = getSite();
+        Site site = getSite();
 
-		User user = userService.getUser(id);
+        User user = userService.getUser(id);
 
-		if (null == user) {
-			return new ModelAndView("/404", "requestURL", id);
-		}
+        if (null == user) {
+            return new ModelAndView("/404", "requestURL", id);
+        }
 
-		Pagination<Post> page = postService.getPostsByUser(id, new RowBounds(0, 10));
-		List<Content> contents = contentService.getContentByUserId(user.getId());
-		int followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
-		int followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
+        PageInfo<Post> page = postService.getPostsByUser(id,0, 10);
+        List<Content> contents = contentService.getContentByUserId(user.getId());
+        int followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
+        int followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
 
-		model.put("user", user);
-		model.put("contents", contents);
-		model.put("page", page);
-		model.put("followerCount", followerCount);
-		model.put("followeeCount", followeeCount);
+        model.put("user", user);
+        model.put("contents", contents);
+        model.put("page", page);
+        model.put("followerCount", followerCount);
+        model.put("followeeCount", followeeCount);
 
-		setUserLoginStatus(model);
+        setUserLoginStatus(model);
 
-		model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
-		model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
-		model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
-		model.put("url", request.getRequestURL().toString());
-		model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
-		model.put("site", site);
+        model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
+        model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
+        model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
+        model.put("url", request.getRequestURL().toString());
+        model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        model.put("site", site);
 
-		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
+        User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
-		model.put("currentUser", currentUser);
+        model.put("currentUser", currentUser);
 
-		if (currentUser != null) {
-			Boolean isFollowing = userFollowRelationService.isFollowing(currentUser.getId(), user.getId());
-			model.put("isFollowing", isFollowing);
-		}
+        if (currentUser != null) {
+            Boolean isFollowing = userFollowRelationService.isFollowing(currentUser.getId(), user.getId());
+            model.put("isFollowing", isFollowing);
+        }
 
-		return new ModelAndView("portal/user/profile", model);
-	}
+        return new ModelAndView("portal/user/profile", model);
+    }
 
-	@GetMapping("/settings")
-	public ModelAndView setupForm(HttpServletRequest request) {
-		Site site = getSite();
+    @GetMapping("/settings")
+    public ModelAndView setupForm(HttpServletRequest request) {
+        Site site = getSite();
 
-		ModelMap model = new ModelMap();
+        ModelMap model = new ModelMap();
 
-		User user = AuthenticatedUtil.getAuthenticatedUser();
+        User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		if (null == user) {
-			return new ModelAndView("redirect:/login", model);
-		}
+        if (null == user) {
+            return new ModelAndView("redirect:/login", model);
+        }
 
-		model.put("user", user);
-		model.put("tab", "basic");
+        model.put("user", user);
+        model.put("tab", "basic");
 
-		setUserLoginStatus(model);
+        setUserLoginStatus(model);
 
-		model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
-		model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
-		model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
-		model.put("url", request.getRequestURL().toString());
-		model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
-		model.put("site", site);
+        model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
+        model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
+        model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
+        model.put("url", request.getRequestURL().toString());
+        model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        model.put("site", site);
 
-		return new ModelAndView("portal/user/settings", model);
-	}
+        return new ModelAndView("portal/user/settings", model);
+    }
 
-	@PostMapping("/settings")
-	public ModelAndView update(
-			@ModelAttribute User user,
-			@RequestParam("photo") MultipartFile photo,
-			BindingResult result) {
-		new UserSettingsValidator().validate(user, result);
+    @PostMapping("/settings")
+    public ModelAndView update(
+            @ModelAttribute User user,
+            @RequestParam("photo") MultipartFile photo,
+            BindingResult result) {
+        new UserSettingsValidator().validate(user, result);
 
-		ModelMap model = new ModelMap();
+        ModelMap model = new ModelMap();
 
-		if (result.hasErrors()) {
-			logger.error(result.toString());
-			model.put("errors", "errors");
-			return new ModelAndView("portal/user/settings", model);
-		}
+        if (result.hasErrors()) {
+            logger.error(result.toString());
+            model.put("errors", "errors");
+            return new ModelAndView("portal/user/settings", model);
+        }
 
-		Site site = getSite();
+        Site site = getSite();
 
-		setUserLoginStatus(model);
+        setUserLoginStatus(model);
 
-		model.put("site", site);
+        model.put("site", site);
 
-		User userDb = userService.update(user, photo);
+        User userDb = userService.update(user, photo);
 
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		model.put("success", "success");
-		model.put("user", userDb);
+        model.put("success", "success");
+        model.put("user", userDb);
 
-		return new ModelAndView("portal/user/settings", model);
-	}
+        return new ModelAndView("portal/user/settings", model);
+    }
 
-	@GetMapping("/register")
-	public String setupForm(@ModelAttribute User user) {
-		return "portal/user/register";
-	}
+    @GetMapping("/register")
+    public String setupForm(@ModelAttribute User user) {
+        return "portal/user/register";
+    }
 
-	@PostMapping("/register")
-	public ModelAndView submit(
-			@RequestParam("username") String username,
-			@RequestParam("email") String email,
-			@RequestParam("password") String password) {
-		ModelAndView model = new ModelAndView();
+    @PostMapping("/register")
+    public ModelAndView submit(
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password) {
+        ModelAndView model = new ModelAndView();
 
-		User userDb = userService.getUserByUserName(username);
+        User userDb = userService.getUserByUserName(username);
 
-		if (null != userDb) {
-			model.addObject("error", "duplicate-username");
+        if (null != userDb) {
+            model.addObject("error", "duplicate-username");
 
-			model.setViewName("portal/user/register");
+            model.setViewName("portal/user/register");
 
-			return model;
-		}
+            return model;
+        }
 
-		if (!Validator.isEmailAddress(email)) {
-			model.addObject("error", "invalid-email");
+        if (!Validator.isEmailAddress(email)) {
+            model.addObject("error", "invalid-email");
 
-			model.setViewName("portal/user/register");
+            model.setViewName("portal/user/register");
 
-			return model;
-		}
+            return model;
+        }
 
-		userDb = userService.getUserByEmail(email);
+        userDb = userService.getUserByEmail(email);
 
-		if (null != userDb) {
-			model.addObject("error", "duplicate-email");
+        if (null != userDb) {
+            model.addObject("error", "duplicate-email");
 
-			model.setViewName("portal/user/register");
+            model.setViewName("portal/user/register");
 
-			return model;
-		}
+            return model;
+        }
 
-		try {
-			User user = new User();
-			user.setPassword(password);
-			user.setUsername(username);
-			user.setEmail(email);
-			userService.add(user);
-		} catch (Exception e) {
-			logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
-		}
+        try {
+            User user = new User();
+            user.setPassword(password);
+            user.setUsername(username);
+            user.setEmail(email);
+            userService.add(user);
+        } catch (Exception e) {
+            logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
+        }
 
-		try {
-			UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
+        try {
+            UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
 
-			Authentication result = authenticationManager.authenticate(authResult);
+            Authentication result = authenticationManager.authenticate(authResult);
 
-			// redirect into secured main page if authentication successful
-			if (result.isAuthenticated()) {
-				SecurityContextHolder.getContext().setAuthentication(result);
-				model.setViewName("redirect:/");
+            // redirect into secured main page if authentication successful
+            if (result.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(result);
+                model.setViewName("redirect:/");
 
-				return model;
-			}
-		} catch (Exception e) {
-			logger.debug("Problem authenticating user" + username, e);
-		}
+                return model;
+            }
+        } catch (Exception e) {
+            logger.debug("Problem authenticating user" + username, e);
+        }
 
-		model.setViewName("redirect:/");
+        model.setViewName("redirect:/");
 
-		return model;
-	}
+        return model;
+    }
 
-	@ResponseBody
-	@PostMapping("/register/ajax")
-	public String ajaxRegister(
-			@RequestParam("username") String username,
-			@RequestParam("email") String email,
-			@RequestParam("password") String password,
-			HttpServletRequest request) {
-		User userDb = userService.getUserByUserName(username);
+    @ResponseBody
+    @PostMapping("/register/ajax")
+    public String ajaxRegister(
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            HttpServletRequest request) {
+        User userDb = userService.getUserByUserName(username);
 
-		RequestContext requestContext = new RequestContext(request);
+        RequestContext requestContext = new RequestContext(request);
 
-		JSONObject jsonResult = new JSONObject();
+        JSONObject jsonResult = new JSONObject();
 
-		try {
-			if (null != userDb) {
-				jsonResult.put("error", requestContext.getMessage("duplicate-username"));
-			}
+        try {
+            if (null != userDb) {
+                jsonResult.put("error", requestContext.getMessage("duplicate-username"));
+            }
 
-			if (!Validator.isEmailAddress(email)) {
-				jsonResult.put("error", requestContext.getMessage("invalid-email"));
-			}
+            if (!Validator.isEmailAddress(email)) {
+                jsonResult.put("error", requestContext.getMessage("invalid-email"));
+            }
 
-			userDb = userService.getUserByEmail(email);
+            userDb = userService.getUserByEmail(email);
 
-			if (null != userDb) {
-				jsonResult.put("error", requestContext.getMessage("duplicate-email"));
-			}
-		} catch (JSONException e) {
-			logger.error(e.getMessage());
-		}
+            if (null != userDb) {
+                jsonResult.put("error", requestContext.getMessage("duplicate-email"));
+            }
+        } catch (JSONException e) {
+            logger.error(e.getMessage());
+        }
 
-		if (jsonResult.isEmpty()) {
-			try {
-				User user = new User();
-				user.setPassword(password);
-				user.setUsername(username);
-				user.setEmail(email);
-				userService.add(user);
-			} catch (Exception e) {
-				logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
-			}
+        if (jsonResult.isEmpty()) {
+            try {
+                User user = new User();
+                user.setPassword(password);
+                user.setUsername(username);
+                user.setEmail(email);
+                userService.add(user);
+            } catch (Exception e) {
+                logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email + e.getMessage());
+            }
 
-			try {
-				UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
+            try {
+                UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
 
-				Authentication result = authenticationManager.authenticate(authResult);
+                Authentication result = authenticationManager.authenticate(authResult);
 
-				// redirect into secured main page if authentication successful
-				if (result.isAuthenticated()) {
-					SecurityContextHolder.getContext().setAuthentication(result);
-				}
-			} catch (Exception e) {
-				logger.debug("Problem authenticating user" + username, e);
-			}
-		}
+                // redirect into secured main page if authentication successful
+                if (result.isAuthenticated()) {
+                    SecurityContextHolder.getContext().setAuthentication(result);
+                }
+            } catch (Exception e) {
+                logger.debug("Problem authenticating user" + username, e);
+            }
+        }
 
-		String jsonString = jsonResult.toString();
+        String jsonString = jsonResult.toString();
 
-		return jsonString;
-	}
+        return jsonString;
+    }
 
-	@RequestMapping(value = "/post/new", method = RequestMethod.POST)
-	public String addPost(@ModelAttribute Post post) {
+    @RequestMapping(value = "/post/new", method = RequestMethod.POST)
+    public String addPost(@ModelAttribute Post post) {
 
-		post.setDescription(HtmlUtils.htmlEscape(post.getDescription()));
+        post.setDescription(HtmlUtils.htmlEscape(post.getDescription()));
 
-		postService.save(post);
+        postService.save(post);
 
-		return "redirect:/user/" + post.getUserId();
-	}
+        return "redirect:/user/" + post.getUserId();
+    }
 
-	@ResponseBody
-	@RequestMapping(value = "/post/page", method = RequestMethod.GET)
-	public String showPagination(
-			@RequestParam("userId") Long userId,
-			@RequestParam(value = "offset", defaultValue = "0") Integer offset) {
-		Pagination<Post> page = postService.getPostsByUser(userId, new RowBounds(offset, 10));
+    @ResponseBody
+    @RequestMapping(value = "/post/page", method = RequestMethod.GET)
+    public String showPagination(
+            @RequestParam("userId") Long userId,
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        PageInfo<Post> page = postService.getPostsByUser(userId, offset, limit);
 
-		JSONArray array = new JSONArray();
+        JSONArray array = new JSONArray();
 
-		SimpleDateFormat datetimeformat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat datetimeformat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-		try {
-			for (Post post : page.getData()) {
-				JSONObject jsonObject = new JSONObject();
+            for (Post post : page.getList()) {
+                JSONObject jsonObject = new JSONObject();
 
-				jsonObject.put("id", post.getId());
-				jsonObject.put("description", post.getDescription());
-				jsonObject.put("createDate", datetimeformat.format(post.getCreateDate()));
+                jsonObject.put("id", post.getId());
+                jsonObject.put("description", post.getDescription());
+                jsonObject.put("createDate", datetimeformat.format(post.getCreateDate()));
 
-				array.add(jsonObject);
-			}
-		} catch (JSONException e) {
-			logger.error(e.getMessage());
-		}
+                array.add(jsonObject);
+            }
 
-		return array.toString();
-	}
+        return array.toString();
+    }
 
-	@ResponseBody
-	@PostMapping("/follow")
-	public Response follow(
-			@RequestParam("userId") Long userId,
-			@RequestParam("loginUserId") Long loginUserId) {
+    @ResponseBody
+    @PostMapping("/follow")
+    public Response follow(
+            @RequestParam("userId") Long userId,
+            @RequestParam("loginUserId") Long loginUserId) {
 
-		userFollowRelationService.follow(loginUserId, userId);
+        userFollowRelationService.follow(loginUserId, userId);
 
-		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
-	}
+        return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
+    }
 
-	@ResponseBody
-	@PostMapping("/unfollow")
-	public Response unfollow(
-			@RequestParam("userId") Long userId,
-			@RequestParam("loginUserId") Long loginUserId) {
+    @ResponseBody
+    @PostMapping("/unfollow")
+    public Response unfollow(
+            @RequestParam("userId") Long userId,
+            @RequestParam("loginUserId") Long loginUserId) {
 
-		userFollowRelationService.unFollow(loginUserId, userId);
+        userFollowRelationService.unFollow(loginUserId, userId);
 
-		return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
-	}
+        return new Response(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), null);
+    }
 }

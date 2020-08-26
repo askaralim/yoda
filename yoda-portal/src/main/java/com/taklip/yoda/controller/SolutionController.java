@@ -1,12 +1,12 @@
 package com.taklip.yoda.controller;
 
-import com.taklip.yoda.model.*;
+import com.github.pagehelper.PageInfo;
+import com.taklip.yoda.model.Item;
+import com.taklip.yoda.model.Solution;
+import com.taklip.yoda.model.SolutionItem;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.SolutionService;
-import com.taklip.yoda.service.TermService;
-import com.taklip.yoda.tool.StringPool;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,131 +20,127 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/controlpanel/solution")
 public class SolutionController {
-	@Autowired
-	SolutionService solutionService;
+    @Autowired
+    SolutionService solutionService;
 
-	@Autowired
-	ItemService itemService;
+    @Autowired
+    ItemService itemService;
 
-	@GetMapping
-	public String showSolutions(
-			Map<String, Object> model,
-			@RequestParam(name = "offset", required = false) String offset) {
-		int offsetInt = 0;
+    @GetMapping
+    public String showSolutions(Map<String, Object> model, @RequestParam(name = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<Solution> page = solutionService.getSolutions(offset, 10);
 
-		if (!StringUtils.isEmpty(offset)) {
-			offsetInt = Integer.valueOf(offset) * 10;
-		}
+        model.put("page", page);
 
-		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offsetInt, 10));
+        return "controlpanel/solution/list";
+    }
 
-		model.put("page", page);
-		return "controlpanel/solution/list";
-	}
+    @GetMapping("/add")
+    public ModelAndView initCreationForm(Map<String, Object> model) {
+        Solution solution = new Solution();
 
-	@GetMapping("/add")
-	public ModelAndView initCreationForm(Map<String, Object> model) {
-		Solution solution = new Solution();
+        model.put("solution", solution);
 
-		model.put("solution", solution);
+        return new ModelAndView("controlpanel/solution/form", model);
+    }
 
-		return new ModelAndView("controlpanel/solution/form", model);
-	}
+    @GetMapping(value = "/{id}/edit")
+    public String initUpdateForm(
+            @PathVariable("id") Long id, Map<String, Object> model) {
+        Solution solution = solutionService.getSolution(id);
 
-	@GetMapping(value = "/{id}/edit")
-	public String initUpdateForm(
-			@PathVariable("id") Long id, Map<String, Object> model) {
-		Solution solution = solutionService.getSolution(id);
+        model.put("solution", solution);
 
-		model.put("solution", solution);
+        return "controlpanel/solution/form";
+    }
 
-		return"controlpanel/solution/form";
-	}
+    @PostMapping("/save")
+    public ModelAndView save(
+            @Valid Solution solution, BindingResult result, RedirectAttributes redirect) {
+        ModelMap model = new ModelMap();
 
-	@PostMapping("/save")
-	public ModelAndView save(
-			@Valid Solution solution, BindingResult result, RedirectAttributes redirect) {
-		ModelMap model = new ModelMap();
+        if (result.hasErrors()) {
+            model.put("errors", "errors");
+            return new ModelAndView("controlpanel/solution/form", model);
+        }
 
-		if (result.hasErrors()) {
-			model.put("errors", "errors");
-			return new ModelAndView("controlpanel/solution/form", model);
-		}
+        solutionService.save(solution);
 
-		solutionService.save(solution);
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		redirect.addFlashAttribute("globalMessage", "success");
+        return new ModelAndView("redirect:/controlpanel/solution/" + solution.getId() + "/edit", model);
+    }
 
-		return new ModelAndView("redirect:/controlpanel/solution/" + solution.getId() + "/edit", model);
-	}
+    @PostMapping("/{id}/uploadImage")
+    public String uploadImage(
+            @RequestParam("file") MultipartFile file, @PathVariable("id") Long id)
+            throws Throwable {
+        if (file.getBytes().length <= 0) {
+            return "redirect:/controlpanel/solution/" + id + "/edit";
+        }
 
-	@PostMapping("/{id}/uploadImage")
-	public String uploadImage(
-			@RequestParam("file") MultipartFile file, @PathVariable("id") Long id)
-			throws Throwable {
-		if (file.getBytes().length <= 0) {
-			return "redirect:/controlpanel/solution/" + id + "/edit";
-		}
+        if (StringUtils.isBlank(file.getName())) {
+            return "redirect:/controlpanel/solution/" + id + "/edit";
+        }
 
-		if (StringUtils.isBlank(file.getName())) {
-			return "redirect:/controlpanel/solution/" + id + "/edit";
-		}
+        solutionService.updateSolutionImage(id, file);
 
-		solutionService.updateSolutionImage(id, file);
+        return "redirect:/controlpanel/solution/" + id + "/edit";
+    }
 
-		return "redirect:/controlpanel/solution/" + id + "/edit";
-	}
+    @GetMapping("/{solutionId}/solutionItem/add")
+    public ModelAndView initCreationForm(
+            @PathVariable("solutionId") Long solutionId, Map<String, Object> model) {
+        SolutionItem solutionItem = new SolutionItem();
 
-	@GetMapping("/{solutionId}/solutionItem/add")
-	public ModelAndView initCreationForm(
-			@PathVariable("solutionId") Long solutionId, Map<String, Object> model) {
-		SolutionItem solutionItem = new SolutionItem();
+        solutionItem.setSolutionId(solutionId);
 
-		solutionItem.setSolutionId(solutionId);
+        List<Item> items = itemService.getItems();
 
-		List<Item> items = itemService.getItems();
+        model.put("solutionItem", solutionItem);
+        model.put("items", items);
 
-		model.put("solutionItem", solutionItem);
-		model.put("items", items);
+        return new ModelAndView("controlpanel/solution/editSolutionItem", model);
+    }
 
-		return new ModelAndView("controlpanel/solution/editSolutionItem", model);
-	}
+    @GetMapping("/solutionItem/{id}/edit")
+    public String initSolutionItemUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
+        SolutionItem solutionItem = solutionService.getSolutionItemsById(id);
 
-	@GetMapping("/solutionItem/{id}/edit")
-	public String initSolutionItemUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
-		SolutionItem solutionItem = solutionService.getSolutionItemsById(id);
+        List<Item> items = itemService.getItems();
 
-		List<Item> items = itemService.getItems();
+        model.put("solutionItem", solutionItem);
+        model.put("items", items);
 
-		model.put("solutionItem", solutionItem);
-		model.put("items", items);
+        return "controlpanel/solution/editSolutionItem";
+    }
 
-		return "controlpanel/solution/editSolutionItem";
-	}
+    @PostMapping(value = "/solutionItem/save")
+    public ModelAndView processCreationForm(
+            @ModelAttribute("solutionItem") SolutionItem solutionItem, RedirectAttributes redirect) {
+        ModelMap model = new ModelMap();
 
-	@PostMapping(value = "/solutionItem/save")
-	public ModelAndView processCreationForm(
-			@ModelAttribute("solutionItem") SolutionItem solutionItem, RedirectAttributes redirect) {
-		ModelMap model = new ModelMap();
+        solutionService.saveSolutionItem(solutionItem);
 
-		solutionService.saveSolutionItem(solutionItem);
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		redirect.addFlashAttribute("globalMessage", "success");
+        return new ModelAndView("redirect:/controlpanel/solution/solutionItem/" + solutionItem.getId() + "/edit", model);
+    }
 
-		return new ModelAndView("redirect:/controlpanel/solution/solutionItem/" + solutionItem.getId() + "/edit", model);
-	}
+    @GetMapping("/remove")
+    public String remove(@RequestParam("ids") String ids) {
+        String[] arrIds = ids.split(",");
 
-	@GetMapping("/remove")
-	public String remove(@RequestParam("ids") String ids) {
-		String[] arrIds = ids.split(",");
+        for (int i = 0; i < arrIds.length; i++) {
+            solutionService.delete(Long.valueOf(arrIds[i]));
+        }
 
-		for (int i = 0; i < arrIds.length; i++) {
-			solutionService.delete(Long.valueOf(arrIds[i]));
-		}
-
-		return "redirect:/controlpanel/term";
-	}
+        return "redirect:/controlpanel/term";
+    }
 }

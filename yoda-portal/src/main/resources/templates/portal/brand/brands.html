@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="home-brand-all">
                     <div id="brands" class="col-lg-12">
-                        <div th:each="brand : ${page.data}" class="col-sm-3" style="text-align: -webkit-center;">
+                        <div th:each="brand : ${page.list}" class="col-sm-3" style="text-align: -webkit-center;">
                             <div class="home-brand">
                                 <a href="/brand/brand.html" th:href="@{'/brand/' + ${brand.id}}">
                                     <div class="thumbnail" style="height: 150px; display: flex;align-items: center;">
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                <div th:if="${page.totalCount > 5}" class="row">
+                <div th:if="${page.total > 5}" class="row">
                     <div class="col-lg-4 col-lg-offset-4">
                         <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
                     </div>
@@ -49,23 +49,28 @@
 <script type="text/javascript">
     $(function () {
         var offset = 20;
+        var limit = 20;
 
         $('#more-brand').click(function () {
             $.ajax({
                 type: "GET",
                 url: "/brand/page",
-                data: {offset: offset},
+                data: {
+                    offset: offset,
+                    limit: limit
+                },
                 dataType: "json",
                 success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        var url = "/brand/" + data[i].id
+                    var list = data.list;
+                    for (var i = 0; i < list.length; i++) {
+                        var url = "/brand/" + list[i].id
 
                         $('#brands').append(
                             '<div class="col-sm-3" style="text-align: -webkit-center;">'
                                 + '<div class="home-brand">'
                                     + '<a href="' + url + '">'
                                         + '<div class="thumbnail" style="width: 150px; height: 150px; display: flex;align-items: center;">'
-                                        + '<img src="' + data[i].imagePath + '" alt=".." class="img-responsive">'
+                                        + '<img src="' + list[i].imagePath + '" alt=".." class="img-responsive">'
                                     + '</a>'
                                 + '</div>'
                             + '</div>'

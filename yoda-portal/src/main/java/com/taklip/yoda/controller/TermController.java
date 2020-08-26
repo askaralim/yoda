@@ -1,10 +1,8 @@
 package com.taklip.yoda.controller;
 
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Term;
 import com.taklip.yoda.service.TermService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/controlpanel/term")
 public class TermController {
@@ -23,18 +24,11 @@ public class TermController {
     TermService termService;
 
     @GetMapping
-    public String showTerms(
-            Map<String, Object> model,
-            @RequestParam(name = "offset", required = false) String offset) {
-        int offsetInt = 0;
-
-        if (!StringUtils.isEmpty(offset)) {
-            offsetInt = Integer.valueOf(offset) * 10;
-        }
-
-        Pagination<Term> page = termService.getTerms(new RowBounds(offsetInt, 10));
+    public String showTerms(Map<String, Object> model, @RequestParam(name = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<Term> page = termService.getTerms(offset * 10, 10);
 
         model.put("page", page);
+
         return "controlpanel/term/list";
     }
 

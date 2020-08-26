@@ -1,7 +1,7 @@
-# Yoda - CMS propotype
+# Yoda - CMS prototype
 
-## Envrionmen
-- JDK 8
+## Environment
+- JDK 11
 - Maven
 - MySQL
 

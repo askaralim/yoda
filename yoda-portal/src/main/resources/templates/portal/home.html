@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <!-- </div> -->
-                <div class="row" th:if="${homeInfo.page.totalCount > 4}">
+                <div class="row" th:if="${homeInfo.page.total > 4}">
                     <div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
                         <button id="more-content" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
                     </div>
@@ -135,21 +135,24 @@
 
 <script type='text/javascript' th:inline="javascript">
 	$(function(){
-		var offset = 4;
+	    var offset = 4;
+	    var limit = 4;
 
 		$('#more-content').click(function(){
 			$.ajax({
 				type: "GET",
 				url: '/content/page',
 				data:{
-					offset:offset
+                    offset: offset,
+                    limit: limit
 				},
 				contentType: 'text/json,charset=utf-8',
 				dataType: "json",
 				success: function(data){
+				    var list = data.list;
 					var text = '<div class="row">';
-					for(var i = 0; i < data.length; i++) {
-						var info = data[i];
+					for(var i = 0; i < list.length; i++) {
+						var info = list[i];
 						var infoScore = info.score;
 
 						if (info.score > 0) {
@@ -160,7 +163,7 @@
 							+'<div class="row content-preview-wrapper-row">'
 								+ '<div class="col-sm-12 content-preview-item">'
 									+ '<div class="content-preview-image">'
-										+ '<a href="/content/' + info.id + '"><img src="'+ info.defaultImageUrl + '" width="100%" alt="' + info.title + '"></a>'
+										+ '<a href="/content/' + info.id + '"><img src="'+ info.featuredImage + '" width="100%" alt="' + info.title + '"></a>'
 									+ '</div>'
 								+ '</div>'
 								+ '<div class="col-sm-12 content-preview-item">'
@@ -188,7 +191,7 @@
 					$('.home-content').append(text);
 				}
 			});
-			offset = offset + 4;
+            offset = offset + 4;
 		});
 	});
 </script>

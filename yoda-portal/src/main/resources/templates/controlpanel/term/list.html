@@ -50,10 +50,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr th:if="${page.data.empty}">
+                            <tr th:if="${page.list.empty}">
                                 <td colspan="3">No data</td>
                             </tr>
-                            <tr th:each="term : ${page.data}">
+                            <tr th:each="term : ${page.list}">
                                 <td><input type="checkbox" id="ids" th:value="${term.id}"></td>
                                 <td th:text="${term.id}">1</td>
                                 <td th:text="${term.title}">Single Malt</td>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="pagination-info" role="alert" aria-live="polite" aria-relevant="all" th:text="'Showing ' + ${((page.currentPageNo - 1) * 10) + 1} + ' to ' + ${(page.currentPageNo) * 10} + ' of ' + ${page.totalCount} + ' entries'">
+                        <div class="pagination-info" role="alert" aria-live="polite" aria-relevant="all" th:text="'Showing ' + ${((page.pageNum - 1) * 10) + 1} + ' to ' + ${(page.pageNum) * 10} + ' of ' + ${page.total} + ' entries'">
                             Text
                         </div>
                     </div>
@@ -76,14 +76,14 @@
                         <div class="pagination-section">
                             <div class="pagination-pages">
                                 <ul class="pagination">
-                                    <li th:if="${page.hasPreviousPage}"><a th:href="@{/controlpanel/term(offset=${page.currentPageNo - 2})}" aria-label="Previous"><span>&laquo;</span></a></li>
+                                    <li th:if="${page.hasPreviousPage}"><a th:href="@{/controlpanel/term(offset=${page.pageNum - 2})}" aria-label="Previous"><span>&laquo;</span></a></li>
                                     <li th:unless="${page.hasPreviousPage}" class="disabled"><span>&laquo;</span>
                                     </li>
-                                    <li th:if="${page.hasNextPage}"><a th:href="@{/controlpanel/term(offset=${page.currentPageNo})}" aria-label="Next"><span>&raquo;</span></a></li>
+                                    <li th:if="${page.hasNextPage}"><a th:href="@{/controlpanel/term(offset=${page.pageNum})}" aria-label="Next"><span>&raquo;</span></a></li>
                                     <li th:unless="${page.hasNextPage}" class="disabled"><span>&laquo;</span></li>
                                 </ul>
                             </div>
-                            <div class="pagination-nav" th:text="${page.currentPageNo} + ' / ' + ${page.totalPageCount}"></div>
+                            <div class="pagination-nav" th:text="${page.pageNum} + ' / ' + ${page.pages}"></div>
                             <div class="pagination-go-input">
                                 <input type="text" class="form-control">
                             </div>

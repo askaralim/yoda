@@ -1,29 +1,27 @@
 package com.taklip.yoda.service;
 
-import java.util.List;
-
-import org.apache.ibatis.session.RowBounds;
-
 import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.HomePage;
-import com.taklip.yoda.model.Pagination;
+
+import java.util.List;
+//import com.taklip.yoda.model.Pagination;
 
 public interface HomePageService {
-	List<HomePage> getHomePages(int siteId);
+    List<HomePage> getHomePages(int siteId);
 
-	List<HomePage> getHomePagesBySiteIdAndFeatureData(int siteId);
+    List<HomePage> getHomePagesBySiteIdAndFeatureData(int siteId);
 
-	List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId);
+    List<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId);
 
-	Pagination<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId, RowBounds rowBounds);
+//	Pagination<HomePage> getHomePagesBySiteIdAndFeatureDataNotY(int siteId, RowBounds rowBounds);
 
-	List<HomePage> getHomePagesBySiteIdOrderBySeqNum(int siteId);
+    List<HomePage> getHomePagesBySiteIdOrderBySeqNum(int siteId);
 
-	HomePage getHomePage(long homePageId);
+    HomePage getHomePage(long homePageId);
 
-	void add(int siteId, boolean featureData, Content content);
+    void add(int siteId, boolean featureData, Content content);
 
-	void delete(HomePage homePage);
+    void delete(HomePage homePage);
 
-	void update(HomePage homePage);
+    void update(HomePage homePage);
 }

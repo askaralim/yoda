@@ -18,50 +18,53 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/controlpanel/user")
 public class UserController {
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	SiteService siteService;
+    @Autowired
+    SiteService siteService;
 
-	@GetMapping
-	public String showUsers(Map<String, Object> model) {
-		List<User> users = userService.getUsers();
+    @GetMapping
+    public String showUsers(Map<String, Object> model) {
+        List<User> users = userService.getUsers();
 
-		model.put("users", users);
-		model.put("searchForm", new UserSearchForm());
+        model.put("users", users);
+        model.put("searchForm", new UserSearchForm());
 
-		return "controlpanel/user/list";
-	}
+        return "controlpanel/user/list";
+    }
 
-	@GetMapping("/add")
-	public String setupForm(Map<String, Object> model) {
-		User user = new User();
+    @GetMapping("/add")
+    public String setupForm(Map<String, Object> model) {
+        User user = new User();
 
-		user.setEnabled(true);
-		user.getAuthorities().add(new UserAuthority(user.getId(), "ROLE_USER"));
+        user.setEnabled(true);
+        user.getAuthorities().add(new UserAuthority(user.getId(), "ROLE_USER"));
 
-		model.put("user", user);
+        model.put("user", user);
 
-		return "controlpanel/user/form";
-	}
+        return "controlpanel/user/form";
+    }
 
-	@PostMapping("/save")
-	public ModelAndView save(
-			@ModelAttribute User user, @RequestParam("photo") MultipartFile photo,
-			BindingResult result,
-			RedirectAttributes redirect) {
-		new UserEditValidator().validate(user, result);
+    @PostMapping("/save")
+    public ModelAndView save(
+            @ModelAttribute User user, @RequestParam("photo") MultipartFile photo,
+            BindingResult result,
+            RedirectAttributes redirect) {
+        new UserEditValidator().validate(user, result);
 
-		ModelMap model = new ModelMap();
+        ModelMap model = new ModelMap();
 
-		if(result.hasErrors()) {
-			model.put("errors", "errors");
-			return new ModelAndView("controlpanel/user/form", model);
-		}
+        if (result.hasErrors()) {
+            model.put("errors", "errors");
+            return new ModelAndView("controlpanel/user/form", model);
+        }
 
 //		String role = request.getParameter("userRole");
 
@@ -69,47 +72,46 @@ public class UserController {
 //			role = StringPool.BLANK;
 //		}
 
-		if (null == user.getId()) {
-			userService.add(user);
-		}
-		else {
-			userService.update(user, photo);
-		}
+        if (null == user.getId()) {
+            userService.add(user);
+        } else {
+            userService.update(user, photo);
+        }
 
-		redirect.addFlashAttribute("globalMessage", "success");
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		return new ModelAndView("redirect:/controlpanel/user/" + user.getId() + "/edit", model);
-	}
+        return new ModelAndView("redirect:/controlpanel/user/" + user.getId() + "/edit", model);
+    }
 
-	@GetMapping("/{id}/edit")
-	public ModelAndView setupForm(@PathVariable("id") long id) {
-		User user = userService.getUser(id);
+    @GetMapping("/{id}/edit")
+    public ModelAndView setupForm(@PathVariable("id") long id) {
+        User user = userService.getUser(id);
 
-		return new ModelAndView("controlpanel/user/form", "user", user);
-	}
+        return new ModelAndView("controlpanel/user/form", "user", user);
+    }
 
-	@GetMapping("/search")
-	public String search(
-			@ModelAttribute UserSearchForm form, Map<String, Object> model) {
-		List<User> users = userService.search(
-				form.getUserId(), form.getUsername(), form.getRole(),
-				form.getEnabled());
+    @GetMapping("/search")
+    public String search(
+            @ModelAttribute UserSearchForm form, Map<String, Object> model) {
+        List<User> users = userService.search(
+                form.getUserId(), form.getUsername(), form.getRole(),
+                form.getEnabled());
 
-		model.put("users", users);
-		model.put("searchForm", form);
+        model.put("users", users);
+        model.put("searchForm", form);
 
-		return "controlpanel/user/list";
-	}
+        return "controlpanel/user/list";
+    }
 
-	@GetMapping("/remove")
-	public String removeUsers(
-			@RequestParam("ids") String ids) {
-		String[] arrIds = ids.split(",");
+    @GetMapping("/remove")
+    public String removeUsers(
+            @RequestParam("ids") String ids) {
+        String[] arrIds = ids.split(",");
 
-		for (int i = 0; i < arrIds.length; i++) {
-			userService.deleteUser(Long.valueOf(arrIds[i]));
-		}
+        for (int i = 0; i < arrIds.length; i++) {
+            userService.deleteUser(Long.valueOf(arrIds[i]));
+        }
 
-		return "redirect:/controlpanel/user/list";
-	}
+        return "redirect:/controlpanel/user/list";
+    }
 }

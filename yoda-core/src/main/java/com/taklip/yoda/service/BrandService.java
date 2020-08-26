@@ -1,8 +1,7 @@
 package com.taklip.yoda.service;
 
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Brand;
-import com.taklip.yoda.model.Pagination;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public interface BrandService {
 
     List<Brand> getBrandsTopViewed(int count);
 
-    Pagination<Brand> getHotBrands(RowBounds rowBounds);
+    PageInfo<Brand> getHotBrands(Integer offset, Integer limit);
 
     Brand getBrand(Long id);
 
@@ -35,5 +34,5 @@ public interface BrandService {
 
     void deleteBrand(Long id);
 
-    Pagination<Brand> getBrands(RowBounds rowBounds);
+    PageInfo<Brand> getBrands(Integer offset, Integer limit);
 }

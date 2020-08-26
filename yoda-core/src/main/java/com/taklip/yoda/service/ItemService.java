@@ -1,43 +1,44 @@
 package com.taklip.yoda.service;
 
-import java.util.List;
-
-import org.apache.ibatis.session.RowBounds;
+import com.github.pagehelper.PageInfo;
+import com.taklip.yoda.model.Item;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.taklip.yoda.model.Item;
-import com.taklip.yoda.model.Pagination;
+import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface ItemService {
-	void save(Item item);
+    void save(Item item);
 
-	void add(Item item);
+    void add(Item item);
 
-	Item update(Item item);
+    Item update(Item item);
 
-	Item getItem(Long itemId);
+    Item getItem(Long itemId);
 
-	int getItemHitCounter(Long itemId);
+    int getItemHitCounter(Long itemId);
 
-	void increaseItemHitCounter(Long itemId);
+    void increaseItemHitCounter(Long itemId);
 
-	void updateItemRating(Long itemId, int rating);
+    void updateItemRating(Long itemId, int rating);
 
-	List<Item> getItems();
+    List<Item> getItems();
 
-	Pagination<Item> getItems(RowBounds rowBounds);
+    PageInfo<Item> getItems(Integer offset, Integer limit);
 
-	List<Item> getItemsByContentId(Long contentId);
+    List<Item> getItemsByContentId(Long contentId);
 
-	List<Item> getItemsByBrandId(Long brandId);
+    List<Item> getItemsByBrandId(Long brandId);
 
-	List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
+    List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
 
-	List<Item> getItemsTopViewed(int count);
+    List<Item> getItemsTopViewed(int count);
 
-	List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
+    List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 
-	void remove(Long itemId);
+    void remove(Long itemId);
 
-	Item updateItemImage(Long id, MultipartFile file);
+    Item updateItemImage(Long id, MultipartFile file);
 }

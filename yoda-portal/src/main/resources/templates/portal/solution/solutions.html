@@ -18,7 +18,7 @@
                 <div class="home-main">
                     <div class="home-content">
                         <div class="row">
-                            <tr th:each="solution : ${page.data}">
+                            <tr th:each="solution : ${page.list}">
                                 <div class="col-sm-4">
                                     <div class="content-preview">
                                         <div class="row content-preview-wrapper-row">
@@ -41,7 +41,7 @@
                             </tr>
                         </div>
                     </div>
-                    <div class="row" th:if="${page.totalCount > 3}">
+                    <div class="row" th:if="${page.total > 3}">
                         <div class="col-lg-4 col-lg-offset-4" style="padding: 15px;">
                             <button id="more-solution" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
                         </div>
@@ -57,20 +57,23 @@
 <script type='text/javascript' th:inline="javascript">
 	$(function(){
 		var offset = 3;
+        var limit = 3;
 
 		$('#more-solution').click(function(){
 			$.ajax({
 				type: "GET",
 				url: '/solution/page',
 				data:{
-					offset:offset
+					offset:offset,
+                    limit: limit
 				},
 				contentType: 'text/json,charset=utf-8',
 				dataType: "json",
 				success: function(data){
+                    var list = data.list;
 					var text = '<div class="row">';
-					for(var i = 0; i < data.length; i++) {
-						var info = data[i];
+					for(var i = 0; i < list.length; i++) {
+						var info = list[i];
 
 						text += '<div class="col-sm-4">'
 							+'<div class="content-preview">'

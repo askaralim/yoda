@@ -1,6 +1,7 @@
 package com.taklip.yoda.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.*;
 import com.taklip.yoda.tool.Constants;
@@ -10,7 +11,6 @@ import com.taklip.yoda.util.DateUtil;
 import com.taklip.yoda.util.SiteUtil;
 import com.taklip.yoda.vo.ContentSearchForm;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,158 +25,153 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.util.*;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/controlpanel/content")
 public class ContentController {
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	SiteService siteService;
+    @Autowired
+    SiteService siteService;
 
-	@Autowired
-	ContentService contentService;
+    @Autowired
+    ContentService contentService;
 
-	@Autowired
-	HomePageService homePageService;
+    @Autowired
+    HomePageService homePageService;
 
-	@Autowired
-	CategoryService categoryService;
+    @Autowired
+    CategoryService categoryService;
 
-	@Autowired
-	MenuService menuService;
+    @Autowired
+    MenuService menuService;
 
-	@Autowired
-	BrandService brandService;
+    @Autowired
+    BrandService brandService;
 
-	@GetMapping
-	public String showPanel(
-			Map<String, Object> model,
-			@RequestParam(name = "offset", required = false) String offset) {
-		int offsetInt = 0;
+    @GetMapping
+    public String showPanel(Map<String, Object> model, @RequestParam(name = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<Content> page = contentService.getContents(offset * 10, 10);
 
-		if (!StringUtils.isEmpty(offset)) {
-			offsetInt = Integer.valueOf(offset) * 10;
-		}
+        model.put("page", page);
+        model.put("searchForm", new ContentSearchForm());
 
-		Pagination<Content> page = contentService.getContents(new RowBounds(offsetInt, 10));
+        return "controlpanel/content/list";
+    }
 
-		model.put("page", page);
-		model.put("searchForm", new ContentSearchForm());
+    @GetMapping("/add")
+    public ModelAndView setupForm(Map<String, Object> model) {
+        Content content = new Content();
 
-		return "controlpanel/content/list";
-	}
+        List<Category> categories = categoryService.getCategories();
 
-	@GetMapping("/add")
-	public ModelAndView setupForm(Map<String, Object> model) {
-		Content content = new Content();
+        model.put("categories", categories);
+        model.put("content", content);
+        model.put("contentType", "content");
 
-		List<Category> categories = categoryService.getCategories();
+        return new ModelAndView("controlpanel/content/form", model);
+    }
 
-		model.put("categories", categories);
-		model.put("content", content);
-		model.put("contentType", "content");
+    @PostMapping(value = "/save")
+    public ModelAndView save(
+            @ModelAttribute Content content, @RequestParam("categoryId") Long categoryId,
+            BindingResult result, HttpServletRequest request, RedirectAttributes redirect) throws Throwable {
+        ModelMap model = new ModelMap();
 
-		return new ModelAndView("controlpanel/content/form", model);
-	}
+        if (result.hasErrors()) {
+            List<Category> categories = categoryService.getCategories();
 
-	@PostMapping(value = "/save")
-	public ModelAndView save(
-			@ModelAttribute Content content, @RequestParam("categoryId") Long categoryId,
-			BindingResult result, HttpServletRequest request, RedirectAttributes redirect) throws Throwable {
-		ModelMap model = new ModelMap();
+            model.put("categories", categories);
+            model.put("errors", "errors");
 
-		if (result.hasErrors()) {
-			List<Category> categories = categoryService.getCategories();
+            return new ModelAndView("controlpanel/content/form", model);
+        }
 
-			model.put("categories", categories);
-			model.put("errors", "errors");
+        contentService.saveContent(content, categoryId);
 
-			return new ModelAndView("controlpanel/content/form", model);
-		}
+        saveContentContributors(request, content);
 
-		contentService.saveContent(content, categoryId);
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		saveContentContributors(request, content);
+        return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
+    }
 
-		redirect.addFlashAttribute("globalMessage", "success");
+    @GetMapping("/{id}/edit")
+    public String initUpdateForm(
+            @PathVariable("id") Long id, Map<String, Object> model) {
+        Content content = contentService.getContent(id);
 
-		return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
-	}
+        List<Category> categories = categoryService.getCategories();
 
-	@GetMapping("/{id}/edit")
-	public String initUpdateForm(
-			@PathVariable("id") Long id, Map<String, Object> model) {
-		Content content = contentService.getContent(id);
+        model.put("categories", categories);
+        model.put("content", content);
+        model.put("contentType", "content");
 
-		List<Category> categories = categoryService.getCategories();
+        return "controlpanel/content/form";
+    }
 
-		model.put("categories", categories);
-		model.put("content", content);
-		model.put("contentType", "content");
+    @GetMapping("/{contentId}/contentbrand/add")
+    public ModelAndView initCreationForm(
+            @PathVariable("contentId") Long contentId, Map<String, Object> model) {
+        ContentBrand contentBrand = new ContentBrand();
 
-		return "controlpanel/content/form";
-	}
+        contentBrand.setContentId(contentId);
 
-	@GetMapping("/{contentId}/contentbrand/add")
-	public ModelAndView initCreationForm(
-			@PathVariable("contentId") Long contentId, Map<String, Object> model) {
-		ContentBrand contentBrand = new ContentBrand();
+        List<Brand> brands = brandService.getBrands();
 
-		contentBrand.setContentId(contentId);
+        model.put("contentBrand", contentBrand);
+        model.put("brands", brands);
 
-		List<Brand> brands = brandService.getBrands();
+        return new ModelAndView("controlpanel/content/editContentBrand", model);
+    }
 
-		model.put("contentBrand", contentBrand);
-		model.put("brands", brands);
+    @GetMapping("/contentbrand/{id}/edit")
+    public String initContentBrandUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
+        ContentBrand contentBrand = contentService.getContentBrand(id);
 
-		return new ModelAndView("controlpanel/content/editContentBrand", model);
-	}
+        List<Brand> brands = brandService.getBrands();
 
-	@GetMapping("/contentbrand/{id}/edit")
-	public String initContentBrandUpdateForm(@PathVariable("id") Long id, Map<String, Object> model) {
-		ContentBrand contentBrand = contentService.getContentBrand(id);
+        model.put("contentBrand", contentBrand);
+        model.put("brands", brands);
 
-		List<Brand> brands = brandService.getBrands();
+        return "controlpanel/content/editContentBrand";
+    }
 
-		model.put("contentBrand", contentBrand);
-		model.put("brands", brands);
+    @PostMapping("/contentbrand/save")
+    public ModelAndView processCreationForm(
+            @ModelAttribute("contentBrand") ContentBrand contentBrand, RedirectAttributes redirect) {
+        ModelMap model = new ModelMap();
 
-		return "controlpanel/content/editContentBrand";
-	}
+        String brandName = StringPool.BLANK;
+        String brandLogo = StringPool.BLANK;
 
-	@PostMapping("/contentbrand/save")
-	public ModelAndView processCreationForm(
-			@ModelAttribute("contentBrand") ContentBrand contentBrand, RedirectAttributes redirect) {
-		ModelMap model = new ModelMap();
+        Brand brand;
 
-		String brandName = StringPool.BLANK;
-		String brandLogo = StringPool.BLANK;
+        if (null != contentBrand.getBrandId()) {
+            brand = brandService.getBrand(contentBrand.getBrandId());
+            brandName = brand.getName();
+            brandLogo = brand.getImagePath();
+        }
 
-		Brand brand;
+        contentBrand.setBrandName(brandName);
+        contentBrand.setBrandLogo(brandLogo);
 
-		if (null != contentBrand.getBrandId()) {
-			brand = brandService.getBrand(contentBrand.getBrandId());
-			brandName = brand.getName();
-			brandLogo = brand.getImagePath();
-		}
+        contentService.saveContentBrand(contentBrand);
 
-		contentBrand.setBrandName(brandName);
-		contentBrand.setBrandLogo(brandLogo);
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		contentService.saveContentBrand(contentBrand);
+        return new ModelAndView("redirect:/controlpanel/contentbrand/" + contentBrand.getId() + "/edit", model);
+    }
 
-		redirect.addFlashAttribute("globalMessage", "success");
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    public String deleteContent(
+            @ModelAttribute Content content) {
+        long contentId = content.getId();
 
-		return new ModelAndView("redirect:/controlpanel/contentbrand/" + contentBrand.getId() + "/edit", model);
-	}
-
-	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public String deleteContent(
-			@ModelAttribute Content content) {
-		long contentId = content.getId();
-
-		Content contentDb = contentService.getContent(contentId);
+        Content contentDb = contentService.getContent(contentId);
 
 //		ContentImage contentImage = content.getImage();
 //
@@ -192,180 +187,180 @@ public class ContentController {
 //			contentImageService.deleteContentImage(contentImage);
 //		}
 
-		Iterator iterator = (Iterator) contentDb.getMenus().iterator();
+        Iterator iterator = (Iterator) contentDb.getMenus().iterator();
 
-		while (iterator.hasNext()) {
-			Menu menu = (Menu) iterator.next();
-			menu.setContent(null);
-		}
+        while (iterator.hasNext()) {
+            Menu menu = (Menu) iterator.next();
+            menu.setContent(null);
+        }
 
-		contentService.deleteContent(contentDb);
+        contentService.deleteContent(contentDb);
 
 //		Indexer.getInstance(siteId).removeContent(content);
 
-		return "redirect:/controlpanel/content/list";
-	}
+        return "redirect:/controlpanel/content/list";
+    }
 
-	@RequestMapping(value = "/resetCounter")
-	public void resetCounter(
-			@PathVariable("contentId") Long contentId, HttpServletResponse response)
-			throws Throwable {
-		User user = AuthenticatedUtil.getAuthenticatedUser();
+    @RequestMapping(value = "/resetCounter")
+    public void resetCounter(
+            @PathVariable("contentId") Long contentId, HttpServletResponse response)
+            throws Throwable {
+        User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(contentId);
+        Content content = contentService.getContent(contentId);
 
-		content.setHitCounter(0);
-		content.setUpdateBy(user);
-		content.setUpdateDate(new Date());
+        content.setHitCounter(0);
+        content.setUpdateBy(user);
+        content.setUpdateDate(new Date());
 
-		contentService.updateContent(content);
+        contentService.updateContent(content);
 
-		JSONObject jsonResult = new JSONObject();
+        JSONObject jsonResult = new JSONObject();
 
-		jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
-		jsonResult.put("updateBy", content.getUpdateBy());
-		jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
+        jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
+        jsonResult.put("updateBy", content.getUpdateBy());
+        jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
 
-		String jsonString = jsonResult.toString();
+        String jsonString = jsonResult.toString();
 
-		response.setContentType("text/html");
-		response.setContentLength(jsonString.length());
+        response.setContentType("text/html");
+        response.setContentLength(jsonString.length());
 
-		OutputStream outputStream = response.getOutputStream();
+        OutputStream outputStream = response.getOutputStream();
 
-		outputStream.write(jsonString.getBytes());
-		outputStream.flush();
-	}
+        outputStream.write(jsonString.getBytes());
+        outputStream.flush();
+    }
 
-	public JSONObject createJsonSelectedMenus(int siteId, Content content)
-			throws Exception {
-		JSONObject jsonResult = new JSONObject();
+    public JSONObject createJsonSelectedMenus(int siteId, Content content)
+            throws Exception {
+        JSONObject jsonResult = new JSONObject();
 
-		Iterator iterator = content.getMenus().iterator();
+        Iterator iterator = content.getMenus().iterator();
 
-		Vector<JSONObject> menus = new Vector<JSONObject>();
+        Vector<JSONObject> menus = new Vector<JSONObject>();
 
-		while (iterator.hasNext()) {
-			Menu menu = (Menu) iterator.next();
+        while (iterator.hasNext()) {
+            Menu menu = (Menu) iterator.next();
 
-			JSONObject menuObject = new JSONObject();
+            JSONObject menuObject = new JSONObject();
 
-			menuObject.put("menuId", menu.getMenuId());
-			menuObject.put("menuLongDesc", menuService.formatMenuName(siteId, menu.getMenuId()));
-			menuObject.put("menuWindowMode", menu.getMenuWindowMode());
-			menuObject.put("menuWindowTarget", menu.getMenuWindowTarget());
-			menus.add(menuObject);
-		}
+            menuObject.put("menuId", menu.getMenuId());
+            menuObject.put("menuLongDesc", menuService.formatMenuName(siteId, menu.getMenuId()));
+            menuObject.put("menuWindowMode", menu.getMenuWindowMode());
+            menuObject.put("menuWindowTarget", menu.getMenuWindowTarget());
+            menus.add(menuObject);
+        }
 
-		jsonResult.put("menus", menus);
-		jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
+        jsonResult.put("menus", menus);
+        jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
 
-		return jsonResult;
-	}
+        return jsonResult;
+    }
 
-	@RequestMapping("/removeMenus")
-	public void removeMenus(
-			@PathVariable("contentId") Long contentId,
-			@RequestParam("removeMenus") int[] menuIds,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Throwable {
-		User user = AuthenticatedUtil.getAuthenticatedUser();
+    @RequestMapping("/removeMenus")
+    public void removeMenus(
+            @PathVariable("contentId") Long contentId,
+            @RequestParam("removeMenus") int[] menuIds,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Throwable {
+        User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(contentId);
+        Content content = contentService.getContent(contentId);
 
-		if (menuIds != null) {
-			for (int i = 0; i < menuIds.length; i++) {
-				Menu menu = menuService.getMenu(menuIds[i]);
+        if (menuIds != null) {
+            for (int i = 0; i < menuIds.length; i++) {
+                Menu menu = menuService.getMenu(menuIds[i]);
 
-				menu.setContent(null);
-				menu.setMenuUrl("");
-				menu.setMenuType("");
+                menu.setContent(null);
+                menu.setMenuUrl("");
+                menu.setMenuType("");
 
-				menuService.updateMenu(menu);
-			}
-		}
+                menuService.updateMenu(menu);
+            }
+        }
 
-		content.setUpdateBy(user);
-		content.setUpdateDate(new Date());
+        content.setUpdateBy(user);
+        content.setUpdateDate(new Date());
 
-		contentService.updateContent(content);
+        contentService.updateContent(content);
 
-		JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
+        JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
 
-		jsonResult.put("updateBy", content.getUpdateBy());
-		jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
+        jsonResult.put("updateBy", content.getUpdateBy());
+        jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
 
-		String jsonString = jsonResult.toString();
+        String jsonString = jsonResult.toString();
 
-		response.setContentType("text/html");
-		response.setContentLength(jsonString.length());
+        response.setContentType("text/html");
+        response.setContentLength(jsonString.length());
 
-		OutputStream outputStream = response.getOutputStream();
+        OutputStream outputStream = response.getOutputStream();
 
-		outputStream.write(jsonString.getBytes());
-		outputStream.flush();
-	}
+        outputStream.write(jsonString.getBytes());
+        outputStream.flush();
+    }
 
-	@RequestMapping("/addMenus")
-	public void addMenus(
-			@PathVariable("contentId") Long contentId,
-			@RequestParam("menuWindowTarget") String menuWindowTarget,
-			@RequestParam("menuWindowMode") String menuWindowMode,
-			@RequestParam("addMenus") int[] addMenus,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Throwable {
-		User user = AuthenticatedUtil.getAuthenticatedUser();
+    @RequestMapping("/addMenus")
+    public void addMenus(
+            @PathVariable("contentId") Long contentId,
+            @RequestParam("menuWindowTarget") String menuWindowTarget,
+            @RequestParam("menuWindowMode") String menuWindowMode,
+            @RequestParam("addMenus") int[] addMenus,
+            HttpServletRequest request, HttpServletResponse response)
+            throws Throwable {
+        User user = AuthenticatedUtil.getAuthenticatedUser();
 
-		Content content = contentService.getContent(contentId);
+        Content content = contentService.getContent(contentId);
 
-		if (addMenus != null) {
-			for (int i = 0; i < addMenus.length; i++) {
-				menuService.updateMenu(
-						SiteUtil.getDefaultSite().getSiteId(), addMenus[i], content, null, "",
-						menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
-			}
-		}
+        if (addMenus != null) {
+            for (int i = 0; i < addMenus.length; i++) {
+                menuService.updateMenu(
+                        SiteUtil.getDefaultSite().getSiteId(), addMenus[i], content, null, "",
+                        menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
+            }
+        }
 
-		content.setUpdateBy(user);
-		content.setUpdateDate(new Date());
+        content.setUpdateBy(user);
+        content.setUpdateDate(new Date());
 
-		contentService.updateContent(content);
+        contentService.updateContent(content);
 
-		JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
+        JSONObject jsonResult = createJsonSelectedMenus(SiteUtil.getDefaultSite().getSiteId(), content);
 
-		jsonResult.put("updateBy", content.getUpdateBy());
-		jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
+        jsonResult.put("updateBy", content.getUpdateBy());
+        jsonResult.put("updateDate", DateUtil.getFullDatetime(content.getUpdateDate()));
 
-		String jsonString = jsonResult.toString();
+        String jsonString = jsonResult.toString();
 
-		response.setContentType("text/html");
-		response.setContentLength(jsonString.length());
+        response.setContentType("text/html");
+        response.setContentLength(jsonString.length());
 
-		OutputStream outputStream = response.getOutputStream();
+        OutputStream outputStream = response.getOutputStream();
 
-		outputStream.write(jsonString.getBytes());
-		outputStream.flush();
-	}
+        outputStream.write(jsonString.getBytes());
+        outputStream.flush();
+    }
 
-	@PostMapping("/{id}/uploadImage")
-	public String uploadImage(
-			@RequestParam("file") MultipartFile file,
-			@PathVariable("id") long id,
-			HttpServletRequest request)
-			throws Throwable {
+    @PostMapping("/{id}/uploadImage")
+    public String uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable("id") long id,
+            HttpServletRequest request)
+            throws Throwable {
 //		User user = PortalUtil.getAuthenticatedUser();
 
 
-		if (file.getBytes().length <= 0) {
-			return "redirect:/controlpanel/content/" + id + "/edit";
-		}
+        if (file.getBytes().length <= 0) {
+            return "redirect:/controlpanel/content/" + id + "/edit";
+        }
 
-		if (StringUtils.isEmpty(file.getName())) {
-			return "redirect:/controlpanel/content/" + id + "/edit";
-		}
+        if (StringUtils.isEmpty(file.getName())) {
+            return "redirect:/controlpanel/content/" + id + "/edit";
+        }
 
-		contentService.updateContentImage(
-				SiteUtil.getDefaultSite().getSiteId(), id, file);
+        contentService.updateContentImage(
+                SiteUtil.getDefaultSite().getSiteId(), id, file);
 
 //		ImageScaler scaler = null;
 //
@@ -408,12 +403,12 @@ public class ContentController {
 //		outputStream.write(jsonString.getBytes());
 //		outputStream.flush();
 
-		return "redirect:/controlpanel/content/" + id + "/edit";
-	}
+        return "redirect:/controlpanel/content/" + id + "/edit";
+    }
 
-	public JSONObject createJsonImages(int siteId, Content content)
-			throws Exception {
-		JSONObject jsonResult = new JSONObject();
+    public JSONObject createJsonImages(int siteId, Content content)
+            throws Exception {
+        JSONObject jsonResult = new JSONObject();
 
 //		ContentImage defaultImage = content.getImage();
 //
@@ -440,10 +435,10 @@ public class ContentController {
 //		}
 //
 //		jsonResult.put("images", vector);
-		jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
+        jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
 
-		return jsonResult;
-	}
+        return jsonResult;
+    }
 
 //	public void removeImages(
 //			@PathVariable("contentId") Long contentId,
@@ -555,86 +550,86 @@ public class ContentController {
 //		}
 //	}
 
-	public void saveContentContributors(HttpServletRequest request, Content content) {
-		Enumeration<String> names = request.getParameterNames();
+    public void saveContentContributors(HttpServletRequest request, Content content) {
+        Enumeration<String> names = request.getParameterNames();
 
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
 
-			if (name.startsWith("contributorId")) {
-				String userId = request.getParameter(name);
+            if (name.startsWith("contributorId")) {
+                String userId = request.getParameter(name);
 
-				if (StringUtils.isEmpty(userId)) {
-					continue;
-				}
+                if (StringUtils.isEmpty(userId)) {
+                    continue;
+                }
 
-				User user = userService.getUser(Long.valueOf(userId));
+                User user = userService.getUser(Long.valueOf(userId));
 
-				if (null == user) {
-					continue;
-				}
+                if (null == user) {
+                    continue;
+                }
 
-				ContentContributor contributor = new ContentContributor();
+                ContentContributor contributor = new ContentContributor();
 
-				contributor.setApproved(true);
-				contributor.setContentId(content.getId());
-				contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
-				contributor.setUserId(user.getId());
-				contributor.setUsername(user.getUsername());
-				contributor.setVersion("1.0");
+                contributor.setApproved(true);
+                contributor.setContentId(content.getId());
+                contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
+                contributor.setUserId(user.getId());
+                contributor.setUsername(user.getUsername());
+                contributor.setVersion("1.0");
 
-				List<ContentContributor> results = contentService.getContentContributor(content.getId(), user.getId());
+                List<ContentContributor> results = contentService.getContentContributor(content.getId(), user.getId());
 
-				if (results.isEmpty()) {
-					contentService.addContentContributor(contributor);
-				}
-			}
-		}
-	}
+                if (results.isEmpty()) {
+                    contentService.addContentContributor(contributor);
+                }
+            }
+        }
+    }
 
-	private HomePage getHomePage(int siteId, Long contentId) {
-		List<HomePage> homePages = homePageService.getHomePages(siteId);
+    private HomePage getHomePage(int siteId, Long contentId) {
+        List<HomePage> homePages = homePageService.getHomePages(siteId);
 
-		for (HomePage homePage : homePages) {
-			Content homePageContent = homePage.getContent();
-			if (homePageContent != null) {
-				if (homePageContent.getId().longValue() == contentId.longValue()) {
-					return homePage;
-				}
-			}
-		}
+        for (HomePage homePage : homePages) {
+            Content homePageContent = homePage.getContent();
+            if (homePageContent != null) {
+                if (homePageContent.getId().longValue() == contentId.longValue()) {
+                    return homePage;
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@RequestMapping(value = "/remove")
-	public String removeContents(
-			@RequestParam("ids") String ids) {
-		String[] arrIds = ids.split(",");
+    @RequestMapping(value = "/remove")
+    public String removeContents(
+            @RequestParam("ids") String ids) {
+        String[] arrIds = ids.split(",");
 
-		Content content;
+        Content content;
 
-		for (int i = 0; i < arrIds.length; i++) {
-			content = contentService.getContent(Long.valueOf(arrIds[i]));
+        for (int i = 0; i < arrIds.length; i++) {
+            content = contentService.getContent(Long.valueOf(arrIds[i]));
 
-			contentService.deleteContent(content);
-		}
+            contentService.deleteContent(content);
+        }
 
-		return "redirect:/controlpanel/content";
-	}
+        return "redirect:/controlpanel/content";
+    }
 
-	@RequestMapping(value = "/search", method = RequestMethod.POST)
-	public String search(
-			@ModelAttribute ContentSearchForm form, Map<String, Object> model)
-			throws Throwable {
-		List<Content> contents = contentService.search(
-				SiteUtil.getDefaultSite().getSiteId(), form.getTitle(), form.getPublished(),
-				null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
-				form.getExpireDateStart(), form.getExpireDateEnd());
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public String search(
+            @ModelAttribute ContentSearchForm form, Map<String, Object> model)
+            throws Throwable {
+        List<Content> contents = contentService.search(
+                SiteUtil.getDefaultSite().getSiteId(), form.getTitle(), form.getPublished(),
+                null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
+                form.getExpireDateStart(), form.getExpireDateEnd());
 
-		model.put("contents", contents);
-		model.put("searchForm", form);
+        model.put("contents", contents);
+        model.put("searchForm", form);
 
-		return "controlpanel/content/list";
-	}
+        return "controlpanel/content/list";
+    }
 }

@@ -1,8 +1,8 @@
 package com.taklip.yoda.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.ContentService;
@@ -13,7 +13,6 @@ import com.taklip.yoda.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -27,252 +26,227 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/content")
 public class PortalContentController extends PortalBaseController {
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	protected ContentService contentService;
+    @Autowired
+    protected ContentService contentService;
 
-	@Autowired
-	protected ItemService itemService;
-	
-	@GetMapping("/{id}")
-	public ModelAndView showContent(
-			@PathVariable("id") String id, HttpServletRequest request) {
-		Site site = getSite();
+    @Autowired
+    protected ItemService itemService;
 
-		ModelMap model = new ModelMap();
-		Content content = contentService.getContent(Long.valueOf(id));
+    @GetMapping("/{id}")
+    public ModelAndView showContent(
+            @PathVariable("id") String id, HttpServletRequest request) {
+        Site site = getSite();
 
-		if (null == content || !PortalUtil.isContentPublished(content)) {
-			model.put("pageTitle", site.getSiteName() + " - " + "Page not found");
-			model.put("keywords", StringPool.BLANK);
-			model.put("description", StringPool.BLANK);
-			model.put("url", request.getRequestURL().toString());
-			model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        ModelMap model = new ModelMap();
+        Content content = contentService.getContent(Long.valueOf(id));
 
-			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
-		}
+        if (null == content || !PortalUtil.isContentPublished(content)) {
+            model.put("pageTitle", site.getSiteName() + " - " + "Page not found");
+            model.put("keywords", StringPool.BLANK);
+            model.put("description", StringPool.BLANK);
+            model.put("url", request.getRequestURL().toString());
+            model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
 
-		formatContent(request, model, content);
+            return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
+        }
 
-		setUserLoginStatus(model);
+        formatContent(request, model, content);
 
-		model.put("site", site);
+        setUserLoginStatus(model);
 
-		pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getId());
+        model.put("site", site);
 
-		return new ModelAndView("portal/content", model);
-	}
+        pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getId());
 
-	@GetMapping("/{id}/edit")
-	public ModelAndView setupForm(
-			@PathVariable("id") String id, HttpServletRequest request) {
-		Site site = getSite();
+        return new ModelAndView("portal/content", model);
+    }
 
-		Content content;
+    @GetMapping("/{id}/edit")
+    public ModelAndView setupForm(
+            @PathVariable("id") String id, HttpServletRequest request) {
+        Site site = getSite();
 
-		try {
-			content = contentService.getContent(Long.valueOf(id));
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage());
+        Content content;
 
-			return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
-		}
+        try {
+            content = contentService.getContent(Long.valueOf(id));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
 
-		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
+            return new ModelAndView("/404", "requestURL", request.getRequestURL().toString());
+        }
 
-		if ((currentUser == null) || (currentUser.getId() != content.getCreateBy().getId()) ) {
-			return new ModelAndView("redirect:/login");
-		}
+        User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
-		ModelMap model = new ModelMap();
+        if ((currentUser == null) || (currentUser.getId() != content.getCreateBy().getId())) {
+            return new ModelAndView("redirect:/login");
+        }
 
-		setUserLoginStatus(model);
+        ModelMap model = new ModelMap();
 
-		model.put("user", currentUser);
-		model.put("content", content);
-		model.put("site", site);
+        setUserLoginStatus(model);
 
-		return new ModelAndView("portal/user/contentEdit", model);
-	}
+        model.put("user", currentUser);
+        model.put("content", content);
+        model.put("site", site);
 
-	@GetMapping("/add")
-	public ModelAndView setupForm() {
-		ModelMap model = new ModelMap();
+        return new ModelAndView("portal/user/contentEdit", model);
+    }
 
-		User currentUser = AuthenticatedUtil.getAuthenticatedUser();
+    @GetMapping("/add")
+    public ModelAndView setupForm() {
+        ModelMap model = new ModelMap();
 
-		if (currentUser == null) {
-			return new ModelAndView("redirect:/login");
-		}
+        User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
-		Site site = getSite();
+        if (currentUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
 
-		setUserLoginStatus(model);
+        Site site = getSite();
 
-		model.put("user", currentUser);
-		model.put("site", site);
+        setUserLoginStatus(model);
 
-		Content content = new Content();
+        model.put("user", currentUser);
+        model.put("site", site);
 
-		model.put("content", content);
+        Content content = new Content();
 
-		return new ModelAndView("portal/user/contentEdit", model);
-	}
+        model.put("content", content);
 
-	@PostMapping("/save")
-	public ModelAndView submitUpdate(
-			@Valid Content content, BindingResult result)
-		throws Exception {
-		ModelMap model = new ModelMap();
+        return new ModelAndView("portal/user/contentEdit", model);
+    }
 
-		if(result.hasErrors()) {
-			model.put("errors", "errors");
+    @PostMapping("/save")
+    public ModelAndView submitUpdate(
+            @Valid Content content, BindingResult result)
+            throws Exception {
+        ModelMap model = new ModelMap();
 
-			return new ModelAndView("portal/user/contentEdit", model);
-		}
+        if (result.hasErrors()) {
+            model.put("errors", "errors");
 
-		contentService.updateContent(content, null);
+            return new ModelAndView("portal/user/contentEdit", model);
+        }
 
-		model.put("success", "success");
+        contentService.updateContent(content, null);
 
-		return new ModelAndView("redirect:/content/" + content.getId() + "/edit", model);
-	}
+        model.put("success", "success");
 
-	@ResponseBody
-	@PostMapping("/{id}/rate")
-	public String score(
-			@PathVariable("id") Long id, @RequestParam("thumb") String thumb) {
+        return new ModelAndView("redirect:/content/" + content.getId() + "/edit", model);
+    }
 
-		contentService.saveContentUserRate(id, thumb);
+    @ResponseBody
+    @PostMapping("/{id}/rate")
+    public String score(
+            @PathVariable("id") Long id, @RequestParam("thumb") String thumb) {
 
-		int score = contentService.getContentRate(id);
+        contentService.saveContentUserRate(id, thumb);
 
-		JSONObject jsonResult = new JSONObject();
+        int score = contentService.getContentRate(id);
 
-		try {
-			jsonResult.put("score", score);
-		}
-		catch (JSONException e) {
-			logger.error("JSON : " + jsonResult + ", " + e.getMessage());
-		}
+        JSONObject jsonResult = new JSONObject();
 
-		return jsonResult.toString();
-	}
+        try {
+            jsonResult.put("score", score);
+        } catch (JSONException e) {
+            logger.error("JSON : " + jsonResult + ", " + e.getMessage());
+        }
 
-	@ResponseBody
-	@RequestMapping(value="/page", method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
-	public String showPagination(
-			@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Content> page = contentService.getContentsNotFeatureData(offset, 4);
+        return jsonResult.toString();
+    }
 
-		JSONArray array = new JSONArray();
+    @ResponseBody
+    @GetMapping("/page")
+    public PageInfo<Content> showPagination(
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+            @RequestParam(value = "limit", defaultValue = "4") Integer limit) {
+        PageInfo<Content> page = contentService.getContentsNotFeatureData(offset, limit);
 
-		try {
-			for (Content content : page.getData()) {
-				if (!PortalUtil.isContentPublished(content)) {
-					continue;
-				}
+        return page;
+    }
 
-				JSONObject jsonObject = new JSONObject();
+    public void formatContent(
+            HttpServletRequest request, ModelMap model, Content content) {
+        Site site = getSite();
 
-				jsonObject.put("id", content.getId());
-				jsonObject.put("defaultImageUrl", content.getFeaturedImage());
-				jsonObject.put("title", content.getTitle());
-				jsonObject.put("hitCounter", content.getHitCounter());
-				jsonObject.put("score", content.getScore());
-				jsonObject.put("shortDescription", content.getShortDescription());
-
-				array.add(jsonObject);
-			}
-		}
-		catch (JSONException e) {
-			logger.warn(e.getMessage());
-		}
-
-		return array.toString();
-	}
-
-	public void formatContent(
-			HttpServletRequest request, ModelMap model, Content content) {
-		Site site = getSite();
-
-		try {
+        try {
 //			CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
 //
 //			if (csrfToken != null) {
 //				model.put("_csrf", csrfToken);
 //			}
 
-			List<Item> items = itemService.getItemsByContentId(content.getId());
-			List<Comment> comments = getComments(content.getId());
+            List<Item> items = itemService.getItemsByContentId(content.getId());
+            List<Comment> comments = getComments(content.getId());
 
-			for (Item item : items) {
-				shortenItemDescription(item);
-			}
+            for (Item item : items) {
+                shortenItemDescription(item);
+            }
 
-			String desc = content.getDescription();
+            String desc = content.getDescription();
 
-			content.setDescription(desc.replace("img src", "img data-src"));
-			content.setItems(items);
+            content.setDescription(desc.replace("img src", "img data-src"));
+            content.setItems(items);
 
-			model.put("content", content);
-			model.put("comments", comments);
-			model.put("date", new Date());
-			model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
+            model.put("content", content);
+            model.put("comments", comments);
+            model.put("date", new Date());
+            model.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
 
-			User loginUser = AuthenticatedUtil.getAuthenticatedUser();
+            User loginUser = AuthenticatedUtil.getAuthenticatedUser();
 
-			if (loginUser != null) {
-				ContentUserRate rate = contentService.getContentUserRateByContentIdAndUserId(content.getId(), loginUser.getId());
+            if (loginUser != null) {
+                ContentUserRate rate = contentService.getContentUserRateByContentIdAndUserId(content.getId(), loginUser.getId());
 
-				if (rate != null) {
-					if (rate.getScore() == 1) {
-						model.put("isUserLike", true);
-					}
-					else if (rate.getScore() == -1) {
-						model.put("isUserDislike", true);
-					}
-				}
+                if (rate != null) {
+                    if (rate.getScore() == 1) {
+                        model.put("isUserLike", true);
+                    } else if (rate.getScore() == -1) {
+                        model.put("isUserDislike", true);
+                    }
+                }
 
-				model.put("userLogin", true);
-			}
-			else {
-				model.put("userLogin", false);
-			}
+                model.put("userLogin", true);
+            } else {
+                model.put("userLogin", false);
+            }
 
-			model.put("pageTitle", "如何选购" + content.getTitle() + " - " + site.getSiteName());
-			model.put("keywords", "如何选购" + content.getTitle() + "," + content.getTitle() + "怎么选" + "," + content.getTitle() + "品牌推荐");
-			model.put("description", content.getShortDescription());
-			model.put("url", request.getRequestURL().toString());
-			model.put("image", "http://" + site.getDomainName() + content.getFeaturedImage());
-		}
-		catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage());
-		}
-	}
+            model.put("pageTitle", "如何选购" + content.getTitle() + " - " + site.getSiteName());
+            model.put("keywords", "如何选购" + content.getTitle() + "," + content.getTitle() + "怎么选" + "," + content.getTitle() + "品牌推荐");
+            model.put("description", content.getShortDescription());
+            model.put("url", request.getRequestURL().toString());
+            model.put("image", "http://" + site.getDomainName() + content.getFeaturedImage());
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
+    }
 
-	public List<Comment> getComments(long contentId) {
-		return contentService.getComments(contentId);
-	}
+    public List<Comment> getComments(long contentId) {
+        return contentService.getComments(contentId);
+    }
 
-	private Item shortenItemDescription(Item item) {
-		String desc = item.getDescription();
+    private Item shortenItemDescription(Item item) {
+        String desc = item.getDescription();
 
-		if (desc.length() > 200) {
-			desc = desc.substring(0, 200);
+        if (desc.length() > 200) {
+            desc = desc.substring(0, 200);
 
-			if (desc.indexOf("img") > 0) {
-				desc = desc.substring(0, desc.indexOf("<img"));
-			}
+            if (desc.indexOf("img") > 0) {
+                desc = desc.substring(0, desc.indexOf("<img"));
+            }
 
-			item.setDescription(desc);
-		}
+            item.setDescription(desc);
+        }
 
-		return item;
-	}
+        return item;
+    }
 }

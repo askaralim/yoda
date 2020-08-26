@@ -1,10 +1,11 @@
 package com.taklip.yoda.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.mapper.BrandMapper;
 import com.taklip.yoda.model.Brand;
-import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.FileService;
@@ -14,8 +15,6 @@ import com.taklip.yoda.tool.ImageUploader;
 import com.taklip.yoda.tool.StringPool;
 import com.taklip.yoda.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Service
 public class BrandServiceImpl implements BrandService {
-    private static Logger logger = LoggerFactory.getLogger(BrandServiceImpl.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     BrandMapper brandMapper;
-
-    @Autowired
-    private SqlSessionTemplate sqlSessionTemplate;
 
     @Autowired
     private RedisService redisService;
@@ -99,8 +98,8 @@ public class BrandServiceImpl implements BrandService {
         return brandDb;
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public List<Brand> getBrands() {
         return brandMapper.getBrands();
     }
@@ -133,26 +132,26 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     @Transactional(readOnly = true)
-    public Pagination<Brand> getBrands(RowBounds rowBounds) {
-        List<Brand> brands = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.BrandMapper.getBrands", null, rowBounds);
+    public PageInfo<Brand> getBrands(Integer offset, Integer limit) {
+        PageHelper.offsetPage(offset, limit);
 
-        List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.BrandMapper.count");
+        List<Brand> brands = brandMapper.getBrands();
 
-        Pagination<Brand> page = new Pagination<>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), brands);
+        PageInfo<Brand> pageInfo = new PageInfo<>(brands);
 
-        return page;
+        return pageInfo;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Pagination<Brand> getHotBrands(RowBounds rowBounds) {
-        List<Brand> brands = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.BrandMapper.getBrandsOrderByHitCounter", null, rowBounds);
+    public PageInfo<Brand> getHotBrands(Integer offset, Integer limit) {
+        PageHelper.offsetPage(offset, limit);
 
-        List<Integer> count = sqlSessionTemplate.selectList("com.taklip.yoda.mapper.BrandMapper.count");
+        List<Brand> brands = brandMapper.getBrandsOrderByHitCounter();
 
-        Pagination<Brand> page = new Pagination<>(rowBounds.getOffset(), count.get(0), rowBounds.getLimit(), brands);
+        PageInfo<Brand> pageInfo = new PageInfo<>(brands);
 
-        return page;
+        return pageInfo;
     }
 
     @Override

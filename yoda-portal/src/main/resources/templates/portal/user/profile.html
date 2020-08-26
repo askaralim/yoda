@@ -48,7 +48,7 @@
                         <li>
                             <a href="#">
                                 <span th:text="#{post-count}">Post Count</span>
-                                <span th:text="${page.totalCount}">999</span>
+                                <span th:text="${page.total}">999</span>
                             </a>
                         </li>
                     </ul>
@@ -72,12 +72,12 @@
                     </div>
                 </div>
                 <div class="user-post-list">
-                    <div class="user-post" th:each="post : ${page.data}">
+                    <div class="user-post" th:each="post : ${page.list}">
                         <p class="post-description" th:text="${post.description}">Comment Description</p>
                         <p class="post-time" th:text="${#dates.format(post.createDate, 'yyyy-MM-dd hh:mm')}">2019-09-25 22:10</p>
                     </div>
                 </div>
-                <div th:if="${page.totalCount > 10}" class="row">
+                <div th:if="${page.total > 10}" class="row">
                     <div style="text-align: center; margin-bottom: 10px;">
                         <button id="more-post" type="button" class="btn btn-link" th:text="#{more}">
                             More
@@ -137,12 +137,17 @@
 
     $(function () {
         var offset = 10;
+        var limit = 10;
 
         $('#more-post').click(function () {
             $.ajax({
                 type: "GET",
                 url: "/user/post/page",
-                data: {offset: offset, userId: userId},
+                data: {
+                    offset: offset,
+                    limit: limit,
+                    userId: userId
+                },
                 dataType: "json",
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {

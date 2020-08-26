@@ -1,19 +1,21 @@
 package com.taklip.yoda.service;
 
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Term;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface TermService {
-	Term getTerm(Long id);
+    Term getTerm(Long id);
 
-	Term save(Term term);
+    Term save(Term term);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	List<Term> getTerms();
+    List<Term> getTerms();
 
-	Pagination<Term> getTerms(RowBounds rowBounds);
+    PageInfo<Term> getTerms(Integer offset, Integer limit);
 }

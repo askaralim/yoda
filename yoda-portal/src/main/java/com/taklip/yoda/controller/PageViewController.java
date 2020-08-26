@@ -1,86 +1,38 @@
 package com.taklip.yoda.controller;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.ibatis.session.RowBounds;
+import com.github.pagehelper.PageInfo;
+import com.taklip.yoda.model.PageViewData;
+import com.taklip.yoda.service.PageViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.taklip.yoda.model.PageViewData;
-import com.taklip.yoda.model.Pagination;
-import com.taklip.yoda.service.PageViewService;
+import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Controller
 public class PageViewController {
-	@Autowired
-	PageViewService pageViewService;
+    @Autowired
+    PageViewService pageViewService;
 
-	@RequestMapping(value="/controlpanel/pageview", method = RequestMethod.GET)
-	public String showPageViews(
-		Map<String, Object> model, HttpServletRequest request,
-		HttpServletResponse response) throws Exception {
-		String offset = request.getParameter("offset");
+    @GetMapping("/controlpanel/pageview")
+    public String showPageViews(Map<String, Object> model, @RequestParam(name = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<PageViewData> page = pageViewService.getPageViewDatas(offset * 10, 10);
 
-		int offsetInt = 0;
+        model.put("page", page);
 
-		if (!StringUtils.isEmpty(offset)) {
-			offsetInt = Integer.valueOf(offset) * 10;
-		}
+        return "controlpanel/pageview/list";
+    }
 
-		Pagination<PageViewData> page = pageViewService.getPageViewDatas(new RowBounds(offsetInt, 10));
+    @GetMapping("/controlpanel/pageview/{id}")
+    public ModelAndView viewComment(@PathVariable("id") int id) {
+        PageViewData pageView = pageViewService.getPageViewData(id);
 
-		model.put("page", page);
-
-		return "controlpanel/pageview/list";
-	}
-
-	@RequestMapping(value = "/controlpanel/pageview/{id}", method = RequestMethod.GET)
-	public ModelAndView viewComment(@PathVariable("id") int id) {
-		PageViewData pageView = pageViewService.getPageViewData(id);
-
-		return new ModelAndView(
-			"controlpanel/pageview/view", "pageView", pageView);
-	}
-
-//	@RequestMapping(value = "/controlpanel/pageview/{pageType}/{pageId}", method = RequestMethod.GET)
-//	public ModelAndView viewPageView(@PathVariable("pageType") int pageType,
-//		@PathVariable("pageId") int pageId) {
-//		
-//
-//		return new ModelAndView(
-//			"controlpanel/content/comment", "comment", comment);
-//	}
-//
-//	@RequestMapping(value = "/comment/new", method = RequestMethod.POST)
-//	public String addComment(HttpServletRequest request, @ModelAttribute Comment comment) {
-//		comment.setSiteId(PortalUtil.getSiteFromSession(request).getSiteId().intValue());
-//		comment.setCreateDate(new Date());
-//		comment.setUser(PortalUtil.getAuthenticatedUser());
-//		comment.setDescription(HtmlUtils.htmlEscape(comment.getDescription()));
-//
-//		contentService.addComment(comment);
-//
-//		return "redirect:/content/" + comment.getContentId();
-//	}
-//
-//	@RequestMapping(value = "/controlpanel/comment/remove")
-//	public String removeComments(
-//			@RequestParam("ids") String ids,
-//			HttpServletRequest request) {
-//		String[] arrIds = ids.split(",");
-//
-//		for (int i = 0; i < arrIds.length; i++) {
-//			contentService.deleteComment(Integer.valueOf(arrIds[i]));
-//		}
-//
-//		return "redirect:/controlpanel/comment";
-//	}
+        return new ModelAndView("controlpanel/pageview/view", "pageView", pageView);
+    }
 }

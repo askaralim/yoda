@@ -1,4 +1,15 @@
 spring:
-   profiles:
-      include:
+  profiles:
+    active:
       - core-dev
+
+wx:
+  appID:
+  token:
+  encodingAESKey:
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

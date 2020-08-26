@@ -33,7 +33,7 @@
                 <div class="col-md-12">
                     <div class="terms">
                         <div class="row">
-                            <div class="col-sm-3" th:each="term : ${page.data}">
+                            <div class="col-sm-3" th:each="term : ${page.list}">
                                 <div class="term-preview">
                                     <div class="row content-preview-wrapper-row">
                                         <div class="col-sm-12 content-preview-item">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <div th:if="${page.totalCount > 4}" class="row">
+                    <div th:if="${page.total > 4}" class="row">
                         <div class="col-lg-4 col-lg-offset-4">
                             <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
                         </div>
@@ -69,25 +69,30 @@
 <script type="text/javascript">
     $(function () {
         var offset = 4;
+        var limit = 4;
 
         $('#more-brand').click(function () {
             $.ajax({
                 type: "GET",
                 url: "/term/page",
-                data: {offset: offset},
+                data: {
+                    offset: offset,
+                    limit: limit
+                },
                 dataType: "json",
                 success: function (data) {
+                    var list = data.list;
                     var text = '<div class="row">';
 
-                    for (var i = 0; i < data.length; i++) {
-                        var url = "/term/" + data[i].id;
+                    for (var i = 0; i < list.length; i++) {
+                        var url = "/term/" + list[i].id;
 
                         text += '<div class="col-sm-3">' +
                                 '<div class="term-preview">' +
                                     '<div class="row content-preview-wrapper-row">' +
                                         '<div class="col-sm-12 content-preview-item">' +
-                                            '<h4><a href="' + url + '">' + data[i].title + '</a></h4>' +
-                                            '<p>' + data[i].description + '</p>' +
+                                            '<h4><a href="' + url + '">' + list[i].title + '</a></h4>' +
+                                            '<p>' + list[i].description + '</p>' +
                                             '<p><a href="' + url + '">More >>></a></p>' +
                                         '</div>' +
                                     '</div>' +

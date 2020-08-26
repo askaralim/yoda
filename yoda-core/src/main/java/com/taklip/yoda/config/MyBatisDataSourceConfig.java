@@ -15,20 +15,23 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.taklip.yoda.model.BaseEntity;
 
+/**
+ * @author askar
+ */
 @Configuration
 @MapperScan("com.taklip.yoda.mapper")
 @EnableTransactionManagement
 public class MyBatisDataSourceConfig {
-	@Bean
-	public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource)
-			throws Exception {
-		SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+    @Bean
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource)
+            throws Exception {
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
 
-		bean.setDataSource(dataSource);
-		bean.setTypeAliasesPackage("com.taklip.yoda.model");
-		bean.setTypeAliasesSuperType(BaseEntity.class);
-		bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/mappings/*.xml"));
-		bean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource("classpath:mybatis/mybatis-config.xml"));
+        bean.setDataSource(dataSource);
+        bean.setTypeAliasesPackage("com.taklip.yoda.model");
+        bean.setTypeAliasesSuperType(BaseEntity.class);
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/mappings/*.xml"));
+        bean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource("classpath:mybatis/mybatis-config.xml"));
 
 //		// 配置分页插件，详情请查阅官方文档
 //		PageHelper pageHelper = new PageHelper();
@@ -41,18 +44,18 @@ public class MyBatisDataSourceConfig {
 //		// 添加插件
 //		factory.setPlugins(new Interceptor[] { pageHelper });
 
-		return bean.getObject();
-	}
+        return bean.getObject();
+    }
 
-	@Bean(name = "sqlSessionTemplate")
-	public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
-		return new SqlSessionTemplate(sqlSessionFactory);
-	}
+    @Bean(name = "sqlSessionTemplate")
+    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
 
-	@Bean(name = "transactionManager")
-	public DataSourceTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
-		return new DataSourceTransactionManager(dataSource);
-	}
+    @Bean(name = "transactionManager")
+    public DataSourceTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
 //	@Bean
 //	public MapperScannerConfigurer mapperScannerConfigurer() {

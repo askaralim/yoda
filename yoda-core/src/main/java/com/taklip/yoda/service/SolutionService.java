@@ -1,31 +1,33 @@
 package com.taklip.yoda.service;
 
-import com.taklip.yoda.model.Pagination;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.Solution;
 import com.taklip.yoda.model.SolutionItem;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * @author askar
+ */
 public interface SolutionService {
-	Solution getSolution(Long id);
+    Solution getSolution(Long id);
 
-	Solution save(Solution solution);
+    Solution save(Solution solution);
 
-	Solution updateSolutionImage(Long id, MultipartFile file);
+    Solution updateSolutionImage(Long id, MultipartFile file);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	List<Solution> getSolutions();
+    List<Solution> getSolutions();
 
-	Pagination<Solution> getSolutions(RowBounds rowBounds);
+    PageInfo<Solution> getSolutions(Integer offset, Integer limit);
 
-	SolutionItem getSolutionItemsById(Long id);
+    SolutionItem getSolutionItemsById(Long id);
 
-	List<SolutionItem> getSolutionItems();
+    List<SolutionItem> getSolutionItems();
 
-	List<SolutionItem> getSolutionItemsBySolutionId(Long solutionId);
+    List<SolutionItem> getSolutionItemsBySolutionId(Long solutionId);
 
-	void saveSolutionItem(SolutionItem solutionItem);
+    void saveSolutionItem(SolutionItem solutionItem);
 }

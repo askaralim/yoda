@@ -1,10 +1,9 @@
 package com.taklip.yoda.api;
 
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.controller.PortalBaseController;
-import com.taklip.yoda.model.Pagination;
 import com.taklip.yoda.model.Solution;
 import com.taklip.yoda.service.SolutionService;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/api/v1/solution")
 public class SolutionApiController extends PortalBaseController {
-	@Autowired
-	SolutionService solutionService;
+    @Autowired
+    SolutionService solutionService;
 
-	@GetMapping
-	public ResponseEntity<Pagination<Solution>> list(@RequestParam(value="offset", defaultValue="0") Integer offset) {
-		Pagination<Solution> page = solutionService.getSolutions(new RowBounds(offset, 3));
+    @GetMapping
+    public ResponseEntity<PageInfo<Solution>> list(@RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<Solution> page = solutionService.getSolutions(offset, 3);
 
-		return new ResponseEntity(page, HttpStatus.OK);
-	}
+        return new ResponseEntity(page, HttpStatus.OK);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Solution> get(@PathVariable("id") Long id) {
-		Solution solution = solutionService.getSolution(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Solution> get(@PathVariable("id") Long id) {
+        Solution solution = solutionService.getSolution(id);
 
-		return new ResponseEntity(solution, HttpStatus.OK);
-	}
+        return new ResponseEntity(solution, HttpStatus.OK);
+    }
 }

@@ -1,15 +1,15 @@
 package com.taklip.yoda.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.model.*;
+import com.taklip.yoda.model.Brand;
+import com.taklip.yoda.model.Item;
+import com.taklip.yoda.model.Site;
+import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.util.AuthenticatedUtil;
-import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/brand")
 public class PortalBrandController extends PortalBaseController {
-    private final Logger logger = LoggerFactory.getLogger(PortalBrandController.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     BrandService brandService;
@@ -38,20 +38,14 @@ public class PortalBrandController extends PortalBaseController {
     @Autowired
     ContentService contentService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView showBrands(HttpServletRequest request) {
+    @GetMapping
+    public ModelAndView showBrands(@RequestParam(value = "offset", defaultValue = "0") Integer offset,
+                                   @RequestParam(value = "limit", defaultValue = "20") Integer limit) {
         ModelMap model = new ModelMap();
 
         Site site = getSite();
 
-        String offsetStr = request.getParameter("offset");
-        int offset = 0;
-
-        if (null != offsetStr) {
-            offset = Integer.valueOf(offsetStr);
-        }
-
-        Pagination<Brand> page = brandService.getHotBrands(new RowBounds(offset, 20));
+        PageInfo<Brand> page = brandService.getHotBrands(offset, limit);
 
         setUserLoginStatus(model);
 
@@ -66,27 +60,13 @@ public class PortalBrandController extends PortalBaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public String showPagination(
-            @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
-        Pagination<Brand> page = brandService.getHotBrands(new RowBounds(offset, 20));
+    @GetMapping("/page")
+    public PageInfo<Brand> showPagination(
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+            @RequestParam(value = "limit", defaultValue = "20") Integer limit) {
+        PageInfo<Brand> page = brandService.getHotBrands(offset, limit);
 
-        JSONArray array = new JSONArray();
-
-        try {
-            for (Brand brand : page.getData()) {
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("id", brand.getId());
-                jsonObject.put("imagePath", brand.getImagePath());
-
-                array.add(jsonObject);
-            }
-        } catch (JSONException e) {
-            logger.error(e.getMessage());
-        }
-
-        return array.toString();
+        return page;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

@@ -1,11 +1,11 @@
 package com.taklip.yoda.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.taklip.yoda.model.*;
 import com.taklip.yoda.service.*;
 import com.taklip.yoda.util.ExtraFieldUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,162 +20,156 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author askar
+ */
 @Controller
 @RequestMapping(value = "/controlpanel/item")
 public class ItemController {
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	ItemService itemService;
+    @Autowired
+    ItemService itemService;
 
-	@Autowired
-	SiteService siteService;
+    @Autowired
+    SiteService siteService;
 
-	@Autowired
-	BrandService brandService;
+    @Autowired
+    BrandService brandService;
 
-	@Autowired
-	ContentService contentService;
+    @Autowired
+    ContentService contentService;
 
-	@Autowired
-	CategoryService categoryService;
+    @Autowired
+    CategoryService categoryService;
 
-	@GetMapping
-	public String showItems(
-		Map<String, Object> model,
-		@RequestParam(name = "offset", required = false) String offset) {
-		int offsetInt = 0;
+    @GetMapping
+    public String showItems(Map<String, Object> model, @RequestParam(name = "offset", defaultValue = "0") Integer offset) {
+        PageInfo<Item> page = itemService.getItems(offset * 10, 10);
 
-		if (!StringUtils.isEmpty(offset)) {
-			offsetInt = Integer.valueOf(offset) * 10;
-		}
+        model.put("page", page);
 
-		Pagination<Item> page = itemService.getItems(new RowBounds(offsetInt, 10));
+        return "controlpanel/item/list";
+    }
 
-		model.put("page", page);
+    @GetMapping("/add")
+    public ModelAndView initCreationForm(Map<String, Object> model) {
+        Item item = new Item();
 
-		return "controlpanel/item/list";
-	}
+        populateForm(model, item);
 
-	@GetMapping("/add")
-	public ModelAndView initCreationForm(Map<String, Object> model) {
-		Item item = new Item();
+        return new ModelAndView("controlpanel/item/form", model);
+    }
 
-		populageForm(model, item);
+    @GetMapping("/{id}/edit")
+    public String initUpdateForm(
+            @PathVariable("id") Long id, Map<String, Object> model) {
+        Item item = itemService.getItem(id);
 
-		return new ModelAndView("controlpanel/item/form", model);
-	}
+        populateForm(model, item);
 
-	@GetMapping("/{id}/edit")
-	public String initUpdateForm(
-			@PathVariable("id") Long id, Map<String, Object> model) {
-		Item item = itemService.getItem(id);
+        return "controlpanel/item/form";
+    }
 
-		populageForm(model, item);
+    @PostMapping("/save")
+    public ModelAndView save(
+            @Valid Item item, @RequestParam("brandId") Long brandId,
+            BindingResult result, RedirectAttributes redirect,
+            HttpServletRequest request) {
 
-		return "controlpanel/item/form";
-	}
+        ModelMap model = new ModelMap();
 
-	@PostMapping("/save")
-	public ModelAndView save(
-			@Valid Item item, @RequestParam("brandId") Long brandId,
-			BindingResult result, RedirectAttributes redirect,
-			HttpServletRequest request) {
+        if (result.hasErrors()) {
+            model.put("errors", "errors");
+            return new ModelAndView("controlpanel/item/form", model);
+        }
 
-		ModelMap model = new ModelMap();
+        Brand brand = null;
 
-		if (result.hasErrors()) {
-			model.put("errors", "errors");
-			return new ModelAndView("controlpanel/item/form", model);
-		}
+        if (null != brandId) {
+            brand = brandService.getBrand(brandId);
+        }
 
-		Brand brand = null;
+        item.setBrand(brand);
 
-		if (null != brandId) {
-			brand = brandService.getBrand(brandId);
-		}
+        ExtraFieldUtil.setExtraFields(request, item);
+        ExtraFieldUtil.setBuyLinks(request, item);
 
-		item.setBrand(brand);
+        itemService.save(item);
 
-		ExtraFieldUtil.setExtraFields(request, item);
-		ExtraFieldUtil.setBuyLinks(request, item);
+        redirect.addFlashAttribute("globalMessage", "success");
 
-		itemService.save(item);
+        return new ModelAndView("redirect:/controlpanel/item/" + item.getId() + "/edit", model);
+    }
 
-		redirect.addFlashAttribute("globalMessage", "success");
+    @PostMapping("/{id}/uploadImage")
+    public String uploadImage(
+            @RequestParam("file") MultipartFile file, @PathVariable("id") Long id)
+            throws Throwable {
+        if (file.getBytes().length <= 0) {
+            return "redirect:/controlpanel/item/" + id + "/edit";
+        }
 
-		return new ModelAndView("redirect:/controlpanel/item/" + item.getId() + "/edit", model);
-	}
-
-	@PostMapping("/{id}/uploadImage")
-	public String uploadImage(
-			@RequestParam("file") MultipartFile file, @PathVariable("id") Long id)
-		throws Throwable {
-		if (file.getBytes().length <= 0) {
-			return "redirect:/controlpanel/item/" + id + "/edit";
-		}
-
-		if (StringUtils.isBlank(file.getName())) {
-			return "redirect:/controlpanel/item/" + id + "/edit";
-		}
+        if (StringUtils.isBlank(file.getName())) {
+            return "redirect:/controlpanel/item/" + id + "/edit";
+        }
 
 //		String savedPath = new FileUploader().saveFile(file);
 
-		itemService.updateItemImage(id, file);
+        itemService.updateItemImage(id, file);
 
-		return "redirect:/controlpanel/item/" + id + "/edit";
-	}
+        return "redirect:/controlpanel/item/" + id + "/edit";
+    }
 
-	@ResponseBody
-	@PostMapping("/item/{id}/rating")
-	public String score(
-			@PathVariable("id") Long id, @RequestParam("thumb") String thumb) {
-		Item item  = itemService.getItem(id);
+    @ResponseBody
+    @PostMapping("/item/{id}/rating")
+    public String score(
+            @PathVariable("id") Long id, @RequestParam("thumb") String thumb) {
+        Item item = itemService.getItem(id);
 
-		int rating = 0;
+        int rating = 0;
 
-		if (thumb.equals("up")) {
-			rating = item.getRating() + 1;
-		}
-		else if (thumb.equals("down")) {
-			rating = item.getRating() - 1;
-		}
+        if (thumb.equals("up")) {
+            rating = item.getRating() + 1;
+        } else if (thumb.equals("down")) {
+            rating = item.getRating() - 1;
+        }
 
-		item.setRating(rating);
+        item.setRating(rating);
 
-		itemService.update(item);
+        itemService.update(item);
 
-		JSONObject jsonResult = new JSONObject();
+        JSONObject jsonResult = new JSONObject();
 
-		jsonResult.put("rating", rating);
+        jsonResult.put("rating", rating);
 
-		return jsonResult.toString();
-	}
+        return jsonResult.toString();
+    }
 
-	@RequestMapping("/remove")
-	public String removeItems(@RequestParam("ids") String ids) {
-		String[] arrIds = ids.split(",");
+    @RequestMapping("/remove")
+    public String removeItems(@RequestParam("ids") String ids) {
+        String[] arrIds = ids.split(",");
 
-		for (int i = 0; i < arrIds.length; i++) {
-			itemService.remove(Long.valueOf(arrIds[i]));
-		}
+        for (int i = 0; i < arrIds.length; i++) {
+            itemService.remove(Long.valueOf(arrIds[i]));
+        }
 
-		return "redirect:/controlpanel/item";
-	}
+        return "redirect:/controlpanel/item";
+    }
 
-	private void populageForm(Map<String, Object> model, Item item) {
-		List<Content> contents = contentService.getContents();
-		List<Category> categories = categoryService.getCategories();
-		List<Brand> brands = brandService.getBrands();
+    private void populateForm(Map<String, Object> model, Item item) {
+        List<Content> contents = contentService.getContents();
+        List<Category> categories = categoryService.getCategories();
+        List<Brand> brands = brandService.getBrands();
 
-		model.put("item", item);
-		model.put("brands", brands);
-		model.put("categories", categories);
-		model.put("contents", contents);
-		model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
-		model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
+        model.put("item", item);
+        model.put("brands", brands);
+        model.put("categories", categories);
+        model.put("contents", contents);
+        model.put("extraFields", ExtraFieldUtil.getExtraFields(item));
+        model.put("buyLinks", ExtraFieldUtil.getBuyLinks(item));
 
-		model.put("contentType", "item");
-	}
+        model.put("contentType", "item");
+    }
 }
