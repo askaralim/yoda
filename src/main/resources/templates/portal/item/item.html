@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <div class="section">
+        <div class="container">
+            <div class="col-lg-10 col-lg-offset-1">
+                <div class="content-post">
+                    <h4 class="page-header" th:text="${item.brand.name} + ' ' + ${item.name}">Name</h4>
+                    <p class="text-right">
+                        <bd style="font-size: 12px; color: #d2d2d2; font-weight: 700;">
+                            <i class="glyphicon glyphicon-eye-open"></i>
+                            <span th:text="${item.hitCounter}">Hit Counter</span>
+                        </bd>
+                    </p>
+                    <div class="row">
+                        <div class="brand-detail">
+                            <div class="col-sm-3">
+                                <img th:src="${item.imagePath}" class="img-responsive" th:alt-title="${item.name}">
+                            </div>
+                            <div class="col-sm-9">
+                                <dl class="dl-horizontal">
+                                    <dt th:text="#{brand}">Brand</dt>
+                                    <dd>
+                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.id}}" th:text="${item.brand.name}">Brand Name</a>
+                                    </dd>
+                                    <dt th:text="#{price}">Price</dt>
+                                    <dd th:text="${item.price}">$100</dd>
+                                    <div th:each="extraField : ${item.extraFieldList}">
+                                        <dt th:text="${extraField.key}">Key</dt>
+                                        <dd th:text="${extraField.value}">Value</dd>
+                                    </div>
+                                    <div th:if="${item.buyLinkList.size() > 0}">
+                                        <dt th:text="#{buy-link}">Buy Link</dt>
+                                        <dd>
+                                            <div th:each="buyLink : ${item.buyLinkList}">
+                                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                                                <a href="${fn:escapeXml(buyLink.value)}" target="_blank" th:text="${buyLink.key}">Buy Link</a>
+                                                &nbsp&nbsp
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                                <div class="item-description">[(${item.description})]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-lg-offset-1">
+                <p class="text-right">
+                    <a href="/home.html" th:href="${backURL}" class="btn btn-default" th:text="#{back}">Back</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments :: footer}"></div>
+</body>

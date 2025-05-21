@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{term}">term</title>
+</head>
+
+<body id="page-top" class="index">
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <main id="main">
+        <section class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="terms-title" th:text="#{term}">Term</h1>
+                        <p class="terms-description" th:text="#{terms-description}">Terms Description</p>
+                        <ul class="list-unstyled terms-statistics">
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-count}">词条</div>
+                            </li>
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsEditCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-edit-count}">Edit Count</div>
+                            </li>
+                            <li class="terms-statistics-block">
+                                <div class="terms-statistics-number" th:text="${termsViewCount}">999</div>
+                                <div class="terms-statistics-name" th:text="#{terms-view-count}">阅读量</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="terms">
+                        <div class="row">
+                            <div class="col-sm-3" th:each="term : ${page.records}">
+                                <div class="term-preview">
+                                    <div class="row content-preview-wrapper-row">
+                                        <div class="col-sm-12 content-preview-item">
+                                            <h4>
+                                                <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="${term.title}">Term Title</a>
+                                            </h4>
+                                            <p>[(${term.description})]</p>
+                                            <p>
+                                                <a href="/term/term.html" th:href="@{'/term/' + ${term.id}}" th:text="#{more} + '>>>'">More >>></a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div th:if="${page.total > 4}" class="row">
+                        <div class="col-lg-4 col-lg-offset-4">
+                            <button id="more-brand" type="button" class="btn btn-default btn-block" th:text="#{more}">More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(function () {
+        var offset = 4;
+        var limit = 4;
+
+        $('#more-brand').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/term/page",
+                data: {
+                    offset: offset,
+                    limit: limit
+                },
+                dataType: "json",
+                success: function (data) {
+                    var list = data.records;
+                    var text = '<div class="row">';
+
+                    for (var i = 0; i < list.length; i++) {
+                        var url = "/term/" + list[i].id;
+
+                        text += '<div class="col-sm-3">' +
+                                '<div class="term-preview">' +
+                                    '<div class="row content-preview-wrapper-row">' +
+                                        '<div class="col-sm-12 content-preview-item">' +
+                                            '<h4><a href="' + url + '">' + list[i].title + '</a></h4>' +
+                                            '<p>' + list[i].description + '</p>' +
+                                            '<p><a href="' + url + '">More >>></a></p>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+                    }
+
+                    text += '</div>';
+
+                    $('.terms').append(text);
+                }
+            });
+
+            offset = offset + 4;
+        });
+    });
+</script>

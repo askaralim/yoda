@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-1">
+                <div class="content-post">
+                    <div class="page-header">
+                        <h1 class="content-title">
+                            <strong th:text="${term.title}">Single Malt</strong>
+                        </h1>
+                        <div class="content-flag">
+                            <div class="content-post-meta text-right">
+                                <ul class="list-unstyled list-inline">
+                                    <li>
+                                        <i class="glyphicon glyphicon-time"></i>
+                                        <!-- <span th:text="${#dates.format(term.updateTime, 'yyyy-MM-dd')}"/> -->
+                                        <span th:text="${term.updateTime}"/>
+                                        <!-- <span th:text="${#temporals.format(term.updateTime, 'yyyy-MM-dd')}"></span> -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-post-body">
+                        <p>[(${term.description})]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 home-sidebar">
+                <div class="home-sidebar-module">
+                    <h5 th:text="#{content-publisher}">Content Publisher</h5>
+                    <a th:href="@{'/user/' + ${term.createBy.id}}">
+                        <img th:if="${term.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${term.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                        <img th:unless="${term.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${term.createBy.profilePhotoSmall}" th:alt-title="${term.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                        <span th:text="${term.createBy.username}">Publisher Name</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>

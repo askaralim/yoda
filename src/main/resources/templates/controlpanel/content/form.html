@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="controlpanelfragments :: controlpanelhead(title=~{::title/text()})">
+    <title th:text="#{content}">Content Edit</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="controlpanelfragments :: controlpanelnavbar"></div>
+
+<div class="container-fluid">
+    <div class="section">
+        <ol class="breadcrumb">
+            <li><a href="/controlpanel/home/home.html" th:href="@{/controlpanel/home}">Administration</a></li>
+            <li><a href="/controlpanel/content/content.html" th:href="@{/controlpanel/content}">Content Listing</a></li>
+            <li>Content Maintenance</li>
+        </ol>
+
+        <form id="contentForm" name="fm" th:action="@{/controlpanel/content/save}" th:object="${content}" action="#" method="post">
+            <input type="hidden" th:field="*{id}" th:if="${content.id != null && content.id > 0}"/>
+
+            <div class="alert alert-success" role="alert" th:if="${globalMessage} != null">
+                <a class="panel-close close" data-dismiss="alert">X</a>
+                <i class="glyphicon glyphicon-ok"></i> <span th:text="#{saved-success}">Success!</span>
+            </div>
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                <a class="panel-close close" data-dismiss="alert">X</a>
+                <p th:each="error : ${#fields.errors('*')}" class="m-0" th:text="${error}">Validation error</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="title" th:text="#{title}">Title</label>
+                        <input type="text" th:field="*{title}" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="shortDescription" th:text="#{short-description}">short-description</label>
+                        <input type="text" th:field="*{shortDescription}" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" th:text="#{text}">text</label>
+                        <textarea th:field="*{description}" class="form-control" value="" display="none" style="display: none"></textarea>
+                        <div id="editor" style="width: 100%;height: 600px;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pageTitle" th:text="#{keywords}">keywords</label>
+                        <input type="text" th:field="*{pageTitle}" class="form-control"/>
+                    </div>
+                    <input id="saveContent" class="btn btn-sm btn-primary" th:value="#{submit}" role="button">
+                    <a class="btn btn-default btn-sm" href="/controlpanel/content/list.html" th:href="@{/controlpanel/content}" th:text="#{cancel}">cancel</a>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">General</div>
+                        <div class="panel-body">
+                            <div class="row" th:if="${content.id != null && content.id > 0}">
+                                <div class="col-md-12">
+                                    <label for="hitCounter">Hit Counter</label>
+                                    <div class="input-group">
+                                        <p id="hitCounter" class="form-control" th:text="${content.hitCounter}">123</p>
+                                        <span class="input-group-btn">
+                                            <input type="button" value='Reset Counter' class="btn btn-default" role="button" th:onclick="'return resetCounter()'">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="publishDate" th:text="#{publish-date}">publish-date</label>
+                                <input type="text" th:field="*{publishDate}" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="expireDate" th:text="#{expire-date}">expire-date</label>
+                                <input type="text" th:field="*{expireDate}" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryId" th:text="#{category}">category</label>
+                                <select name="categoryId" id="categoryId" class="form-control">
+                                    <option value=""/>
+                                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${content.category} != null ? (${content.category.id} == ${category.id}) : false"></option>
+                                </select>
+                            </div>
+                            <div id="input_fields_wrap" th:if="${content.id != null && content.id > 0}">
+                                <label for="content-contributor" th:text="#{content-contributor}">content-contributor</label>
+                                <div class="form-group" th:each="contributor,iterStat : ${content.contributors}">
+                                    <div class="row">
+                                        <div class="col-xs-7">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">Id</div>
+                                                <input id="contributorId" th:name="'contributorId' + ${iterStat.count}" class="form-control input-sm" type="text" th:value="${contributor.userId}">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1" th:if="${iterStat.count == 1}">
+                                            <button class="btn btn-default btn-sm" id="addNewField" type="button" th:text="#{add}">add</button>
+                                        </div>
+                                        <div class="col-xs-1" th:unless="${iterStat.count == 1}">
+                                            <button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" th:if="${#lists.isEmpty(content.contributors)}">
+                                    <div class="row">
+                                        <div class="col-xs-7">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">User Id</div>
+                                                <input id="contributorId" name="contributorId1" class="form-control input-sm" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <button class="btn btn-default btn-sm" id="addNewField" type="button" th:text="#{add}">add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="homePage" th:checked="${content.homePage}" />
+                                Show in Home Page
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="published" th:checked="${content.published}" />
+                                Published
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="featureData" th:checked="${content.featureData}" />
+                                Feature Data
+                            </label>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" th:if="${content.id != null && content.id > 0}">
+                        <div class="panel-heading">Images</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">Image Upload</label>
+                                <div class="col-lg-8">
+                                    <div class="thumbnail" style="max-width: 200px; max-height: 200px; line-height: 20px;" th:if="${content.featuredImage} != null">
+                                        <img src="/images/demoUpload.jpg" th:src="${content.featuredImage}" th:alt-title=".."/>
+                                    </div>
+                                    <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadImageModal">Select image</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" th:text="#{brand}">Brand</div>
+                        <div class="panel-body">
+                            <a href="/controlpanel/content/editContentBrand.html" th:href="@{'/controlpanel/content/' + ${content.id} + '/contentbrand/add'}" class="btn btn-sm btn-primary">Add Brand</a>
+                        </div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th th:text="#{id}">id</th>
+                                <th th:text="#{name}">name</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="contentBrand : ${content.brands}">
+                                    <td><input type="checkbox" id="itemIds" th:value="${contentBrand.id}"></td>
+                                    <td th:text="${contentBrand.id}">123</td>
+                                    <td th:text="${contentBrand.brandName}">Taklip</td>
+                                    <td><a th:href="@{'/controlpanel/content/contentbrand/' + ${contentBrand.id} + '/edit'}" th:text="#{edit}">edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel panel-default" th:if="${content.id != null && content.id > 0}">
+                        <div class="panel-heading" th:text="#{details}">details</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="createBy" th:text="#{create-by}">createBy</label>
+                                <p class="form-control-static" th:text="${content.createBy.username}">Askar</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="createDate" th:text="#{create-date}">create-date</label>
+                                <p class="form-control-static" th:text="${content.createTime}">2019-10-09</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="updateBy" th:text="#{update-by}">updateBy</label>
+                                <p class="form-control-static" th:text="${content.updateBy.username}">Askar</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="updateDate" th:text="#{update-date}">update-date</label>
+                                <p class="form-control-static" th:text="${content.updateTime}">2019-10-09</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="col-lg-12">
+            <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="H2">Upload Image</h4>
+                        </div>
+                        <form th:action="@{'/controlpanel/content/' + ${content.id} + '/uploadImage'}" action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-4">Image</label>
+                                    <div class="col-lg-8">
+                                        <input type="file" name="file"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="uploadImage" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="controlpanelfragments :: chooseImgModal"></div>
+<div th:replace="controlpanelfragments :: controlpanelfooter"></div>
+</body>
+</html>
+
+
+<!-- <script type="text/javascript">
+$(".chosen-select").chosen();
+</script> -->
+
+<script type="text/javascript" th:inline="javascript">
+    contentId = [[${id}]];
+    $(function () {
+        yoda.wangEditor.init({
+            container: "#editor",
+            textareaName: "description",
+            /* textareaContent: "${content.description}", */
+            uploadUrl: "/api/uploadFile",
+            uploadFileName: "file",
+            uploadType: "content",
+            customCss: {
+                "height": "100%",
+                "max-height": "600px"
+            }
+        })
+    });
+
+    $('#publishDate').datepicker({
+        format: "yyyy-mm-dd",
+        weekStart: 1,
+        todayHighlight: true
+    });
+
+    $('#expireDate').datepicker({
+        format: "yyyy-mm-dd",
+        weekStart: 1,
+        todayHighlight: true
+    });
+
+    $('#saveContent').click(function () {
+        $("#description").text(editor.txt.html());
+        $("#contentForm").submit();
+    });
+
+    function resetCounter() {
+        $.ajax({
+            type: "POST",
+            url: "/controlpanel/content/" + [[${content.id}]] + "/edit/resetCounter",
+            success: function (data) {
+                $('#hitCounter').empty();
+                $('#hitCounter').html(0);
+            }
+        });
+    }
+
+    $(function () {
+        var max_fields = 5;
+        var index = $('#input_fields_wrap .form-group').size() + 1;
+        var size = $('#input_fields_wrap .form-group').size() + 1;
+
+        $('#addNewField').click(function () {
+            if (size < max_fields) {
+                $('#input_fields_wrap').append(
+                    '<div class="form-group">'
+                    + '<div class="row">'
+                    + '<div class="col-xs-7">'
+                    + '<div class="input-group">'
+                    + '<div class="input-group-addon">User Id</div>'
+                    + '<input id="extraFieldValue" name="contributorId' + index + '" class="form-control input-sm" type="text">'
+                    + '</div>'
+                    + '</div>'
+                    + '<div class="col-xs-1">'
+                    + '<button type="button" class="btn btn-default btn-sm" id="removeField"><span class="glyphicon glyphicon-remove"></span></button>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                );
+                index++;
+                size++
+            }
+        });
+
+        $('#input_fields_wrap').on("click", "#removeField", function () {
+            $(this).parent('div').parent('div').parent('div').remove();
+
+            size--;
+        });
+    });
+</script>

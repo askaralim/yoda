@@ -1,0 +1,82 @@
+spring:
+  profiles:
+    active:
+      - prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: D0ntstop!
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://47.56.215.66:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&connectTimeout=60000&socketTimeout=60000
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+      auto-commit: true
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+  data:
+    redis:
+      password: null
+      #auto-offset-reset: earliest
+      port: 6379
+      pool:
+      min-idle: 0
+      max-total: 600
+      max-wait: 1000
+    host: localhost
+    timeout: 100000
+    jedis:
+      pool:
+        max-idle: 300
+
+rocketmq:
+  consumer:
+    group: yoda-consumer-group
+    message-model: CLUSTERING
+    consume-thread-min: 5
+    consume-thread-max: 32
+    pull-batch-size: 32
+    consume-message-batch-max-size: 1
+  name-server: localhost:9876
+  producer:
+    group: yoda-producer-group
+    sendMessageTimeout: 10000
+    retryTimesWhenSendFailed: 2
+    retryTimesWhenSendAsyncFailed: 2
+    maxMessageSize: 4096
+    compressMessageBodyThreshold: 4096
+    retryNextServer: false
+
+yoda:
+  file-location: /yoda/uploads/
+  mq-enabled: false
+
+jediorder:
+  machine-id: 1022
+
+chatter:
+  base-url: http://127.0.0.1:5000
+# MyBatis
+# ----------------
+# Orphan comments:
+# ----------------
+# Was at begin of line:46 :#mybatis:
+# Was at begin of line:47 :#    type-aliases-package: com.zyd.blog.persistence.beans
+# Was at begin of line:48 :#    mapper-locations: classpath:/mybatis/*.xml
+# Was at begin of line:49 :# mapper
+# Was at begin of line:50 :#mapper:
+# Was at begin of line:51 :#    mappers:
+# Was at begin of line:52 :#        -
+# Was at begin of line:53 :#    not-empty: false
+# Was at begin of line:54 :#    identity: MYSQL
+
+logging:
+  level:
+    com.taklip.yoda.mapper: debug
+    com.taklip.yoda: debug
+    org.springframework.jdbc: DEBUG
+    com.zaxxer.hikari: DEBUG

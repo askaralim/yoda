@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Solution</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="section">
+    <div id="content-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="content-post">
+                        <div class="page-header">
+                            <h1 class="content-title">
+                                <strong th:text="${solution.title}">Solution Title</strong>
+                            </h1>
+                            <div class="content-flag">
+<!--                                <span class="content-category" th:if="${solution.category}" th:text="${solution.category.name}">Category Name</span>-->
+                                <div class="content-post-meta text-right">
+                                    <ul class="list-unstyled list-inline">
+                                        <li>
+                                            <i class="glyphicon glyphicon-time"></i>
+                                            <span th:text="${#dates.format(solution.updateTime, 'yyyy-MM-dd')}"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div><p>[(${solution.description})]</p></div>
+                        </div>
+                        <div class="nav-tabs-custom">
+                            <div class="content-post-body">
+                                <div class="tab-pane" id="tab-recommend">
+                                    <div th:each="solutionItem : ${solution.solutionItems}" style="border-bottom: 1px solid #f4f4f4; padding: 10px 0;">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <a href="/item/item.html" th:href="@{'/item/' + ${solutionItem.item.id} + '?backURL=' + ${backURL}}">
+                                                    <img src="/images/demoUpload.jpg" th:src="${solutionItem.item.imagePath}" th:alt-title="${solutionItem.item.name}" />
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <dl class="dl-horizontal">
+                                                    <dt th:text="#{name}">Name</dt>
+                                                    <dd>
+                                                        <a href="/item/item.html" th:href="@{'/item/' + ${solutionItem.item.id} + '?backURL=' + ${backURL}}" th:text="${solutionItem.item.name}">Item Name</a>
+                                                    </dd>
+<!--                                                    <dt th:text="#{brand}">brand</dt>-->
+<!--                                                    <dd>-->
+<!--                                                        <a href="/brand/brand.html" th:href="@{'/brand/' + ${solutionItem.item.brand.id}}" th:text="${solutionItem.item.brand.name}">Item Brand Name</a>-->
+<!--                                                    </dd>-->
+                                                    <dt th:text="#{description}">Description</dt>
+                                                    <dd><p>[(${solutionItem.description})]</p></dd>
+<!--                                                    <span th:each="extraField : ${solutionItem.item.extraFieldList}">-->
+<!--                                                        <dt th:text="${extraField.key}">ExtraField Key</dt>-->
+<!--                                                        <dd th:text="${extraField.value}">ExtraField Value</dd>-->
+<!--                                                    </span>-->
+                                                </dl>
+                                            </div>
+                                        </div>
+<!--                                        <div class="row">-->
+<!--                                            <div class="col-sm-12">-->
+<!--                                                <div class="item-description">-->
+<!--                                                    <p>[(${solutionItem.item.description})]</p>-->
+<!--                                                    <p>-->
+<!--                                                        <a href="/item/item.html" th:href="@{'/item/' + ${solutionItem.item.id} + '?backURL=' + ${backURL}}" th:text="#{more} + '>>>'">More >>></a>-->
+<!--                                                    </p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

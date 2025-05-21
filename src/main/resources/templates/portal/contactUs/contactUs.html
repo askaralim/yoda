@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container pt">
+    <div class="row mt">
+        <div class="col-lg-6 col-lg-offset-3 contactus">
+            <h3 th:text="#{contact-us}">contact us</h3>
+            <hr>
+            <p th:text="#{please-do-not-resubmit}">please-do-not-resubmit</p>
+            <form role="form" method="POST" th:action="@{/feedback/add}">
+                <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                    <b th:text="${successMessage}">Success Message</b>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" class="form-control" id="username" th:placeholder="#{username}" required>
+                    <br>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" id="email" th:placeholder="#{email}" required>
+                    <br>
+                </div>
+                <div class="form-group">
+                    <input type="phone" name="phone" class="form-control" id="phone" th:placeholder="#{phone}">
+                    <br>
+                </div>
+                <textarea name="description" class="form-control" rows="6" id="description" th:placeholder="#{content}"></textarea>
+                <br>
+
+                <button type="submit" class="btn btn-primary" th:text="#{submit}">
+                    Submit
+                </button>
+            </form>
+        </div>
+<!--        <div th:each="contactUs : ${contactUsList}" class="alert alert-danger" role="alert">-->
+<!--            <div class="col-lg-4">-->
+<!--                <h3 th:text="${contactUs.name}">Name</h3>-->
+<!--                <h4 th:text="${contactUs.description}">Description</h4>-->
+<!--                <p th:if="${#strings.isEmpty(contactUs.addressLine1)}">-->
+<!--                    ${contactUs.addressLine1}<br>-->
+<!--                    <span th:if="${#strings.isEmpty(contactUs.addressLine2)}">-->
+<!--                        ${contactUs.addressLine2}<br>-->
+<!--                    </span>-->
+<!--                    ${contactUs.cityName}<br>-->
+<!--                    ${contactUs.zipCode}<br>-->
+<!--                </p>-->
+<!--                    <p th:if="${#strings.isEmpty(contactUs.phone)}">-->
+<!--                        <span class="glyphicon glyphicon-earphone"></span> <abbr title="Phone">Phone</abbr>: <span th:text="${contactUs.phone}">phone</span>-->
+<!--                    </p>-->
+<!--                    <p th:if="${#strings.isEmpty(contactUs.email)}">-->
+<!--                        <span class="glyphicon glyphicon-envelope"></span> <abbr title="Email">E-mail</abbr>: <a href="mailto:${contactUs.email}">${contactUs.email}</a>-->
+<!--                    </p>-->
+<!--                    <p th:if="${#strings.isEmpty(contactUs.description)}">-->
+<!--                        ${contactUs.description}-->
+<!--                    </p>-->
+<!--                </c:if>-->
+<!--                <ul class="list-unstyled list-inline list-social-icons">-->
+<!--                    <li class="tooltip-social facebook-link">-->
+<!--                        <a href="#facebook-page" data-toggle="tooltip" data-placement="top" title="Facebook">-->
+<!--                            <i class="fa fa-facebook-square fa-2x"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="tooltip-social linkedin-link">-->
+<!--                        <a href="#linkedin-company-page" data-toggle="tooltip" data-placement="top" title="LinkedIn">-->
+<!--                            <i class="fa fa-linkedin-square fa-2x"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="tooltip-social twitter-link">-->
+<!--                        <a href="#twitter-profile" data-toggle="tooltip" data-placement="top" title="Twitter">-->
+<!--                            <i class="fa fa-twitter-square fa-2x"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="tooltip-social google-plus-link">-->
+<!--                        <a href="#google-plus-page" data-toggle="tooltip" data-placement="top" title="Google+">-->
+<!--                            <i class="fa fa-google-plus-square fa-2x"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
+<!--
+<div class="container">
+	<div class="social text-center">
+		<a href="#" target="_blank"><i class="fa fa-twitter"></i></a>
+		<a href="#" target="_blank"><i class="fa fa-facebook"></i></a>
+		<a href="#" target="_blank"><i class="fa fa-linkedin"></i></a>
+		<a href="#"><i class="fa fa-github" target="_blank"></i></a>
+	</div>
+</div>
+-->

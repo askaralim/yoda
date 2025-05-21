@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.taklip.yoda.mapper.UserMapper">
+    <cache />
+
+    <resultMap id="userResult" type="User">
+        <id property="id" column="id" />
+        <result property="accountNonExpired" column="account_non_expired" />
+        <result property="accountNonLocked" column="account_non_locked" />
+        <result property="credentialsNonExpired" column="credentials_non_expired" />
+        <result property="addressLine1" column="address_line1" />
+        <result property="addressLine2" column="address_line2" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="cityName" column="city_name" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="enabled" column="enabled" />
+        <result property="stateName" column="state_name" />
+        <result property="countryName" column="country_name" />
+        <result property="zipCode" column="zip_code" />
+        <result property="email" column="email" />
+        <result property="phone" column="phone" />
+        <result property="profilePhoto" column="profile_photo" />
+        <result property="profilePhotoSmall" column="profile_photo_small" />
+        <result property="lastLoginDate" column="last_login_date" />
+        <result property="lastVisitSiteId" column="last_visit_site_id" />
+        <result property="deleted" column="deleted" />
+        <result property="createBy" column="create_by" />
+        <result property="updateBy" column="update_by" />
+        <!-- <association property="createBy" column="id" javaType="User" resultMap="createOrUpdateUserResult" />
+        <association property="updateBy" column="id" javaType="User" resultMap="createOrUpdateUserResult" columnPrefix="u_" /> -->
+        <!-- <collection property="authorities" ofType="UserAuthority">
+            <id property="id" column="authority_id" />
+            <result property="userId" column="authority_userid" />
+            <result property="authorityName" column="authority_name" />
+        </collection> -->
+    </resultMap>
+
+    <!-- <resultMap id="createOrUpdateUserResult" type="User">
+        <id property="userId" column="userid" />
+        <result property="username" column="username" />
+    </resultMap> -->
+
+    <sql id="userColumns">
+        u.id,
+        u.account_non_expired AS account_non_expired,
+        u.account_non_locked AS account_non_locked,
+        u.credentials_non_expired AS credentials_non_expired,
+        u.address_line1 AS address_line1,
+        u.address_line2 AS address_line2,
+        u.username,
+        u.password,
+        u.city_name AS city_name,
+        u.create_time AS createTime,
+        u.update_time AS updateTime,
+        u.enabled,
+        u.state_name AS state_name,
+        u.country_name AS country_name,
+        u.zip_code AS zip_code,
+        u.email,
+        u.phone,
+        u.profile_photo AS profile_photo,
+        u.profile_photo_small AS profile_photo_small,
+        u.last_login_date AS last_login_date,
+        u.last_visit_site_id AS last_visit_site_id,
+        u.deleted,
+        u.create_by AS createBy,
+        u.update_by AS updateBy
+        <!-- au.id AS authority_id,
+        au.user_id AS authority_user_id,
+        au.authority_name AS authority_name -->
+        <!-- cu.id,
+        cu.username,
+        uu.id AS u_id,
+        uu.username AS u_username -->
+    </sql>
+
+    <sql id="userJoins">
+        <!-- LEFT OUTER JOIN authority au ON u.id = au.user_id -->
+        <!-- LEFT OUTER JOIN user cu on u.create_by = u.id
+        LEFT OUTER JOIN user uu on u.update_by = uu.id -->
+    </sql>
+
+    <select id="getUserById" resultMap="userResult">
+        SELECT
+            <include refid="userColumns"/>
+        FROM user u
+        <include refid="userJoins"/>
+        WHERE u.id = #{id}
+    </select>
+
+    <select id="getUserByUsername" resultMap="userResult">
+        SELECT
+            <include refid="userColumns"/>
+        FROM user u
+        <include refid="userJoins"/>
+        WHERE u.username = #{username}
+    </select>
+
+    <select id="getUserByEmail" resultMap="userResult">
+        SELECT
+            <include refid="userColumns"/>
+        FROM user u
+        <include refid="userJoins"/>
+        WHERE u.email = #{email}
+    </select>
+
+    <select id="getUsers" resultMap="userResult">
+        SELECT
+            <include refid="userColumns"/>
+        FROM user u
+        <include refid="userJoins"/>
+        ORDER BY u.id ASC
+    </select>
+
+    <select id="search" resultMap="userResult">
+        SELECT
+            <include refid="userColumns"/>
+        FROM user u
+        <include refid="userJoins"/>
+        <where>
+            1 = 1
+            <if test="userId != null and userId != ''">
+                AND u.id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username like CONCAT('%', #{username}, '%')
+            </if>
+            <if test="authorityName != null and authorityName != ''">
+                JOIN authority au ON au.userid = u.id AND au.authorityName = #{authorityName}
+            </if>
+            <if test="enable != null and enable != ''">
+                AND u.enable = #{enable}
+            </if>
+        </where>
+        ORDER BY u.id
+    </select>
+
+    <insert id="insertUserRole">
+        INSERT INTO authority(id, user_id, authority_name)
+        VALUES(#{id}, #{userId}, #{authorityName})
+    </insert>
+</mapper>

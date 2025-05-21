@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-lg-offset-1">
+                <div class="user-profile-status">
+                    <div style="text-align: center;">
+                        <div>
+                            <img th:if="${user.profilePhoto} == null" src="../images/defaultAvatar.jpg" th:alt-title="${user.username}" class="img-rounded profile_photo_img"/>
+                            <img th:unless="${user.profilePhoto} == null" src="../images/defaultAvatar.jpg" th:src="${user.profilePhoto}" th:alt-title="${user.username}" class="img-rounded" style="max-width: 50px; max-height: 50px; line-height: 20px;"/>
+                        </div>
+                        <div class="username-box">
+                            <p class="username" th:text="${user.username}">User Name</p>
+                        </div>
+                        <div th:if="${userLogin}">
+                            <div th:if="${currentUser.id != user.id}">
+                                <span th:if="${isFollowing}" id="follow-status">
+                                    <button type="button" class="btn btn-default btn-xs" id="unfollow" th:text="#{unfollow}">Un Follow</button>
+                                </span>
+                                <span th:unless="${isFollowing}" id="follow-status">
+                                    <button type="button" class="btn btn-primary btn-xs" id="follow" th:text="#{follow}">Follow</button>
+                                </span>
+                                <button type="button" class="btn btn-default btn-xs" disabled="disabled" th:text="#{private-message}">Private Message</button>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled list-inline user-relation">
+                        <li>
+                            <a href="#">
+                                <span th:text="#{follower-count}">Follower Count</span>
+                                <span th:text="${followerCount}">999</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span th:text="#{followee-count}">Followee Count</span>
+                                <span th:text="${followeeCount}">999</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span th:text="#{post-count}">Post Count</span>
+                                <span th:text="${page.total}">999</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div th:if="${currentUser}">
+                    <div th:if="${currentUser.id == user.id}" class="user-post">
+                        <form role="form" th:action="@{/user/post/new}" action="#" method="post">
+                            <input type="hidden" name="userId" th:value="${user.id}"/>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="description" name="description" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary pull-right" th:text="#{publish}">
+                                    Submit
+                                </button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+                <div class="user-post-list">
+                    <div class="user-post" th:each="post : ${page.records}">
+                        <p class="post-description" th:text="${post.description}">Comment Description</p>
+                        <p class="post-time" th:text="${post.createTime}">2019-09-25 22:10</p>
+                    </div>
+                </div>
+                <div th:if="${page.total > 10}" class="row">
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <button id="more-post" type="button" class="btn btn-link" th:text="#{more}">
+                            More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
+
+<script type="text/javascript" th:inline="javascript">
+    var userLogin = /*[[${userLogin}]]*/;
+    var loginUserId = "";
+
+    if (userLogin) {
+        loginUserId = /*[[${userId}]]*/;
+    }
+
+    $(function () {
+        $('#follow').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/user/follow",
+                data: {userId: [[${user.id}]], loginUserId: loginUserId},
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#follow-status').empty();
+                        $('#follow-status').html('<button type="button" class="btn btn-default btn-xs" id="unfollow">[[#{unfollow}]]</button>');
+                    }
+                }
+            });
+        });
+    });
+
+    $(function () {
+        $('#unfollow').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/user/unfollow",
+                data: {userId: userId, loginUserId: loginUserId},
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#follow-status').empty();
+                        $('#follow-status').html('<button type="button" class="btn btn-primary btn-xs" id="follow">[[#{follow}]]</button>');
+                    }
+                }
+            });
+        });
+    });
+
+    $(function () {
+        var offset = 10;
+        var limit = 10;
+
+        $('#more-post').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/user/post/page",
+                data: {
+                    offset: offset,
+                    limit: limit,
+                    userId: userId
+                },
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#user-post-list').append(
+                        '<div class="user-post">'
+                        + '<p class="post-description">' + data[i].description + '</p>'
+                        + '<p class="post-time" >' + data[i].createTime + '</p>'
+                        + '</div>'
+                        );
+                    }
+                }
+            });
+            offset = offset + 10;
+        });
+    });
+</script>

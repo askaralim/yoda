@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <div class="section">
+        <div class="container">
+            <div class="col-lg-10 col-lg-offset-1">
+                <div class="content-post">
+                    <h3 class="page-header" th:text="${brand.name}">Brand Name</h3>
+                    <p class="text-right">
+                        <bd style="font-size: 12px; color: #d2d2d2; font-weight: 700;">
+                            <i class="glyphicon glyphicon-eye-open"></i>
+                            <span th:text="${brand.hitCounter}">Hit Counter</span>
+                        </bd>
+                    </p>
+                    <div class="row">
+                        <div class="brand-detail">
+                            <div class="col-sm-3">
+                                <img src="/images/demoUpload.jpg" th:src="${brand.imagePath}" th:alt-title="${brand.name}" class="img-responsive" />
+                            </div>
+                            <div class="col-sm-9">
+                                <dl class="dl-horizontal">
+                                    <dt th:text="#{brand-founded}">Brand Founded</dt>
+                                    <dd th:text="${brand.country}">Country</dd>
+                                    <div th:if="${brand.foundDate} != null">
+                                        <dt th:text="#{founded-date}">Founded Date</dt>
+                                        <dd th:text="${brand.foundDate}">Date</dd>
+                                    </div>
+                                    <dt th:text="#{brand-products}">Brand Products</dt>
+                                    <dd th:text="${brand.kind}">Kind</dd>
+                                </dl>
+                                <div class="brand-description">
+                                    <p>[(${brand.description})]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="page-header" th:text="#{recommend-product}">Recommend Product</h4>
+                <div class="row">
+                    <div class="home-brand-all">
+                        <div th:each="item : ${items}" class="col-sm-3" style="text-align: -webkit-center;">
+                            <div class="home-brand">
+                            <a href="/item/item.html" th:href="@{'/item/' + ${item.id}}">
+                                <div class="thumbnail" style="height: 150px; display: flex;align-items: center;">
+                                    <img class="img-responsive" th:src="${item.imagePath}" th:alt-title="${item.name}" style="max-height: 150px;">
+                                </div>
+                            </a>
+                            <a href="/item/item.html" th:href="@{'/item/' + ${item.id}}">
+                                <p style="line-height: 1.6;font-size: 16px;font-weight: 200;" th:text="${item.name}">Item Name</p>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

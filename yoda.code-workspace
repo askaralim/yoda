@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.server.launchMode": "Standard",
+		"java.completion.importOrder": [
+			"java",
+			"javax",
+			"org",
+			"com"
+		],
+		"java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+		"java.format.settings.profile": "GoogleStyle",
+		"java.dependency.packagePresentation": "hierarchical"
+	}
+}

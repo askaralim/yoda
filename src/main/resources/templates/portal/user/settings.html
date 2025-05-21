@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}">
+    <title th:text="#{title}">Title</title>
+</head>
+
+<body id="page-top" class="index">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container pt">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li th:class="${tab == 'basic' ? 'active' : ''}">
+                        <a href="#tab-basic" data-toggle="tab" th:text="#{basic}">Basic</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-basic">
+                        <form id="userForm" th:action="@{/user/settings}" th:object="${user}" action="#" method="post" role="form" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="alert alert-success" role="alert" th:if="${success} != null">
+                                <a class="panel-close close" data-dismiss="alert">X</a>
+                                <i class="glyphicon glyphicon-ok"></i> <span th:text="#{saved-success}">Success!</span>
+                            </div>
+
+                            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                                <a class="panel-close close" data-dismiss="alert">X</a>
+                                <p th:each="error : ${#fields.errors('*')}" class="m-0" th:text="${error}">Validation error</p>
+                            </div>
+                            <!--				<div class="alert alert-danger" role="alert" th:if="${errors} != null">-->
+                            <!--					<a class="panel-close close" data-dismiss="alert">?</a>-->
+                            <!--					<form:errors path="*" />-->
+                            <!--					<p th:each="error : ${#fields.errors('*')}" class="m-0" th:text="${error}">Validation error</p>-->
+                            <!--				</div>-->
+
+                            <input type="hidden" th:field="*{id}"/>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"></label>
+                                <div class="col-md-8">
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                        <div class="fileinput-new thumbnail" style="width: 100px; height: 100px;">
+                                            <img th:if="${user.profilePhoto} == null" src="../images/defaultAvatar.jpg" th:alt-title="${user.username}" class="img-responsive"/>
+                                            <img th:unless="${user.profilePhoto} == null" src="../images/defaultAvatar.jpg" th:src="${user.profilePhoto}" th:alt-title="${user.username}" class="img-responsive"/>
+                                        </div>
+                                        <div class="fileinput-preview fileinput-exists thumbnail img-rounded" style="width: 100px; height: 100px;"></div>
+                                        <div>
+                                            <span class="btn btn-sm btn-default btn-file">
+                                                <span class="fileinput-new" th:text="#{select-image}">select-image</span>
+                                                <span class="fileinput-exists" th:text="#{change}">change</span>
+                                                <input type="file" name="photo" value="">
+                                            </span>
+                                            <a href="#" class="btn btn-sm btn-default fileinput-exists" data-dismiss="fileinput" th:text="#{delete}">delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="username" th:text="#{username}" class="col-md-2 control-label">Username</label>
+                                <div class="col-md-8">
+                                    <input type="text" th:field="*{username}" th:class="${'form-control' + (#fields.hasErrors('username') ? ' is-invalid' : '')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" th:text="#{email}" class="col-md-2 control-label">Email</label>
+                                <div class="col-md-8">
+                                    <input type="text" th:field="*{email}" th:class="${'form-control' + (#fields.hasErrors('email') ? ' is-invalid' : '')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" th:text="#{password}" class="col-md-2 control-label">Password</label>
+                                <div class="col-md-8">
+                                    <input type="password" th:field="*{password}" th:class="${'form-control' + (#fields.hasErrors('password') ? ' is-invalid' : '')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="verifyPassword" th:text="#{verify-password}" class="col-md-2 control-label">Password</label>
+                                <div class="col-md-8">
+                                    <input type="password" th:field="*{verifyPassword}" th:class="${'form-control' + (#fields.hasErrors('verifyPassword') ? ' is-invalid' : '')}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"></label>
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn btn-primary" th:text="#{save}">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Custom Tabs -->
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
