@@ -1,0 +1,66 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://host.docker.internal:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&connectTimeout=60000&socketTimeout=60000}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+      auto-commit: true
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:host.docker.internal}
+      port: ${SPRING_REDIS_PORT:6379}
+      password: ${SPRING_REDIS_PASSWORD:}
+      timeout: ${SPRING_REDIS_TIMEOUT:100000}
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+  # Actuator for health checks
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics
+    endpoint:
+      health:
+        show-details: when-authorized
+
+# RocketMQ configuration
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER:host.docker.internal:9876}
+  producer:
+    group: yoda-producer-group
+  consumer:
+    group: yoda-consumer-group
+
+# Logging configuration for Docker
+logging:
+  file:
+    path: /app/logs
+  level:
+    com.taklip.yoda: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+
+chatter:
+  base-url: http://127.0.0.1:5000
+
+# Application specific settings
+yoda:
+  file-location: /app/uploads/
+  mq-enabled: true

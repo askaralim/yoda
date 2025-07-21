@@ -311,13 +311,7 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
     @Override
     public void increaseContentHitCounter(Long id) {
-        Content content = this.getById(id);
-
-        content.setHitCounter(content.getHitCounter() + 1);
-
-        this.updateById(content);
-
-        this.setContentHitCounterIntoCached(id, content.getHitCounter());
+        baseMapper.increaseHitCounter(id);
     }
 
     @Override
@@ -527,14 +521,10 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
         } else {
             Content content = this.getById(id);
 
-            setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
+            // setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
 
             return content.getHitCounter();
         }
-    }
-
-    private void setContentHitCounterIntoCached(long id, int hitCounter) {
-        redisService.set(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + id, String.valueOf(hitCounter));
     }
 
     public String encode(String input)

@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# Build outputs
+build/
+!build/libs/*.jar
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+log.path_IS_UNDEFINED/
+
+# Documentation
+README.md
+*.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+compose.yaml
+
+# Test files
+src/test/
+
+# Development files
+*.code-workspace 

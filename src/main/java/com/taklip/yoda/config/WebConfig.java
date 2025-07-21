@@ -1,7 +1,7 @@
 package com.taklip.yoda.config;
 
 import com.taklip.yoda.convertor.StringToLocalDateTimeConverter;
-
+import com.taklip.yoda.properties.YodaProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,6 +14,12 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    protected final YodaProperties properties;
+
+    public WebConfig(YodaProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LocaleChangeInterceptor());
@@ -21,9 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///" + System.getProperties().getProperty("user.home") + "/yoda/uploads/");
+                .addResourceLocations("file:///" + properties.getFileLocation());
     }
 
     @Override

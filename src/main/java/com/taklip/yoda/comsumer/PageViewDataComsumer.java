@@ -1,5 +1,8 @@
 package com.taklip.yoda.comsumer;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +11,15 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
-import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.model.PageView;
-import com.taklip.yoda.service.BrandService;
-import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.ItemService;
-import com.taklip.yoda.service.PageViewService;
 import com.taklip.yoda.common.contant.Constants;
 import com.taklip.yoda.common.util.DateUtil;
+import com.taklip.yoda.enums.ContentTypeEnum;
+import com.taklip.yoda.model.PageView;
+import com.taklip.yoda.service.PageViewService;
+import com.taklip.yoda.strategy.BrandHitCounterStrategy;
+import com.taklip.yoda.strategy.ContentHitCounterStrategy;
+import com.taklip.yoda.strategy.HitCounterStrategy;
+import com.taklip.yoda.strategy.ItemHitCounterStrategy;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,16 +28,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PageViewDataComsumer implements RocketMQListener<String> {
     @Autowired
-    private BrandService brandService;
-
-    @Autowired
-    private ContentService contentService;
-
-    @Autowired
-    private ItemService itemService;
-
-    @Autowired
     private PageViewService pageViewService;
+
+    private final Map<String, HitCounterStrategy> strategyMap;
+
+    public PageViewDataComsumer(List<HitCounterStrategy> strategies) {
+        this.strategyMap = Map.of(
+                ContentTypeEnum.ITEM.getType(),
+                strategies.stream().filter(s -> s instanceof ItemHitCounterStrategy).findFirst().orElseThrow(),
+                ContentTypeEnum.BRAND.getType(),
+                strategies.stream().filter(s -> s instanceof BrandHitCounterStrategy).findFirst().orElseThrow(),
+                ContentTypeEnum.CONTENT.getType(),
+                strategies.stream().filter(s -> s instanceof ContentHitCounterStrategy).findFirst().orElseThrow());
+    }
 
     @Override
     public void onMessage(String message) {
@@ -58,13 +65,11 @@ public class PageViewDataComsumer implements RocketMQListener<String> {
 
             pageViewService.addPageView(pageView);
 
-            if (pageTypeCode == ContentTypeEnum.ITEM.getCode()) {
-                itemService.increaseItemHitCounter(pageId);
-            } else if (pageTypeCode == ContentTypeEnum.BRAND.getCode()) {
-                brandService.increaseBrandHitCounter(pageId);
-            } else if (pageTypeCode == ContentTypeEnum.CONTENT.getCode()) {
-                contentService.increaseContentHitCounter(pageId);
-            }
+            HitCounterStrategy hitCounterStrategy = strategyMap.get(ContentTypeEnum.getType(pageTypeCode).getType());
+
+            if (hitCounterStrategy == null)
+                throw new IllegalArgumentException("Unsupported strategy");
+            hitCounterStrategy.increase(pageId);
         } catch (JSONException e) {
             log.error("", e);
         }

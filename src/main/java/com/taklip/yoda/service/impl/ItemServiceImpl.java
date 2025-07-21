@@ -182,7 +182,6 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
     @Override
     public void increaseItemHitCounter(Long itemId) {
         baseMapper.increaseHitCounter(itemId);
-        redisService.incr(Constants.REDIS_ITEM_HIT_COUNTER + ":" + itemId);
     }
 
     @Override

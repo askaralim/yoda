@@ -50,7 +50,7 @@ public class WXMessageUtil {
     private static final String SUFFIX_CDATA = "]]>";
 
     public static Map<String, String> xmlToMap(HttpServletRequest request) throws Exception {
-        Map<String, String> map = new HashMap<>();
+        var map = new HashMap<String, String>();
 
         SAXReader reader = new SAXReader();
 

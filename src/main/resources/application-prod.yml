@@ -51,10 +51,6 @@ rocketmq:
     compressMessageBodyThreshold: 4096
     retryNextServer: false
 
-yoda:
-  file-location: /yoda/uploads/
-  mq-enabled: false
-
 jediorder:
   machine-id: 1022
 
@@ -80,3 +76,9 @@ logging:
     com.taklip.yoda: debug
     org.springframework.jdbc: DEBUG
     com.zaxxer.hikari: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

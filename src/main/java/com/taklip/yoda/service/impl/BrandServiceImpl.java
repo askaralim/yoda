@@ -124,13 +124,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
     @Override
     public void increaseBrandHitCounter(Long id) {
-        Brand brandDb = this.getById(id);
-
-        brandDb.setHitCounter(brandDb.getHitCounter() + 1);
-
-        this.updateById(brandDb);
-
-        this.setBrandHitCounterIntoCached(id, brandDb.getHitCounter());
+        baseMapper.increaseHitCounter(id);
     }
 
     @Override
@@ -172,7 +166,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         Brand brand = this.getById(id);
         if (brand != null) {
             int hitCounter = brand.getHitCounter();
-            setBrandHitCounterIntoCached(id, hitCounter);
+            // setBrandHitCounterIntoCached(id, hitCounter);
             return hitCounter;
         }
 
@@ -240,15 +234,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
             redisService.setMap(Constants.REDIS_BRAND + ":" + brand.getId(), brandMap);
 
-            setBrandHitCounterIntoCached(brand.getId(), brand.getHitCounter());
+            // setBrandHitCounterIntoCached(brand.getId(), brand.getHitCounter());
             setBrandScoreIntoCached(brand.getId(), brand.getScore());
         } catch (Exception e) {
             log.error("Error serializing brand to cache: {}", e.getMessage());
         }
-    }
-
-    private void setBrandHitCounterIntoCached(Long id, int hitCounter) {
-        redisService.set(Constants.REDIS_BRAND_HIT_COUNTER + ":" + id, String.valueOf(hitCounter));
     }
 
     private void setBrandScoreIntoCached(Long id, int score) {

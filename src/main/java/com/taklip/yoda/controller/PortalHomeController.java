@@ -81,7 +81,7 @@ public class PortalHomeController extends PortalBaseController {
             modelMap.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
             modelMap.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
         } catch (Exception e) {
-            log.error("PortalHomeController setupForm error: {}", e.getMessage());
+            log.error("PortalHomeController setupForm error: {}", e);
         }
 
         return new ModelAndView("portal/home", modelMap);

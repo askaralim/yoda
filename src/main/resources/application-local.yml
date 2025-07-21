@@ -26,10 +26,10 @@ rocketmq:
   consumer:
     group: yoda-consumer-group
     message-model: CLUSTERING
-    consume-thread-min: 5
-    consume-thread-max: 32
+    # consume-thread-min: 5
+    # consume-thread-max: 32
     pull-batch-size: 32
-    consume-message-batch-max-size: 1
+    # consume-message-batch-max-size: 1
   name-server: localhost:9876
   producer:
     group: yoda-producer-group
@@ -39,10 +39,6 @@ rocketmq:
     maxMessageSize: 4096
     compressMessageBodyThreshold: 4096
     retryNextServer: false
-
-yoda:
-  file-location: ${user.home}/yoda/uploads/
-  mq-enabled: false
 
 jediorder:
   machine-id: 1022

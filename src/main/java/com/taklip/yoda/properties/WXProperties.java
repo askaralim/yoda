@@ -10,6 +10,14 @@ public class WXProperties {
     private String token;
     private String encodingAESKey;
 
+    public String getAppID() {
+        return appID;
+    }
+
+    public void setAppID(String appID) {
+        this.appID = appID;
+    }
+
     public String getToken() {
         return token;
     }
@@ -24,13 +32,5 @@ public class WXProperties {
 
     public void setEncodingAESKey(String encodingAESKey) {
         this.encodingAESKey = encodingAESKey;
-    }
-
-    public String getAppID() {
-        return appID;
-    }
-
-    public void setAppID(String appID) {
-        this.appID = appID;
     }
 }

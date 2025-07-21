@@ -2,15 +2,15 @@ server:
   port: 8080
   compression:
     enabled: true
-
-spring:
-  application:
-    name: yoda
-  http:
+  servlet:
     encoding:
       enabled: true
       charset: UTF-8
       force: true
+
+spring:
+  application:
+    name: yoda
   messages:
     basename: messages/messages
     encoding: UTF-8
@@ -61,3 +61,12 @@ mybatis-plus:
 
 app:
   id: ${spring.application.name}
+
+wx:
+  appID: wx1234567890
+  token: 1234567890
+  encodingAESKey: 1234567890
+
+yoda:
+  file-location: ${HOME}/yoda/uploads/
+  mq-enabled: false

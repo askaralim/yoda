@@ -10,32 +10,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.taklip.yoda.common.contant.Constants;
+import com.taklip.yoda.common.tools.SHA1;
+import com.taklip.yoda.common.util.WXMessageUtil;
 import com.taklip.yoda.model.ChatQuestion;
 import com.taklip.yoda.model.ChatResponse;
 import com.taklip.yoda.properties.WXProperties;
 import com.taklip.yoda.service.ChatQuestionService;
 import com.taklip.yoda.service.ChatterService;
 import com.taklip.yoda.service.WXMessageService;
-import com.taklip.yoda.common.contant.Constants;
-import com.taklip.yoda.common.tools.SHA1;
-import com.taklip.yoda.common.util.WXMessageUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class WXMessageServiceImpl implements WXMessageService {
-    @Autowired
-    private WXProperties properties;
+    private final WXProperties properties;
 
-    @Autowired
     private ChatterService chatterService;
 
-    @Autowired
     private ChatQuestionService chatQuestionService;
 
     @Override

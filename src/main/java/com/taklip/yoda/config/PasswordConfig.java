@@ -12,7 +12,6 @@ public class PasswordConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // help me to encode password
     public static void main(String[] args) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = "123456";
