@@ -50,7 +50,7 @@ mybatis-plus:
   executor-type: simple
   global-config:
     db-config:
-      # id-type: INPUT
+      id-type: ASSIGN_ID
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0

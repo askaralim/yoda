@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.baomidou:mybatis-plus-spring-boot3-starter'
     implementation 'com.baomidou:mybatis-plus-jsqlparser'
     implementation 'org.dom4j:dom4j:2.1.4'
-    implementation 'com.taklip:jedi-order:1.0.1'
+    // implementation 'com.taklip:jedi-order:1.0.1'
     implementation 'org.imgscalr:imgscalr-lib:4.2'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'

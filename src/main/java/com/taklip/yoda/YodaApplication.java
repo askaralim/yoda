@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.taklip.yoda", "com.taklip.jediorder" })
+@ComponentScan(basePackages = { "com.taklip.yoda" })
 @ConfigurationPropertiesScan
 public class YodaApplication {
     public static void main(String[] args) {

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -13,10 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.taklip.jediorder.service.IdService;
 import com.taklip.yoda.model.User;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,20 +26,20 @@ import lombok.extern.slf4j.Slf4j;
 @EnableTransactionManagement
 @Slf4j
 public class MyBatisConfig {
-    @Autowired
-    private IdService idService;
+    // @Autowired
+    // private IdService idService;
 
-    @Bean
-    public IdentifierGenerator identifierGenerator() {
-        return new IdentifierGenerator() {
-            @Override
-            public Number nextId(Object entity) {
-                Number id = idService.generateId();
-                log.info("nextId: {}", id);
-                return id;
-            }
-        };
-    }
+    // @Bean
+    // public IdentifierGenerator identifierGenerator() {
+    // return new IdentifierGenerator() {
+    // @Override
+    // public Number nextId(Object entity) {
+    // Number id = idService.generateId();
+    // log.info("nextId: {}", id);
+    // return id;
+    // }。，/
+    // };
+    // }
 
     @Bean
     public MetaObjectHandler metaObjectHandler() {
