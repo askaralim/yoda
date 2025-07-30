@@ -42,14 +42,15 @@ public class PortalItemController extends PortalBaseController {
                 model.put("site", site);
                 model.put("item", item);
 
+                String brandName = (item.getBrand() != null) ? item.getBrand().getName() : "未知品牌";
                 model.put("pageTitle",
-                                "【" + item.getName() + "】" + item.getBrand().getName() + " " + item.getName()
+                                "【" + item.getName() + "】" + brandName + " " + item.getName()
                                                 + "，产品报价、介绍 - "
                                                 + site.getSiteName());
                 model.put("keywords",
-                                item.getBrand().getName() + "," + item.getName() + "," + item.getName() + "介绍,"
+                                brandName + "," + item.getName() + "," + item.getName() + "介绍,"
                                                 + item.getName() + "怎么样");
-                model.put("description", item.getBrand().getName() + " " + item.getName() + "详细介绍。");
+                model.put("description", brandName + " " + item.getName() + "详细介绍。");
                 model.put("url", request.getRequestURL().toString());
                 model.put("image", "http://" + site.getDomainName() + item.getImagePath());
 

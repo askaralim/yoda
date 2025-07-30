@@ -1,16 +1,28 @@
 server:
   port: 8080
+  tomcat:
+    max-connections: 10000
+    threads:
+      max: 1000
+      min-spare: 1000
+    accept-count: 100
+    connection-timeout: 20000
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      file-size-threshold: 2MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:password}
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://host.docker.internal:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&connectTimeout=60000&socketTimeout=60000}
     hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
-      connection-timeout: 30000
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 3000
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-test-query: SELECT 1
@@ -31,14 +43,14 @@ spring:
           max-wait: -1ms
 
   # Actuator for health checks
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: health,info,metrics
-    endpoint:
-      health:
-        show-details: when-authorized
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
 
 # RocketMQ configuration
 rocketmq:

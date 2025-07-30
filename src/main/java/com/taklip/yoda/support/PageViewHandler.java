@@ -5,6 +5,7 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson2.JSON;
 import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.PageView;
 import com.taklip.yoda.model.User;
@@ -62,8 +63,18 @@ public class PageViewHandler {
         }
 
         if (properties.getMqEnabled()) {
-            SendResult sendResult = rocketMQTemplate.syncSend(Constants.KAFKA_TOPIC_PAGE_VIEW, pageView.toString());
-            log.info("sendResult: {}", sendResult);
+            // Add debugging
+            log.info("MQ enabled, rocketMQTemplate: {}", rocketMQTemplate);
+            if (rocketMQTemplate != null) {
+                try {
+                    SendResult sendResult = rocketMQTemplate.syncSend(Constants.KAFKA_TOPIC_PAGE_VIEW, pageView);
+                    log.info("sendResult: {}", sendResult);
+                } catch (Exception e) {
+                    log.error("Error sending message to RocketMQ: {}", e.getMessage(), e);
+                }
+            } else {
+                log.error("RocketMQTemplate is null!");
+            }
         }
         else {
             pageViewService.addPageView(pageView);

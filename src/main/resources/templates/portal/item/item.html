@@ -11,7 +11,7 @@
         <div class="container">
             <div class="col-lg-10 col-lg-offset-1">
                 <div class="content-post">
-                    <h4 class="page-header" th:text="${item.brand.name} + ' ' + ${item.name}">Name</h4>
+                    <h4 class="page-header" th:text="${item.brand != null ? (item.brand.name + ' ' + item.name) : item.name}">Name</h4>
                     <p class="text-right">
                         <bd style="font-size: 12px; color: #d2d2d2; font-weight: 700;">
                             <i class="glyphicon glyphicon-eye-open"></i>
@@ -26,8 +26,11 @@
                             <div class="col-sm-9">
                                 <dl class="dl-horizontal">
                                     <dt th:text="#{brand}">Brand</dt>
-                                    <dd>
+                                    <dd th:if="${item.brand != null}">
                                         <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.id}}" th:text="${item.brand.name}">Brand Name</a>
+                                    </dd>
+                                    <dd th:unless="${item.brand != null}">
+                                        <span th:text="#{no-brand}">No Brand</span>
                                     </dd>
                                     <dt th:text="#{price}">Price</dt>
                                     <dd th:text="${item.price}">$100</dd>

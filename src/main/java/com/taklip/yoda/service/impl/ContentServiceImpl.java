@@ -138,8 +138,6 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
         Content content = baseMapper.selectById(id);
 
-        log.info("Content: {}", JSON.toJSONString(content));
-
         this.setContentIntoCache(content);
 
         ContentDTO contentDTO = modelConvertor.convertToContentDTO(content);

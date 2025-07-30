@@ -8,11 +8,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONException;
-import com.alibaba.fastjson2.JSONObject;
 import com.taklip.yoda.common.contant.Constants;
-import com.taklip.yoda.common.util.DateUtil;
 import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.PageView;
 import com.taklip.yoda.service.PageViewService;
@@ -26,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RocketMQMessageListener(topic = Constants.KAFKA_TOPIC_PAGE_VIEW, consumerGroup = Constants.KAFKA_GROUP_ID_PAGE_VIEW)
 @Slf4j
-public class PageViewDataComsumer implements RocketMQListener<String> {
+public class PageViewDataComsumer implements RocketMQListener<PageView> {
     @Autowired
     private PageViewService pageViewService;
 
@@ -43,35 +39,19 @@ public class PageViewDataComsumer implements RocketMQListener<String> {
     }
 
     @Override
-    public void onMessage(String message) {
-        log.info("[PageView] message = " + message);
+    public void onMessage(PageView pageView) {
+        log.info("[PageView] message = {}", pageView);
 
         try {
-            JSONObject obj = JSON.parseObject(message);
-
-            PageView pageView = new PageView();
-
-            Integer pageTypeCode = obj.getInteger("pageType");
-            Long pageId = obj.getLong("pageId");
-
-            pageView.setCreateTime(DateUtil.getLocalDateTime(obj.getString("createTime")));
-            pageView.setPageId(pageId);
-            pageView.setPageName(obj.getString("pageName"));
-            pageView.setPageType(pageTypeCode);
-            pageView.setPageUrl(obj.getString("pageUrl"));
-            pageView.setUserIpAddress(obj.getString("userIpAddress"));
-            pageView.setUserId(obj.getLong("userId"));
-            pageView.setUsername(obj.getString("username"));
-
             pageViewService.addPageView(pageView);
 
-            HitCounterStrategy hitCounterStrategy = strategyMap.get(ContentTypeEnum.getType(pageTypeCode).getType());
+            HitCounterStrategy hitCounterStrategy = strategyMap.get(ContentTypeEnum.getType(pageView.getPageType()).getType());
 
             if (hitCounterStrategy == null)
                 throw new IllegalArgumentException("Unsupported strategy");
-            hitCounterStrategy.increase(pageId);
-        } catch (JSONException e) {
-            log.error("", e);
+            hitCounterStrategy.increase(pageView.getPageId());
+        } catch (Exception e) {
+            log.error("Error processing page view message", e);
         }
     }
 }

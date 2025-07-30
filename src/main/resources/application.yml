@@ -69,4 +69,4 @@ wx:
 
 yoda:
   file-location: ${HOME}/yoda/uploads/
-  mq-enabled: false
+  mq-enabled: true

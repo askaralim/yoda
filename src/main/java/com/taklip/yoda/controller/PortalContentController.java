@@ -75,7 +75,7 @@ public class PortalContentController extends PortalBaseController {
         model.put("site", site);
 
         pageViewHandler.add(request, ContentTypeEnum.CONTENT.getType(), content.getTitle(), content.getId());
-        log.info("Content: {}", JSON.toJSONString(content));
+
         return new ModelAndView("portal/content", model);
     }
 

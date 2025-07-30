@@ -8,7 +8,7 @@ RUN addgroup -g 1001 -S appgroup && \
 WORKDIR /app
 
 # Copy the JAR file from build stage
-COPY build/libs/yoda-0.0.1-SNAPSHOT.jar app.jar
+COPY build/libs/yoda-0.0.1-SNAPSHOT.jar yoda-app.jar
 
 # Expose the application port
 EXPOSE 8080
@@ -27,4 +27,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
 USER appuser
 
 # Run the application with docker profile, ensuring /app/logs and /app/uploads exist
-ENTRYPOINT ["sh", "-c", "mkdir -p /app/logs /app/uploads && java $JAVA_OPTS -Dspring.profiles.active=docker -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "mkdir -p /app/logs /app/uploads && java $JAVA_OPTS -Dspring.profiles.active=docker -jar yoda-app.jar"]

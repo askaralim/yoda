@@ -96,8 +96,11 @@
                                                             <a href="/item/item.html" th:href="@{'/item/' + ${item.id} + '?backURL=' + ${backURL}}" th:text="${item.name}">Item Name</a>
                                                         </dd>
                                                         <dt th:text="#{brand}">brand</dt>
-                                                        <dd>
+                                                        <dd th:if="${item.brand != null}">
                                                             <a href="/brand/brand.html" th:href="@{'/brand/' + ${item.brand.id}}" th:text="${item.brand.name}">Item Brand Name</a>
+                                                        </dd>
+                                                        <dd th:unless="${item.brand != null}">
+                                                            <span th:text="#{no-brand}">No Brand</span>
                                                         </dd>
                                                         <dt th:text="#{price}">Price</dt>
                                                         <dd th:text="${item.price}">Item Price</dd>
