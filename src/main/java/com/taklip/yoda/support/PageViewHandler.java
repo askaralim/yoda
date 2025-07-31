@@ -5,7 +5,6 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson2.JSON;
 import com.taklip.yoda.enums.ContentTypeEnum;
 import com.taklip.yoda.model.PageView;
 import com.taklip.yoda.model.User;
