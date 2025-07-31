@@ -2,7 +2,6 @@ package com.taklip.yoda.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,13 +29,12 @@ public class ErrorPagesController implements ErrorController {
 
     private ErrorAttributes errorAttributes;
 
-    @Autowired
     private ServerProperties serverProperties;
 
-    @Autowired
-    public ErrorPagesController(ErrorAttributes errorAttributes) {
+    public ErrorPagesController(ErrorAttributes errorAttributes, ServerProperties serverProperties) {
         Assert.notNull(errorAttributes, "ErrorAttributes must not be null");
         this.errorAttributes = errorAttributes;
+        this.serverProperties = serverProperties;
     }
 
     @RequestMapping("/")
