@@ -11,7 +11,7 @@ on:
       - master
 
 env:
-  IMAGE_NAME: ${{ secrets.ALIYUN_ACR_REGISTRY }}/yoda
+  IMAGE_NAME: ${{ secrets.ALIYUN_ACR_REGISTRY }}/taklip-container/yoda
   IMAGE_TAG_LATEST: latest
 
 jobs:
