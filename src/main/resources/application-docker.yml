@@ -41,8 +41,11 @@ spring:
           max-idle: 8
           min-idle: 0
           max-wait: -1ms
+  devtools:
+    restart:
+      enabled: false
 
-  # Actuator for health checks
+# Actuator for health checks
 management:
   endpoints:
     web:

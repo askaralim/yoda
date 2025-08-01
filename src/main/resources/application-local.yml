@@ -21,6 +21,21 @@ spring:
       port: 6379
       password: null
       timeout: 100000
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# Actuator for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
 
 rocketmq:
   consumer:
