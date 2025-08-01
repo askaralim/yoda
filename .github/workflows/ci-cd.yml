@@ -74,9 +74,12 @@ jobs:
           username: ${{ secrets.ALIYUN_ECS_USER }}
           key: ${{ secrets.ALIYUN_ECS_SSH_KEY }}
           script: |
+            echo "🔐 Logging into ACR..."
+            docker login --username=${{ secrets.ALIYUN_ACR_USERNAME }} {{ secrets.ALIYUN_ACR_REGISTRY }}
+            
             # Update deployment script
             cd ~/deploy
             echo "Pulling latest image..."
             docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }}
 
-
+            
