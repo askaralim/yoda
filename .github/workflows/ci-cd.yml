@@ -48,7 +48,7 @@ jobs:
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image to ACR
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -58,47 +58,25 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-push
-  #   if: github.ref == 'refs/heads/master'
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/master'
 
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
 
-  #     - name: Deploy to AliCloud ECS
-  #       uses: appleboy/ssh-action@v1.0.0
-  #       with:
-  #         host: ${{ secrets.ALICLOUD_HOST }}
-  #         username: ${{ secrets.ALICLOUD_USERNAME }}
-  #         key: ${{ secrets.ALICLOUD_SSH_KEY }}
-  #         script: |
-  #           # Update deployment script
-  #           cd ~/deploy
-  #           echo "Pulling latest image..."
-  #           docker pull ${{ env.REGISTRY }}/${{ secrets.ALICLOUD_REGISTRY }}/yoda:latest
+      - name: Deploy to AliCloud ECS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.ALIYUN_ECS_HOST }}
+          username: ${{ secrets.ALIYUN_ECS_USER }}
+          key: ${{ secrets.ALIYUN_ECS_SSH_KEY }}
+          script: |
+            # Update deployment script
+            cd ~/deploy
+            echo "Pulling latest image..."
+            docker pull ${{ env.${{ env.IMAGE_NAME }} }}:${{ env.IMAGE_TAG_LATEST }}
 
-  #           # Stop existing container
-  #           docker stop yoda-app || true
-  #           docker rm yoda-app || true
-
-  #           # Start new container
-  #           docker run -d \
-  #             --name yoda-app \
-  #             --restart unless-stopped \
-  #             -p 8080:8080 \
-  #             -e SPRING_PROFILES_ACTIVE=prod \
-  #             ${{ env.REGISTRY }}/${{ secrets.ALICLOUD_REGISTRY }}/yoda:latest
-            
-  #           echo "✅ Deployment completed!"
-
-  #           # Health check
-  #           sleep 30
-  #           if curl -f http://localhost:8080/actuator/health; then
-  #             echo "✅ Deployment successful!"
-  #           else
-  #             echo "❌ Deployment failed!"
-  #             exit 1
-  #           fi
 
