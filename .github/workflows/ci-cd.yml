@@ -89,6 +89,9 @@ jobs:
 
             echo "🧹 Cleaning up old containers..."
             docker container prune -f || true
+            
+            echo "🗑️ Force removing any existing yoda-app container..."
+            docker rm -f yoda-app || true
 
             echo "🚀 Starting services..."
             docker compose up -d
