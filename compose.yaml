@@ -4,7 +4,42 @@ services:
     container_name: yoda-app
     ports:
       - '8080:8080'
+    restart: unless-stopped
+    image: yoda:latest
+    networks:
+      - taklip-shared-network
+    volumes:
+      - ${HOME}/yoda/uploads:/app/uploads
+      - ${HOME}/yoda/logs:/app/logs
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Shanghai
-    restart: unless-stopped
+      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+      - ROCKETMQ_NAME_SERVER=namesrv:9876
+      # Database configuration
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      # Redis configuration
+      - SPRING_REDIS_HOST=host.docker.internal
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=
+      - SPRING_REDIS_TIMEOUT=100000
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+networks:
+  taklip-shared-network:
+    external: true

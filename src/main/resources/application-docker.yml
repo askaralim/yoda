@@ -57,7 +57,7 @@ management:
 
 # RocketMQ configuration
 rocketmq:
-  name-server: ${ROCKETMQ_NAME_SERVER:host.docker.internal:9876}
+  name-server: ${ROCKETMQ_NAME_SERVER:localhost:9876}
   producer:
     group: yoda-producer-group
   consumer:

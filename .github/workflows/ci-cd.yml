@@ -75,30 +75,20 @@ jobs:
           key: ${{ secrets.ALIYUN_ECS_SSH_KEY }}
           script: |
             echo "🔐 Logging into ACR..."
-            docker login -u ${{ secrets.ALIYUN_ACR_USERNAME }} -p ${{ secrets.ALIYUN_ACR_PASSWORD }} ${{ secrets.ALIYUN_ACR_REGISTRY }}
+            echo "${{ secrets.ALIYUN_ACR_PASSWORD }}" | docker login ${{ secrets.ALIYUN_ACR_REGISTRY }} -u ${{ secrets.ALIYUN_ACR_USERNAME }} --password-stdin
 
-            # Update deployment script
-            cd ~/deploy
-            echo "Pulling latest image..."
+            echo "📥 Pulling latest image..."
             docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }}
 
-            # Stop existing container
-            echo "🛑 Stopping existing container..."
-            docker stop yoda-app || true
-            docker rm yoda-app || true
+            echo "🏷️  Tagging image for compose..."
+            docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }} yoda-app:latest
 
-            # Start new container
-            echo "🚀 Starting new container..."
-            docker run -d \
-              --name yoda-app \
-              --restart unless-stopped \
-              -p 8080:8080 \
-              -e SPRING_PROFILES_ACTIVE=prod \
-              ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }}
-            
-            echo "✅ Deployment completed!"
+            echo "🚀 Restarting services..."
+            cd /opt/project-yoda/compose
+            docker-compose down
+            docker-compose up -d
 
-            # Health check
+            echo "🏥 Checking application health..."
             sleep 30
             if curl -f http://localhost:8080/actuator/health; then
               echo "✅ Deployment successful!"
