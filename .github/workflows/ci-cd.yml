@@ -80,11 +80,11 @@ jobs:
             echo "📥 Pulling latest image..."
             docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }}
 
-            echo "🏷️  Tagging image for compose..."
+            echo "🏷️ Tagging image for compose..."
             docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }} yoda-app:latest
 
             echo "🚀 Restarting services..."
-            cd /opt/project-yoda/yoda
+            cd /opt/project-yoda/deploy
             docker compose down
             docker compose up -d
 
