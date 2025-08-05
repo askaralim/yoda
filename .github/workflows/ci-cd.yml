@@ -84,7 +84,7 @@ jobs:
             docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }} yoda-app:latest
 
             echo "🚀 Restarting services..."
-            cd /opt/project-yoda/compose
+            cd /opt/project-yoda/yoda
             docker-compose down
             docker-compose up -d
 

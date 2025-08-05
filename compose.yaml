@@ -1,11 +1,10 @@
 services:
   app:
-    build: .
+    image: yoda:latest
     container_name: yoda-app
+    restart: unless-stopped
     ports:
       - '8080:8080'
-    restart: unless-stopped
-    image: yoda:latest
     networks:
       - taklip-shared-network
     volumes:
