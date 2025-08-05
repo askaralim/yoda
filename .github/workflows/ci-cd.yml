@@ -83,17 +83,32 @@ jobs:
             echo "🏷️ Tagging image for compose..."
             docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }} yoda-app:latest
 
-            echo "🚀 Restarting services..."
+            echo "🚀 Stopping existing containers..."
             cd /opt/project-yoda/deploy
-            docker compose down
+            docker compose down --remove-orphans || true
+
+            echo "🧹 Cleaning up old containers..."
+            docker container prune -f || true
+
+            echo "🚀 Starting services..."
             docker compose up -d
 
+            echo "⏳ Waiting for application to start..."
+            sleep 60
+
             echo "🏥 Checking application health..."
-            sleep 30
-            if curl -f http://localhost:8080/actuator/health; then
-              echo "✅ Deployment successful!"
-            else
-              echo "❌ Deployment failed!"
-              exit 1
-            fi
+            for i in {1..10}; do
+              if curl -f http://localhost:8080/actuator/health; then
+                echo "✅ Deployment successful!"
+                exit 0
+              else
+                echo "⏳ Attempt $i/10: Application not ready yet..."
+                sleep 30
+              fi
+            done
+
+            echo "❌ Deployment failed - application did not start properly"
+            echo "📋 Container logs:"
+            docker logs yoda-app --tail 50
+            exit 1
 
