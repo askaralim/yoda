@@ -85,8 +85,8 @@ jobs:
 
             echo "🚀 Restarting services..."
             cd /opt/project-yoda/yoda
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
 
             echo "🏥 Checking application health..."
             sleep 30
