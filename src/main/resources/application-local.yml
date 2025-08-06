@@ -55,8 +55,8 @@ rocketmq:
     compressMessageBodyThreshold: 4096
     retryNextServer: false
 
-jediorder:
-  machine-id: 1022
+# jediorder:
+#   machine-id: 1022
 
 chatter:
   base-url: http://127.0.0.1:5000
