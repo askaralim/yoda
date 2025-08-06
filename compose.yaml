@@ -42,3 +42,4 @@ services:
 networks:
   taklip-shared-network:
     external: true
+    driver: bridge
