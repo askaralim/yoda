@@ -4,12 +4,12 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,11 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.contant.Constants;
-import com.taklip.yoda.common.util.DateUtil;
 import com.taklip.yoda.common.util.SiteUtil;
 import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.model.Brand;
@@ -41,7 +39,6 @@ import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.HomePageService;
 import com.taklip.yoda.service.UserService;
 import com.taklip.yoda.vo.ContentSearchForm;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -73,8 +70,9 @@ public class ContentController {
     private BrandService brandService;
 
     @GetMapping
-    public String list(Map<String, Object> model, @RequestParam(defaultValue = "0") Integer offset) {
-        Page<Content> page = contentService.getContents(offset * 10, 10);
+    public String list(Map<String, Object> model, @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "10") Integer limit) {
+        Page<ContentDTO> page = contentService.getContentsByPage(offset, limit);
 
         model.put("page", page);
         model.put("searchForm", new ContentSearchForm());
@@ -96,9 +94,8 @@ public class ContentController {
     }
 
     @GetMapping("/{id}/edit")
-    public String initUpdateForm(
-            @PathVariable Long id, Map<String, Object> model) {
-        ContentDTO content = contentService.getContentDetail(id);
+    public String initUpdateForm(@PathVariable Long id, Map<String, Object> model) {
+        ContentDTO content = contentService.getContentById(id);
 
         List<Category> categories = categoryService.getCategories();
 
@@ -110,9 +107,9 @@ public class ContentController {
     }
 
     @PostMapping(value = "/save")
-    public ModelAndView save(
-            @ModelAttribute Content content, @RequestParam Long categoryId,
-            BindingResult result, HttpServletRequest request, RedirectAttributes redirect) throws Throwable {
+    public ModelAndView save(@ModelAttribute ContentDTO content, @RequestParam Long categoryId,
+            BindingResult result, HttpServletRequest request, RedirectAttributes redirect)
+            throws Throwable {
         ModelMap model = new ModelMap();
 
         if (result.hasErrors()) {
@@ -125,21 +122,21 @@ public class ContentController {
         }
 
         if (content.getId() == null) {
-            contentService.create(content, categoryId);
+            contentService.create(content);
         } else {
-            contentService.updateContent(content, categoryId);
+            contentService.update(content);
         }
 
         saveContentContributors(request, content);
 
         redirect.addFlashAttribute("globalMessage", "success");
 
-        return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit", model);
+        return new ModelAndView("redirect:/controlpanel/content/" + content.getId() + "/edit",
+                model);
     }
 
     @GetMapping("/{contentId}/contentbrand/add")
-    public ModelAndView initCreationForm(
-            @PathVariable Long contentId, Map<String, Object> model) {
+    public ModelAndView initCreationForm(@PathVariable Long contentId, Map<String, Object> model) {
         ContentBrand contentBrand = new ContentBrand();
 
         contentBrand.setContentId(contentId);
@@ -165,8 +162,8 @@ public class ContentController {
     }
 
     @PostMapping("/contentbrand/save")
-    public ModelAndView processCreationForm(
-            @ModelAttribute ContentBrand contentBrand, RedirectAttributes redirect) {
+    public ModelAndView processCreationForm(@ModelAttribute ContentBrand contentBrand,
+            RedirectAttributes redirect) {
         ModelMap model = new ModelMap();
 
         String brandName = StringUtils.EMPTY;
@@ -187,55 +184,27 @@ public class ContentController {
 
         redirect.addFlashAttribute("globalMessage", "success");
 
-        return new ModelAndView("redirect:/controlpanel/content/contentbrand/" + contentBrand.getId() + "/edit", model);
+        return new ModelAndView(
+                "redirect:/controlpanel/content/contentbrand/" + contentBrand.getId() + "/edit",
+                model);
     }
 
-    @PostMapping("/remove")
-    public String deleteContent(
-            @ModelAttribute Content content) {
-        // ContentImage contentImage = content.getImage();
-        //
-        // if (contentImage != null) {
-        // contentImageService.deleteContentImage(contentImage);
-        // }
-
-        // Iterator iterator = content.getImages().iterator();
-
-        // while (iterator.hasNext()) {
-        // contentImage = (ContentImage)iterator.next();
-        //
-        // contentImageService.deleteContentImage(contentImage);
-        // }
-
-        // Iterator iterator = (Iterator) contentDb.getMenus().iterator();
-
-        // while (iterator.hasNext()) {
-        // Menu menu = (Menu) iterator.next();
-        // menu.setContent(null);
-        // }
-
-        contentService.deleteContent(content.getId());
-
-        // Indexer.getInstance(siteId).removeContent(content);
-
-        return "redirect:/controlpanel/content/list";
+    @DeleteMapping("/{id}")
+    public String deleteContent(@PathVariable Long id) {
+        contentService.deleteContent(id);
+        return "redirect:/controlpanel/content";
     }
 
     @RequestMapping(value = "/resetCounter")
-    public void resetCounter(
-            @PathVariable Long contentId, HttpServletResponse response)
+    public void resetCounter(@PathVariable Long contentId, HttpServletResponse response)
             throws Throwable {
-        // User user = AuthenticatedUtil.getAuthenticatedUser();
-
-        ContentDTO content = contentService.getContentDetail(contentId);
-
         contentService.resetHitCounter(contentId);
 
         JSONObject jsonResult = new JSONObject();
 
         jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
-        jsonResult.put("updateBy", content.getUpdateBy());
-        jsonResult.put("updateTime", DateUtil.getFullDatetime(content.getUpdateTime()));
+        // jsonResult.put("updateBy", content.getUpdateBy());
+        // jsonResult.put("updateTime", DateUtil.getFullDatetime(content.getUpdateTime()));
 
         String jsonString = jsonResult.toString();
 
@@ -248,127 +217,9 @@ public class ContentController {
         outputStream.flush();
     }
 
-    // public JSONObject createJsonSelectedMenus(Long siteId, Content content)
-    // throws Exception {
-    // JSONObject jsonResult = new JSONObject();
-
-    // Iterator iterator = content.getMenus().iterator();
-
-    // Vector<JSONObject> menus = new Vector<JSONObject>();
-
-    // while (iterator.hasNext()) {
-    // Menu menu = (Menu) iterator.next();
-
-    // JSONObject menuObject = new JSONObject();
-
-    // menuObject.put("menuId", menu.getId());
-    // menuObject.put("menuLongDesc", menuService.formatMenuName(siteId,
-    // menu.getId()));
-    // menuObject.put("menuWindowMode", menu.getMenuWindowMode());
-    // menuObject.put("menuWindowTarget", menu.getMenuWindowTarget());
-    // menus.add(menuObject);
-    // }
-
-    // jsonResult.put("menus", menus);
-    // jsonResult.put("status", Constants.WEBSERVICE_STATUS_SUCCESS);
-
-    // return jsonResult;
-    // }
-
-    // @RequestMapping("/removeMenus")
-    // public void removeMenus(
-    // @PathVariable Long contentId,
-    // @RequestParam("removeMenus") long[] menuIds,
-    // HttpServletRequest request, HttpServletResponse response)
-    // throws Throwable {
-    // User user = AuthenticatedUtil.getAuthenticatedUser();
-
-    // Content content = contentService.getContentById(contentId);
-
-    // if (menuIds != null) {
-    // for (int i = 0; i < menuIds.length; i++) {
-    // Menu menu = menuService.getMenu(menuIds[i]);
-
-    // menu.setContent(null);
-    // menu.setMenuUrl("");
-    // menu.setMenuType("");
-
-    // menuService.updateMenu(menu);
-    // }
-    // }
-
-    // // content.setUpdateBy(user.getId());
-    // // content.setUpdateTime(LocalDateTime.now());
-
-    // contentService.updateContent(content);
-
-    // JSONObject jsonResult =
-    // createJsonSelectedMenus(SiteUtil.getDefaultSite().getId(), content);
-
-    // jsonResult.put("updateBy", content.getUpdateBy());
-    // jsonResult.put("updateTime",
-    // DateUtil.getFullDatetime(content.getUpdateTime()));
-
-    // String jsonString = jsonResult.toString();
-
-    // response.setContentType("text/html");
-    // response.setContentLength(jsonString.length());
-
-    // OutputStream outputStream = response.getOutputStream();
-
-    // outputStream.write(jsonString.getBytes());
-    // outputStream.flush();
-    // }
-
-    // @RequestMapping("/addMenus")
-    // public void addMenus(
-    // @PathVariable Long contentId,
-    // @RequestParam String menuWindowTarget,
-    // @RequestParam String menuWindowMode,
-    // @RequestParam long[] addMenus,
-    // HttpServletRequest request, HttpServletResponse response)
-    // throws Throwable {
-    // User user = AuthenticatedUtil.getAuthenticatedUser();
-
-    // Content content = contentService.getContentById(contentId);
-
-    // if (addMenus != null) {
-    // for (int i = 0; i < addMenus.length; i++) {
-    // menuService.updateMenu(
-    // SiteUtil.getDefaultSite().getId(), addMenus[i], content, null, "",
-    // menuWindowMode, menuWindowTarget, Constants.MENU_CONTENT);
-    // }
-    // }
-
-    // // content.setUpdateBy(user.getId());
-    // // content.setUpdateTime(LocalDateTime.now());
-
-    // contentService.updateContent(content);
-
-    // JSONObject jsonResult =
-    // createJsonSelectedMenus(SiteUtil.getDefaultSite().getId(), content);
-
-    // jsonResult.put("updateBy", content.getUpdateBy());
-    // jsonResult.put("updateDate",
-    // DateUtil.getFullDatetime(content.getUpdateTime()));
-
-    // String jsonString = jsonResult.toString();
-
-    // response.setContentType("text/html");
-    // response.setContentLength(jsonString.length());
-
-    // OutputStream outputStream = response.getOutputStream();
-
-    // outputStream.write(jsonString.getBytes());
-    // outputStream.flush();
-    // }
-
     @PostMapping("/{id}/uploadImage")
-    public String uploadImage(
-            @RequestParam MultipartFile file,
-            @PathVariable long id,
-            HttpServletRequest request)
-            throws Throwable {
+    public String uploadImage(@RequestParam MultipartFile file, @PathVariable long id,
+            HttpServletRequest request) throws Throwable {
         // User user = PortalUtil.getAuthenticatedUser();
 
         if (file.getBytes().length <= 0) {
@@ -379,8 +230,7 @@ public class ContentController {
             return "redirect:/controlpanel/content/" + id + "/edit";
         }
 
-        contentService.updateContentImage(
-                SiteUtil.getDefaultSite().getId(), id, file);
+        contentService.updateContentImage(SiteUtil.getDefaultSite().getId(), id, file);
 
         // ImageScaler scaler = null;
         //
@@ -426,8 +276,7 @@ public class ContentController {
         return "redirect:/controlpanel/content/" + id + "/edit";
     }
 
-    public JSONObject createJsonImages(int siteId, Content content)
-            throws Exception {
+    public JSONObject createJsonImages(int siteId, Content content) throws Exception {
         JSONObject jsonResult = new JSONObject();
 
         // ContentImage defaultImage = content.getImage();
@@ -577,7 +426,7 @@ public class ContentController {
     // }
     // }
 
-    public void saveContentContributors(HttpServletRequest request, Content content) {
+    public void saveContentContributors(HttpServletRequest request, ContentDTO content) {
         Enumeration<String> names = request.getParameterNames();
 
         while (names.hasMoreElements()) {
@@ -605,8 +454,8 @@ public class ContentController {
                 contributor.setUsername(user.getUsername());
                 contributor.setVersion("1.0");
 
-                List<ContentContributor> results = contentContributorService.getByContentIdAndUserId(content.getId(),
-                        user.getId());
+                List<ContentContributor> results = contentContributorService
+                        .getByContentIdAndUserId(content.getId(), user.getId());
 
                 if (results.isEmpty()) {
                     contentContributorService.create(contributor);
@@ -631,8 +480,7 @@ public class ContentController {
     }
 
     @RequestMapping(value = "/remove")
-    public String removeContents(
-            @RequestParam String ids) {
+    public String removeContents(@RequestParam String ids) {
         String[] arrIds = ids.split(",");
 
         for (int i = 0; i < arrIds.length; i++) {
@@ -643,15 +491,13 @@ public class ContentController {
     }
 
     @PostMapping("/search")
-    public String search(
-            @ModelAttribute ContentSearchForm form, Map<String, Object> model)
+    public String search(@ModelAttribute ContentSearchForm form, Map<String, Object> model)
             throws Throwable {
-        List<Content> contents = contentService.search(
-                SiteUtil.getDefaultSite().getId(), form.getTitle(), form.getPublished(),
-                null, null, form.getPublishDateStart(), form.getPublishDateEnd(),
-                form.getExpireDateStart(), form.getExpireDateEnd());
+        // List<Content> contents = contentService.search(SiteUtil.getDefaultSite().getId(),
+        // form.getTitle(), form.getPublished(), null, null, form.getPublishDateStart(),
+        // form.getPublishDateEnd(), form.getExpireDateStart(), form.getExpireDateEnd());
 
-        model.put("contents", contents);
+        // model.put("contents", contents);
         model.put("searchForm", form);
 
         return "controlpanel/content/list";

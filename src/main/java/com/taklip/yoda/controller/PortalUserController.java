@@ -1,8 +1,6 @@
 package com.taklip.yoda.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.util.HtmlUtils;
-
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.AuthenticatedUtil;
 import com.taklip.yoda.common.util.Validator;
-import com.taklip.yoda.model.Content;
+import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.model.Post;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
@@ -40,7 +37,6 @@ import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.PostService;
 import com.taklip.yoda.service.UserFollowRelationService;
 import com.taklip.yoda.service.UserService;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -67,8 +63,7 @@ public class PortalUserController extends PortalBaseController {
     protected AuthenticationManager authenticationManager;
 
     @GetMapping("/{id}")
-    public ModelAndView setupForm(
-            @PathVariable long id, HttpServletRequest request) {
+    public ModelAndView setupForm(@PathVariable long id, HttpServletRequest request) {
         ModelMap model = new ModelMap();
 
         Site site = getSite();
@@ -80,7 +75,7 @@ public class PortalUserController extends PortalBaseController {
         }
 
         Page<Post> page = postService.getPostsByUser(id, 0, 10);
-        List<Content> contents = contentService.getContentByUserId(user.getId());
+        Page<ContentDTO> contents = contentService.getContentByUserId(user.getId());
         Long followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
         Long followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
 
@@ -94,9 +89,11 @@ public class PortalUserController extends PortalBaseController {
 
         model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
         model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
-        model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
+        model.put("description",
+                "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
         model.put("url", request.getRequestURL().toString());
-        model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        model.put("image",
+                "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
         model.put("site", site);
 
         User currentUser = AuthenticatedUtil.getAuthenticatedUser();
@@ -104,7 +101,8 @@ public class PortalUserController extends PortalBaseController {
         model.put("currentUser", currentUser);
 
         if (currentUser != null) {
-            Boolean isFollowing = userFollowRelationService.isFollowing(currentUser.getId(), user.getId());
+            Boolean isFollowing =
+                    userFollowRelationService.isFollowing(currentUser.getId(), user.getId());
             model.put("isFollowing", isFollowing);
         }
 
@@ -130,18 +128,18 @@ public class PortalUserController extends PortalBaseController {
 
         model.put("pageTitle", user.getUsername() + " | " + site.getSiteName());
         model.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
-        model.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
+        model.put("description",
+                "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
         model.put("url", request.getRequestURL().toString());
-        model.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+        model.put("image",
+                "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
         model.put("site", site);
 
         return new ModelAndView("portal/user/settings", model);
     }
 
     @PostMapping("/settings")
-    public ModelAndView update(
-            @ModelAttribute User user,
-            @RequestParam MultipartFile photo) {
+    public ModelAndView update(@ModelAttribute User user, @RequestParam MultipartFile photo) {
         ModelMap model = new ModelMap();
 
         Site site = getSite();
@@ -152,7 +150,8 @@ public class PortalUserController extends PortalBaseController {
 
         User userDb = userService.update(user, photo);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -168,9 +167,7 @@ public class PortalUserController extends PortalBaseController {
     }
 
     @PostMapping("/register")
-    public ModelAndView submit(
-            @RequestParam String username,
-            @RequestParam String email,
+    public ModelAndView submit(@RequestParam String username, @RequestParam String email,
             @RequestParam String password) {
         ModelAndView model = new ModelAndView();
 
@@ -209,12 +206,13 @@ public class PortalUserController extends PortalBaseController {
             user.setEmail(email);
             userService.save(user);
         } catch (Exception e) {
-            logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email
-                    + e.getMessage());
+            logger.error("Saving User with username:" + username + " - password:" + password
+                    + " - email:" + email + e.getMessage());
         }
 
         try {
-            UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email, password);
+            UsernamePasswordAuthenticationToken authResult =
+                    new UsernamePasswordAuthenticationToken(email, password);
 
             Authentication result = authenticationManager.authenticate(authResult);
 
@@ -236,11 +234,8 @@ public class PortalUserController extends PortalBaseController {
 
     @ResponseBody
     @PostMapping("/register/ajax")
-    public String ajaxRegister(
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password,
-            HttpServletRequest request) {
+    public String ajaxRegister(@RequestParam String username, @RequestParam String email,
+            @RequestParam String password, HttpServletRequest request) {
         User userDb = userService.getUserByUsername(username);
 
         RequestContext requestContext = new RequestContext(request);
@@ -273,13 +268,13 @@ public class PortalUserController extends PortalBaseController {
                 user.setEmail(email);
                 userService.save(user);
             } catch (Exception e) {
-                logger.error("Saving User with username:" + username + " - password:" + password + " - email:" + email
-                        + e.getMessage());
+                logger.error("Saving User with username:" + username + " - password:" + password
+                        + " - email:" + email + e.getMessage());
             }
 
             try {
-                UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(email,
-                        password);
+                UsernamePasswordAuthenticationToken authResult =
+                        new UsernamePasswordAuthenticationToken(email, password);
 
                 Authentication result = authenticationManager.authenticate(authResult);
 
@@ -309,8 +304,7 @@ public class PortalUserController extends PortalBaseController {
 
     @ResponseBody
     @GetMapping("/post/page")
-    public String showPagination(
-            @RequestParam Long userId,
+    public String showPagination(@RequestParam Long userId,
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit) {
         Page<Post> page = postService.getPostsByUser(userId, offset, limit);
@@ -334,8 +328,7 @@ public class PortalUserController extends PortalBaseController {
 
     @ResponseBody
     @PostMapping("/follow")
-    public ResponseEntity<Object> follow(
-            @RequestParam Long userId,
+    public ResponseEntity<Object> follow(@RequestParam Long userId,
             @RequestParam Long loginUserId) {
 
         userFollowRelationService.follow(loginUserId, userId);
@@ -345,8 +338,7 @@ public class PortalUserController extends PortalBaseController {
 
     @ResponseBody
     @PostMapping("/unfollow")
-    public ResponseEntity<Object> unfollow(
-            @RequestParam Long userId,
+    public ResponseEntity<Object> unfollow(@RequestParam Long userId,
             @RequestParam Long loginUserId) {
 
         userFollowRelationService.unFollow(loginUserId, userId);

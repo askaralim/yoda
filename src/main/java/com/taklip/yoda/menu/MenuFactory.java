@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.taklip.yoda.model.Content;
+import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.model.Menu;
 import com.taklip.yoda.model.MenuInfo;
 import com.taklip.yoda.model.Site;
@@ -32,8 +32,8 @@ public class MenuFactory {
 
     private static String horizontalMenu;
 
-    public static String getHorizontalMenu(
-            HttpServletRequest request, HttpServletResponse response) {
+    public static String getHorizontalMenu(HttpServletRequest request,
+            HttpServletResponse response) {
         return getHorizontalMenu(request, response);
     }
 
@@ -53,7 +53,8 @@ public class MenuFactory {
 
         List<MenuInfo> menus = getMenu(menuSetName);
 
-        String horizontalMenuCode = MenuGenerator.generateMenu(menus, styleClassSuffix, request.getLocale());
+        String horizontalMenuCode =
+                MenuGenerator.generateMenu(menus, styleClassSuffix, request.getLocale());
 
         return horizontalMenuCode;
     }
@@ -116,18 +117,24 @@ public class MenuFactory {
             if (menu.getMenuType().equals(Constants.MENU_STATIC_URL) && menu.getMenuUrl() != null) {
                 url = menu.getMenuUrl();
             } else if (menu.getMenuType().equals(Constants.MENU_HOME)) {
-                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName();
-            } else if (menu.getMenuType().equals(Constants.MENU_CONTENT) && menu.getContent() != null) {
-                Content content = menu.getContent();
+                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH
+                        + menu.getName();
+            } else if (menu.getMenuType().equals(Constants.MENU_CONTENT)
+                    && menu.getContentDTO() != null) {
+                ContentDTO content = menu.getContentDTO();
 
-                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName()
-                        + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT + StringPool.SLASH + content.getId();
+                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH
+                        + menu.getName() + StringPool.SLASH + Constants.FRONTEND_URL_CONTENT
+                        + StringPool.SLASH + content.getId();
             } else if (menu.getMenuType().equals(Constants.MENU_CONTACTUS)) {
-                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH + menu.getName();
+                url = publicURLPrefix + contextPath + frontEndUrlPrefix + StringPool.SLASH
+                        + menu.getName();
             } else if (menu.getMenuType().equals(Constants.MENU_SIGNIN)) {
-                url = getSecureURLPrefix(sites.get(0)) + contextPath + StringPool.SLASH + "/account/login/accountLogin";
+                url = getSecureURLPrefix(sites.get(0)) + contextPath + StringPool.SLASH
+                        + "/account/login/accountLogin";
             } else if (menu.getMenuType().equals(Constants.MENU_SIGNOUT)) {
-                url = getSecureURLPrefix(sites.get(0)) + contextPath + "/account/login/accountLogout";
+                url = getSecureURLPrefix(sites.get(0)) + contextPath
+                        + "/account/login/accountLogout";
             }
 
             if (url == null) {
@@ -137,8 +144,8 @@ public class MenuFactory {
             menuInfo.setMenuUrl(url);
             menuName = menu.getName();
 
-            menuAnchor = "<a href=\"" + url + "\"" + "onclick=\"javascrpt:window.open('" + url + "', " + "'"
-                    + menu.getMenuWindowTarget() + "' ";
+            menuAnchor = "<a href=\"" + url + "\"" + "onclick=\"javascrpt:window.open('" + url
+                    + "', " + "'" + menu.getMenuWindowTarget() + "' ";
 
             if (menu.getMenuWindowMode().trim().length() != 0) {
                 menuAnchor += ", '" + menu.getMenuWindowMode() + "'";
@@ -187,8 +194,7 @@ public class MenuFactory {
         return publicURLPrefix;
     }
 
-    private String _getHorizontalMenu(
-            HttpServletRequest request, HttpServletResponse response) {
+    private String _getHorizontalMenu(HttpServletRequest request, HttpServletResponse response) {
         if (horizontalMenu != null) {
             return horizontalMenu;
         }

@@ -2,7 +2,6 @@ package com.taklip.yoda.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,14 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.ExtraFieldUtil;
+import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.dto.ItemDTO;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.model.Category;
-import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.CategoryService;
@@ -32,9 +30,7 @@ import com.taklip.yoda.service.ContentService;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.service.SiteService;
 import com.taklip.yoda.service.UserService;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -180,7 +176,7 @@ public class ItemController {
     }
 
     private void populateForm(Map<String, Object> model, ItemDTO item) {
-        List<Content> contents = contentService.getContents();
+        List<ContentDTO> contents = contentService.getContents();
         List<Category> categories = categoryService.getCategories();
         List<Brand> brands = brandService.getBrands();
 

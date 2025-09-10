@@ -1,10 +1,8 @@
 package com.taklip.yoda.api;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.taklip.yoda.model.*;
-import com.taklip.yoda.service.*;
-import com.taklip.yoda.common.contant.Constants;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.taklip.yoda.common.contant.Constants;
+import com.taklip.yoda.dto.ContentDTO;
+import com.taklip.yoda.model.Brand;
+import com.taklip.yoda.model.ChatResponse;
+import com.taklip.yoda.model.Item;
+import com.taklip.yoda.model.Term;
+import com.taklip.yoda.service.BrandService;
+import com.taklip.yoda.service.ChatterService;
+import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.ItemService;
+import com.taklip.yoda.service.TermService;
 
 @RestController
 @RequestMapping("/api/v1/chat")
@@ -119,12 +126,12 @@ public class ChatterController {
     }
 
     private void exportContents() {
-        List<Content> contents = contentService.getContents();
+        List<ContentDTO> contents = contentService.getContents();
 
         JSONObject obj = new JSONObject();
         JSONArray questions = new JSONArray();
 
-        for (Content content : contents) {
+        for (ContentDTO content : contents) {
             String title = content.getTitle();
             String shortDesc = content.getShortDescription();
 

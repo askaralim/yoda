@@ -85,7 +85,7 @@ public class PageViewHandler {
                 brandService.increaseBrandHitCounter(pageId);
             }
             else if (pageType.equals(ContentTypeEnum.CONTENT.getType())) {
-                contentService.increaseContentHitCounter(pageId);
+                contentService.increaseHitCounter(pageId);
             }
         }
     }

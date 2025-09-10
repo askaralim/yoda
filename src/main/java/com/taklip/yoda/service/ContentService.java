@@ -1,53 +1,78 @@
 package com.taklip.yoda.service;
 
-import java.text.ParseException;
 import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.taklip.yoda.dto.ContentDTO;
-import com.taklip.yoda.model.Content;
 
-public interface ContentService extends IService<Content> {
-    void create(Content content, Long categoryId) throws Exception;
+public interface ContentService {
+        void create(ContentDTO content) throws Exception;
 
-    void deleteContent(Long contentId);
+        void update(ContentDTO content) throws Exception;
 
-    void deleteContents(List<Long> ids);
+        void deleteContent(Long contentId);
 
-    void deleteContentFromCache(Long id);
+        void deleteContents(List<Long> ids);
 
-    Content getContentById(Long contentId);
+        ContentDTO getContentById(Long contentId);
 
-    ContentDTO getContentDetail(Long contentId);
+        Page<ContentDTO> getContentsByTitle(String title);
 
-    int getContentHitCounter(long contentId);
+        Page<ContentDTO> getContentsByFeatureData(Boolean featureData, Integer offset,
+                        Integer limit);
 
-    List<Content> getContents(String title);
+        List<ContentDTO> getContents();
 
-    List<Content> getContents();
+        Page<ContentDTO> getContentsByPage(Integer offset, Integer limit);
 
-    List<ContentDTO> getContentsFeatureData();
+        Page<ContentDTO> getContentByUserId(Long userId);
 
-    Page<ContentDTO> getContentsNotFeatureData(Integer offset, Integer limit);
+        int getHitCounter(long contentId);
 
-    Page<Content> getContents(Integer offset, Integer limit);
+        void increaseHitCounter(Long id);
 
-    List<Content> getContentByUserId(Long userId);
+        void resetHitCounter(Long contentId);
 
-    void increaseContentHitCounter(Long id);
+        Page<ContentDTO> searchContents(String title, Boolean published);
 
-    List<Content> search(Long siteId, String title, Boolean published, String updateBy, String createBy,
-            String publishDateStart, String publishDateEnd, String expireDateStart, String expireDateEnd)
-            throws ParseException;
+        void updateContent(ContentDTO content);
 
-    void updateContent(Content content);
+        ContentDTO updateContent(ContentDTO content, Long categoryId);
 
-    Content updateContent(Content content, Long categoryId) throws Exception;
+        ContentDTO updateContentImage(long siteId, Long contentId, MultipartFile featureImage);
 
-    Content updateContentImage(long siteId, Long contentId, MultipartFile featureImage);
+        /**
+         * Enriches a single ContentDTO with related data
+         */
+        ContentDTO enrichContent(ContentDTO contentDTO);
 
-    void resetHitCounter(Long contentId);
+        /**
+         * Enriches a list of ContentDTOs with related data
+         */
+        List<ContentDTO> enrichContents(List<ContentDTO> contentDTOs);
+
+        /**
+         * Enriches a page of ContentDTOs with related data
+         */
+        Page<ContentDTO> enrichContentPage(Page<ContentDTO> contentPage);
+
+        /**
+         * Gets enriched contents by category from remote service and populates with local data
+         */
+        Page<ContentDTO> getContentsByCategory(Long categoryId, Integer limit);
+
+        /**
+         * Gets enriched published contents from remote service and populates with local data
+         */
+        Page<ContentDTO> getPublishedContents(Integer offset, Integer limit);
+
+        /**
+         * Enriches content with minimal data (only essential fields) for list views
+         */
+        ContentDTO enrichContentMinimal(ContentDTO contentDTO);
+
+        /**
+         * Enriches a list of contents with minimal data for list views
+         */
+        List<ContentDTO> enrichContentsMinimal(List<ContentDTO> contentDTOs);
 }

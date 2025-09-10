@@ -1,35 +1,23 @@
 package com.taklip.yoda.service.impl;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taklip.yoda.common.contant.Constants;
 import com.taklip.yoda.common.tools.ImageUploader;
+import com.taklip.yoda.common.util.ChineseNaturalKeyGenerator;
 import com.taklip.yoda.convertor.ModelConvertor;
 import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.enums.ContentTypeEnum;
-import com.taklip.yoda.mapper.ContentMapper;
 import com.taklip.yoda.model.Comment;
-import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.ContentBrand;
 import com.taklip.yoda.model.ContentContributor;
 import com.taklip.yoda.model.Item;
@@ -38,18 +26,16 @@ import com.taklip.yoda.service.CommentService;
 import com.taklip.yoda.service.ContentBrandService;
 import com.taklip.yoda.service.ContentContributorService;
 import com.taklip.yoda.service.ContentService;
-import com.taklip.yoda.service.ContentUserRateService;
+import com.taklip.yoda.service.ContentServiceClient;
 import com.taklip.yoda.service.FileService;
 import com.taklip.yoda.service.ItemService;
-import com.taklip.yoda.service.RedisService;
 import com.taklip.yoda.service.UserService;
-
+import com.taklip.yoda.vo.ContentSearchVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
 @Slf4j
-public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> implements ContentService {
+public class ContentServiceImpl implements ContentService {
     @Autowired
     private CommentService commentService;
 
@@ -58,12 +44,6 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
     @Autowired
     private ModelConvertor modelConvertor;
-
-    @Autowired
-    private ContentUserRateService contentUserRateService;
-
-    @Autowired
-    private RedisService redisService;
 
     @Autowired
     private ContentBrandService contentBrandService;
@@ -81,239 +61,149 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
     private FileService fileService;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private UserService userService;
 
+    @Autowired
+    private ContentServiceClient contentServiceClient;
+
+    @Autowired
+    private ChineseNaturalKeyGenerator naturalKeyGenerator;
+
     @Override
-    public void create(Content content, Long categoryId) throws Exception {
-        content.setNaturalKey(encode(content.getTitle()));
+    public void create(ContentDTO content) throws Exception {
+        content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
         content.setHitCounter(0);
         content.setScore(0);
 
-        if (null != categoryId) {
-            content.setCategoryId(categoryId);
-        }
+        contentServiceClient.createContent(content);
 
-        this.save(content);
+        // if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
+        // this.setContentNotFeatureDatasIntoCache(content.getId());
+        // redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
+        // } else if (content.isFeatureData() && content.isPublished() && content.isHomePage()) {
+        // this.setContentFeatureDatasIntoCache(content.getId());
+        // }
 
-        if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-            this.setContentNotFeatureDatasIntoCache(content.getId());
-            redisService.incr(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
-        } else if (content.isFeatureData() && content.isPublished() && content.isHomePage()) {
-            this.setContentFeatureDatasIntoCache(content.getId());
-        }
+        // this.setContentIntoCache(content);
+    }
 
-        this.setContentIntoCache(content);
+    @Override
+    public void update(ContentDTO content) throws Exception {
+        content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
+
+        contentServiceClient.updateContent(content.getId(), content);
     }
 
     @Override
     public void deleteContent(Long contentId) {
-        this.removeById(contentId);
-        deleteContentFromCache(contentId);
+        contentServiceClient.deleteContent(contentId);
     }
 
     @Override
     public void deleteContents(List<Long> ids) {
-        this.removeByIds(ids);
-        ids.stream().forEach(id -> deleteContentFromCache(id));
+        contentServiceClient.deleteContents(ids);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Content> getContentByUserId(Long userId) {
-        return baseMapper.getContentsByUserId(userId);
+    public Page<ContentDTO> getContentByUserId(Long userId) {
+        return contentServiceClient.getContentsByUserId(userId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ContentDTO getContentDetail(Long id) {
-        // Content content = getContentFromCache(id);
-
-        // if (null != content) {
-        // return modelConvertor.convertToContentDTO(content);
-        // }
-
-        Content content = baseMapper.selectById(id);
-
-        this.setContentIntoCache(content);
-
-        ContentDTO contentDTO = modelConvertor.convertToContentDTO(content);
-
-        List<Item> items = itemService.getItemsByContentId(content.getId());
-        List<Comment> comments = commentService.getCommentsByContentId(content.getId());
-        List<ContentBrand> contentBrands = contentBrandService.getContentBrandsByContentId(content.getId());
-        List<ContentContributor> contentContributors = contentContributorService
-                .getContentContributorsByContentId(content.getId());
-
-        contentDTO.setBrands(modelConvertor.convertToContentBrandDTOs(contentBrands));
-        contentDTO.setCategory(modelConvertor.convertToCategoryDTO(categoryService.getById(content.getCategoryId())));
-        contentDTO.setComments(modelConvertor.convertToCommentDTOs(comments));
-        contentDTO.setContributors(modelConvertor.convertToContentContributorDTOs(contentContributors));
-        contentDTO.setItems(modelConvertor.convertToItemDTOs(items));
-        contentDTO.setCreateBy(modelConvertor.convertToUserDTO(userService.getById(content.getCreateBy())));
-        contentDTO.setUpdateBy(modelConvertor.convertToUserDTO(userService.getById(content.getUpdateBy())));
-
-        return contentDTO;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Content getContentById(Long id) {
-        return baseMapper.getContentById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ContentDTO> getSimpleContent(List<Long> ids) {
-        List<ContentDTO> contentDTOs = new ArrayList<>();
-
-        for (Long id : ids) {
-            Content content = getSimpleContentFromCache(id);
-
-            if (null != content) {
-                contentDTOs.add(modelConvertor.convertToContentDTO(content));
-            }
+    public ContentDTO getContentById(Long id) {
+        try {
+            ContentDTO contentDTO = contentServiceClient.getContentById(id);
+            return enrichContent(contentDTO);
+        } catch (Exception e) {
+            log.error("Error getting enriched content by id {}: {}", id, e.getMessage(), e);
+            throw new RuntimeException("Failed to get enriched content", e);
         }
+    }
 
-        if (!CollectionUtils.isEmpty(contentDTOs)) {
-            return contentDTOs;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ContentDTO> getContents() {
+        return contentServiceClient.getContents();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContentDTO> getContentsByPage(Integer offset, Integer limit) {
+        return contentServiceClient.getContentByPage(offset, limit);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContentDTO> getContentsByTitle(String title) {
+        return contentServiceClient.getContentsByTitle(title);
+    }
+
+    @Override
+    public Page<ContentDTO> getContentsByCategory(Long categoryId, Integer limit) {
+        try {
+            Page<ContentDTO> contents =
+                    contentServiceClient.getContentsByCategory(categoryId, limit);
+            return enrichContentPage(contents);
+        } catch (Exception e) {
+            log.error("Error getting enriched contents by category {}: {}", categoryId,
+                    e.getMessage(), e);
+            throw new RuntimeException("Failed to get enriched contents by category", e);
         }
+    }
 
-        List<Content> contents = baseMapper.getContentByIds(ids);
-
-        for (Content content : contents) {
-            this.setContentIntoCache(content);
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContentDTO> getContentsByFeatureData(Boolean featureData, Integer offset,
+            Integer limit) {
+        try {
+            Page<ContentDTO> contentPage =
+                    contentServiceClient.getFeaturedContents(featureData, offset, limit);
+            log.info("getFeaturedContents size: {}", contentPage.getRecords().size());
+            return enrichContentPage(contentPage);
+        } catch (Exception e) {
+            log.error("Error getting enriched featured contents: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to get enriched featured contents", e);
         }
-
-        return contents.stream().map(modelConvertor::convertToContentDTO).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Content> getContents() {
-        return baseMapper.getContents();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Content> getContents(Integer offset, Integer limit) {
-        return this.page(new Page<>(offset, limit),
-                new LambdaQueryWrapper<Content>().orderByDesc(Content::getUpdateTime));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Content> getContents(String title) {
-        return baseMapper.getContentsByTitle(title);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ContentDTO> getContentsFeatureData() {
-        List<ContentDTO> contentDTOs = new ArrayList<>();
-
-        List<Content> contentList = baseMapper.getContentsByFeatureData(new Page<>(0, 10), true).getRecords();
-
-        // for (Content content : contentList) {
-        // this.setContentFeatureDatasIntoCache(content.getId());
-        // }
-
-        for (Content content : contentList) {
-            contentDTOs.add(modelConvertor.convertToContentDTO(content));
+    public Page<ContentDTO> getPublishedContents(Integer offset, Integer limit) {
+        try {
+            Page<ContentDTO> contentPage = contentServiceClient.getPublishedContents(offset, limit);
+            return enrichContentPage(contentPage);
+        } catch (Exception e) {
+            log.error("Error getting enriched published contents: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to get enriched published contents", e);
         }
-
-        return contentDTOs;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<ContentDTO> getContentsNotFeatureData(Integer offset, Integer limit) {
-        Page<Content> page = new Page<>(offset, limit);
-        Page<ContentDTO> pageDTO = new Page<>(offset, limit);
-
-        // List<ContentDTO> contentDTOs = new ArrayList<>();
-
-        // List<String> ids = this.getContentNotFeatureDatasFromCache(offset, limit);
-
-        // if (CollectionUtils.isEmpty(ids)) {
-        page = baseMapper.getContentsByFeatureData(page, false);
-
-        List<Content> contents = page.getRecords();
-
-        // setContentNotFeatureDataCountIntoCache(page.getTotal());
-
-        // for (Content content : contents) {
-        // this.setContentNotFeatureDatasIntoCache(content.getId());
-        // }
-
-        pageDTO.setRecords(contents.stream().map(modelConvertor::convertToContentDTO).collect(Collectors.toList()));
-        pageDTO.setTotal(page.getTotal());
-        // } else {
-        // contentDTOs =
-        // this.getSimpleContent(ids.stream().map(Long::valueOf).collect(Collectors.toList()));
-
-        // pageDTO.setTotal(getContentNotFeatureDataCountFromCache());
-        // pageDTO.setRecords(contentDTOs);
-        // }
-
-        return pageDTO;
+    public void updateContent(ContentDTO content) {
+        content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
+        contentServiceClient.updateContent(content.getId(), content);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Content> search(
-            Long siteId, String title, Boolean published,
-            String updateBy, String createBy, String publishDateStart,
-            String publishDateEnd, String expireDateStart, String expireDateEnd) {
-        return baseMapper.search(
-                siteId, title, published, createBy, updateBy, publishDateStart,
-                publishDateEnd, expireDateStart, expireDateEnd);
+    public ContentDTO updateContent(ContentDTO content, Long categoryId) {
+        content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
+
+        content.setCategoryId(categoryId);
+
+        contentServiceClient.updateContent(content.getId(), content);
+
+        return content;
     }
 
     @Override
-    public void updateContent(Content content) {
-        this.updateById(content);
-
-        deleteContentFromCache(content.getId());
+    public void increaseHitCounter(Long id) {
+        contentServiceClient.increaseHitCounter(id);
     }
 
     @Override
-    public Content updateContent(Content content, Long categoryId)
-            throws Exception {
-        Content contentDb = this.getById(content.getId());
-
-        contentDb.setNaturalKey(encode(content.getTitle()));
-        contentDb.setTitle(content.getTitle());
-        contentDb.setShortDescription(content.getShortDescription());
-        contentDb.setDescription(content.getDescription());
-        contentDb.setPageTitle(content.getPageTitle());
-        contentDb.setPublishDate(content.getPublishDate());
-        contentDb.setExpireDate(content.getExpireDate());
-        contentDb.setPublished(content.isPublished());
-        contentDb.setFeatureData(content.isFeatureData());
-
-        if (null != categoryId) {
-            contentDb.setCategoryId(categoryId);
-        }
-
-        this.updateById(contentDb);
-
-        // new ContentIndexer().updateIndex(content);
-
-        deleteContentFromCache(contentDb.getId());
-
-        return contentDb;
-    }
-
-    @Override
-    public void increaseContentHitCounter(Long id) {
-        baseMapper.increaseHitCounter(id);
-    }
-
-    @Override
-    public Content updateContentImage(long siteId, Long id, MultipartFile image) {
-        Content content = this.getById(id);
+    public ContentDTO updateContentImage(long siteId, Long id, MultipartFile image) {
+        ContentDTO content = contentServiceClient.getContentById(id);
 
         imageUpload.deleteImage(content.getFeaturedImage());
 
@@ -321,212 +211,157 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
             String imagePath = fileService.save(ContentTypeEnum.CONTENT.getType(), id, image);
 
             content.setFeaturedImage(imagePath);
+            contentServiceClient.updateContent(content.getId(), content);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        this.updateById(content);
-
-        deleteContentFromCache(content.getId());
 
         return content;
     }
 
     @Override
     public void resetHitCounter(Long contentId) {
-        this.update(new LambdaUpdateWrapper<Content>().set(Content::getHitCounter, 0).eq(Content::getId, contentId));
-
-        deleteContentFromCache(contentId);
+        contentServiceClient.resetHitCounter(contentId);
     }
 
-    private Content getContentFromCache(Long contentId) {
-        Content content = null;
+    @Override
+    public int getHitCounter(long contentId) {
+        return contentServiceClient.getHitCounter(contentId);
+    }
 
-        Map<String, String> map = redisService.getMap(Constants.REDIS_CONTENT + ":" + contentId);
-
-        if (CollectionUtils.isEmpty(map)) {
+    @Override
+    public ContentDTO enrichContent(ContentDTO contentDTO) {
+        if (contentDTO == null) {
             return null;
         }
 
         try {
-            content = objectMapper.convertValue(map, Content.class);
-            content.setHitCounter(getContentHitCounter(contentId));
-            content.setScore(contentUserRateService.getTotalRateByContentId(content.getId()));
+            // Populate category
+            if (contentDTO.getCategoryId() != null) {
+                contentDTO
+                        .setCategory(categoryService.getCategoryDetail(contentDTO.getCategoryId()));
+            }
 
-        } catch (IllegalArgumentException e) {
-            log.error("Failed to convert cached data to Content: {}", e.getMessage());
-            return null;
-        }
+            // Populate user data
+            if (contentDTO.getCreateBy() != null) {
+                contentDTO.setCreateByUser(userService.getUserDetail(contentDTO.getCreateBy()));
+            }
+            if (contentDTO.getUpdateBy() != null) {
+                contentDTO.setUpdateByUser(userService.getUserDetail(contentDTO.getUpdateBy()));
+            }
 
-        // if (null != map && map.size() > 0) {
+            // Populate related data
+            populateRelatedData(contentDTO);
 
-        // if (StringUtils.isNoneBlank(categoryId) &&
-        // !"nil".equalsIgnoreCase(categoryId)) {
-        // Category category = categoryService.getCategory(Long.valueOf(categoryId));
-        // content.setCategory(category);
-        // }
-
-        // List<ContentBrand> contentBrands = new ArrayList<>();
-        // List<String> contentBrandIds = redisService
-        // .getList(Constants.REDIS_CONTENT_BRAND_LIST + ":" + content.getId());
-
-        // if (null != contentBrandIds && !contentBrandIds.isEmpty()) {
-        // for (String contentBrandId : contentBrandIds) {
-        // ContentBrand contentBrand =
-        // contentBrandService.getById(Long.valueOf(contentBrandId));
-
-        // contentBrands.add(contentBrand);
-        // }
-        // }
-
-        // content.setContentBrands(contentBrands);
-
-        // List<ContentContributor> contentContributors = new ArrayList<>();
-        // List<String> contentContributorIds = redisService
-        // .getList(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + content.getId());
-
-        // if (null != contentContributorIds) {
-        // for (String ccId : contentContributorIds) {
-        // ContentContributor cc =
-        // contentContributorService.getById(Long.valueOf(ccId));
-
-        // contentContributors.add(cc);
-        // }
-        // }
-
-        // content.setContentContributors(contentContributors);
-        // }
-
-        return content;
-    }
-
-    private Content getSimpleContentFromCache(Long contentId) {
-        Map<String, String> map = redisService.getMap(Constants.REDIS_CONTENT + ":" + contentId);
-
-        if (CollectionUtils.isEmpty(map)) {
-            return null;
-        }
-
-        try {
-            return objectMapper.convertValue(map, Content.class);
-        } catch (IllegalArgumentException e) {
-            log.error("Failed to convert cached data to Content: {}", e.getMessage());
-            return null;
+            return contentDTO;
+        } catch (Exception e) {
+            log.error("Error enriching content with id {}: {}", contentDTO.getId(), e.getMessage(),
+                    e);
+            // Return original contentDTO if enrichment fails
+            return contentDTO;
         }
     }
 
     @Override
-    public void deleteContentFromCache(Long id) {
-        redisService.delete(Constants.REDIS_CONTENT + ":" + id);
-        redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" + id);
-        redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":" + id);
-        redisService.delete(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST);
-        redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST);
-        redisService.delete(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
+    public List<ContentDTO> enrichContents(List<ContentDTO> contentDTOs) {
+        if (CollectionUtils.isEmpty(contentDTOs)) {
+            return contentDTOs;
+        }
 
-        // for (ContentBrand cb : content.getContentBrands()) {
-        // deleteContentBrandFromCache(cb.getId());
-        // }
-
-        // for (ContentContributor cc : content.getContentContributors()) {
-        // deleteContentContributorFromCache(cc.getId());
-        // }
+        return contentDTOs.stream().map(this::enrichContent).collect(Collectors.toList());
     }
 
-    private void setContentIntoCache(Content content) {
-        if (Objects.isNull(content)) {
+    @Override
+    public Page<ContentDTO> enrichContentPage(Page<ContentDTO> contentPage) {
+        if (contentPage == null || CollectionUtils.isEmpty(contentPage.getRecords())) {
+            return contentPage;
+        }
+
+        List<ContentDTO> enrichedRecords = enrichContents(contentPage.getRecords());
+        contentPage.setRecords(enrichedRecords);
+        return contentPage;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContentDTO> searchContents(String title, Boolean published) {
+                try {
+                Page<ContentDTO> searchResult =  contentServiceClient.searchContents(new ContentSearchVO(null, title, null,
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+                return enrichContentPage(searchResult);
+        } catch (Exception e) {
+            log.error("Error searching enriched contents: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to search enriched contents", e);
+        }
+    }
+
+    @Override
+    public ContentDTO enrichContentMinimal(ContentDTO contentDTO) {
+        if (contentDTO == null) {
+            return null;
+        }
+
+        try {
+            // Only populate essential fields for list views
+            if (contentDTO.getCategoryId() != null) {
+                contentDTO
+                        .setCategory(categoryService.getCategoryDetail(contentDTO.getCategoryId()));
+            }
+
+            // Populate only createBy user (not updateBy for minimal view)
+            if (contentDTO.getCreateBy() != null) {
+                contentDTO.setCreateByUser(userService.getUserDetail(contentDTO.getCreateBy()));
+            }
+
+            return contentDTO;
+        } catch (Exception e) {
+            log.error("Error enriching content minimal with id {}: {}", contentDTO.getId(),
+                    e.getMessage(), e);
+            return contentDTO;
+        }
+    }
+
+    @Override
+    public List<ContentDTO> enrichContentsMinimal(List<ContentDTO> contentDTOs) {
+        if (CollectionUtils.isEmpty(contentDTOs)) {
+            return contentDTOs;
+        }
+
+        return contentDTOs.stream().map(this::enrichContentMinimal).collect(Collectors.toList());
+    }
+
+    /**
+     * Populates related data for a content (items, comments, brands, contributors)
+     */
+    private void populateRelatedData(ContentDTO contentDTO) {
+        if (contentDTO.getId() == null) {
             return;
         }
 
         try {
-            Map<String, String> map = objectMapper.convertValue(content, new TypeReference<Map<String, String>>() {
-            });
+            // Populate items
+            List<Item> items = itemService.getItemsByContentId(contentDTO.getId());
+            contentDTO.setItems(modelConvertor.convertToItemDTOs(items));
 
-            redisService.setMap(Constants.REDIS_CONTENT + ":" + content.getId(), map);
-        } catch (IllegalArgumentException e) {
-            log.error("Failed to cache content {}: {}", content.getId(), e.getMessage());
+            // Populate comments
+            List<Comment> comments = commentService.getCommentsByContentId(contentDTO.getId());
+            contentDTO.setComments(modelConvertor.convertToCommentDTOs(comments));
+
+            // Populate content brands
+            List<ContentBrand> contentBrands =
+                    contentBrandService.getContentBrandsByContentId(contentDTO.getId());
+            contentDTO.setBrands(modelConvertor.convertToContentBrandDTOs(contentBrands));
+
+            // Populate content contributors
+            List<ContentContributor> contentContributors =
+                    contentContributorService.getContentContributorsByContentId(contentDTO.getId());
+            contentDTO.setContributors(
+                    modelConvertor.convertToContentContributorDTOs(contentContributors));
+
+        } catch (Exception e) {
+            log.warn("Error populating related data for content {}: {}", contentDTO.getId(),
+                    e.getMessage());
+            // Don't throw exception for non-critical data population
         }
-
-        // setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
-
-        // redisService.delete(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":" +
-        // content.getId());
-
-        // for (ContentContributor cc : content.getContentContributors()) {
-        // redisService.listRightPushAll(Constants.REDIS_CONTENT_CONTRIBUROR_LIST + ":"
-        // + content.getId(),
-        // String.valueOf(cc.getId()));
-        // setContentContributorIntoCache(cc);
-        // }
-
-        // redisService.delete(Constants.REDIS_CONTENT_BRAND_LIST + ":" +
-        // content.getId());
-
-        // for (ContentBrand cb : content.getContentBrands()) {
-        // redisService.listRightPushAll(Constants.REDIS_CONTENT_BRAND_LIST + ":" +
-        // content.getId(),
-        // String.valueOf(cb.getId()));
-        // setContentBrandIntoCache(cb);
-        // }
-    }
-
-    private List<String> getContentFeatureDatasFromCache() {
-        List<String> ids = redisService.getList(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST);
-
-        return ids;
-    }
-
-    private void setContentFeatureDatasIntoCache(long id) {
-        redisService.listRightPushAll(Constants.REDIS_CONTENT_FEATURE_DATA_ID_LIST, String.valueOf(id));
-    }
-
-    private List<String> getContentNotFeatureDatasFromCache(Integer offset, Integer limit) {
-        List<String> ids = redisService.getList(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, offset,
-                offset + limit - 1);
-
-        return ids;
-    }
-
-    private void setContentNotFeatureDatasIntoCache(long id) {
-        redisService.listRightPushAll(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_ID_LIST, String.valueOf(id));
-    }
-
-    private Long getContentNotFeatureDataCountFromCache() {
-        String count = redisService.get(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST);
-
-        if (StringUtils.isNoneBlank(count)) {
-            return Long.valueOf(count);
-        } else {
-            Long total = baseMapper.selectCount(new LambdaQueryWrapper<Content>().eq(Content::isFeatureData, false));
-
-            setContentNotFeatureDataCountIntoCache(total);
-
-            return total;
-        }
-    }
-
-    private void setContentNotFeatureDataCountIntoCache(long count) {
-        redisService.set(Constants.REDIS_CONTENT_NOT_FEATURE_DATA_COUNT_LIST, String.valueOf(count));
-    }
-
-    @Override
-    public int getContentHitCounter(long id) {
-        String hit = redisService.get(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + id);
-
-        if (StringUtils.isNoneBlank(hit) && !"nil".equalsIgnoreCase(hit)) {
-            return Integer.valueOf(hit);
-        } else {
-            Content content = this.getById(id);
-
-            // setContentHitCounterIntoCached(content.getId(), content.getHitCounter());
-
-            return content.getHitCounter();
-        }
-    }
-
-    public String encode(String input)
-            throws UnsupportedEncodingException {
-        input = input.replaceAll("/", "_*_");
-        return URLEncoder.encode(input, "UTF-8");
     }
 }

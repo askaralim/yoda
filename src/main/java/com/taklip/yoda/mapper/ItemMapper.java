@@ -10,18 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.taklip.yoda.model.Item;
 
 public interface ItemMapper extends BaseMapper<Item> {
-    // Item getItemById(long id);
-
-    // List<Item> getItems();
-
-    // Page<Item> getItems(Page<Item> page);
-
-    // List<Item> getItemsByBrandId(long brandId);
-
-    // List<Item> getItemsByContentId(long contentId);
-
-    // List<Item> getItemsByContentIdAndBrandId(long contentId, long brandId);
-
     @Select("SELECT id, name, price, description, hit_counter FROM item WHERE deleted = 0 ORDER BY hit_counter DESC LIMIT #{limit}")
     List<Item> getItemsTopViewed(@Param("limit") Integer limit);
 

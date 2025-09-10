@@ -65,9 +65,11 @@ public class HomeApiController extends PortalBaseController {
             // modelMap.put("pageInfo", pageInfo);
             modelMap.put("pageTitle", site.getSiteName() + " | " + "小白的购物懒人包、生活方式的供应商");
             modelMap.put("keywords", "如何选购适合自己的产品,网购,科普,品牌推荐,产品推荐");
-            modelMap.put("description", "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
+            modelMap.put("description",
+                    "「taklip太离谱」提供的内容是为了帮用户更有效的选择适合自己的产品。基本每篇内容都包括以下部分：需要知道、相关品牌、推荐产品。");
             modelMap.put("url", request.getRequestURL().toString());
-            modelMap.put("image", "http://" + site.getDomainName() + "/yoda/uploads/1/content/taklip-logo-560_L.png");
+            modelMap.put("image", "http://" + site.getDomainName()
+                    + "/yoda/uploads/1/content/taklip-logo-560_L.png");
             modelMap.put("backURL", URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -79,11 +81,10 @@ public class HomeApiController extends PortalBaseController {
     public HomeInfo getHome() {
         HomeInfo homeInfo = new HomeInfo();
 
-        List<ContentDTO> contents = contentService.getContentsFeatureData();
+        Page<ContentDTO> page = contentService.getContentsByFeatureData(true, 0, 10);
 
-        for (ContentDTO content : contents) {
-            if (!PortalUtil.isContentPublished(content.getPublished(), content.getPublishDate(),
-                    content.getExpireDate())) {
+        for (ContentDTO content : page.getRecords()) {
+            if (!PortalUtil.isContentPublished(content.getPublished(), content.getPublishDate())) {
                 break;
             }
 
@@ -91,13 +92,10 @@ public class HomeApiController extends PortalBaseController {
         }
 
         List<ContentDTO> dataInfos = new ArrayList<>();
-        Page<ContentDTO> page = contentService.getContentsNotFeatureData(0, 4);
+        Page<ContentDTO> page2 = contentService.getContentsByFeatureData(false, 0, 4);
 
-        contents = page.getRecords();
-
-        for (ContentDTO content : contents) {
-            if (!PortalUtil.isContentPublished(content.getPublished(), content.getPublishDate(),
-                    content.getExpireDate())) {
+        for (ContentDTO content : page2.getRecords()) {
+            if (!PortalUtil.isContentPublished(content.getPublished(), content.getPublishDate())) {
                 continue;
             }
 
@@ -105,7 +103,7 @@ public class HomeApiController extends PortalBaseController {
         }
 
         homeInfo.setHomePageDatas(dataInfos);
-        homeInfo.setPage(page);
+        homeInfo.setPage(page2);
 
         return homeInfo;
     }

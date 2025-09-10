@@ -4,7 +4,7 @@
 <mapper namespace="com.taklip.yoda.mapper.UserMapper">
     <cache />
 
-    <resultMap id="userResult" type="User">
+    <resultMap id="userResult" type="com.taklip.yoda.model.User">
         <id property="id" column="id" />
         <result property="accountNonExpired" column="account_non_expired" />
         <result property="accountNonLocked" column="account_non_locked" />

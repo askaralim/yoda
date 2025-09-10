@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   compression:
     enabled: true
   servlet:
@@ -7,36 +7,78 @@ server:
       enabled: true
       charset: UTF-8
       force: true
+    context-path: /
 
 spring:
   application:
-    name: yoda
+    name: yoda-main
+  
+  profiles:
+    active: local
+  
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      retry:
+        enabled: true
+        max-attempts: 3
+        initial-interval: 1000
+        multiplier: 1.1
+        max-interval: 2000
+    
+    circuitbreaker:
+      resilience4j:
+        instances:
+          content-service:
+            registerHealthIndicator: true
+            slidingWindowSize: 10
+            minimumNumberOfCalls: 5
+            permittedNumberOfCallsInHalfOpenState: 3
+            waitDurationInOpenState: 60s
+            failureRateThreshold: 50
+            eventConsumerBufferSize: 10
+            recordExceptions:
+              - java.lang.Exception
+              - java.lang.RuntimeException
+            ignoreExceptions:
+              - java.util.concurrent.TimeoutException
+    
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: basic
+          yoda-content-service:
+            connectTimeout: 3000
+            readTimeout: 5000
+            loggerLevel: full
+  
   messages:
     basename: messages/messages
     encoding: UTF-8
   banner:
     charset: UTF-8
-  # datasource:
-  #   driver-class-name: com.mysql.cj.jdbc.Driver
-  #   username: root
-  #   password: D0ntstop!
-  #   type: com.zaxxer.hikari.HikariDataSource
-  #   url: jdbc:mysql://47.56.215.66:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&connectTimeout=60000&socketTimeout=60000
-  #   hikari:
-  #     maximum-pool-size: 20
-  #     minimum-idle: 5
-  #     connection-timeout: 30000
-  #     idle-timeout: 600000
-  #     max-lifetime: 1800000
-  #     connection-test-query: SELECT 1
-  #     auto-commit: true
-  #     validation-timeout: 5000
-  #     leak-detection-threshold: 60000
-# redis:
-  #   host: localhost
-  #   port: 6379
-  #   password: null
-  #   timeout: 100000
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yoda?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      database: 0
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
 
 mybatis-plus:
   lazy-loading-enabled: true
@@ -47,6 +89,8 @@ mybatis-plus:
     local-cache-scope: statement
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
   executor-type: simple
   global-config:
     db-config:
@@ -55,7 +99,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
     banner: false
-  mapper-locations: classpath:/mapper/**.xml
+  mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.taklip.yoda.model
   type-aliases-super-type: com.taklip.yoda.model.BaseEntity
 
@@ -70,3 +114,43 @@ wx:
 yoda:
   file-location: ${HOME}/yoda/uploads/
   mq-enabled: true
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging
+logging:
+  level:
+    com.taklip.yoda: DEBUG
+    com.taklip.yoda.client: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.web: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  info:
+    title: Yoda Main Application API
+    description: Main Yoda CMS application with content service integration
+    version: 1.0.0
+    contact:
+      name: Yoda Development Team
+      email: dev@yoda.com

@@ -18,20 +18,20 @@ RUN mkdir -p /app/logs /app/uploads && \
     chown -R appuser:appgroup /app
 
 # Expose the application port
-EXPOSE 8080
+EXPOSE 8081
 
 # Set the timezone
 ENV TZ=Asia/Shanghai
 
-# JVM options for better performance and memory management
-ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+# Switch to non-root user
+USER appuser
 
 # Health check with better error handling
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+CMD wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1
 
-# Switch to non-root user
-USER appuser
+# JVM options for better performance and memory management
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 
 # Run the application with docker profile
 ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "yoda-app.jar"]

@@ -103,19 +103,18 @@ public class PortalUtil {
         }
     }
 
-    static public boolean isContentPublished(boolean published, LocalDateTime publishDate, LocalDateTime expireDate) {
+    static public boolean isContentPublished(boolean published, LocalDateTime publishDate) {
         if (!published) {
             return false;
         }
 
-        if (publishDate == null || expireDate == null) {
+        if (publishDate == null) {
             return false;
         }
 
         LocalDateTime current = LocalDateTime.now();
 
-        if (current.isBefore(publishDate)
-                || current.isAfter(expireDate)) {
+        if (current.isBefore(publishDate)) {
 
             return false;
         }

@@ -37,10 +37,8 @@ public class MenuController {
     ItemService itemService;
 
     @PostMapping("/controlpanel/menu/create")
-    public String create(
-            @ModelAttribute MenuEditCommand menuEditCommand,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Throwable {
+    public String create(@ModelAttribute MenuEditCommand menuEditCommand,
+            HttpServletRequest request, HttpServletResponse response) throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         long siteId = user.getLastVisitSiteId();
@@ -54,7 +52,8 @@ public class MenuController {
         if (menuEditCommand.getCreateMode().equals("C")) { // append child node
             menuParentId = referenceMenu.getId();
 
-            long menuSeqNum = menuService.selectMaxSeqNumByMenuId_SiteId(siteId, referenceMenu.getId());
+            long menuSeqNum =
+                    menuService.selectMaxSeqNumByMenuId_SiteId(siteId, referenceMenu.getId());
 
             if (menuSeqNum == 0) {
                 seqNum = 0;
@@ -66,17 +65,18 @@ public class MenuController {
 
             seqNum = referenceMenu.getSeqNum();
 
-            menuService.updateSeqNum(siteId, referenceMenu.getParentId(), referenceMenu.getSeqNum());
+            menuService.updateSeqNum(siteId, referenceMenu.getParentId(),
+                    referenceMenu.getSeqNum());
         } else if (menuEditCommand.getCreateMode().equals("A")) { // after current
             menuParentId = referenceMenu.getParentId();
 
             seqNum = referenceMenu.getSeqNum() + 1;
 
-            menuService.updateSeqNum(siteId, referenceMenu.getParentId(), referenceMenu.getSeqNum());
+            menuService.updateSeqNum(siteId, referenceMenu.getParentId(),
+                    referenceMenu.getSeqNum());
         }
 
-        Menu menu = menuService.addMenu(
-                siteId, menuParentId, seqNum, referenceMenu.getSetName(),
+        Menu menu = menuService.addMenu(siteId, menuParentId, seqNum, referenceMenu.getSetName(),
                 "New Menu", "New Menu", Constants.MENU_HOME, StringPool.BLANK, StringPool.BLANK,
                 StringPool.BLANK, true);
 
@@ -102,11 +102,9 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/showsequence")
-    public String showSequence(
-            @RequestParam int menuId,
+    public String showSequence(@RequestParam int menuId,
             @ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
-            SessionStatus status,
-            HttpServletRequest request, HttpServletResponse response)
+            SessionStatus status, HttpServletRequest request, HttpServletResponse response)
             throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
@@ -140,10 +138,8 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/removeselected")
-    public String removeSelected(
-            @ModelAttribute MenuEditCommand menuEditCommand,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Throwable {
+    public String removeSelected(@ModelAttribute MenuEditCommand menuEditCommand,
+            HttpServletRequest request, HttpServletResponse response) throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         MenuDisplayCommand childrenMenus[] = menuEditCommand.getChildrenMenus();
@@ -166,10 +162,8 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/resequence")
-    public String resequence(
-            @ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
-            SessionStatus status,
-            HttpServletRequest request, HttpServletResponse response)
+    public String resequence(@ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
+            SessionStatus status, HttpServletRequest request, HttpServletResponse response)
             throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
@@ -184,8 +178,7 @@ public class MenuController {
     }
 
     @GetMapping("/controlpanel/menu/edit")
-    public ModelAndView setupForm(
-            HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView setupForm(HttpServletRequest request, HttpServletResponse response)
             throws Throwable {
 
         MenuEditCommand command = new MenuEditCommand();
@@ -199,17 +192,14 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/newmenuset")
-    public String newMenuSet(
-            @Valid @ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
-            SessionStatus status,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Throwable {
+    public String newMenuSet(@Valid @ModelAttribute MenuEditCommand menuEditCommand,
+            BindingResult result, SessionStatus status, HttpServletRequest request,
+            HttpServletResponse response) throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         long siteId = user.getLastVisitSiteId();
 
-        menuService.addMenu(
-                siteId, menuEditCommand.getCreateMenuSetName(),
+        menuService.addMenu(siteId, menuEditCommand.getCreateMenuSetName(),
                 menuEditCommand.getCreateMenuSetName());
 
         menuEditCommand.setCreateMenuSetName("");
@@ -221,12 +211,10 @@ public class MenuController {
     }
 
     @GetMapping("/controlpanel/menu/update/{menuId}")
-    public ModelAndView updateMenu(
-            @PathVariable int menuId,
+    public ModelAndView updateMenu(@PathVariable int menuId,
             @ModelAttribute MenuEditCommand menuEditCommand,
             // BindingResult result, SessionStatus status,
-            HttpServletRequest request)
-            throws Throwable {
+            HttpServletRequest request) throws Throwable {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
@@ -255,10 +243,9 @@ public class MenuController {
 
         menuEditCommand.setMenuType(menu.getMenuType());
 
-        if (menu.getMenuType().equals(Constants.MENU_CONTENT)
-                && menu.getContent() != null) {
-            menuEditCommand.setContentId(menu.getContent().getId());
-            menuEditCommand.setContentTitle(menu.getContent().getTitle());
+        if (menu.getMenuType().equals(Constants.MENU_CONTENT) && menu.getContentDTO() != null) {
+            menuEditCommand.setContentId(menu.getContentDTO().getId());
+            menuEditCommand.setContentTitle(menu.getContentDTO().getTitle());
         }
 
         initListInfo(menuEditCommand, user.getLastVisitSiteId());
@@ -267,21 +254,17 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/save")
-    public String saveMenu(
-            @Valid @ModelAttribute MenuEditCommand menuEditCommand, BindingResult result,
-            SessionStatus status,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String saveMenu(@Valid @ModelAttribute MenuEditCommand menuEditCommand,
+            BindingResult result, SessionStatus status, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
-        menuService.addMenu(
-                user.getLastVisitSiteId(), menuEditCommand.getMenuId(),
-                menuEditCommand.getMenuTitle(), menuEditCommand.getMenuName(), menuEditCommand.getMenuUrl(),
-                menuEditCommand.getMenuWindowTarget(),
-                menuEditCommand.getMenuWindowMode(),
-                menuEditCommand.isPublished(),
-                menuEditCommand.getMenuType(),
-                menuEditCommand.getContentId(), menuEditCommand.getItemId(),
-                menuEditCommand.getSectionId());
+        menuService.addMenu(user.getLastVisitSiteId(), menuEditCommand.getMenuId(),
+                menuEditCommand.getMenuTitle(), menuEditCommand.getMenuName(),
+                menuEditCommand.getMenuUrl(), menuEditCommand.getMenuWindowTarget(),
+                menuEditCommand.getMenuWindowMode(), menuEditCommand.isPublished(),
+                menuEditCommand.getMenuType(), menuEditCommand.getContentId(),
+                menuEditCommand.getItemId(), menuEditCommand.getSectionId());
 
         menuEditCommand.setMenuList(menuService.makeMenuTreeList(user.getLastVisitSiteId()));
 
@@ -291,10 +274,9 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/removemenuset")
-    public String removeMenuSet(
-            @RequestParam int removeMenuId,
-            @ModelAttribute MenuEditCommand menuEditCommand,
-            HttpServletRequest request) throws Exception {
+    public String removeMenuSet(@RequestParam int removeMenuId,
+            @ModelAttribute MenuEditCommand menuEditCommand, HttpServletRequest request)
+            throws Exception {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         // Menu menu = menuService.getMenu(user.getLastVisitSiteId(), removeMenuId);
@@ -309,10 +291,9 @@ public class MenuController {
     }
 
     @PostMapping("/controlpanel/menu/remove")
-    public String remove(
-            @RequestParam long removeMenuId,
-            @ModelAttribute MenuEditCommand menuEditCommand,
-            HttpServletRequest request) throws Exception {
+    public String remove(@RequestParam long removeMenuId,
+            @ModelAttribute MenuEditCommand menuEditCommand, HttpServletRequest request)
+            throws Exception {
         User user = AuthenticatedUtil.getAuthenticatedUser();
 
         cascadeRemoveMenu(menuEditCommand.getMenuId(), user.getLastVisitSiteId());
@@ -333,8 +314,7 @@ public class MenuController {
         menuService.deleteMenu(menuId);
     }
 
-    protected void initListInfo(MenuEditCommand command, long siteId)
-            throws Exception {
+    protected void initListInfo(MenuEditCommand command, long siteId) throws Exception {
         List<Menu> menus = menuService.getMenus(siteId, command.getMenuId());
 
         Vector<MenuDisplayCommand> vector = new Vector<MenuDisplayCommand>();

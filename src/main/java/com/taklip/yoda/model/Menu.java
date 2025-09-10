@@ -1,7 +1,7 @@
 package com.taklip.yoda.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-
+import com.taklip.yoda.dto.ContentDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,8 +30,8 @@ public class Menu extends BaseEntity {
 
     private boolean published;
 
-//	private Item item;
+    // private Item item;
 
     @TableField(exist = false)
-    private Content content;
+    private ContentDTO contentDTO;
 }

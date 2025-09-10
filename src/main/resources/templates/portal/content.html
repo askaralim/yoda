@@ -142,10 +142,10 @@
                             <li th:each="comment : ${comments}" class="left clearfix">
                                 <span class="comments-img pull-left">
                                     <span th:if="${comment.user.profilePhotoSmall} == null">
-                                        <img src="../images/defaultAvatar.jpg" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img" width="32" height="32"/>
+                                        <img src="../images/defaultAvatar.png" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img" width="32" height="32"/>
                                     </span>
                                     <span th:unless="${comment.user.profilePhotoSmall} == null">
-                                        <img src="../images/defaultAvatar.jpg" th:src="${comment.user.profilePhotoSmall}" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img"/>
+                                        <img src="../images/defaultAvatar.png" th:src="${comment.user.profilePhotoSmall}" th:alt-title="${comment.user.username}" class="img-rounded profile_photo_img"/>
                                     </span>
                                 </span>
                                 <div class="comments-body clearfix">
@@ -182,17 +182,17 @@
                 <div class="col-lg-3 home-sidebar">
                     <div class="home-sidebar-module">
                         <h5 th:text="#{content-publisher}">Content Publisher</h5>
-                        <a th:href="@{'/user/' + ${content.createBy.id}}">
-                            <img th:if="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="32" height="32" />
-                            <img th:unless="${content.createBy.profilePhotoSmall} == null" src="../images/defaultAvatar.jpg" th:src="${content.createBy.profilePhotoSmall}" th:alt-title="${content.createBy.username}" class="img-rounded profile_photo_img" width="25" height="25" />
-                            <span th:text="${content.createBy.username}">Publisher Name</span>
+                        <a th:href="@{'/user/' + ${content.createByUser.id}}">
+                            <img th:if="${content.createByUser.profilePhotoSmall} == null" src="../images/defaultAvatar.png" th:alt-title="${content.createByUser.username}" class="img-rounded profile_photo_img" width="32" height="32" />
+                            <img th:unless="${content.createByUser.profilePhotoSmall} == null" src="../images/defaultAvatar.png" th:src="${content.createByUser.profilePhotoSmall}" th:alt-title="${content.createByUser.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                            <span th:text="${content.createByUser.username}">Publisher Name</span>
                         </a>
                     </div>
                     <div th:if="${not #lists.isEmpty(content.contributors)}" class="home-sidebar-module">
                         <h5 th:text="#{content-contributor}">Content Contributor</h5>
                         <ul class="list-unstyled">
                             <li th:each="contributor : ${content.contributors}">
-                                <img src="../images/defaultAvatar.jpg" th:src="${contributor.profilePhotoSmall} != null ? ${contributor.profilePhotoSmall} : 'images/defaultAvatar.jpg'" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25" />
+                                <img src="../images/defaultAvatar.png" th:src="${contributor.profilePhotoSmall} != null ? ${contributor.profilePhotoSmall} : 'images/defaultAvatar.png'" th:alt-title="${contributor.username}" class="img-rounded profile_photo_img" width="25" height="25" />
                                 <span th:text="${contributor.username}">Contributor Name</span>
                             </li>
                             <br>

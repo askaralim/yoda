@@ -17,7 +17,7 @@ public class ContentHitCounterStrategy implements HitCounterStrategy {
 
     @Override
     public void increase(Long id) {
-        contentService.increaseContentHitCounter(id);
+        contentService.increaseHitCounter(id);
         redisService.incr(Constants.REDIS_CONTENT_HIT_COUNTER + ":" + id);
     }
 }

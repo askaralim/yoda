@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.model.Brand;
-import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.ContentBrand;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.service.BrandService;
@@ -44,10 +44,10 @@ public class RedisController {
     @ResponseBody
     @RequestMapping("/delete/content")
     public ResponseEntity<String> deleteContents() {
-        List<Content> contents = contentService.getContents();
+        List<ContentDTO> contents = contentService.getContents();
 
-        for (Content content : contents) {
-            contentService.deleteContentFromCache(content.getId());
+        for (ContentDTO content : contents) {
+            // contentService.deleteContentFromCache(content.getId());
             // redisService.delete(Constants.REDIS_CONTENT + ":" + content.getId());
             //
             // List<ContentContributor> cc = content.getContentContributors();

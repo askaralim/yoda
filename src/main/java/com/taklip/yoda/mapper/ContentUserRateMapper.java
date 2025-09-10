@@ -12,7 +12,9 @@ public interface ContentUserRateMapper extends BaseMapper<ContentUserRate> {
     @Select("SELECT SUM(score) FROM content_user_rate WHERE content_id = #{contentId}")
     Integer getContentRateByContentId(@Param("contentId") Long contentId);
 
+    @Select("SELECT * FROM content_user_rate WHERE content_id = #{contentId} AND create_by = #{userId}")
     ContentUserRate getContentUserRateByContentIdAndUserId(Long contentId, Long userId);
 
+    @Select("SELECT * FROM content_user_rate WHERE content_id = #{contentId} ORDER BY create_time DESC")
     List<ContentUserRate> getContentUserRatesByContentId(Long contentId);
 }

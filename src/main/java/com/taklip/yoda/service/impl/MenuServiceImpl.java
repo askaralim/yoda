@@ -3,6 +3,7 @@ package com.taklip.yoda.service.impl;
 import java.util.List;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,19 +11,20 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.taklip.yoda.mapper.ContentMapper;
 import com.taklip.yoda.mapper.MenuMapper;
-import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.DropDownMenu;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Menu;
 import com.taklip.yoda.service.MenuService;
 import com.taklip.yoda.common.contant.Constants;
+import com.taklip.yoda.dto.ContentDTO;
+import com.taklip.yoda.service.ContentService;
 
 @Transactional
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
-    private ContentMapper contentMapper;
+    @Autowired
+    private ContentService contentService;
 
     public Menu addMenu(long siteId, String menuSetName, String menuName) {
         Menu menuSet = new Menu();
@@ -42,8 +44,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         return menuSet;
     }
 
-    public Menu addMenu(
-            long siteId, long menuParentId, long seqNum, String menuSetName,
+    public Menu addMenu(long siteId, long menuParentId, long seqNum, String menuSetName,
             String menuTitle, String menuName, String menuType, String menuUrl,
             String menuWindowTarget, String menuWindowMode, boolean published) {
         Menu menu = new Menu();
@@ -65,12 +66,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         return menu;
     }
 
-    public void addMenu(
-            long siteId, long menuId, String menuTitle, String menuName,
-            String menuUrl, String menuWindowTarget, String menuWindowMode,
-            boolean published, String menuType, long contentId, long itemId,
-            long sectionId)
-            throws SecurityException, Exception {
+    public void addMenu(long siteId, long menuId, String menuTitle, String menuName, String menuUrl,
+            String menuWindowTarget, String menuWindowMode, boolean published, String menuType,
+            long contentId, long itemId, long sectionId) throws SecurityException, Exception {
         Menu menu = new Menu();
 
         if (menuId != 0) {
@@ -84,15 +82,15 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         menu.setMenuWindowTarget(menuWindowTarget);
         menu.setMenuWindowMode(menuWindowMode);
         menu.setPublished(published);
-        menu.setContent(null);
+        menu.setContentDTO(null);
         // menu.setItem(null);
         menu.setSeqNum(0);
         menu.setSiteId(siteId);
         menu.setMenuType(menuType);
 
         if (menuType.equals(Constants.MENU_CONTENT)) {
-            Content content = contentMapper.selectById(contentId);
-            menu.setContent(content);
+            ContentDTO content = contentService.getContentById(contentId);
+            menu.setContentDTO(content);
         }
 
         // if (menuType.equals(Constants.MENU_ITEM)) {
@@ -123,13 +121,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Transactional(readOnly = true)
     public Menu getMenuBySiteIdMenuName(long siteId, String menuName) {
-        return this.getOne(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId).eq(Menu::getName, menuName));
+        return this.getOne(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
+                .eq(Menu::getName, menuName));
     }
 
     @Transactional(readOnly = true)
     public Menu getMenu(String menuSetName) {
-        return this.getOne(new LambdaQueryWrapper<Menu>().eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, 0)
-                .orderByAsc(Menu::getSeqNum));
+        return this.getOne(new LambdaQueryWrapper<Menu>().eq(Menu::getSetName, menuSetName)
+                .eq(Menu::getParentId, 0).orderByAsc(Menu::getSeqNum));
     }
 
     // @Transactional(readOnly = true)
@@ -146,8 +145,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Transactional(readOnly = true)
     public List<Menu> getMenus(long site, long parentMenuId) {
-        return this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, site).eq(Menu::getParentId, parentMenuId)
-                .orderByAsc(Menu::getSeqNum));
+        return this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, site)
+                .eq(Menu::getParentId, parentMenuId).orderByAsc(Menu::getSeqNum));
     }
 
     // @Transactional(readOnly = true)
@@ -157,18 +156,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Transactional(readOnly = true)
     public long selectMaxSeqNumByMenuId_SiteId(long siteId, long parentMenuId) {
-        return this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId).eq(Menu::getParentId, parentMenuId))
+        return this
+                .list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
+                        .eq(Menu::getParentId, parentMenuId))
                 .stream().mapToLong(Menu::getSeqNum).max().orElse(0);
     }
 
-    public Menu updateMenu(
-            long siteId, long menuId, Content content, Item item,
-            String menuUrl, String menuWindowMode,
-            String menuWindowTarget, String menuType)
+    public Menu updateMenu(long siteId, long menuId, ContentDTO contentDTO, Item item,
+            String menuUrl, String menuWindowMode, String menuWindowTarget, String menuType)
             throws SecurityException, Exception {
         Menu menu = getMenu(menuId);
 
-        menu.setContent(content);
+        menu.setContentDTO(contentDTO);
         // menu.setItem(item);
         menu.setMenuUrl(menuUrl);
         menu.setMenuWindowMode(menuWindowMode);
@@ -185,15 +184,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     public void updateSeqNum(long siteId, long menuParentId, long seqNum) {
-        this.update(new LambdaUpdateWrapper<Menu>()
-                .eq(Menu::getSiteId, siteId)
-                .eq(Menu::getParentId, menuParentId)
-                .ge(Menu::getSeqNum, seqNum)
+        this.update(new LambdaUpdateWrapper<Menu>().eq(Menu::getSiteId, siteId)
+                .eq(Menu::getParentId, menuParentId).ge(Menu::getSeqNum, seqNum)
                 .setSql("seq_num = seq_num + 1"));
     }
 
-    public String formatMenuName(long siteId, long menuId)
-            throws Exception {
+    public String formatMenuName(long siteId, long menuId) throws Exception {
         String menuString = "";
 
         while (true) {
@@ -222,8 +218,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Transactional(readOnly = true)
-    public DropDownMenu[] makeMenuTreeList(long siteId)
-            throws Exception {
+    public DropDownMenu[] makeMenuTreeList(long siteId) throws Exception {
         Vector<DropDownMenu> menuVector = new Vector<DropDownMenu>();
 
         menuVector.add(makeMenuTree(siteId, Constants.MENUSET_MAIN));
@@ -240,10 +235,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             // continue;
             // }
             /*
-             * DropDownMenu list[] = new DropDownMenu[1]; list[0] =
-             * makeMenuTree(siteId, menu.getSetName()); DropDownMenu ddm =
-             * new DropDownMenu(); ddm.setName(menu.getSetName());
-             * ddm.setMenuItems(list); menuVector.add(ddm);
+             * DropDownMenu list[] = new DropDownMenu[1]; list[0] = makeMenuTree(siteId,
+             * menu.getSetName()); DropDownMenu ddm = new DropDownMenu();
+             * ddm.setName(menu.getSetName()); ddm.setMenuItems(list); menuVector.add(ddm);
              */
             menuVector.add(makeMenuTree(siteId, menu.getSetName()));
         }
@@ -256,10 +250,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Transactional(readOnly = true)
-    public DropDownMenu makeMenuTree(long siteId, String menuSetName)
-            throws Exception {
+    public DropDownMenu makeMenuTree(long siteId, String menuSetName) throws Exception {
         Menu menu = this.getOne(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
-                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, 0).orderByAsc(Menu::getSeqNum));
+                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, 0)
+                .orderByAsc(Menu::getSeqNum));
 
         DropDownMenu menus[] = makeMenu(siteId, menuSetName, menu.getId());
         DropDownMenu ddm = new DropDownMenu();
@@ -272,14 +266,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Transactional(readOnly = true)
-    public DropDownMenu[] makeMenu(
-            long siteId, String menuSetName, long menuParentId)
+    public DropDownMenu[] makeMenu(long siteId, String menuSetName, long menuParentId)
             throws Exception {
         DropDownMenu menuArr[] = null;
         Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
 
         List<Menu> menus = this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
-                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, menuParentId).orderByAsc(Menu::getSeqNum));
+                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, menuParentId)
+                .orderByAsc(Menu::getSeqNum));
 
         for (Menu menu : menus) {
             DropDownMenu ddm = new DropDownMenu();
@@ -301,14 +295,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Transactional(readOnly = true)
-    public DropDownMenu[] makeDdmMenu(
-            long siteId, String menuSetName, long menuParentId)
+    public DropDownMenu[] makeDdmMenu(long siteId, String menuSetName, long menuParentId)
             throws Exception {
         DropDownMenu menuArr[] = null;
         Vector<DropDownMenu> menuList = new Vector<DropDownMenu>();
 
         List<Menu> menus = this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
-                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, menuParentId).orderByAsc(Menu::getSeqNum));
+                .eq(Menu::getSetName, menuSetName).eq(Menu::getParentId, menuParentId)
+                .orderByAsc(Menu::getSeqNum));
 
         for (Menu menu : menus) {
             DropDownMenu ddm = new DropDownMenu();
@@ -336,8 +330,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     public JSONObject makeJSONMenuTree(long siteId) throws Exception {
         JSONObject object = new JSONObject();
 
-        List<Menu> menus = this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId).eq(Menu::getParentId, 0)
-                .orderByAsc(Menu::getSeqNum));
+        List<Menu> menus = this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
+                .eq(Menu::getParentId, 0).orderByAsc(Menu::getSeqNum));
 
         Vector<JSONObject> menuSetVector = new Vector<JSONObject>();
 
@@ -353,8 +347,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Transactional(readOnly = true)
-    public JSONObject makeJSONMenuTreeNode(long siteId, long menuId)
-            throws Exception {
+    public JSONObject makeJSONMenuTreeNode(long siteId, long menuId) throws Exception {
         JSONObject jsonObject = new JSONObject();
 
         Menu menu = baseMapper.selectById(menuId);
@@ -366,10 +359,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             jsonObject.put("menuName", menu.getName());
         }
 
-        List<Menu> menus = baseMapper.selectList(new LambdaQueryWrapper<Menu>()
-                .eq(Menu::getSiteId, siteId)
-                .eq(Menu::getParentId, menuId)
-                .orderByAsc(Menu::getSeqNum));
+        List<Menu> menus =
+                baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getSiteId, siteId)
+                        .eq(Menu::getParentId, menuId).orderByAsc(Menu::getSeqNum));
 
         Vector<JSONObject> vector = new Vector<JSONObject>();
 
