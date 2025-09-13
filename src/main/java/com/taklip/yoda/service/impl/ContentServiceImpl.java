@@ -113,13 +113,9 @@ public class ContentServiceImpl implements ContentService {
     @Override
     @Transactional(readOnly = true)
     public ContentDTO getContentById(Long id) {
-        try {
-            ContentDTO contentDTO = contentServiceClient.getContentById(id);
-            return enrichContent(contentDTO);
-        } catch (Exception e) {
-            log.error("Error getting enriched content by id {}: {}", id, e.getMessage(), e);
-            throw new RuntimeException("Failed to get enriched content", e);
-        }
+        // Let the exception propagate to allow Feign fallback to work
+        ContentDTO contentDTO = contentServiceClient.getContentById(id);
+        return enrichContent(contentDTO);
     }
 
     @Override

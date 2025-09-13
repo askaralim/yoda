@@ -101,7 +101,7 @@ jobs:
 
             echo "🏥 Checking application health..."
             for i in {1..10}; do
-              if curl -f http://localhost:8080/actuator/health; then
+              if curl -f http://localhost:8081/actuator/health; then
                 echo "✅ Deployment successful!"
                 exit 0
               else

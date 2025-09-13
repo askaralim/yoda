@@ -55,12 +55,13 @@ public class ContentServiceClient {
      * Get content by ID
      */
     public ContentDTO getContentById(Long id) {
+        log.debug("Getting content via Feign client with id: {}", id);
         try {
-            log.debug("Getting content via Feign client with id: {}", id);
             return contentServiceFeignClient.getContentById(id);
         } catch (Exception e) {
-            log.error("Error getting content with id {}: {}", id, e.getMessage(), e);
-            throw new RuntimeException("Failed to get content", e);
+            log.error("🔥 MANUAL FALLBACK TRIGGERED! Content service unavailable for getContentById with id {}: {}", id, e.getMessage());
+            // Manual fallback - return null to indicate service unavailable
+            return null;
         }
     }
 

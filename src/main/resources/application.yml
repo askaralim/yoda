@@ -15,47 +15,7 @@ spring:
   
   profiles:
     active: local
-  
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false
-      retry:
-        enabled: true
-        max-attempts: 3
-        initial-interval: 1000
-        multiplier: 1.1
-        max-interval: 2000
-    
-    circuitbreaker:
-      resilience4j:
-        instances:
-          content-service:
-            registerHealthIndicator: true
-            slidingWindowSize: 10
-            minimumNumberOfCalls: 5
-            permittedNumberOfCallsInHalfOpenState: 3
-            waitDurationInOpenState: 60s
-            failureRateThreshold: 50
-            eventConsumerBufferSize: 10
-            recordExceptions:
-              - java.lang.Exception
-              - java.lang.RuntimeException
-            ignoreExceptions:
-              - java.util.concurrent.TimeoutException
-    
-    openfeign:
-      client:
-        config:
-          default:
-            connectTimeout: 5000
-            readTimeout: 5000
-            loggerLevel: basic
-          yoda-content-service:
-            connectTimeout: 3000
-            readTimeout: 5000
-            loggerLevel: full
-  
+
   messages:
     basename: messages/messages
     encoding: UTF-8
@@ -79,6 +39,62 @@ spring:
           max-idle: 8
           min-idle: 0
           max-wait: -1ms
+  
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      retry:
+        enabled: true
+        max-attempts: 3
+        initial-interval: 1000
+        multiplier: 1.1
+        max-interval: 2000
+    
+    circuitbreaker:
+      resilience4j:
+        instances:
+          yoda-content-service:
+            registerHealthIndicator: true
+            slidingWindowSize: 10
+            minimumNumberOfCalls: 1
+            permittedNumberOfCallsInHalfOpenState: 3
+            waitDurationInOpenState: 60s
+            failureRateThreshold: 50
+            eventConsumerBufferSize: 10
+            recordExceptions:
+              - java.lang.Exception
+              - java.lang.RuntimeException
+            ignoreExceptions:
+              - java.util.concurrent.TimeoutException
+    
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+# Feign fallback support
+feign:
+  circuitbreaker:
+    enabled: true
+
+# Resilience4j configuration
+# resilience4j:
+#   circuitbreaker:
+#     instances:
+#       yoda-content-service:
+#         failure-rate-threshold: 50
+#         wait-duration-in-open-state: 60s
+#         sliding-window-size: 10
+#         minimum-number-of-calls: 1
+#         permitted-number-of-calls-in-half-open-state: 3
+#         record-exceptions:
+#           - java.lang.Exception
+#           - java.lang.RuntimeException
+#           - java.net.ConnectException
+#           - java.net.SocketException
+#           - feign.FeignException
+#         ignore-exceptions:
+#           - java.util.concurrent.TimeoutException
 
 mybatis-plus:
   lazy-loading-enabled: true

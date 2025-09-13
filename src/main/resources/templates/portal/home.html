@@ -104,8 +104,8 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="home-about-inset">
-                                        <h1 style="text-align: center" th:text="${homeInfo.homePageFeatureData.title}">HomePageFeatureData Title</h1>
-                                        <p>[(${homeInfo.homePageFeatureData.description})]</p>
+                                        <h1 style="text-align: center" th:if="${homeInfo.homePageFeatureData != null}" th:text="${homeInfo.homePageFeatureData.title}">HomePageFeatureData Title</h1>
+                                        <p th:if="${homeInfo.homePageFeatureData != null}" th:text="${homeInfo.homePageFeatureData.description}">HomePageFeatureData Description</p>
                                     </div>
                                 </div>
                             </div>

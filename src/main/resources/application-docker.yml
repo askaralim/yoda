@@ -44,6 +44,10 @@ spring:
   devtools:
     restart:
       enabled: false
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 # Actuator for health checks
 management:
