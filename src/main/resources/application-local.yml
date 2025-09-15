@@ -71,3 +71,8 @@ logging:
     org.apache.ibatis: DEBUG
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
+
+yoda:
+  services:
+    content:
+      url: http://localhost:8082

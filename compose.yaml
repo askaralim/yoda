@@ -1,6 +1,6 @@
 services:
-  app:
-    image: yoda:latest
+  yoda-app:
+    image: yoda-app:latest
     container_name: yoda-app
     restart: unless-stopped
     ports:

@@ -83,3 +83,6 @@ chatter:
 yoda:
   file-location: /app/uploads/
   mq-enabled: true
+  services:
+    content:
+      url: http://yoda-content:8082
