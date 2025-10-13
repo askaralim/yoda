@@ -1,6 +1,7 @@
 package com.taklip.yoda.api;
 
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,13 +13,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.taklip.yoda.dto.CommentDTO;
 import com.taklip.yoda.dto.ContentDTO;
-import com.taklip.yoda.model.Content;
+import com.taklip.yoda.model.Brand;
+import com.taklip.yoda.model.ContentBrand;
+import com.taklip.yoda.service.BrandService;
+import com.taklip.yoda.service.ContentBrandService;
 import com.taklip.yoda.service.ContentService;
+import com.taklip.yoda.service.ContentUserRateService;
+import com.taklip.yoda.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,179 +39,161 @@ public class ContentApiController {
 
     private final ContentService contentService;
 
+    private final ContentUserRateService contentUserRateService;
+
+    private final ContentBrandService contentBrandService;
+
+    private final BrandService brandService;
+
+    private final CommentService commentService;
+
     @GetMapping
     public ResponseEntity<Page<ContentDTO>> getAllContent(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit) {
-        Page<ContentDTO> contentPage = contentService.getContentsByPage(offset, limit);
-        return ResponseEntity.ok(contentPage);
+        return ResponseEntity.ok(contentService.getContentsByPage(offset, limit));
+    }
+
+    @GetMapping("/featured")
+    @Operation(summary = "Get featured contents", description = "Retrieve featured contents")
+    public ResponseEntity<Page<ContentDTO>> getFeaturedContents(
+            @Parameter(description = "Feature data") @RequestParam(
+                    defaultValue = "true") Boolean featured,
+            @Parameter(description = "Limit number of results") @RequestParam(
+                    defaultValue = "10") Integer limit,
+            @Parameter(description = "Offset") @RequestParam(defaultValue = "0") Integer offset) {
+        return ResponseEntity
+                .ok(contentService.getContentsByFeatureData(featured, offset, limit));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ContentDTO> getContentById(@PathVariable Long id) {
-        try {
-            ContentDTO content = contentService.getContentById(id);
-            if (content == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(content);
-        } catch (Exception e) {
-            log.error("Error getting content by id {}: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(contentService.getContentById(id));
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable Long id,
+            @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "10") Integer limit) {
+        return ResponseEntity.ok(commentService.getByContentId(id, offset, limit));
+    }
+
+    @GetMapping("/contentbrand/{id}")
+    public ResponseEntity<ContentBrand> getContentBrand(@PathVariable Long id) {
+        return ResponseEntity.ok(contentBrandService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ContentDTO> createContent(
-            @Valid @RequestBody ContentCreateRequest request) {
-        try {
-            // ContentDTO content = convertToEntity(request);
-            // contentService.create(content);
-            // return ResponseEntity.ok(content);
-            return ResponseEntity.ok(null);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<ContentDTO> createContent(@Valid @RequestBody ContentDTO content) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(contentService.create(content));
+    }
+
+    @PostMapping("/contentbrand/save")
+    public ResponseEntity<ContentBrand> createContentBrand(@RequestBody ContentBrand contentBrand) {
+
+        String brandName = StringUtils.EMPTY;
+        String brandLogo = StringUtils.EMPTY;
+        Brand brand = null;
+
+        if (null != contentBrand.getBrandId()) {
+            brand = brandService.getBrand(contentBrand.getBrandId());
+            brandName = brand.getName();
+            brandLogo = brand.getImagePath();
         }
+
+        contentBrand.setBrandName(brandName);
+        contentBrand.setBrandLogo(brandLogo);
+
+        contentBrandService.create(contentBrand);
+
+        return ResponseEntity.ok(contentBrand);
+    }
+
+    @PostMapping(value = "/{id}/resetCounter")
+    public ResponseEntity<Void> resetCounter(@PathVariable Long contentId) throws Throwable {
+        contentService.resetHitCounter(contentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/uploadImage")
+    public ResponseEntity<Void> uploadImage(@RequestParam MultipartFile file,
+            @PathVariable long id) {
+        contentService.updateContentImage(id, file);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ContentDTO> updateContent(@PathVariable Long id,
-            @Valid @RequestBody ContentUpdateRequest request) {
-        // Content existingContent = contentService.getContentById(id);
-        // if (existingContent != null) {
-        // updateContentFromRequest(existingContent, request);
-        // try {
-        // Content updatedContent = contentService.updateContent(existingContent, 1L);
-        // return ResponseEntity.ok(convertToDTO(updatedContent));
-        // } catch (Exception e) {
-        // return ResponseEntity.badRequest().build();
-        // }
-        // }
-        return ResponseEntity.notFound().build();
+            @Valid @RequestBody ContentDTO content) {
+        return ResponseEntity.ok(contentService.update(content));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
-        // Content content = contentService.getContentById(id);
-        // if (content != null) {
-        // contentService.deleteContent(id);
-        // return ResponseEntity.noContent().build();
-        // }
-        return ResponseEntity.notFound().build();
+        contentService.deleteContent(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<ContentDTO>> searchContent(@RequestParam String q) {
-        // List<Content> results = contentService.getContents(q);
-        // List<ContentDTO> dtoList = results.stream()
-        // .map(this::convertToDTO)
-        // .collect(java.util.stream.Collectors.toList());
+        // List<ContentDTO> results = contentService.searchContents(q);
+        // return ResponseEntity.ok(results);
 
         return ResponseEntity.ok(null);
     }
 
-    // Helper methods for conversion
-    private ContentDTO convertToDTO(Content content) {
-        ContentDTO dto = new ContentDTO();
-        dto.setId(content.getId());
-        dto.setTitle(content.getTitle());
-        dto.setDescription(content.getDescription());
-        dto.setShortDescription(content.getShortDescription());
-        dto.setPageTitle(content.getPageTitle());
-        dto.setFeaturedImage(content.getFeaturedImage());
-        dto.setHitCounter(content.getHitCounter());
-        dto.setScore(content.getScore());
-        dto.setPublished(content.isPublished());
-        dto.setFeatureData(content.isFeatureData());
-        return dto;
+    @PostMapping("/{id}/rate")
+    public JSONObject score(@PathVariable Long id, @RequestParam String thumb) {
+        contentUserRateService.create(id, thumb);
+
+        int score = contentUserRateService.getTotalRateByContentId(id);
+
+        JSONObject jsonResult = new JSONObject();
+
+        try {
+            jsonResult.put("score", score);
+        } catch (Exception e) {
+            log.error("JSON: {}", jsonResult, e);
+        }
+
+        return jsonResult;
     }
 
-    private Content convertToEntity(ContentCreateRequest request) {
-        Content content = new Content();
-        content.setTitle(request.getTitle());
-        content.setDescription(request.getDescription());
-        content.setShortDescription(request.getShortDescription());
-        return content;
-    }
+    // public void saveContentContributors(HttpServletRequest request, ContentDTO content) {
+    // Enumeration<String> names = request.getParameterNames();
 
-    private void updateContentFromRequest(Content content, ContentUpdateRequest request) {
-        if (request.getTitle() != null) {
-            content.setTitle(request.getTitle());
-        }
-        if (request.getDescription() != null) {
-            content.setDescription(request.getDescription());
-        }
-        if (request.getShortDescription() != null) {
-            content.setShortDescription(request.getShortDescription());
-        }
-    }
+    // while (names.hasMoreElements()) {
+    // String name = (String) names.nextElement();
 
-    // Request/Response DTOs
-    public static class ContentCreateRequest {
-        @NotBlank(message = "Title is required")
-        @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
-        private String title;
+    // if (name.startsWith("contributorId")) {
+    // String userId = request.getParameter(name);
 
-        @Size(max = 1000, message = "Description must be less than 1000 characters")
-        private String description;
+    // if (StringUtils.isEmpty(userId)) {
+    // continue;
+    // }
 
-        @Size(max = 500, message = "Short description must be less than 500 characters")
-        private String shortDescription;
+    // User user = userService.getUser(Long.valueOf(userId));
 
-        // Getters and setters
-        public String getTitle() {
-            return title;
-        }
+    // if (null == user) {
+    // continue;
+    // }
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+    // ContentContributor contributor = new ContentContributor();
 
-        public String getDescription() {
-            return description;
-        }
+    // contributor.setApproved(true);
+    // contributor.setContentId(content.getId());
+    // contributor.setProfilePhotoSmall(user.getProfilePhotoSmall());
+    // contributor.setUserId(user.getId());
+    // contributor.setUsername(user.getUsername());
+    // contributor.setVersion("1.0");
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
+    // List<ContentContributor> results = contentContributorService
+    // .getByContentIdAndUserId(content.getId(), user.getId());
 
-        public String getShortDescription() {
-            return shortDescription;
-        }
-
-        public void setShortDescription(String shortDescription) {
-            this.shortDescription = shortDescription;
-        }
-    }
-
-    public static class ContentUpdateRequest {
-        private String title;
-        private String description;
-        private String shortDescription;
-
-        // Getters and setters
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getShortDescription() {
-            return shortDescription;
-        }
-
-        public void setShortDescription(String shortDescription) {
-            this.shortDescription = shortDescription;
-        }
-    }
+    // if (results.isEmpty()) {
+    // contentContributorService.create(contributor);
+    // }
+    // }
+    // }
+    // }
 }

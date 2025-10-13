@@ -79,7 +79,8 @@ public interface ContentServiceFeignClient {
         String getHealth();
 
         @GetMapping("/api/v1/content/user/{userId}")
-        Page<ContentDTO> getContentsByUserId(@PathVariable Long userId);
+        Page<ContentDTO> getContentsByUserId(@PathVariable Long userId,
+                        @RequestParam Integer offset, @RequestParam Integer limit);
 
         @GetMapping("/api/v1/content/title/{title}")
         Page<ContentDTO> getContentsByTitle(@PathVariable String title);

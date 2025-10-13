@@ -24,6 +24,8 @@ services:
       - SPRING_REDIS_PORT=6379
       - SPRING_REDIS_PASSWORD=
       - SPRING_REDIS_TIMEOUT=100000
+      # JWT Configuration
+      - JWT_SECRET=${JWT_SECRET}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
       interval: 30s

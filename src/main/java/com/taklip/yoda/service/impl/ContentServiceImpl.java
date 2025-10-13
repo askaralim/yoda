@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ContentServiceImpl implements ContentService {
     @Autowired
-    private CommentService commentService;
-
-    @Autowired
     private ItemService itemService;
 
     @Autowired
@@ -70,12 +68,12 @@ public class ContentServiceImpl implements ContentService {
     private ChineseNaturalKeyGenerator naturalKeyGenerator;
 
     @Override
-    public void create(ContentDTO content) throws Exception {
+    public ContentDTO create(ContentDTO content) {
         content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
         content.setHitCounter(0);
         content.setScore(0);
 
-        contentServiceClient.createContent(content);
+        return contentServiceClient.createContent(content);
 
         // if (!content.isFeatureData() && content.isPublished() && content.isHomePage()) {
         // this.setContentNotFeatureDatasIntoCache(content.getId());
@@ -88,10 +86,10 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void update(ContentDTO content) throws Exception {
+    public ContentDTO update(ContentDTO content) {
         content.setNaturalKey(naturalKeyGenerator.generateNaturalKey(content.getTitle()));
 
-        contentServiceClient.updateContent(content.getId(), content);
+        return contentServiceClient.updateContent(content.getId(), content);
     }
 
     @Override
@@ -106,8 +104,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ContentDTO> getContentByUserId(Long userId) {
-        return contentServiceClient.getContentsByUserId(userId);
+    public Page<ContentDTO> getContentByUserId(Long userId, Integer offset, Integer limit) {
+        return contentServiceClient.getContentsByUserId(userId, offset, limit);
     }
 
     @Override
@@ -157,7 +155,8 @@ public class ContentServiceImpl implements ContentService {
             Page<ContentDTO> contentPage =
                     contentServiceClient.getFeaturedContents(featureData, offset, limit);
             log.info("getFeaturedContents size: {}", contentPage.getRecords().size());
-            return enrichContentPage(contentPage);
+            // return enrichContentPage(contentPage);
+            return contentPage;
         } catch (Exception e) {
             log.error("Error getting enriched featured contents: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to get enriched featured contents", e);
@@ -198,7 +197,20 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public ContentDTO updateContentImage(long siteId, Long id, MultipartFile image) {
+    public ContentDTO updateContentImage(Long id, MultipartFile image) {
+        try {
+            if (image.getBytes().length <= 0) {
+                throw new RuntimeException("Image is empty");
+            }
+
+            if (StringUtils.isEmpty(image.getName())) {
+                throw new RuntimeException("Image name is empty");
+            }
+        } catch (IOException e) {
+            log.error("Error updating content image: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to update content image", e);
+        }
+
         ContentDTO content = contentServiceClient.getContentById(id);
 
         imageUpload.deleteImage(content.getFeaturedImage());
@@ -281,10 +293,11 @@ public class ContentServiceImpl implements ContentService {
     @Override
     @Transactional(readOnly = true)
     public Page<ContentDTO> searchContents(String title, Boolean published) {
-                try {
-                Page<ContentDTO> searchResult =  contentServiceClient.searchContents(new ContentSearchVO(null, title, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
-                return enrichContentPage(searchResult);
+        try {
+            Page<ContentDTO> searchResult = contentServiceClient
+                    .searchContents(new ContentSearchVO(null, title, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null));
+            return enrichContentPage(searchResult);
         } catch (Exception e) {
             log.error("Error searching enriched contents: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to search enriched contents", e);
@@ -338,10 +351,6 @@ public class ContentServiceImpl implements ContentService {
             // Populate items
             List<Item> items = itemService.getItemsByContentId(contentDTO.getId());
             contentDTO.setItems(modelConvertor.convertToItemDTOs(items));
-
-            // Populate comments
-            List<Comment> comments = commentService.getCommentsByContentId(contentDTO.getId());
-            contentDTO.setComments(modelConvertor.convertToCommentDTOs(comments));
 
             // Populate content brands
             List<ContentBrand> contentBrands =

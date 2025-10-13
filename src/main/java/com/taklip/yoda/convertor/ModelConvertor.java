@@ -14,6 +14,7 @@ import com.taklip.yoda.dto.ContentBrandDTO;
 import com.taklip.yoda.dto.ContentContributorDTO;
 import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.dto.ItemDTO;
+import com.taklip.yoda.dto.PostDTO;
 import com.taklip.yoda.dto.SolutionDTO;
 import com.taklip.yoda.dto.SolutionItemDTO;
 import com.taklip.yoda.dto.TermDTO;
@@ -25,6 +26,7 @@ import com.taklip.yoda.model.Content;
 import com.taklip.yoda.model.ContentBrand;
 import com.taklip.yoda.model.ContentContributor;
 import com.taklip.yoda.model.Item;
+import com.taklip.yoda.model.Post;
 import com.taklip.yoda.model.Solution;
 import com.taklip.yoda.model.SolutionItem;
 import com.taklip.yoda.model.Term;
@@ -46,6 +48,8 @@ public class ModelConvertor {
             return (T) convertToTermDTO((Term) source);
         } else if (source instanceof Solution && clazz.equals(SolutionDTO.class)) {
             return (T) convertToSolutionDTO((Solution) source);
+        } else if (source instanceof Post && clazz.equals(PostDTO.class)) {
+            return (T) convertToPostDTO((Post) source);
         }
 
         return null;
@@ -63,6 +67,9 @@ public class ModelConvertor {
                 .foundDate(brand.getFoundDate())
                 .hitCounter(brand.getHitCounter())
                 .score(brand.getScore())
+                .kind(brand.getKind())
+                .country(brand.getCountry())
+                .company(brand.getCompany())
                 .createTime(brand.getCreateTime())
                 .updateTime(brand.getUpdateTime())
                 .build();
@@ -90,7 +97,6 @@ public class ModelConvertor {
                 .contentId(comment.getContentId())
                 .rating(comment.getRating())
                 .description(comment.getDescription())
-                .siteId(comment.getSiteId())
                 .userId(comment.getUserId())
                 .createTime(comment.getCreateTime())
                 .build();
@@ -210,7 +216,8 @@ public class ModelConvertor {
         return TermDTO.builder()
                 .id(term.getId())
                 .title(term.getTitle())
-                .description(PortalUtil.shortenDescription(term.getDescription()))
+                .description(term.getDescription())
+                .shortenDescription(PortalUtil.shortenDescription(term.getDescription()))
                 .contentId(term.getContentId())
                 .categoryId(term.getCategoryId())
                 .hitCounter(term.getHitCounter())
@@ -256,6 +263,18 @@ public class ModelConvertor {
                 .profilePhotoSmall(user.getProfilePhotoSmall())
                 .createTime(user.getCreateTime())
                 .updateTime(user.getUpdateTime())
+                .build();
+    }
+
+    public PostDTO convertToPostDTO(Post post) {
+        if (post == null)
+            return null;
+
+        return PostDTO.builder()
+                .id(post.getId())
+                .description(post.getDescription())
+                .createTime(post.getCreateTime())
+                .updateTime(post.getUpdateTime())
                 .build();
     }
 }

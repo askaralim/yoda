@@ -8,7 +8,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.taklip.yoda.common.util.AuthenticatedUtil;
 import com.taklip.yoda.common.util.SiteUtil;
-import com.taklip.yoda.model.Comment;
+import com.taklip.yoda.dto.CommentDTO;
 import com.taklip.yoda.service.CommentService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +19,12 @@ public class PortalCommentController {
     private CommentService commentService;
 
     @PostMapping("/new")
-    public String addComment(HttpServletRequest request, @ModelAttribute Comment comment) {
+    public String addComment(HttpServletRequest request, @ModelAttribute CommentDTO comment) {
         comment.setSiteId(SiteUtil.getDefaultSite().getId());
         comment.setUserId(AuthenticatedUtil.getAuthenticatedUser().getId());
         comment.setDescription(HtmlUtils.htmlEscape(comment.getDescription()));
 
-        commentService.addComment(comment);
+        commentService.create(comment);
 
         return "redirect:/content/" + comment.getContentId();
     }

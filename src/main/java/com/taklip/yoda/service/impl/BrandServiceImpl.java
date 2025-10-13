@@ -48,21 +48,20 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     private FileService fileService;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private ModelConvertor modelConvertor;
 
     @Override
-    public boolean create(Brand brand) {
-        return this.save(brand);
+    public BrandDTO create(Brand brand) {
+        this.save(brand);
+
+        return modelConvertor.convertBrandToDTO(brand);
     }
 
     @Override
-    public boolean update(Brand brand) {
-        deleteBrandFromCached(brand.getId());
+    public BrandDTO update(Brand brand) {
+        this.updateById(brand);
 
-        return this.updateById(brand);
+        return modelConvertor.convertBrandToDTO(brand);
     }
 
     @Override
@@ -72,35 +71,39 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     }
 
     @Override
-    public List<Brand> getBrandsTopViewed(int count) {
-        List<String> ids = getBrandsTopViewedListFromCache(count);
-        List<Brand> brands = new ArrayList<>();
-
-        if (CollectionUtils.isEmpty(ids)) {
-            brands = this
-                    .list(new LambdaQueryWrapper<Brand>().orderByDesc(Brand::getHitCounter).last("limit " + count));
-
-            ids = brands.stream().map(brand -> String.valueOf(brand.getId())).collect(Collectors.toList());
-
-            this.setBrandsTopViewedListIntoCache(ids);
-        } else {
-            brands = this.list(new LambdaQueryWrapper<Brand>().in(Brand::getId, ids));
-        }
-
-        return brands;
+    public List<BrandDTO> getBrandsTopViewed(int count) {
+        List<Brand> brands = this.list(new LambdaQueryWrapper<Brand>()
+                .orderByDesc(Brand::getHitCounter).last("limit " + count));
+        return brands.stream().map(modelConvertor::convertBrandToDTO).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Brand> getBrands(Integer offset, Integer limit) {
+    public Page<BrandDTO> getBrands(Integer offset, Integer limit) {
         log.info("getBrands offset: {}, limit: {}", offset, limit);
-        return page(new Page<>(offset, limit), new LambdaQueryWrapper<Brand>().orderByDesc(Brand::getId));
+        Page<Brand> brandPage = page(new Page<>(offset, limit),
+                new LambdaQueryWrapper<Brand>().orderByDesc(Brand::getHitCounter));
+        Page<BrandDTO> brandDTOPage = new Page<>();
+        brandDTOPage.setTotal(brandPage.getTotal());
+        brandDTOPage.setCurrent(brandPage.getCurrent());
+        brandDTOPage.setSize(brandPage.getSize());
+        brandDTOPage.setRecords(brandPage.getRecords().stream()
+                .map(modelConvertor::convertBrandToDTO).collect(Collectors.toList()));
+        return brandDTOPage;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Brand> getHotBrands(Integer offset, Integer limit) {
-        return page(new Page<>(offset, limit), new LambdaQueryWrapper<Brand>().orderByDesc(Brand::getHitCounter));
+    public Page<BrandDTO> getHotBrands(Integer offset, Integer limit) {
+        Page<Brand> brandPage = page(new Page<>(offset, limit),
+                new LambdaQueryWrapper<Brand>().orderByDesc(Brand::getHitCounter));
+        Page<BrandDTO> brandDTOPage = new Page<>();
+        brandDTOPage.setTotal(brandPage.getTotal());
+        brandDTOPage.setCurrent(brandPage.getCurrent());
+        brandDTOPage.setSize(brandPage.getSize());
+        brandDTOPage.setRecords(brandPage.getRecords().stream()
+                .map(modelConvertor::convertBrandToDTO).collect(Collectors.toList()));
+        return brandDTOPage;
     }
 
     @Override
@@ -135,7 +138,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     }
 
     @Override
-    public Brand updateImage(Long id, MultipartFile file) {
+    public BrandDTO updateImage(Long id, MultipartFile file) {
         Brand brand = this.getById(id);
 
         imageUpload.deleteImage(brand.getImagePath());
@@ -150,9 +153,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
         this.updateById(brand);
 
-        setBrandIntoCached(brand);
-
-        return brand;
+        return modelConvertor.convertBrandToDTO(brand);
     }
 
     @Override
@@ -171,77 +172,5 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         }
 
         return 0;
-    }
-
-    private int getBrandScoreFromCached(Long id) {
-        String score = redisService.get(Constants.REDIS_BRAND_RATE + ":" + id);
-
-        if (StringUtils.isNotBlank(score) && !"nil".equalsIgnoreCase(score)) {
-            return Integer.parseInt(score);
-        }
-
-        Brand brand = this.getById(id);
-        if (brand != null) {
-            int brandScore = brand.getScore();
-            setBrandScoreIntoCached(id, brandScore);
-            return brandScore;
-        }
-
-        return 0;
-    }
-
-    private List<String> getBrandsTopViewedListFromCache(int count) {
-        return redisService.getList(Constants.REDIS_BRAND_TOP_VIEW_LIST, 0, count - 1);
-    }
-
-    private long setBrandsTopViewedListIntoCache(List<String> ids) {
-        return redisService.setList(Constants.REDIS_BRAND_TOP_VIEW_LIST, ids, 3600);
-    }
-
-    private void deleteBrandFromCached(Long id) {
-        redisService.delete(Constants.REDIS_BRAND + ":" + id);
-    }
-
-    private Brand getBrandFromCached(Long brandId) {
-        String key = Constants.REDIS_BRAND + ":" + brandId;
-        Map<String, String> map = redisService.getMap(key);
-
-        if (CollectionUtils.isEmpty(map)) {
-            return null;
-        }
-
-        try {
-            Brand brand = objectMapper.convertValue(map, Brand.class);
-
-            brand.setHitCounter(getBrandHitCounter(brand.getId()));
-            brand.setScore(getBrandScoreFromCached(brand.getId()));
-
-            return brand;
-        } catch (IllegalArgumentException e) {
-            log.error("Failed to convert cached data to Brand: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private void setBrandIntoCached(Brand brand) {
-        if (Objects.isNull(brand)) {
-            return;
-        }
-
-        try {
-            Map<String, String> brandMap = objectMapper.convertValue(brand, new TypeReference<Map<String, String>>() {
-            });
-
-            redisService.setMap(Constants.REDIS_BRAND + ":" + brand.getId(), brandMap);
-
-            // setBrandHitCounterIntoCached(brand.getId(), brand.getHitCounter());
-            setBrandScoreIntoCached(brand.getId(), brand.getScore());
-        } catch (Exception e) {
-            log.error("Error serializing brand to cache: {}", e.getMessage());
-        }
-    }
-
-    private void setBrandScoreIntoCached(Long id, int score) {
-        redisService.set(Constants.REDIS_BRAND_RATE + ":" + id, String.valueOf(score));
     }
 }

@@ -1,6 +1,7 @@
 package com.taklip.yoda.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.taklip.yoda.dto.BrandDTO;
 import com.taklip.yoda.model.Brand;
 import com.taklip.yoda.service.BrandService;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ public class BrandController {
     @GetMapping
     public String showBrands(Map<String, Object> model,
             @RequestParam(defaultValue = "1") Integer offset) {
-        Page<Brand> page = brandService.getBrands(offset, 10);
+        Page<BrandDTO> page = brandService.getBrands(offset, 10);
 
         model.put("page", page);
 
@@ -46,8 +47,7 @@ public class BrandController {
     }
 
     @GetMapping("/{id}/edit")
-    public String initUpdateForm(
-            @PathVariable Long id, Map<String, Object> model) {
+    public String initUpdateForm(@PathVariable Long id, Map<String, Object> model) {
         Brand brand = brandService.getBrand(id);
 
         model.put("contentType", "brand");
@@ -57,8 +57,8 @@ public class BrandController {
     }
 
     @PostMapping("/save")
-    public ModelAndView save(
-            @ModelAttribute Brand brand, BindingResult result, RedirectAttributes redirect) {
+    public ModelAndView save(@ModelAttribute Brand brand, BindingResult result,
+            RedirectAttributes redirect) {
         ModelMap model = new ModelMap();
 
         if (result.hasErrors()) {
@@ -78,8 +78,7 @@ public class BrandController {
     }
 
     @PostMapping("/{id}/uploadImage")
-    public String uploadImage(
-            @RequestParam MultipartFile file, @PathVariable Long id)
+    public String uploadImage(@RequestParam MultipartFile file, @PathVariable Long id)
             throws Exception {
         if (file.getBytes().length <= 0) {
             return "redirect:/controlpanel/brand/" + id + "/edit";

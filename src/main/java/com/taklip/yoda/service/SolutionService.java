@@ -14,7 +14,7 @@ import com.taklip.yoda.model.SolutionItem;
  * @author askar
  */
 public interface SolutionService extends IService<Solution> {
-    boolean add(Solution solution);
+    Solution create(Solution solution);
 
     void delete(Long id);
 
@@ -30,9 +30,11 @@ public interface SolutionService extends IService<Solution> {
 
     Page<Solution> getSolutions(Integer offset, Integer limit);
 
-    void saveSolutionItem(SolutionItem solutionItem);
+    SolutionItem createSolutionItem(SolutionItem solutionItem);
 
-    boolean update(Solution solution);
+    SolutionItem updateSolutionItem(SolutionItem solutionItem);
 
-    boolean updateSolutionImage(Long id, MultipartFile file);
+    Solution update(Solution solution);
+
+    Solution updateSolutionImage(Long id, MultipartFile file);
 }

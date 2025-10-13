@@ -102,16 +102,16 @@ public class ItemController {
 
         item.setBrandId(brandId);
 
-        ExtraFieldUtil.setExtraFields(request, item);
-        ExtraFieldUtil.setBuyLinks(request, item);
+        // ExtraFieldUtil.setExtraFields(request, item);
+        // ExtraFieldUtil.setBuyLinks(request, item);
 
-        log.info("before create item: {}", item);
+        // log.info("before create item: {}", item);
 
-        if (item.getId() == null) {
-            itemService.create(item);
-        } else {
-            itemService.update(item);
-        }
+        // if (item.getId() == null) {
+        //     itemService.create(item);
+        // } else {
+        //     itemService.update(item);
+        // }
 
         log.info("after create item: {}", item);
 
@@ -155,7 +155,7 @@ public class ItemController {
 
         item.setRating(rating);
 
-        itemService.update(item);
+        // itemService.update(item);
 
         JSONObject jsonResult = new JSONObject();
 

@@ -47,6 +47,7 @@ public class MyBatisConfig {
             @Override
             public void insertFill(MetaObject metaObject) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                log.info("authentication: {}", authentication);
                 if (authentication != null && authentication.getPrincipal() instanceof User) {
                     User user = (User) authentication.getPrincipal();
                     this.strictInsertFill(metaObject, "createBy", Long.class, user.getId());

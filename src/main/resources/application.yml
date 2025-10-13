@@ -161,7 +161,7 @@ springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger-ui-custom.html
     operations-sorter: method
   info:
     title: Yoda Main Application API
@@ -170,3 +170,10 @@ springdoc:
     contact:
       name: Yoda Development Team
       email: dev@yoda.com
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:1234567890}
+  expiration: 86400000  # 24 hours in milliseconds
+  refresh-token:
+    expiration: 604800000  # 7 days in milliseconds

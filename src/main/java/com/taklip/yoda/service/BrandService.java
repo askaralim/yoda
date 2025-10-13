@@ -18,7 +18,7 @@ public interface BrandService extends IService<Brand> {
      * @param brand the brand to create
      * @return true if successful
      */
-    boolean create(Brand brand);
+    BrandDTO create(Brand brand);
 
     /**
      * Deletes a brand by id
@@ -57,7 +57,7 @@ public interface BrandService extends IService<Brand> {
      * @param limit  the page limit
      * @return paginated brands
      */
-    Page<Brand> getBrands(Integer offset, Integer limit);
+    Page<BrandDTO> getBrands(Integer offset, Integer limit);
 
     /**
      * Gets brands with highest hit counter
@@ -66,7 +66,7 @@ public interface BrandService extends IService<Brand> {
      * @param limit  the page limit
      * @return paginated hot brands
      */
-    Page<Brand> getHotBrands(Integer offset, Integer limit);
+    Page<BrandDTO> getHotBrands(Integer offset, Integer limit);
 
     /**
      * Gets top viewed brands
@@ -74,7 +74,7 @@ public interface BrandService extends IService<Brand> {
      * @param count the number of brands to return
      * @return list of top viewed brands
      */
-    List<Brand> getBrandsTopViewed(int count);
+    List<BrandDTO> getBrandsTopViewed(int count);
 
     /**
      * Gets the hit counter for a brand
@@ -97,7 +97,7 @@ public interface BrandService extends IService<Brand> {
      * @param brand the brand to update
      * @return true if successful
      */
-    boolean update(Brand brand);
+    BrandDTO update(Brand brand);
 
     /**
      * Updates a brand's image
@@ -106,7 +106,7 @@ public interface BrandService extends IService<Brand> {
      * @param file the image file
      * @return the updated brand
      */
-    Brand updateImage(Long id, MultipartFile file);
+    BrandDTO updateImage(Long id, MultipartFile file);
 
     /**
      * Updates a brand's rating

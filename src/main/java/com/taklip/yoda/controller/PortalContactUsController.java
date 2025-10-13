@@ -14,6 +14,7 @@ import com.taklip.yoda.model.ContactUs;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.ContactUsService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.AuthenticatedUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,13 +29,12 @@ public class PortalContactUsController extends PortalBaseController {
     private ContactUsService contactUsService;
 
     @GetMapping
-    public ModelAndView showContactUs(
-            HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView showContactUs(HttpServletRequest request, HttpServletResponse response) {
         ModelMap model = new ModelMap();
 
         Site site = getSite();
 
-        List<ContactUs> contactUsList = contactUsService.getContactUs(site.getId(), true);
+        Page<ContactUs> contactUsList = contactUsService.getByPage(0, 10);
 
         setUserLoginStatus(model);
 

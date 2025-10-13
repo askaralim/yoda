@@ -47,6 +47,12 @@ public class LoginUserDetailsService implements UserDetailsService {
     // return dbAuths;
     // }
 
+    /**
+     * Load user by email (email is used as username in this system)
+     * @param email the email address (used as username)
+     * @return UserDetails
+     * @throws UsernameNotFoundException if user not found
+     */
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
         User user = userService.getUserByEmail(email);

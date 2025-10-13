@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.dto.ContentDTO;
 
 public interface ContentService {
-        void create(ContentDTO content) throws Exception;
+        ContentDTO create(ContentDTO content);
 
-        void update(ContentDTO content) throws Exception;
+        ContentDTO update(ContentDTO content);
 
         void deleteContent(Long contentId);
 
@@ -25,7 +25,7 @@ public interface ContentService {
 
         Page<ContentDTO> getContentsByPage(Integer offset, Integer limit);
 
-        Page<ContentDTO> getContentByUserId(Long userId);
+        Page<ContentDTO> getContentByUserId(Long userId, Integer offset, Integer limit);
 
         int getHitCounter(long contentId);
 
@@ -39,7 +39,7 @@ public interface ContentService {
 
         ContentDTO updateContent(ContentDTO content, Long categoryId);
 
-        ContentDTO updateContentImage(long siteId, Long contentId, MultipartFile featureImage);
+        ContentDTO updateContentImage(Long contentId, MultipartFile featureImage);
 
         /**
          * Enriches a single ContentDTO with related data

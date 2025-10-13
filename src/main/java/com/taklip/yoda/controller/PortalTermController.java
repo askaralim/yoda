@@ -40,7 +40,7 @@ public class PortalTermController extends PortalBaseController {
 
         Site site = getSite();
 
-        Page<TermDTO> page = termService.getTermDetails(new Page<>(offset, 4));
+        Page<TermDTO> page = termService.getByPage(new Page<>(offset, 4));
 
         User currentUser = AuthenticatedUtil.getAuthenticatedUser();
 
@@ -62,7 +62,7 @@ public class PortalTermController extends PortalBaseController {
     @ResponseBody
     @GetMapping("/page")
     public Page<TermDTO> showPagination(@RequestParam(defaultValue = "0") Integer offset) {
-        return termService.getTermDetails(new Page<>(offset, 4));
+        return termService.getByPage(new Page<>(offset, 4));
     }
 
     @GetMapping("/{id}")

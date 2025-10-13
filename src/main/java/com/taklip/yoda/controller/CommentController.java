@@ -15,7 +15,7 @@ import com.taklip.yoda.model.Comment;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.service.CommentService;
 import com.taklip.yoda.common.util.SiteUtil;
-
+import com.taklip.yoda.dto.CommentDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -25,24 +25,22 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/controlpanel/comment")
-    public String showComments(
-            Map<String, Object> model, HttpServletRequest request,
+    public String showComments(Map<String, Object> model, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         Site site = SiteUtil.getDefaultSite();
 
-        List<Comment> comments = commentService.getCommentsBySiteId(site.getId());
+        // List<Comment> comments = commentService.getBySiteId(site.getId(), 0, 10);
 
-        model.put("comments", comments);
+        // model.put("comments", comments);
 
         return "controlpanel/content/comments";
     }
 
     @GetMapping("/controlpanel/comment/{id}")
     public ModelAndView viewComment(@PathVariable Long id) {
-        Comment comment = commentService.getCommentById(id);
+        CommentDTO comment = commentService.getCommentById(id);
 
-        return new ModelAndView(
-                "controlpanel/content/comment", "comment", comment);
+        return new ModelAndView("controlpanel/content/comment", "comment", comment);
     }
 
     @PostMapping("/controlpanel/comment/remove")

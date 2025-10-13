@@ -127,7 +127,7 @@ public class ContentServiceFallback implements ContentServiceFeignClient {
     }
 
     @Override
-    public Page<ContentDTO> getContentsByUserId(Long userId) {
+    public Page<ContentDTO> getContentsByUserId(Long userId, Integer offset, Integer limit) {
         log.warn("🔥 FALLBACK TRIGGERED! Content service is unavailable. Fallback triggered for getContentsByUserId with userId: {}", userId);
         return new Page<>();
     }

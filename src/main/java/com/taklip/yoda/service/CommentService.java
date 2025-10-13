@@ -1,22 +1,22 @@
 package com.taklip.yoda.service;
 
-import java.util.List;
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.taklip.yoda.dto.CommentDTO;
 import com.taklip.yoda.model.Comment;
 
 public interface CommentService extends IService<Comment> {
-    void addComment(Comment comment);
+    CommentDTO create(CommentDTO comment);
 
-    void deleteComment(Long commentId);
+    void delete(Long commentId);
 
-    void updateComment(Comment comment);
+    CommentDTO update(CommentDTO comment);
 
-    Comment getCommentById(Long commentId);
+    CommentDTO getCommentById(Long commentId);
 
-    List<Comment> getCommentsByContentId(long contentId);
+    Page<CommentDTO> getByPage(int offset, int limit);
 
-    List<Comment> getCommentsBySiteId(long siteId);
+    Page<CommentDTO> getByContentId(long contentId, int offset, int limit);
 
-    List<Comment> getCommentsByUserId(long userId);
+    Page<CommentDTO> getByUserId(long userId, int offset, int limit);
 }

@@ -25,10 +25,10 @@ public class ItemDTO {
     private BrandDTO brand;
     private CategoryDTO category;
     private Long contentId;
-    private String buyLinks;
+    // private String buyLinks;
     private String description;
     private String shortDescription;
-    private String extraFields;
+    // private String extraFields;
     private String imagePath;
     private String level;
     private String name;

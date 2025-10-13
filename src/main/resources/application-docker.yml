@@ -72,8 +72,11 @@ logging:
   file:
     path: /app/logs
   level:
-    com.taklip.yoda: INFO
+    com.taklip.yoda: WARN
+    com.taklip.yoda.client: DEBUG
+    org.springframework.cloud.openfeign: WARN
     org.springframework.web: WARN
+    com.baomidou.mybatisplus: WARN
     org.springframework.security: WARN
 
 chatter:

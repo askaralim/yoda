@@ -21,7 +21,8 @@ import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.ItemService;
 import com.taklip.yoda.common.util.AuthenticatedUtil;
-
+import com.taklip.yoda.dto.BrandDTO;
+import com.taklip.yoda.dto.ItemDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,7 @@ public class PortalBrandController extends PortalBaseController {
 
         Site site = getSite();
 
-        Page<Brand> page = brandService.getHotBrands(offset, limit);
+        Page<BrandDTO> page = brandService.getHotBrands(offset, limit);
 
         setUserLoginStatus(model);
 
@@ -61,10 +62,10 @@ public class PortalBrandController extends PortalBaseController {
 
     @ResponseBody
     @GetMapping("/page")
-    public Page<Brand> showPagination(
+    public Page<BrandDTO> showPagination(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "20") Integer limit) {
-        Page<Brand> page = brandService.getHotBrands(offset, limit);
+        Page<BrandDTO> page = brandService.getHotBrands(offset, limit);
 
         return page;
     }
@@ -76,7 +77,7 @@ public class PortalBrandController extends PortalBaseController {
 
         Brand brand = brandService.getBrand(id);
 
-        List<Item> items = itemService.getItemsByBrandId(id);
+        Page<ItemDTO> items = itemService.getItemsByBrandId(id, 0, 10);
 
         ModelMap model = new ModelMap();
 

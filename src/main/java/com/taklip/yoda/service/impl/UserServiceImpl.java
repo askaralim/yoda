@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taklip.yoda.common.contant.Constants;
 import com.taklip.yoda.common.tools.ThumbnailUploader;
@@ -23,6 +24,7 @@ import com.taklip.yoda.mapper.UserAuthorityMapper;
 import com.taklip.yoda.mapper.UserMapper;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.model.UserAuthority;
+import com.taklip.yoda.service.UserFollowRelationService;
 import com.taklip.yoda.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,13 +44,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private ModelConvertor modelConvertor;
+    
+    @Autowired
+    private UserFollowRelationService userFollowRelationService;
 
     @Override
     public User getUserByUsername(String username) {
         User user = baseMapper.getUserByUsername(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("用户不存在");
+            throw new UsernameNotFoundException("User not found");
         }
 
         // Set<UserAuthority> roles =
@@ -59,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User createUser(User user) {
+    public UserDTO create(User user) {
         // Validate user data
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new IllegalArgumentException("Username and password are required");
@@ -70,6 +75,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new IllegalArgumentException("Username already exists");
         }
 
+        if (lambdaQuery().eq(User::getEmail, user.getEmail()).exists()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -78,14 +87,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         saveUserRole(user, Constants.USER_ROLE_USER);
 
-        return user;
+        return modelConvertor.convertToUserDTO(user);
     }
 
     @Override
     public UserDTO getUserDetail(long id) {
         User user = baseMapper.getUserById(id);
 
-        return modelConvertor.convertTo(user, UserDTO.class);
+        Long followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
+        Long followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
+
+        UserDTO userDTO = modelConvertor.convertTo(user, UserDTO.class);
+        userDTO.setFollowerCount(followerCount);
+        userDTO.setFolloweeCount(followeeCount);
+
+        return userDTO;
     }
 
     @Override
@@ -117,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void deleteUser(long userId) {
+    public void delete(long userId) {
         User user = getUser(userId);
 
         this.removeById(userId);
@@ -128,7 +144,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User update(User user, MultipartFile profilePhoto) {
+    public UserDTO update(User user) {
         User userDb = baseMapper.getUserById(user.getId());
 
         if (!StringUtils.isBlank(user.getPassword())) {
@@ -142,14 +158,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userDb.setAddressLine1(user.getAddressLine1());
         userDb.setAddressLine2(user.getAddressLine2());
 
-        if (!profilePhoto.isEmpty()) {
+        baseMapper.updateById(userDb);
+
+        return modelConvertor.convertToUserDTO(userDb);
+    }
+
+    @Override
+    public UserDTO updateImage(long id, MultipartFile photo) {
+        User userDb = baseMapper.getUserById(id);
+        if (!photo.isEmpty()) {
             thumbnailUploader.deleteFile(userDb.getProfilePhoto());
             thumbnailUploader.deleteFile(userDb.getProfilePhotoSmall());
 
-            if (FileUtil.isImage(profilePhoto.getOriginalFilename())) {
+            if (FileUtil.isImage(photo.getOriginalFilename())) {
                 try {
-                    userDb.setProfilePhoto(thumbnailUploader.createThumbnailLarge(profilePhoto.getInputStream()));
-                    userDb.setProfilePhotoSmall(thumbnailUploader.createThumbnailMedium(profilePhoto.getInputStream()));
+                    userDb.setProfilePhoto(thumbnailUploader.createThumbnailLarge(photo.getInputStream()));
+                    userDb.setProfilePhotoSmall(thumbnailUploader.createThumbnailMedium(photo.getInputStream()));
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
@@ -158,7 +182,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         baseMapper.updateById(userDb);
 
-        return userDb;
+        return modelConvertor.convertToUserDTO(userDb);
     }
 
     @Override
@@ -192,5 +216,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             user.getAuthorities().add(new UserAuthority(user.getId(), "ROLE_USER"));
         }
+    }
+
+    @Override
+    public Page<UserDTO> getByPage(Page<User> page) {
+        Page<User> userPage = this.page(page, new LambdaQueryWrapper<User>().orderByDesc(User::getCreateTime));
+        Page<UserDTO> userDTOPage = new Page<>();
+        userDTOPage.setTotal(userPage.getTotal());
+        userDTOPage.setCurrent(userPage.getCurrent());
+        userDTOPage.setSize(userPage.getSize());
+
+        return userDTOPage;
     }
 }

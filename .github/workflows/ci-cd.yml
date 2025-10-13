@@ -69,10 +69,13 @@ jobs:
 
       - name: Deploy to AliCloud ECS
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         with:
           host: ${{ secrets.ALIYUN_ECS_HOST }}
           username: ${{ secrets.ALIYUN_ECS_USER }}
           key: ${{ secrets.ALIYUN_ECS_SSH_KEY }}
+          envs: JWT_SECRET
           script: |
             echo "🔐 Logging into ACR..."
             echo "${{ secrets.ALIYUN_ACR_PASSWORD }}" | docker login ${{ secrets.ALIYUN_ACR_REGISTRY }} -u ${{ secrets.ALIYUN_ACR_USERNAME }} --password-stdin
@@ -93,7 +96,8 @@ jobs:
             echo "🗑️ Force removing any existing yoda-app container..."
             docker rm -f yoda-app || true
 
-            echo "🚀 Starting services..."
+            echo "🚀 Starting services with JWT_SECRET..."
+            export JWT_SECRET="$JWT_SECRET"
             docker compose up -d
 
             echo "⏳ Waiting for application to start..."

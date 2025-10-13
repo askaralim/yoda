@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.PortalUtil;
 import com.taklip.yoda.dto.ContentDTO;
-import com.taklip.yoda.model.Brand;
+import com.taklip.yoda.dto.BrandDTO;
 import com.taklip.yoda.model.HomeInfo;
 import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Site;
@@ -61,7 +61,7 @@ public class PortalHomeController extends PortalBaseController {
             HomeInfo homeInfo = getHome();
 
             List<Item> items = itemService.getItemsTopViewed(8);
-            List<Brand> brands = brandService.getBrandsTopViewed(8);
+            List<BrandDTO> brands = brandService.getBrandsTopViewed(8);
 
             modelMap.put("topViewedItems", items);
             modelMap.put("topViewedBrands", brands);

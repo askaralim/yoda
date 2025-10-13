@@ -230,7 +230,7 @@ public class ContentController {
             return "redirect:/controlpanel/content/" + id + "/edit";
         }
 
-        contentService.updateContentImage(SiteUtil.getDefaultSite().getId(), id, file);
+        contentService.updateContentImage(id, file);
 
         // ImageScaler scaler = null;
         //

@@ -1,7 +1,6 @@
 package com.taklip.yoda.dto;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -11,26 +10,15 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class TermDTO {
+@AllArgsConstructor
+public class PostDTO {
     private Long id;
-    private String title;
     private String description;
-    private String shortenDescription;
-    private Long contentId;
-    private Long categoryId;
-    private Integer hitCounter;
-    private UserDTO createBy;
+    private UserDTO createByUser;
     private UserDTO updateBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
-
-    // not cool, temporary
-    @Builder.Default
-    private int termsViewCount = 12_580;
-    @Builder.Default
-    private int termsEditCount = 526;
 }

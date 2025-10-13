@@ -94,10 +94,10 @@ public class ContentServiceClient {
     /**
      * Get contents by user ID
      */
-    public Page<ContentDTO> getContentsByUserId(Long userId) {
+    public Page<ContentDTO> getContentsByUserId(Long userId, Integer offset, Integer limit) {
         try {
             log.debug("Getting contents by user ID via Feign client: userId={}", userId);
-            return contentServiceFeignClient.getContentsByUserId(userId);
+            return contentServiceFeignClient.getContentsByUserId(userId, offset, limit);
         } catch (Exception e) {
             log.error("Error getting contents by user ID {}: {}", userId, e.getMessage(), e);
             throw new RuntimeException("Failed to get contents by user ID", e);
@@ -124,11 +124,11 @@ public class ContentServiceClient {
     public Page<ContentDTO> getFeaturedContents(Boolean featureData, Integer offset,
             Integer limit) {
         try {
-            log.debug("Getting featured contents via Feign client: offset={}, limit={}", offset,
+            log.debug("Getting {} via Feign client: offset={}, limit={}", featureData ? "featured" : "no featured", offset,
                     limit);
             return contentServiceFeignClient.getContentsByFeatureData(featureData, offset, limit);
         } catch (Exception e) {
-            log.error("Error getting featured contents: {}", e.getMessage(), e);
+            log.error("Error getting {} contents: {}", featureData ? "featured" : "no featured", e.getMessage(), e);
             throw new RuntimeException("Failed to get featured contents", e);
         }
     }

@@ -30,6 +30,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.AuthenticatedUtil;
 import com.taklip.yoda.common.util.Validator;
 import com.taklip.yoda.dto.ContentDTO;
+import com.taklip.yoda.dto.PostDTO;
+import com.taklip.yoda.dto.UserDTO;
 import com.taklip.yoda.model.Post;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.model.User;
@@ -74,8 +76,8 @@ public class PortalUserController extends PortalBaseController {
             return new ModelAndView("/404", "requestURL", id);
         }
 
-        Page<Post> page = postService.getPostsByUser(id, 0, 10);
-        Page<ContentDTO> contents = contentService.getContentByUserId(user.getId());
+        Page<PostDTO> page = postService.getByUser(id, 0, 10);
+        Page<ContentDTO> contents = contentService.getContentByUserId(user.getId(), 0, 10);
         Long followerCount = userFollowRelationService.getUserFollowerCount(user.getId());
         Long followeeCount = userFollowRelationService.getUserFolloweeCount(user.getId());
 
@@ -148,10 +150,10 @@ public class PortalUserController extends PortalBaseController {
 
         model.put("site", site);
 
-        User userDb = userService.update(user, photo);
+        UserDTO userDb = userService.update(user);
 
         Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDb, userDb.getPassword());
+                new UsernamePasswordAuthenticationToken(userDb, user.getPassword());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -307,13 +309,13 @@ public class PortalUserController extends PortalBaseController {
     public String showPagination(@RequestParam Long userId,
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit) {
-        Page<Post> page = postService.getPostsByUser(userId, offset, limit);
+        Page<PostDTO> page = postService.getByUser(userId, offset, limit);
 
         JSONArray array = new JSONArray();
 
         SimpleDateFormat datetimeformat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-        for (Post post : page.getRecords()) {
+        for (PostDTO post : page.getRecords()) {
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.put("id", post.getId());

@@ -12,9 +12,9 @@ import java.util.List;
  * @author askar
  */
 public interface ItemService extends IService<Item> {
-    Item create(Item item);
+    ItemDTO create(ItemDTO itemDto);
 
-    Item update(Item item);
+    ItemDTO update(ItemDTO itemDto);
 
     ItemDTO getItemDetail(Long itemId);
 
@@ -32,7 +32,7 @@ public interface ItemService extends IService<Item> {
 
     List<Item> getItemsByContentId(Long contentId);
 
-    List<Item> getItemsByBrandId(Long brandId);
+    Page<ItemDTO> getItemsByBrandId(Long brandId, Integer offset, Integer limit);
 
     List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
 

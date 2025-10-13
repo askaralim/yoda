@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.model.Category;
 import com.taklip.yoda.model.Term;
@@ -40,9 +39,9 @@ public class TermController {
     @GetMapping
     public String showTerms(Map<String, Object> model,
             @RequestParam(defaultValue = "0") Integer offset) {
-        Page<Term> page = termService.getTerms(offset * 10, 10);
+        // Page<Term> page = termService.getTerms(offset * 10, 10);
 
-        model.put("page", page);
+        // model.put("page", page);
 
         return "controlpanel/term/list";
     }

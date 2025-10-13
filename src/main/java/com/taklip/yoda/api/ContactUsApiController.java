@@ -1,62 +1,55 @@
 package com.taklip.yoda.api;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.taklip.yoda.common.util.AuthenticatedUtil;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.controller.PortalBaseController;
 import com.taklip.yoda.model.ContactUs;
-import com.taklip.yoda.model.Site;
-import com.taklip.yoda.model.User;
 import com.taklip.yoda.service.ContactUsService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/contactus")
 @Slf4j
 public class ContactUsApiController extends PortalBaseController {
     @Autowired
     private ContactUsService contactUsService;
 
-    @GetMapping
-    public ModelAndView showContactUs(
-            HttpServletRequest request, HttpServletResponse response) {
-        ModelMap model = new ModelMap();
+   @GetMapping
+   public ResponseEntity<Page<ContactUs>> getContactUs(
+            @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "10") Integer limit) {
+        return ResponseEntity.ok(contactUsService.getByPage(offset, limit));
+   }
 
-        Site site = getSite();
+    @GetMapping("/{id}")
+    public ResponseEntity<ContactUs> getContactUsById(@PathVariable Long id) {
+        return ResponseEntity.ok(contactUsService.getById(id));
+    }
 
-        List<ContactUs> contactUsList = contactUsService.getContactUs(site.getId(), true);
+    @PostMapping
+    public ResponseEntity<ContactUs> createContactUs(@RequestBody ContactUs contactUs) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(contactUsService.create(contactUs));
+    }
 
-        setUserLoginStatus(model);
+    @PutMapping("/{id}")
+    public ResponseEntity<ContactUs> update(@PathVariable Long id, @RequestBody ContactUs contactUs) {
+        return ResponseEntity.status(HttpStatus.OK).body(contactUsService.update(contactUs));
+    }
 
-        model.put("contactUsList", contactUsList);
-        model.put("site", site);
-        model.put("pageTitle", site.getSiteName() + " - " + "Contact Us");
-        model.put("keywords", "");
-        model.put("description", "");
-        model.put("url", request.getRequestURL().toString());
-        model.put("image", "");
-
-        User currentUser = AuthenticatedUtil.getAuthenticatedUser();
-
-        model.put("currentUser", currentUser);
-
-        CsrfToken csrfToken = (CsrfToken)request.getAttribute(CsrfToken.class.getName());
-
-        if (csrfToken != null) {
-            model.put("_csrf", csrfToken);
-        }
-
-        return new ModelAndView("portal/contactUs/contactUs", model);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        contactUsService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

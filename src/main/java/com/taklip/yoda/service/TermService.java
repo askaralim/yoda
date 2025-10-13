@@ -13,9 +13,9 @@ import java.util.List;
 public interface TermService extends IService<Term> {
     Term getTerm(Long id);
 
-    boolean add(Term term);
+    TermDTO create(TermDTO term);
 
-    boolean update(Term term);
+    TermDTO update(TermDTO term);
 
     void delete(Long id);
 
@@ -23,7 +23,5 @@ public interface TermService extends IService<Term> {
 
     TermDTO getTermDetail(Long id);
 
-    Page<Term> getTerms(Integer offset, Integer limit);
-
-    Page<TermDTO> getTermDetails(Page<Term> page);
+    Page<TermDTO> getByPage(Page<Term> page);
 }

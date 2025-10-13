@@ -126,7 +126,7 @@ public class SolutionController {
             @ModelAttribute SolutionItem solutionItem, RedirectAttributes redirect) {
         ModelMap model = new ModelMap();
 
-        solutionService.saveSolutionItem(solutionItem);
+        solutionService.createSolutionItem(solutionItem);
 
         redirect.addFlashAttribute("globalMessage", "success");
 

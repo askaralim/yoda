@@ -1,5 +1,6 @@
 package com.taklip.yoda.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taklip.yoda.model.User;
 import com.taklip.yoda.dto.UserDTO;
@@ -18,13 +19,17 @@ public interface UserService extends IService<User> {
 
     List<User> getUsers();
 
+    Page<UserDTO> getByPage(Page<User> page);
+
     List<User> search(Long userId, String username, String role, Boolean enabled);
 
-    void deleteUser(long userId);
+    void delete(long userId);
 
-    User update(User user, MultipartFile profilePhoto);
+    UserDTO update(User user);
 
-    User createUser(User user);
+    UserDTO create(User user);
 
     void changePassword(String username, String oldPassword, String newPassword);
+
+    UserDTO updateImage(long id, MultipartFile photo);
 }

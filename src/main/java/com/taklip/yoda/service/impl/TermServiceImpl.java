@@ -32,13 +32,30 @@ public class TermServiceImpl extends ServiceImpl<TermMapper, Term> implements Te
     private UserService userService;
 
     @Override
-    public boolean add(Term term) {
-        return this.save(term);
+    public TermDTO create(TermDTO termDto) {
+        Term term = new Term();
+        term.setTitle(termDto.getTitle());
+        term.setDescription(termDto.getDescription());
+        term.setContentId(termDto.getContentId());
+        term.setCategoryId(termDto.getCategoryId());
+        term.setHitCounter(termDto.getHitCounter());
+
+        this.save(term);
+
+        return modelConvertor.convertToTermDTO(term);
     }
 
     @Override
-    public boolean update(Term term) {
-        return this.updateById(term);
+    public TermDTO update(TermDTO termDTO) {
+        Term term = new Term();
+        term.setId(termDTO.getId());
+        term.setTitle(termDTO.getTitle());
+        term.setDescription(termDTO.getDescription());
+        term.setContentId(termDTO.getContentId());
+        term.setCategoryId(termDTO.getCategoryId());
+        term.setHitCounter(termDTO.getHitCounter());
+        this.updateById(term);
+        return modelConvertor.convertToTermDTO(term);
     }
 
     @Override
@@ -49,7 +66,7 @@ public class TermServiceImpl extends ServiceImpl<TermMapper, Term> implements Te
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TermDTO> getTermDetails(Page<Term> page) {
+    public Page<TermDTO> getByPage(Page<Term> page) {
         Page<Term> termPage = this.page(page, new QueryWrapper<Term>().orderByDesc("id"));
         Page<TermDTO> termDTOPage = new Page<>();
         termDTOPage.setTotal(termPage.getTotal());
@@ -74,12 +91,6 @@ public class TermServiceImpl extends ServiceImpl<TermMapper, Term> implements Te
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Term> getTerms(Integer offset, Integer limit) {
-        return this.page(new Page<>(offset, limit), new QueryWrapper<Term>().orderByDesc("id"));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public TermDTO getTermDetail(Long id) {
         Term term = this.getById(id);
         TermDTO termDTO = modelConvertor.convertToTermDTO(term);
@@ -96,5 +107,6 @@ public class TermServiceImpl extends ServiceImpl<TermMapper, Term> implements Te
 
     @Override
     public void delete(Long id) {
+        this.removeById(id);
     }
 }

@@ -3,7 +3,7 @@ package com.taklip.yoda.service.impl;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Service
 @Slf4j
-public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> implements SolutionService {
+public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution>
+        implements SolutionService {
     @Autowired
     private SolutionItemMapper solutionItemMapper;
 
@@ -62,8 +63,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
         List<SolutionItem> solutionItems = this.getSolutionItemsBySolutionId(id);
 
-        List<SolutionItemDTO> solutionItemDTOs = solutionItems.stream().map(modelConvertor::convertToSolutionItemDTO)
-                .collect(Collectors.toList());
+        List<SolutionItemDTO> solutionItemDTOs = solutionItems.stream()
+                .map(modelConvertor::convertToSolutionItemDTO).collect(Collectors.toList());
 
         solutionItemDTOs.parallelStream().forEach(solutionItemDTO -> {
             Item item = itemService.getById(solutionItemDTO.getItemId());
@@ -71,31 +72,43 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         });
 
         solutionDTO.setSolutionItems(solutionItemDTOs);
-        solutionDTO.setCreateBy(modelConvertor.convertToUserDTO(userService.getById(solution.getCreateBy())));
-        solutionDTO.setUpdateBy(modelConvertor.convertToUserDTO(userService.getById(solution.getUpdateBy())));
+        solutionDTO.setCreateBy(
+                modelConvertor.convertToUserDTO(userService.getById(solution.getCreateBy())));
+        solutionDTO.setUpdateBy(
+                modelConvertor.convertToUserDTO(userService.getById(solution.getUpdateBy())));
 
         return solutionDTO;
     }
 
     @Override
-    public boolean add(Solution solution) {
-        return this.save(solution);
+    public Solution create(Solution solution) {
+        this.save(solution);
+
+        return solution;
     }
 
     @Override
-    public boolean update(Solution solution) {
-        Solution solutionDb = this.getById(solution.getId());
+    public Solution update(Solution solution) {
+        this.updateById(solution);
 
-        solutionDb.setTitle(solution.getTitle());
-        solutionDb.setDescription(solution.getDescription());
-        solutionDb.setCategoryId(solution.getCategoryId());
-        solutionDb.setImagePath(solution.getImagePath());
-
-        return this.updateById(solutionDb);
+        return solution;
     }
 
     @Override
-    public boolean updateSolutionImage(Long id, MultipartFile file) {
+    public Solution updateSolutionImage(Long id, MultipartFile file) {
+        try {
+            if (file.getBytes().length <= 0) {
+                throw new RuntimeException("Image is empty");
+            }
+
+            if (StringUtils.isBlank(file.getName())) {
+                throw new RuntimeException("Image name is empty");
+            }
+        } catch (IOException e) {
+            log.error("update solution image error: {}", e.getMessage());
+            throw new RuntimeException("Failed to update solution image", e);
+        }
+
         Solution solution = getById(id);
 
         imageUpload.deleteImage(solution.getImagePath());
@@ -105,15 +118,17 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
             solution.setImagePath(imagePath);
         } catch (IOException e) {
-            log.warn(e.getMessage());
+            log.warn("update solution image error: {}", e.getMessage());
         }
 
-        return this.updateById(solution);
+        this.updateById(solution);
+
+        return solution;
     }
 
     @Override
     public void delete(Long id) {
-
+        this.removeById(id);
     }
 
     @Override
@@ -133,7 +148,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
 
     @Override
     public List<SolutionItem> getSolutionItems() {
-        return solutionItemMapper.selectList(new LambdaQueryWrapper<SolutionItem>().orderByDesc(SolutionItem::getId));
+        return solutionItemMapper.selectList(
+                new LambdaQueryWrapper<SolutionItem>().orderByDesc(SolutionItem::getId));
     }
 
     @Override
@@ -142,18 +158,13 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
                 .eq(SolutionItem::getSolutionId, solutionId).orderByDesc(SolutionItem::getId));
     }
 
-    public void saveSolutionItem(SolutionItem solutionItem) {
-        if (null == solutionItem.getId()) {
-            this.addSolutionItem(solutionItem);
-        } else {
-            this.updateSolutionItem(solutionItem);
-        }
-    }
-
-    public void addSolutionItem(SolutionItem solutionItem) {
+    @Override
+    public SolutionItem createSolutionItem(SolutionItem solutionItem) {
         solutionItemMapper.insert(solutionItem);
+        return solutionItem;
     }
 
+    @Override
     public SolutionItem updateSolutionItem(SolutionItem solutionItem) {
         solutionItemMapper.updateById(solutionItem);
 

@@ -44,7 +44,7 @@ public class ChatterController {
 
     @GetMapping("/echo")
     public ResponseEntity<ChatResponse> echo() {
-        return new ResponseEntity("Success", HttpStatus.OK);
+        return new ResponseEntity("Success", HttpStatus.OK);    
     }
 
     @GetMapping

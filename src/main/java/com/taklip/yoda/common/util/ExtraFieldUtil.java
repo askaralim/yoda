@@ -68,37 +68,30 @@ public class ExtraFieldUtil {
         return extraFields;
     }
 
-    public static void setBuyLinks(HttpServletRequest request, Item item) {
-        String json = setExtraFields(request, item, BUY_LINK_KEY, BUY_LINK_VALUE);
-
-        item.setBuyLinks(json);
+    public static String setBuyLinks(List<ExtraField> extraFields) {
+        return setExtraFields(extraFields, BUY_LINK_KEY, BUY_LINK_VALUE);
     }
 
-    public static void setExtraFields(HttpServletRequest request, Item item) {
-        String json = setExtraFields(request, item, EXTRA_FIELD_KEY, EXTRA_FIELD_VALUE);
-
-        item.setExtraFields(json);
+    public static String setExtraFields(List<ExtraField> extraFields) {
+        return setExtraFields(extraFields, EXTRA_FIELD_KEY, EXTRA_FIELD_VALUE);
     }
 
-    private static String setExtraFields(HttpServletRequest request, Item item, String key, String value) {
+    private static String setExtraFields(List<ExtraField> extraFields, String key, String value) {
         JSONArray jsonArray = new JSONArray();
 
         try {
-            Enumeration<String> names = request.getParameterNames();
+            for (ExtraField extraField : extraFields) {
 
-            while (names.hasMoreElements()) {
-                String name = (String) names.nextElement();
-
-                if (name.startsWith(key)) {
-                    String extraFieldKey = request.getParameter(name);
+                if (extraField.getKey().startsWith(key)) {
+                    String extraFieldKey = extraField.getKey();
 
                     if (StringUtils.isEmpty(extraFieldKey)) {
                         continue;
                     }
 
-                    int index = Integer.valueOf(name.substring(key.length()));
+                    int index = Integer.valueOf(extraField.getKey().substring(key.length()));
 
-                    String extraFieldvalue = request.getParameter(value + index);
+                    String extraFieldvalue = extraField.getValue();
 
                     JSONObject json = new JSONObject();
 

@@ -67,7 +67,7 @@ public class UserController {
         if (null == user.getId()) {
             userService.save(user);
         } else {
-            userService.update(user, photo);
+            // userService.update(user, photo);
         }
 
         redirect.addFlashAttribute("globalMessage", "success");
@@ -101,7 +101,7 @@ public class UserController {
         String[] arrIds = ids.split(",");
 
         for (int i = 0; i < arrIds.length; i++) {
-            userService.deleteUser(Long.valueOf(arrIds[i]));
+            userService.delete(Long.valueOf(arrIds[i]));
         }
 
         return "redirect:/controlpanel/user/list";
