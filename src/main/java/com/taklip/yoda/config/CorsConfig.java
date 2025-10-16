@@ -20,7 +20,11 @@ public class CorsConfig {
             "http://localhost:3000",
             "http://localhost:3001", 
             "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001"
+            "http://127.0.0.1:3001",
+            "http://www.taklip.com",
+            "http://taklip.com",
+            "https://www.taklip.com",
+            "https://taklip.com"
         ));
         
         // Allow specific headers

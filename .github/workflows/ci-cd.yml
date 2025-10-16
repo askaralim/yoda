@@ -87,7 +87,7 @@ jobs:
             docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_LATEST }} yoda-app:latest
 
             echo "🚀 Stopping existing containers..."
-            cd /opt/project-yoda/deploy
+            cd /opt/project-yoda/yoda-app
             docker compose down --remove-orphans || true
 
             echo "🧹 Cleaning up old containers..."
