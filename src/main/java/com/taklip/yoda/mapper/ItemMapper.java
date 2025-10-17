@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.taklip.yoda.model.Item;
 
 public interface ItemMapper extends BaseMapper<Item> {
-    @Select("SELECT id, name, price, description, hit_counter FROM item WHERE deleted = 0 ORDER BY hit_counter DESC LIMIT #{limit}")
+    @Select("SELECT id, name, price, description, hit_counter, image_path FROM item WHERE deleted = 0 ORDER BY hit_counter DESC LIMIT #{limit}")
     List<Item> getItemsTopViewed(@Param("limit") Integer limit);
 
     @Update("UPDATE item SET hit_counter = hit_counter + 1 WHERE id = #{itemId}")

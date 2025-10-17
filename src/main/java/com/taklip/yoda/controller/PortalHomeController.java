@@ -13,8 +13,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.taklip.yoda.common.util.PortalUtil;
 import com.taklip.yoda.dto.ContentDTO;
 import com.taklip.yoda.dto.BrandDTO;
+import com.taklip.yoda.dto.ItemDTO;
 import com.taklip.yoda.model.HomeInfo;
-import com.taklip.yoda.model.Item;
 import com.taklip.yoda.model.Site;
 import com.taklip.yoda.service.BrandService;
 import com.taklip.yoda.service.ContentService;
@@ -60,7 +60,7 @@ public class PortalHomeController extends PortalBaseController {
 
             HomeInfo homeInfo = getHome();
 
-            List<Item> items = itemService.getItemsTopViewed(8);
+            List<ItemDTO> items = itemService.getItemsTopViewed(8);
             List<BrandDTO> brands = brandService.getBrandsTopViewed(8);
 
             modelMap.put("topViewedItems", items);

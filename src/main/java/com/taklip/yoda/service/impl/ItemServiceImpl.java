@@ -124,9 +124,9 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
     }
 
     @Override
-    public List<Item> getItemsTopViewed(int count) {
+    public List<ItemDTO> getItemsTopViewed(int count) {
         List<Item> items = baseMapper.getItemsTopViewed(count);
-        return items;
+        return items.stream().map(modelConvertor::convertToItemDTO).collect(Collectors.toList());
     }
 
     @Override

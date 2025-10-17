@@ -147,7 +147,6 @@ public class AuthApiController {
             }
 
             User user = (User) authentication.getPrincipal();
-            log.info("Get current user email: {}", user.getEmail());
 
             User currentUser = userService.getUserByEmail(user.getEmail());
             if (currentUser == null) {
@@ -155,7 +154,7 @@ public class AuthApiController {
             }
 
             UserDTO userDTO = convertToUserDTO(currentUser);
-            log.info("Get current user UserDTO: {}", userDTO);
+
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             log.error("Error getting current user: {}", e.getMessage(), e);

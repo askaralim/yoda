@@ -36,7 +36,7 @@ public interface ItemService extends IService<Item> {
 
     List<Item> getItemsByContentIdAndBrandId(Long contentId, Long brandId);
 
-    List<Item> getItemsTopViewed(int count);
+    List<ItemDTO> getItemsTopViewed(int count);
 
     List<Item> search(int siteId, String itemNum, String itemUpcCd, String itemShortDesc);
 

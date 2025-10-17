@@ -37,7 +37,7 @@ public class ItemApiController extends PortalBaseController {
     }
 
     @GetMapping("/topItems")
-    public ResponseEntity<List<Item>> getTopItems() {
+    public ResponseEntity<List<ItemDTO>> getTopItems() {
         return ResponseEntity.ok(itemService.getItemsTopViewed(8));
     }
 
@@ -58,15 +58,14 @@ public class ItemApiController extends PortalBaseController {
     }
 
     @PostMapping("/{id}/uploadImage")
-    public ResponseEntity<Void> uploadImage(
-            @RequestParam MultipartFile file, @PathVariable Long id) {
+    public ResponseEntity<Void> uploadImage(@RequestParam MultipartFile file,
+            @PathVariable Long id) {
         itemService.updateItemImage(id, file);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/rating")
-    public String score(
-            @PathVariable Long id, @RequestParam String thumb) {
+    public String score(@PathVariable Long id, @RequestParam String thumb) {
         Item item = itemService.getItem(id);
 
         int rating = 0;
