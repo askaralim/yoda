@@ -35,7 +35,7 @@ public class PageViewHandler {
     @Autowired
     private PageViewService pageViewService;
 
-    @Autowired
+    @Autowired(required = false)
     private RocketMQTemplate rocketMQTemplate;
 
     @Autowired

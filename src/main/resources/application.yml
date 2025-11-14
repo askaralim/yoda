@@ -129,7 +129,7 @@ wx:
 
 yoda:
   file-location: ${HOME}/yoda/uploads/
-  mq-enabled: true
+  mq-enabled: false
 
 # Management endpoints
 management:
@@ -173,7 +173,7 @@ springdoc:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:1234567890}
+  secret: ${JWT_SECRET:UOZMrwrzPZf6eOWPj+PZo/Z5ETNzm2JEZclee1ab0jU=}
   expiration: 86400000  # 24 hours in milliseconds
   refresh-token:
     expiration: 604800000  # 7 days in milliseconds
