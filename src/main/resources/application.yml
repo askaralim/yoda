@@ -173,7 +173,7 @@ springdoc:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:UOZMrwrzPZf6eOWPj+PZo/Z5ETNzm2JEZclee1ab0jU=}
+  secret: ${JWT_SECRET:123456789}
   expiration: 86400000  # 24 hours in milliseconds
   refresh-token:
     expiration: 604800000  # 7 days in milliseconds
